@@ -2,13 +2,34 @@
   'use strict';
 
   let svg_links = [
+    'https://iamonefm.github.io/svg/dots.svg',
+    'https://iamonefm.github.io/svg/dots_x2.svg',
     'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/90-ring-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/90-ring-with-bg-white-36.svg',
     'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/180-ring-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/180-ring-with-bg-white-36.svg',
     'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/270-ring-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/270-ring-with-bg-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/ring-resize-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/bars-rotate-fade-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/blocks-scale-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/blocks-shuffle-2-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/blocks-shuffle-3-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/blocks-wave-white-36.svg',
     'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-white-36.svg',
     'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-2-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-3-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-multiple-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-ring-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-rings-2-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-rings-3-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/pulse-rings-multiple-white-36.svg',
     'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/3-dots-bounce-white-36.svg',
-    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/blocks-wave-white-36.svg'
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/3-dots-fade-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/3-dots-scale-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/dot-revolve-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/bouncing-ball-white-36.svg',
+    'https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/gooey-balls-2-white-36.svg'
   ];
 
   Lampa.Template.add('ani_modal', `
@@ -24,7 +45,7 @@
   style.textContent = `
     .ani_row {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(7, 1fr);
       grid-auto-rows: 1fr;
       gap: 40px;
       justify-items: center;
@@ -39,23 +60,23 @@
       width: 100%;
       height: 100%;
     }
+    .ani_svg img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(-20deg) saturate(600%) brightness(90%);
+    }
     .ani_svg.focus {
       background-color: #353535;
       border: 1px solid #9e9e9e;
-    }
-    .ani_svg svg {
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
-      max-height: 100%;
     }
   `;
   document.head.appendChild(style);
 
   function insert_activity_loader(src) {
-    let activity_loader_style = document.createElement('style');
-    activity_loader_style.id = 'aniload_activity__loader';
-    activity_loader_style.textContent = `
+    let style = document.createElement('style');
+    style.id = 'aniload_activity__loader';
+    style.textContent = `
       .activity__loader {
         position: absolute;
         top: 0;
@@ -65,6 +86,7 @@
         display: none;
         background: url(${src}) no-repeat 50% 50%;
         zoom: 3;
+        filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(-20deg) saturate(600%) brightness(90%);
       }
       .activity__loader_prv {
         position: absolute;
@@ -73,41 +95,25 @@
         width: 145%;
         height: 86%;
         background: url(${src}) no-repeat 50% 50%;
-        z-index: 9999; 
+        z-index: 9999;
+        filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(-20deg) saturate(600%) brightness(90%);
       }
     `;
-    document.head.appendChild(activity_loader_style);
+    document.head.appendChild(style);
   }
 
   function remove_activity_loader() {
-    let styleElement = document.getElementById('aniload_activity__loader');
-    if (styleElement) styleElement.remove();
+    let style = document.getElementById('aniload_activity__loader');
+    if (style) style.remove();
   }
 
   function createSvgHtml(src) {
-    const id = 'svg_' + btoa(src).replace(/[^a-zA-Z0-9]/g, '');
-    fetch(src)
-      .then(res => res.text())
-      .then(data => {
-        const svg = new DOMParser().parseFromString(data, 'image/svg+xml').documentElement;
-        svg.setAttribute('fill', '#FF8C00'); // тёмно-оранжевый
-        svg.querySelectorAll('[fill]').forEach(el => el.setAttribute('fill', '#FF8C00'));
-        svg.removeAttribute('style');
-        const container = document.getElementById(id);
-        if (container) {
-          container.innerHTML = '';
-          container.appendChild(svg);
-        }
-      })
-      .catch(err => {
-        console.error('Ошибка загрузки SVG:', err);
-      });
-
     return `
       <div class="ani_svg selector" tabindex="0">
-        <div id="${id}" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-          <span style="color: gray; font-size: 10px;">Загрузка...</span>
-        </div>
+        <picture>
+          <source srcset="${src}" media="(prefers-color-scheme: light),(prefers-color-scheme: dark)">
+          <img src="${src}" style="visibility:visible; max-width:100%;">
+        </picture>
       </div>
     `;
   }
@@ -125,46 +131,31 @@
     
     Lampa.SettingsApi.addComponent({
       component: 'ani_load_menu',
-      name: "Load animation ",
+      name: 'Load animation',
       icon: icon_plugin,
     });
 
     Lampa.SettingsApi.addParam({
       component: 'ani_load_menu',
-      param: {
-        name: 'active_ani',
-        type: 'trigger',
-      },
-      field: {
-        name: ' Включить',
-      },
+      param: { name: 'active_ani', type: 'trigger' },
+      field: { name: ' Включить' },
       onChange: function (item) {
-        if (item == 'true') {
-          insert_activity_loader(Lampa.Storage.get("ani_load"));
-        } else {
-          remove_activity_loader();
-        }
+        if (item == 'true') insert_activity_loader(Lampa.Storage.get("ani_load"));
+        else remove_activity_loader();
       }
     });
 
     Lampa.SettingsApi.addParam({
       component: 'ani_load_menu',
-      param: {
-        name: 'select_ani_mation',
-        type: 'button',
-      },
-      field: {
-        name: ' Выбор анимации загрузки ',
-        description: '<div class="activity__loader_prv"></div>'
-      },
+      param: { name: 'select_ani_mation', type: 'button' },
+      field: { name: ' Выбор анимации загрузки ', description: '<div class="activity__loader_prv"></div>' },
       onChange: function () {
-        const groupedSvgLinks = chunkArray(svg_links, 4);
-        let svg_content = groupedSvgLinks.map(group => {
-          const groupContent = group.map(createSvgHtml).join('');
-          return `<div class="ani_row">${groupContent}</div>`;
-        }).join('');
+        const grouped = chunkArray(svg_links, 7);
+        const svg_content = grouped.map(group =>
+          `<div class="ani_row">${group.map(createSvgHtml).join('')}</div>`
+        ).join('');
 
-        let ani_templates = Lampa.Template.get('ani_modal', {
+        const html = Lampa.Template.get('ani_modal', {
           ani_svg_content: svg_content
         });
 
@@ -172,31 +163,26 @@
           title: '',
           size: 'medium',
           align: 'center',
-          html: ani_templates,
-          onBack: () => {
+          html,
+          onBack() {
             Lampa.Modal.close();
             Lampa.Controller.toggle('settings_component');
           },
-          onSelect: function onSelect(a) {
-            Lampa.Modal.close();
-            Lampa.Controller.toggle('settings_component');
-            if (a.length > 0 && a[0] instanceof HTMLElement) {
-              const element = a[0];
-              const svgElement = element.querySelector('svg');
-              if (svgElement) {
-                const base64 = btoa(new XMLSerializer().serializeToString(svgElement));
-                const dataUrl = 'data:image/svg+xml;base64,' + base64;
-                Lampa.Storage.set("ani_load", dataUrl);
+          onSelect(a) {
+            if (a.length && a[0] instanceof HTMLElement) {
+              const src = a[0].querySelector('img')?.getAttribute('src');
+              if (src) {
+                Lampa.Storage.set("ani_load", src);
                 remove_activity_loader();
-                insert_activity_loader(dataUrl);
+                insert_activity_loader(src);
               }
             }
-          },
+          }
         });
-      },
+      }
     });
 
-    if (Lampa.Storage.get("ani_load") !== null && Lampa.Storage.get("active_ani") !== false) {
+    if (Lampa.Storage.get("ani_load") && Lampa.Storage.get("active_ani") !== false) {
       insert_activity_loader(Lampa.Storage.get("ani_load"));
     }
   }
@@ -204,10 +190,9 @@
   if (window.appready) {
     aniLoad();
   } else {
-    Lampa.Listener.follow('app', function (e) {
-      if (e.type == 'ready') {
-        aniLoad();
-      }
+    Lampa.Listener.follow('app', e => {
+      if (e.type === 'ready') aniLoad();
     });
   }
+
 })();
