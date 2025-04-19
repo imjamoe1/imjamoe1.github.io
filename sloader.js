@@ -118,9 +118,9 @@
         <div class="ani_svg selector" tabindex="0">
           <picture>
             <source srcset="${src}" media="(prefers-color-scheme: light),(prefers-color-scheme: dark)">
-            <img src="${src}" style="visibility:visible; max-width:100%; fill:#FF8C00"> // Колір змінено на #FF8C00
+            <img src="${src}" style="visibility:visible; max-width:100%; fill:#FF8C00"> // Цвет изменен на #FF8C00
           </picture>
-          <div style="position:absolute;left:0;right:0;bottom:0;top:0;"></div>         </div>
+        </div>
       `;
   }
     function chunkArray(arr, size) {
@@ -182,73 +182,42 @@
         let ani_templates = Lampa.Template.get('ani_modal', {
             ani_svg_content: svg_content
         });
-        // Додамо обробник подій для фокусування на елементах .ani_svg всередині модалки
-        Lampa.Modal.open({
-            title: '',
-            size: 'medium',
-            align: 'center',
-            html: ani_templates,
-            onBack: () => {
-                Lampa.Modal.close()
-                Lampa.Controller.toggle('settings_component')
-            },
-            onSelect: function onSelect(a) {
-                Lampa.Modal.close()
-                Lampa.Controller.toggle('settings_component')
-                if (a.length > 0 && a[0] instanceof HTMLElement) {
-                    const element = a[0];
-                    const imgElement = element.querySelector('img');
-                    if (imgElement) {
-                        const srcValue = imgElement.getAttribute('src');
-                        // console.log('*** src:', srcValue); // Выводим значение src
-                        Lampa.Storage.set("ani_load", srcValue);
-                        // window.location.reload(); // Можливо, це не потрібно, якщо лоадер оновлюється динамічно
-                        // console.log('****', 'item-render-back:', a);
-                        remove_activity_loader();
-                        insert_activity_loader(Lampa.Storage.get("ani_load"));
-                    } else {
-                        // console.log('*** Тег <img> не найден');
-                    }
-                } else {
-                    // console.log('*** Переданный объект не содержит DOM-элемента');
-                }
-            },
-            onRender: (modal_element) => { // Додаємо onRender для обробки після відкриття модалки
-                // console.log('*** Modal rendered', modal_element);
-                const svgElements = modal_element.querySelectorAll('.ani_svg');
-                svgElements.forEach(svgElement => {
-                    svgElement.onmouseenter = () => {
-                        Lampa.Controller.focus(svgElement);
-                    };
-                    svgElement.onclick = () => {
-                        Lampa.Modal.close();
-                        Lampa.Controller.toggle('settings_component');
-                        const imgElement = svgElement.querySelector('img');
-                        if (imgElement) {
-                            const srcValue = imgElement.getAttribute('src');
-                            Lampa.Storage.set("ani_load", srcValue);
-                            remove_activity_loader();
-                            insert_activity_loader(Lampa.Storage.get("ani_load"));
-                        }
-                    };
-                });
-                 // Встановлюємо початковий фокус на перший елемент, якщо вони є
-                 if(svgElements.length > 0) {
-                     Lampa.Controller.focus(svgElements[0]);
-                 }
-            }
-        })
+        Lampa.Modal.open({
+          title: '',
+          size: 'medium',
+          align: 'center',
+          html: ani_templates,
+          onBack: () => {
+            Lampa.Modal.close()
+            Lampa.Controller.toggle('settings_component')
+          },
+          onSelect: function onSelect(a) {
+            Lampa.Modal.close()
+            Lampa.Controller.toggle('settings_component')
+            if (a.length > 0 && a[0] instanceof HTMLElement) {
+              const element = a[0];
+              const imgElement = element.querySelector('img');
+              if (imgElement) {
+                const srcValue = imgElement.getAttribute('src');
+                // console.log('*** src:', srcValue); // Выводим значение src
+                Lampa.Storage.set("ani_load", srcValue);
+                // window.location.reload();
+                // console.log('****', 'item-render-back:', a);
+                remove_activity_loader();
+                insert_activity_loader(Lampa.Storage.get("ani_load"));
+              } else {
+                // console.log('*** Тег <img> не найден');
+              }
+            } else {
+              // console.log('*** Переданный объект не содержит DOM-элемента');
+            }
+          },
+        })
       },
     });
     if (Lampa.Storage.get("ani_load") !== null && Lampa.Storage.get("active_ani") !== false) {
       insert_activity_loader(Lampa.Storage.get("ani_load"))
-    } else if (Lampa.Storage.get("ani_load") === null) {
-        // Якщо лоадер ще не вибрано, встановлюємо перший зі списку за замовчуванням при першому запуску
-        Lampa.Storage.set("ani_load", svg_links[0]);
-         if (Lampa.Storage.get("active_ani") !== false) {
-             insert_activity_loader(Lampa.Storage.get("ani_load"));
-         }
-    }
+    }
   }
   // function startPlugin() {
   if (window.appready) {
