@@ -6637,7 +6637,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		manifest = {
 		type: 'video',
 		version: version_modss,
-		name: "Онлайн - MODS's v" + version_modss,
+		name: "MODS's v" + version_modss,
 		description: 'Плагин для просмотра онлайн сериалов и фильмов',
 		component: 'modss_online',
 		onContextMenu: function onContextMenu(object) {
