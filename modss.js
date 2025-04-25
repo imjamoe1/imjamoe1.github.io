@@ -6637,7 +6637,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		manifest = {
 		type: 'video',
 		version: version_modss,
-		name: "MODS's v" + version_modss,
+		name: "MODS's" + version_modss,
 		description: 'Плагин для просмотра онлайн сериалов и фильмов',
 		component: 'modss_online',
 		onContextMenu: function onContextMenu(object) {
@@ -6649,7 +6649,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		onContextLauch: function onContextLauch(object) {
 			Lampa.Activity.push({
 						url: '',
-						title: Lampa.Lang.translate('modss_title_online') + " - MODS's v" + version_modss,
+						title: Lampa.Lang.translate('modss_title_online') + "MODS's" + version_modss,
 						component: 'modss_online',
 						search: object.title,
 						search_one: object.title,
