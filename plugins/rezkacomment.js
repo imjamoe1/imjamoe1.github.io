@@ -1,21 +1,22 @@
 (function () {
   //BDVBurik 2024
+  //thanks Red Cat
   ("use strict");
 
   let www = ``;
   let year;
   let namemovie;
-  const urlEndTMDB = "?language=en-US&api_key=4ef0d7355d9ffb5151e987764708ce96";
+  const urlEndTMDB = "?language=ru-RU&api_key=4ef0d7355d9ffb5151e987764708ce96";
 
   const tmdbApiUrl = "https://api.themoviedb.org/3/";
   let kp_prox = "https://worker-patient-dream-26d7.bdvburik.workers.dev:8443/";
-  let url = "http://hdrezka9bsbhq.org/ajax/get_comments/?t=1714093694732&news_id=";
+  let url = "https://rezka.ag/ajax/get_comments/?t=1714093694732&news_id=";
 
   // Функция для поиска на сайте hdrezka
   async function searchRezka(name, ye) {
     let fc = await fetch(
       kp_prox +
-        "http://hdrezka9bsbhq.org/search/?do=search&subaction=search&q=" +
+        "https://hdrezka.ag/search/?do=search&subaction=search&q=" +
         name +
         (ye ? "+" + ye : ""),
       {
@@ -30,7 +31,7 @@
 
     let arr = Array.from(dom.getElementsByClassName("b-content__inline_item"));
     namemovie = arr[0].childNodes[3].innerText;
-
+    console.log("rezkacomment", name, ye);
     comment_rezka(arr[0].dataset.id);
   }
 
@@ -51,6 +52,7 @@
     await fetch(url)
       .then((response) => response.json())
       .then((e) => (enTitle = e.title || e.name));
+
     searchRezka(normalizeTitle(enTitle), year);
   }
 
@@ -71,12 +73,14 @@
 
   // Функция для получения комментариев с сайта rezka
   async function comment_rezka(id) {
-    console.log(
-      kp_prox +
-        url +
-        (id ? id : "1") +
-        "&cstart=1&type=0&comment_id=0&skin=hdrezka"
-    );
+    // console.log(
+    //   "rcomment",
+    //   kp_prox +
+    //     url +
+    //     (id ? id : "1") +
+    //     "&cstart=1&type=0&comment_id=0&skin=hdrezka"
+    // );
+
     let fc = await fetch(
       kp_prox +
         url +
@@ -95,9 +99,13 @@
       .querySelectorAll(".ava, .actions, i, .share-link")
       .forEach((elem) => elem.remove());
 
-    dom
-      .querySelectorAll(".message")
-      .forEach((e) => e.parentNode.parentNode.before(e));
+    dom.querySelectorAll(".message").forEach((e) => {
+      var cct = e.closest(".comments-tree-item");
+      var gp = e.parentNode.parentNode;
+      cct.appendChild(e);
+      gp.remove();
+    });
+
     dom.querySelectorAll(".info").forEach((e) => {
       e.childNodes[5].remove();
       e.addClass("myinfo").removeClass("info");
@@ -109,6 +117,7 @@
 
     let Script = document.createElement("Script");
     Script.innerHTML = `function ShowOrHide(id) {var text = $("#" + id);text.prev(".title_spoiler").remove();text.css("display", "inline");}`;
+
     document.head.appendChild(Script);
     var modal = $(
       `<div> <div class="broadcast__text" style="text-align:left;"><div class="comment" style="margin-left: -15px;">` +
@@ -151,7 +160,7 @@
   color: #cfc9be;
 }
 div.text > div {
-  display: ruby-text;
+  display: block;
 
   padding-left: 1.2em;
 }
@@ -159,6 +168,7 @@ div.text > div {
     document.head.appendChild(styleEl);
 
     var enabled = Lampa.Controller.enabled().name;
+
     Lampa.Modal.open({
       title: ``,
       html: modal,
@@ -190,8 +200,12 @@ div.text > div {
         );
 
         $(".button--comment").on("hover:enter", function (card) {
+          //console.log("rcomment", e.data);
+          year = 0;
           if (e.data.movie.release_date) {
             year = e.data.movie.release_date.slice(0, 4);
+          } else if (e.data.movie.first_air_date) {
+            year = e.data.movie.first_air_date.slice(0, 4);
           }
           getEnTitle(e.data.movie.id, e.object.method);
         });
