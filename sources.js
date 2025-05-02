@@ -36,14 +36,12 @@ function startPlugin() {
               { title: Lampa.Lang.translate('title_main')+' - CUB', source: 'cub' },
               { title: Lampa.Lang.translate('title_main')+' - NUM', source: 'kinovod', component: 'category' }, 
            // { title: Lampa.Lang.translate('title_main')+' - Releases', source: 'hdrezka', component: 'category_full', url: hdrezka.categoryurl }, 
-              { title: Lampa.Lang.translate('title_main')+' - HDRezka', source: 'hdrezka' },
+           // { title: Lampa.Lang.translate('title_main')+' - HDRezka', source: 'hdrezka' },
               { title: Lampa.Lang.translate('title_main')+' - KinoVOD', source: 'kinovod' } 
             ];
             if (Lampa.Api.sources.KP  != undefined) items.push( { title: Lampa.Lang.translate('title_main')+' - КиноПоиск', source: 'KP' }  );
             if (Lampa.Api.sources.pub  != undefined) items.push( { title: Lampa.Lang.translate('title_main')+' - KinoPUB', source: 'pub' }  );
             if (Lampa.Api.sources.filmix  != undefined) items.push( { title: Lampa.Lang.translate('title_main')+' - Filmix', source: 'filmix' }  );
-            if (Lampa.Api.sources.kinovod  != undefined) items.push( { title: Lampa.Lang.translate('title_main')+' - KinoVOD', source: 'kinovod' }  );
-            if (Lampa.Api.sources.hdrezka  != undefined) items.push( { title: Lampa.Lang.translate('title_main')+' - HDRezka', source: 'hdrezka' }  );
             Lampa.Select.show({
               title: Lampa.Lang.translate('settings_rest_source'),
               items: items,
