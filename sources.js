@@ -35,8 +35,8 @@ function startPlugin() {
               { title: Lampa.Lang.translate('title_main')+' - TMDB', source: 'tmdb' }, 
               { title: Lampa.Lang.translate('title_main')+' - CUB', source: 'cub' },
               { title: Lampa.Lang.translate('title_main')+' - NUM', source: 'kinovod', component: 'category' }, 
-           // { title: Lampa.Lang.translate('title_main')+' - Releases', source: 'hdrezka', component: 'category_full', url: hdrezka.categoryurl }, 
-           // { title: Lampa.Lang.translate('title_main')+' - HDRezka', source: 'hdrezka' },
+              { title: Lampa.Lang.translate('title_main')+' - Releases', source: 'hdrezka', component: 'category_full', url: https://hdrezka.imjamoe56.workers.dev }, 
+              { title: Lampa.Lang.translate('title_main')+' - HDRezka', source: 'hdrezka' },
               { title: Lampa.Lang.translate('title_main')+' - KinoVOD', source: 'kinovod' } 
             ];
             if (Lampa.Api.sources.KP  != undefined) items.push( { title: Lampa.Lang.translate('title_main')+' - КиноПоиск', source: 'KP' }  );
