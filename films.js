@@ -1,4 +1,4 @@
-// Плагін для Lampa з підтримкою Eneyida, UAKino, GidOnline
+ Плагін для Lampa з підтримкою Eneyida, UAKino, GidOnline
 (function () {
     'use strict';
 
