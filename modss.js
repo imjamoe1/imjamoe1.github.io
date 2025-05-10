@@ -9,9 +9,9 @@
             return window.location.protocol == 'https:' ? 'https://' : 'http://';
         }
         var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-        var version_modss = '3.1', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = 'dcbee9ef84465be64feb69380', IP, logged = undefined, cashe = encodeURIComponent(Lampa.Base64.encode(window.location.origin));
+        var version_modss = '3.1', API = Protocol() + 'api.modss.tv/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = 'dcbee9ef84465be64feb69380', IP, logged = false, cashe = encodeURIComponent(Lampa.Base64.encode(window.location.origin));
         
-        var url = Protocol() + 'lampa.stream/modss';
+        var url = Protocol() + 'modss.tv';
         console.log('Modss', 'init', 'LOADED - [GET] ' + url);
         console.log('App', 'origin', window.location.origin);
         window.loaded_modss = true;
@@ -32,11 +32,11 @@
         }, {
           user_id: user_id, 
           uid: uid,
-          ips: '2a09:bac1:7540:28::84:69',
+          ips: '2a09:bac5:592a:52d::84:78',
           cas: cashe,
           cache: false,
           id: '',
-          or: 'dW5kZWZpbmVk',
+          or: 'a2hnZ21kbWJtaG9na29lZmtmYmJsZW5tZmFjb3BsYnA=',
           auth: logged
         }, {
           dataType: 'text'
