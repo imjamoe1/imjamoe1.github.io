@@ -194,21 +194,6 @@
             this.activity.toggle();
         };
 
-        this.loadNext = function () {
-            var _this = this;
-
-            if (this.next && !this.next_wait && items.length) {
-                this.next_wait = true;
-                this.next(function (new_data) {
-                    _this.next_wait = false;
-                    new_data.forEach(_this.append.bind(_this));
-                    Lampa.Layer.visible(items[active + 1].render(true));
-                }, function () {
-                    _this.next_wait = false;
-                });
-            }
-        };
-
         this.push = function () {};
 
         this.build = function (data) {
