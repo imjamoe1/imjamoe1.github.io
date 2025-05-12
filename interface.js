@@ -218,7 +218,7 @@
             info = new create(object);
             info.create();
             scroll.minus(info.render());
-            data.slice(0, viewall ? data.length : 2).forEach(this.append.bind(this));
+            data.slice(0, 7).forEach(this.append.bind(this));
             html.append(info.render());
             html.append(scroll.render());
 
