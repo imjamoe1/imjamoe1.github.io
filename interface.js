@@ -476,7 +476,7 @@
                 margin-top: 0.3em;
                 margin-bottom: 0.3em;
                 max-width: 7em;
-                max-height: 2em;
+                max-height: 1em;
                 object-fit: contain;
                 width: auto;
                 height: auto;
