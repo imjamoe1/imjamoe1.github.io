@@ -475,8 +475,8 @@
             .new-interface-logo {
                 margin-top: 0.3em;
                 margin-bottom: 0.3em;
-                max-width: 7em;
-                max-height: 3em;
+                max-width: 5em;
+                max-height: 2em;
                 object-fit: contain;
                 width: auto;
                 height: auto;
