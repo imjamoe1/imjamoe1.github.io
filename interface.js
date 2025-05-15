@@ -8,7 +8,16 @@
       var loaded = {};
 
       this.create = function () {
-        html = $("<div class=\"new-interface-info\">\n            <div class=\"new-interface-info__body\">\n                <div class=\"new-interface-info__head\"></div>\n                <div class=\"new-interface-info__title\"></div>\n                <div class=\"new-interface-info__details\"></div>\n                <div class=\"new-interface-info__description\"></div>\n            </div>\n        </div>");
+        html = $(`<div class="new-interface-info">
+            <div class="new-interface-info__body">
+                <div class="new-interface-info__head"></div>
+                <div class="new-interface-info__title"></div>
+                <div class="new-interface-info__details"></div>
+                <div class="new-interface-info__right-panel">
+                    <div class="new-interface-info__description"></div>
+                </div>
+            </div>
+        </div>`);
       };
 
       this.update = function (data) {
@@ -104,6 +113,7 @@
         var details = [];
         var countries = Lampa.Api.sources.tmdb.parseCountries(data);
         var pg = Lampa.Api.sources.tmdb.parsePG(data);
+        var description = data.overview || '';
         
         if (create !== '0000') head.push('<span>' + create + '</span>');
         if (countries.length > 0) head.push(countries.join(', '));
@@ -123,6 +133,9 @@
         
         html.find('.new-interface-info__head').empty().append(head.join(', '));
         html.find('.new-interface-info__details').html(details.join('<span class="new-interface-info__split">&#9679;</span>'));
+        html.find('.new-interface-info__description')
+            .text(description)
+            .toggleClass('empty', !data.overview);
       };
 
       this.load = function (data) {
@@ -499,24 +512,52 @@
                 margin: 0 1em;
                 font-size: 0.7em;
             }
-            
+
+            .new-interface-info__right-panel {
+                position: absolute;
+                right: 2em;
+                top: 6em;
+                width: 30%;
+                max-width: 500px;
+                padding: 1.5em;
+            }
+
             .new-interface-info__description {
-                font-size: 1.2em;
-                font-weight: 300;
-                line-height: 1.5;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-line-clamp: 4;
-                line-clamp: 4;
-                -webkit-box-orient: vertical;
-                width: 70%;
+                font-size: 1.1em;
+                line-height: 1.4;
+                color: rgba(255, 255, 255, 0.9);
+                max-height: 200px;
+                overflow-y: auto;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+
+            .new-interface-info__description.empty {
+                opacity: 0.5;
+                font-style: italic;
+            }
+
+            @media (max-width: 1200px) {
+                .new-interface-info__right-panel {
+                    width: 40%;
+                    top: 4em;
+                    right: 1em;
+                    padding: 1em;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .new-interface-info__right-panel {
+                    position: relative;
+                    width: 100%;
+                    right: auto;
+                    top: auto;
+                    margin-top: 1em;
+                    padding: 0;
+                }
             }
             
             .new-interface .full-start__background {
                 opacity: 0.6 !important;
-            }
-            
-            .new-interface .full-start__background {
                 height:109% !important;
                 left:0em !important;
                 top:-9.2% !important;
@@ -527,7 +568,6 @@
                 margin-right: 0;
             }
             
-            /* Полное удаление card__promo */
             .new-interface .card__promo,
             .new-interface .card .card__promo {
                 display: none !important;
