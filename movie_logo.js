@@ -1082,7 +1082,7 @@
                 font-style: italic;
             }
 
-            @media (max-width: 1920px) {
+            @media (max-width: 1200px) {
                 .new-interface-info__right-panel {
                     width: 40%;
                     top: 4em;
@@ -1091,7 +1091,7 @@
                 }
             }
 
-            @media (max-width: 1080px) {
+            @media (max-width: 768px) {
                 .new-interface-info__right-panel {
                     position: relative;
                     width: 100%;
