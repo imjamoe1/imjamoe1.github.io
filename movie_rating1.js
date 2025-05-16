@@ -1072,12 +1072,12 @@
                 border-radius: 0.3em;
                 box-shadow: none;
                 display: -webkit-box;
-                -webkit-line-clamp: 5;
+                -webkit-line-clamp: 6;
                 -webkit-box-orient: vertical;
                 overflow-y: auto;
                 text-overflow: ellipsis;
                 line-height: 1.1em;
-                height: calc(1.5em * 5); }
+                height: calc(1.4em * 6); }
        .new-interface .card-more__box { padding-bottom: 95%; }
             .new-interface .full-start__background { height: 108%; top: -6em; }
             .new-interface .card__promo { display: none; }
