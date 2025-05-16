@@ -1077,7 +1077,7 @@
                 overflow-y: auto;
                 text-overflow: ellipsis;
                 line-height: 1.1em;
-                height: calc(1.7em * 6); }
+                height: calc(1.5em * 6); }
        .new-interface .card-more__box { padding-bottom: 95%; }
             .new-interface .full-start__background { height: 108%; top: -6em; }
             .new-interface .card__promo { display: none; }
