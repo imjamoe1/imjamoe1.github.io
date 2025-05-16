@@ -1052,6 +1052,21 @@
             .new-interface-info__head span { color: #fff; }
             .new-interface-info__title { font-size: 4em; font-weight: 600; margin-bottom: 0.3em; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; margin-left: -0.03em; line-height: 1.3; }
             /* .new-interface-info__details { margin-bottom: 1.6em; display: flex; align-items: center; flex-wrap: wrap; min-height: 1.9em; font-size: 1.1em; } */
+
+            .new-interface-info__description {
+                top: 40px;
+                right: 40px;
+                width: 35%
+                font-size: 1.1em;
+                line-height: 1.4;
+                padding: 0 !important;
+                color: rgba(255, 255, 255, 0.9);
+                max-height: 200px;
+                overflow-y: auto;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(255,255,255,0.3) transparent;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
                         
             .new-interface-info__details {
                 margin-bottom: 1em; 
@@ -1059,10 +1074,12 @@
                 min-height: 1.9em;
                 font-size: 1.1em;
             }
+
             .line-one-details {
                 margin-bottom: 0.6em;
                 line-height: 1.5;
             }
+
             .genre-details-line {
                 margin-top: 1em;
                 line-height: 1.5;
@@ -1080,26 +1097,6 @@
             .new-interface-info__description.empty {
                 opacity: 0.5;
                 font-style: italic;
-            }
-
-            @media (max-width: 1200px) {
-                .new-interface-info__right-panel {
-                    width: 40%;
-                    top: 4em;
-                    right: 1em;
-                    padding: 1em;
-                }
-            }
-
-            @media (max-width: 768px) {
-                .new-interface-info__right-panel {
-                    position: relative;
-                    width: 100%;
-                    right: auto;
-                    top: auto;
-                    margin-top: 1em;
-                    padding: 0;
-                }
             }
 
             .new-interface .full-start__background {
