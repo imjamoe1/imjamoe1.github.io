@@ -409,18 +409,9 @@
         var network = new Lampa.Reguest(); 
         var loaded = {}; 
         
-      this.create = function () {
-        html = $(`<div class="new-interface-info">
-            <div class="new-interface-info__body">
-                <div class="new-interface-info__head"></div>
-                <div class="new-interface-info__title"></div>
-                <div class="new-interface-info__details"></div>
-                <div class="new-interface-info__right-panel">
-                    <div class="new-interface-info__description"></div>
-                </div>
-            </div>
-        </div>`);
-      };
+        this.create = function () { // --- Original this.create --- //
+            html = $("<div class=\"new-interface-info\">\n            <div class=\"new-interface-info__body\">\n                <div class=\"new-interface-info__head\"></div>\n                <div class=\"new-interface-info__title\"></div>\n                <div class=\"new-interface-info__details\"></div>\n                <div class=\"new-interface-info__description\"></div>\n            </div>\n        </div>"); 
+        }; 
         
         this.update = function(data) { // Called on focus change with new movie data
             var _this = this; // Keep if needed by fetchRatings callback's use of this.draw
@@ -1052,21 +1043,6 @@
             .new-interface-info__head span { color: #fff; }
             .new-interface-info__title { font-size: 4em; font-weight: 600; margin-bottom: 0.3em; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; margin-left: -0.03em; line-height: 1.3; }
             /* .new-interface-info__details { margin-bottom: 1.6em; display: flex; align-items: center; flex-wrap: wrap; min-height: 1.9em; font-size: 1.1em; } */
-
-            .new-interface-info__description {
-                top: 40px;
-                right: 40px;
-                width: 35%
-                font-size: 1.1em;
-                line-height: 1.4;
-                padding: 0 !important;
-                color: rgba(255, 255, 255, 0.9);
-                max-height: 200px;
-                overflow-y: auto;
-                scrollbar-width: thin;
-                scrollbar-color: rgba(255,255,255,0.3) transparent;
-                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            }
                         
             .new-interface-info__details {
                 margin-bottom: 1em; 
@@ -1074,80 +1050,26 @@
                 min-height: 1.9em;
                 font-size: 1.1em;
             }
-
             .line-one-details {
                 margin-bottom: 0.6em;
                 line-height: 1.5;
             }
-
             .genre-details-line {
                 margin-top: 1em;
                 line-height: 1.5;
             }
 
-            .new-interface-info__right-panel {
-                position: absolute;
-                right: 2em;
-                top: 6em;
-                width: 30%;
-                max-width: 500px;
-                padding: 1.5em;
-            }
-
-            .new-interface-info__description.empty {
-                opacity: 0.5;
-                font-style: italic;
-            }
-
-            .new-interface .full-start__background {
-                opacity: 0.6 !important;
-                height:109% !important;
-                left:0em !important;
-                top:-9.2% !important;
-            }
-            
-            .new-interface .full-start__rate {
-                font-size: 1.3em;
-                margin-right: 0;
-            }
-            
-            .new-interface .card__promo,
-            .new-interface .card .card__promo {
-                display: none !important;
-                visibility: hidden !important;
-                height: 0 !important;
-                width: 0 !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                opacity: 0 !important;
-            }
-            
-            .new-interface .card-more__box {
-                padding-bottom: 95%;
-            }
-            
-            .new-interface .card.card--wide+.card-more .card-more__box {
-                padding-bottom: 95%;
-            }
-            
-            .new-interface .card.card--wide .card-watched {
-                display: none !important;
-            }
-            
-            body.light--version .new-interface-info__body {
-                width: 69%;
-                padding-top: 1.5em;
-            }
-            
-            body.light--version .new-interface-info {
-                height: 25.3em;
-            }
-
-            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.focus .card__view{
-                animation: animation-card-focus 0.2s
-            }
-            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.animate-trigger-enter .card__view{
-                animation: animation-trigger-enter 0.2s forwards; }
+            .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
+            .new-interface-info__description { font-size: 1.2em; font-weight: 300; line-height: 1.5; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; width: 70%; }
+            .new-interface .card-more__box { padding-bottom: 95%; }
+            .new-interface .full-start__background { height: 108%; top: -6em; }
+            .new-interface .card__promo { display: none; }
+            .new-interface .card.card--wide+.card-more .card-more__box { padding-bottom: 95%; }
+            .new-interface .card.card--wide .card-watched { display: none !important; }
+            body.light--version .new-interface-info__body { width: 69%; padding-top: 1.5em; }
+            body.light--version .new-interface-info { height: 25.3em; }
+            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.focus .card__view { animation: animation-card-focus 0.2s; }
+            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.animate-trigger-enter .card__view { animation: animation-trigger-enter 0.2s forwards; }
 
 
             /* --- Rating Box Styles --- */
