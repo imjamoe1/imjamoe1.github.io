@@ -1064,7 +1064,7 @@
                 position: absolute;
                 top: 20em;
                 right: 20em;
-                max-width: 30%;
+                max-width: 35%;
                 font-size: 1.3em;
                 color: #ffffff;
                 background: none;
