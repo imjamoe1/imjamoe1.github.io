@@ -1062,8 +1062,8 @@
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
             .new-interface-info__description {
                 position: absolute;
-                top: 20em;
-                right: 20em;
+                top: 1em;
+                right: 1em;
                 max-width: 30%;
                 font-size: 1.3em;
                 color: #ffffff;
