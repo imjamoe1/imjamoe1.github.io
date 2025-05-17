@@ -1,92 +1,120 @@
-(function () {
-    if (!window.Plugin) {
-        console.error('Plugin system not available');
+(function() {
+    'use strict';
+    
+    // Проверка окружения
+    if (!window.Plugin || !window.Lampa) {
+        console.error('[4Kino] Lampa API не найдена');
         return;
     }
 
-    Plugin.register('kino4_fix', {
-        title: '4Kino.cc FIX',
-        version: '1.0.3',
-        icon: 'https://4kino.cc/favicon.ico',
-        author: '4K Films',
-        description: 'Исправленная версия плагина для 4kino.cc',
-        priority: 90,
+    // Конфигурация
+    const config = {
+        name: '4Kino Fix',
+        key: 'kino4_ultimate',
+        domain: 'https://4kino.cc',
+        selectors: {
+            list: '.shortstory',
+            title: '.title',
+            poster: 'img',
+            link: 'a[href]',
+            player: 'iframe[src*="player"], [id*="player"]'
+        },
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Referer': 'https://4kino.cc/'
+        }
+    };
+
+    // Регистрация плагина
+    Plugin.register(config.key, {
+        title: config.name,
+        version: '2.0.0',
+        icon: `${config.domain}/favicon.ico`,
+        author: 'Lampa Community',
+        description: 'Фиксированная версия плагина для 4kino.cc',
+        priority: 100,
         types: ['movie', 'tv'],
-        onload: function () {
+        onload: function() {
             try {
+                // Инициализация источника
                 Lampa.ApiSource.add({
-                    key: 'kino4_fix',
-                    name: '4Kino FIX',
+                    key: config.key,
+                    name: config.name,
                     menu: true,
                     type: ['movie', 'tv'],
                     search: true,
+
+                    // Загрузка списка
                     handler: async (params) => {
                         try {
                             const page = params.page || 1;
-                            const url = `https://4kino.cc/page/${page}/?s=${encodeURIComponent(params.query || '')}`;
+                            const search = params.query ? `/?s=${encodeURIComponent(params.query)}` : '';
+                            const url = `${config.domain}/page/${page}${search}`;
+                            
                             const html = await Lampa.Utils.fetchProxy(url, {
-                                headers: {
-                                    'Referer': 'https://4kino.cc/',
-                                    'User-Agent': 'Mozilla/5.0'
-                                }
+                                headers: config.headers,
+                                timeout: 15000
                             });
 
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            
-                            const items = Array.from(doc.querySelectorAll('.shortstory')).map(el => ({
-                                title: el.querySelector('.title')?.textContent?.trim() || 'Без названия',
-                                poster: el.querySelector('img')?.getAttribute('src') || '',
-                                url: el.querySelector('a')?.href || ''
-                            }));
+                            const dom = new DOMParser().parseFromString(html, 'text/html');
+                            const items = Array.from(dom.querySelectorAll(config.selectors.list));
 
                             return {
-                                results: items.filter(i => i.url),
-                                hasMore: items.length >= 20
+                                results: items.map(item => ({
+                                    title: item.querySelector(config.selectors.title)?.textContent.trim() || 'Без названия',
+                                    poster: item.querySelector(config.selectors.poster)?.src || '',
+                                    url: item.querySelector(config.selectors.link)?.href || ''
+                                })).filter(i => i.url),
+                                
+                                hasMore: !!dom.querySelector('.pagination .current + a')
                             };
                         } catch (e) {
-                            console.error('[Kino4] Handler error:', e);
-                            return { results: [] };
+                            Lampa.Notify.show('Ошибка загрузки списка', 3000);
+                            console.error('[4Kino] Handler Error:', e);
+                            return {results: []};
                         }
                     },
+
+                    // Загрузка деталей
                     details: async (url) => {
                         try {
                             const html = await Lampa.Utils.fetchProxy(url, {
-                                headers: {
-                                    'Referer': url,
-                                    'User-Agent': 'Mozilla/5.0'
-                                }
+                                headers: {...config.headers, Referer: url},
+                                timeout: 20000
                             });
+
+                            const dom = new DOMParser().parseFromString(html, 'text/html');
                             
-                            const doc = new DOMParser().parseFromString(html, 'text/html');
-                            const players = Array.from(doc.querySelectorAll('iframe[src*="player"], [id*="player"] script'))
-                                .map(el => {
-                                    let src = el.getAttribute('src') || '';
-                                    if (!src && el.tagName === 'SCRIPT') {
-                                        const match = el.textContent.match(/src:\s*["'](.*?)["']/);
-                                        src = match ? match[1] : '';
+                            // Поиск плееров
+                            const players = Array.from(dom.querySelectorAll(config.selectors.player))
+                                .map(player => {
+                                    let src = player.src || '';
+                                    if (!src && player.tagName === 'SCRIPT') {
+                                        const match = player.textContent.match(/(https?:)?\/\/[^\s'"]+/);
+                                        src = match ? match[0] : '';
                                     }
-                                    return src.startsWith('//') ? 'https:' + src : src;
+                                    return src.startsWith('//') ? `https:${src}` : src;
                                 })
                                 .filter(src => src.includes('//'));
 
                             return {
-                                title: doc.querySelector('h1')?.textContent?.trim() || 'Фильм',
-                                description: doc.querySelector('.fdesc')?.textContent?.trim() || '',
+                                title: dom.querySelector('h1')?.textContent.trim() || 'Фильм',
+                                description: dom.querySelector('.fdesc')?.textContent.trim() || '',
                                 videos: players.map((src, index) => ({
                                     file: src,
                                     quality: src.includes('1080') ? 'FHD' : 'HD',
-                                    label: `Источник ${index + 1}`
+                                    label: `Плеер ${index + 1}`
                                 }))
                             };
                         } catch (e) {
-                            console.error('[Kino4] Details error:', e);
-                            return { videos: [] };
+                            Lampa.Notify.show('Ошибка загрузки видео', 3000);
+                            console.error('[4Kino] Details Error:', e);
+                            return {videos: []};
                         }
                     }
                 });
             } catch (e) {
-                console.error('[Kino4] Plugin init error:', e);
+                console.error('[4Kino] Plugin Init Error:', e);
             }
         }
     });
