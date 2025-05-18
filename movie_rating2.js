@@ -1066,7 +1066,7 @@
                 right: 1em;
                 max-width: 30%;
                 max-height: 6em;
-                font-size: 1.3em;
+                font-size: 1.4em;
                 color: #ffffff;
                 background: none;
                 padding: 0.5em;
@@ -1077,7 +1077,7 @@
 
             .new-interface-info__description-inner {
                 display: inline-block;
-                animation: scrollCredits 15s linear infinite;
+                animation: scrollCredits 25s linear infinite;
                 padding-right: 1em; } 
 
             @keyframes scrollCredits {
