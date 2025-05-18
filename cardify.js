@@ -54,12 +54,6 @@
     Lampa.Template.add('cardify_css', style);
     $('body').append(Lampa.Template.get('cardify_css', {}, true));
     var icon = "<svg width=\"36\" height=\"28\" viewBox=\"0 0 36 28\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <rect x=\"1.5\" y=\"1.5\" width=\"33\" height=\"25\" rx=\"3.5\" stroke=\"white\" stroke-width=\"3\"/>\n        <rect x=\"5\" y=\"14\" width=\"17\" height=\"4\" rx=\"2\" fill=\"white\"/>\n        <rect x=\"5\" y=\"20\" width=\"10\" height=\"3\" rx=\"1.5\" fill=\"white\"/>\n        <rect x=\"25\" y=\"20\" width=\"6\" height=\"3\" rx=\"1.5\" fill=\"white\"/>\n    </svg>";
-    Lampa.SettingsApi.addComponent({
-      component: 'cardify',
-      icon: icon,
-      name: 'Cardify'
-    });
-      
       Lampa.Template.add("cardify_css", `
         <style>
             .cardify .full-start-new__body{height:80vh}
