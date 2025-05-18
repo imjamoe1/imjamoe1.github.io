@@ -1081,11 +1081,11 @@
                 padding-right: 1em; } 
 
             @keyframes scrollCredits {
-                0%, 10% {
-                    transform: translateY(0);
+                0% {
+                    transform: translateY(100%);
                 }
-                90%, 100% {
-                    transform: translateY(calc(-100% + 6em));
+                100% {
+                    transform: translateY(-100%);
                 }
             }
 
