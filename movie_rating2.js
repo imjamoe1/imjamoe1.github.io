@@ -1081,10 +1081,10 @@
                 padding-right: 1em; } 
 
             @keyframes scrollCredits {
-                0% {
+                0%, 10% {
                     transform: translateY(0);
                 }
-                100% {
+                90%, 100% {
                     transform: translateY(calc(-100% + 6em));
                 }
             }
