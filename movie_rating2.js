@@ -1078,7 +1078,8 @@
             .new-interface-info__description-inner {
                 display: inline-block;
                 animation: scrollCredits 25s linear infinite;
-                padding-right: 1em; } 
+                padding-right: 1em;
+                will-change: transform; }
 
             @keyframes scrollCredits {
                 0% {
