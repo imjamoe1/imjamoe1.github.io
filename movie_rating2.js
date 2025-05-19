@@ -1066,7 +1066,7 @@
                 right: 1em;
                 max-width: 30%;
                 max-height: 6em;
-                font-size: 1.4em;
+                font-size: 1.5em;
                 color: #ffffff;
                 background: none;
                 padding: 0.5em;
