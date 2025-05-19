@@ -5,7 +5,7 @@
     let isEditMode = false;
     let currentItem = null;
     let pressTimer = null;
-    const LONG_PRESS_DURATION = 800; // 0.8 секунды для активации
+    const LONG_PRESS_DURATION = 1000; // 0.8 секунды для активации
 
     // 1. Находим контейнер меню (автоподбор для разных версий Lampa)
     function getMenuContainer() {
