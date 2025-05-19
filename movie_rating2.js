@@ -1073,7 +1073,7 @@
                 border-radius: 0.3em;
                 box-shadow: none;
                 overflow: hidden;
-                line-height: 1.1em; }
+                line-height: 1.3em; }
 
             .new-interface-info__description-inner {
                 display: inline-block;
