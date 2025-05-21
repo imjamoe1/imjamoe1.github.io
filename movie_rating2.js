@@ -1077,7 +1077,7 @@
 
             .new-interface-info__description-inner {
                 display: inline-block;
-                animation: scrollCredits 25s linear infinite;
+                animation: scrollCredits 45s linear infinite;
                 padding-right: 1em;
                 will-change: transform; }
 
