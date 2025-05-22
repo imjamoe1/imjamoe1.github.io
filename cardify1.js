@@ -1,1 +1,1070 @@
-function _0x1348(_0x35c148,_0x49ca0e){var _0xb3881e=_0xb388();return _0x1348=function(_0x13484d,_0x1b7164){_0x13484d=_0x13484d-0xc5;var _0xd6eb=_0xb3881e[_0x13484d];return _0xd6eb;},_0x1348(_0x35c148,_0x49ca0e);}function _0xb388(){var _0x575598=['max','prepend','365OTeSPo','mpa','https://img.youtube.com/vi/','timer','full_start_new','Arguments','filter','Utils','now','concat','getDuration','Показване\x20на\x20трейлър','field','append','display','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','type','addClass','shortText','\x20of\x20','indexOf','Platform','leastFrequency','getTime','1543194ezaMhX','hasPremium','\x20have\x20','width','cases','state','refresh','show','toString','removeCacheNode','keys','key','preview','full_start','add','cardify_enable_sound','name','fromEntries','Уключыць\x20гук','invalid\x20action','call','insert','Cardify','string','get','ENDED','\x20the\x20','5524UVjDKp','diffID','.cardify-preview','Is\x20','Увімкнути\x20звук','Activity','.cardify-preview__loader','player','value','capacity','toggle','.cardify-trailer__youtube-iframe','.activity__body','\x20has\x20','She\x20','log','iso_639_1','ended','find','listener','https://www.youtube.com/watch?v=','time','object','Паказваць\x20трэйлер','size','youtube','configurable','no\x20tv','isArray','vjsk','iterator','Are\x20','cache','Subscribe','Включить\x20звук','The\x20','nodisplay','imgLoad','.head','Ativar\x20som','Включване\x20на\x20звук','innerHeight','next','cardify','has','values','removeClass','1168559sLbqko','from','Controller','startblock','prototype','split','BUFFERING','trim','trailer_ready','Am\x20','10DLPYDX','activity','play','load','stor','constructor','head','done','published_at','map','hd1080','active','Cannot\x20call\x20a\x20class\x20as\x20a\x20function','paused','/default.jpg','Map','video','loaded','cardify_trailer','ite','length','tmdb_lang','timer_anim','videos','data','results','Show\x20trailer','slice','7714264WEnWxS','addComponent','cardify_css','remove','body','render','Invalid\x20attempt\x20to\x20spread\x20non-iterable\x20instance.\x0aIn\x20order\x20to\x20be\x20iterable,\x20non-array\x20objects\x20must\x20have\x20a\x20[Symbol.iterator]()\x20method.','follow','dispath','PAUSED','timer_load','<div\x20class=\x22full-start-new\x20cardify\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__body\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__left\x20hide\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__poster\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20class=\x22full-start-new__img\x20full--poster\x22\x20/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__right\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify__left\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__head\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__title\x22>{title}</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify__details\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__details\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__buttons\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__button\x20selector\x20button--play\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20width=\x2228\x22\x20height=\x2229\x22\x20viewBox=\x220\x200\x2028\x2029\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<circle\x20cx=\x2214\x22\x20cy=\x2214.5\x22\x20r=\x2213\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222.7\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M18.0739\x2013.634C18.7406\x2014.0189\x2018.7406\x2014.9811\x2018.0739\x2015.366L11.751\x2019.0166C11.0843\x2019.4015\x2010.251\x2018.9204\x2010.251\x2018.1506L10.251\x2010.8494C10.251\x2010.0796\x2011.0843\x209.5985\x2011.751\x209.9834L18.0739\x2013.634Z\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>#{title_watch}</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__button\x20selector\x20button--book\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20width=\x2221\x22\x20height=\x2232\x22\x20viewBox=\x220\x200\x2021\x2032\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M2\x201.5H19C19.2761\x201.5\x2019.5\x201.72386\x2019.5\x202V27.9618C19.5\x2028.3756\x2019.0261\x2028.6103\x2018.697\x2028.3595L12.6212\x2023.7303C11.3682\x2022.7757\x209.63183\x2022.7757\x208.37885\x2023.7303L2.30302\x2028.3595C1.9739\x2028.6103\x201.5\x2028.3756\x201.5\x2027.9618V2C1.5\x201.72386\x201.72386\x201.5\x202\x201.5Z\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222.5\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>#{settings_input_links}</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__button\x20selector\x20button--reaction\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20width=\x2238\x22\x20height=\x2234\x22\x20viewBox=\x220\x200\x2038\x2034\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M37.208\x2010.9742C37.1364\x2010.8013\x2037.0314\x2010.6441\x2036.899\x2010.5117C36.7666\x2010.3794\x2036.6095\x2010.2744\x2036.4365\x2010.2028L12.0658\x200.108375C11.7166\x20-0.0361828\x2011.3242\x20-0.0361227\x2010.9749\x200.108542C10.6257\x200.253206\x2010.3482\x200.530634\x2010.2034\x200.879836L0.108666\x2025.2507C0.0369593\x2025.4236\x203.37953e-05\x2025.609\x202.3187e-08\x2025.7962C-3.37489e-05\x2025.9834\x200.0368249\x2026.1688\x200.108469\x2026.3418C0.180114\x2026.5147\x200.28514\x2026.6719\x200.417545\x2026.8042C0.54995\x2026.9366\x200.707139\x2027.0416\x200.880127\x2027.1131L17.2452\x2033.8917C17.5945\x2034.0361\x2017.9869\x2034.0361\x2018.3362\x2033.8917L29.6574\x2029.2017C29.8304\x2029.1301\x2029.9875\x2029.0251\x2030.1199\x2028.8928C30.2523\x2028.7604\x2030.3573\x2028.6032\x2030.4289\x2028.4303L37.2078\x2012.065C37.2795\x2011.8921\x2037.3164\x2011.7068\x2037.3164\x2011.5196C37.3165\x2011.3325\x2037.2796\x2011.1471\x2037.208\x2010.9742ZM20.425\x2029.9407L21.8784\x2026.4316L25.3873\x2027.885L20.425\x2029.9407ZM28.3407\x2026.0222L21.6524\x2023.252C21.3031\x2023.1075\x2020.9107\x2023.1076\x2020.5615\x2023.2523C20.2123\x2023.3969\x2019.9348\x2023.6743\x2019.79\x2024.0235L17.0194\x2030.7123L3.28783\x2025.0247L12.2918\x203.28773L34.0286\x2012.2912L28.3407\x2026.0222Z\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M25.3493\x2016.976L24.258\x2014.3423L16.959\x2017.3666L15.7196\x2014.375L13.0859\x2015.4659L15.4161\x2021.0916L25.3493\x2016.976Z\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>#{title_reactions}</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__button\x20selector\x20button--subscribe\x20hide\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20width=\x2225\x22\x20height=\x2230\x22\x20viewBox=\x220\x200\x2025\x2030\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M6.01892\x2024C6.27423\x2027.3562\x209.07836\x2030\x2012.5\x2030C15.9216\x2030\x2018.7257\x2027.3562\x2018.981\x2024H15.9645C15.7219\x2025.6961\x2014.2632\x2027\x2012.5\x2027C10.7367\x2027\x209.27804\x2025.6961\x209.03542\x2024H6.01892Z\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M3.81972\x2014.5957V10.2679C3.81972\x205.41336\x207.7181\x201.5\x2012.5\x201.5C17.2819\x201.5\x2021.1803\x205.41336\x2021.1803\x2010.2679V14.5957C21.1803\x2015.8462\x2021.5399\x2017.0709\x2022.2168\x2018.1213L23.0727\x2019.4494C24.2077\x2021.2106\x2022.9392\x2023.5\x2020.9098\x2023.5H4.09021C2.06084\x2023.5\x200.792282\x2021.2106\x201.9273\x2019.4494L2.78317\x2018.1213C3.46012\x2017.0709\x203.81972\x2015.8462\x203.81972\x2014.5957Z\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222.5\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>#{title_subscribe}</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__button\x20selector\x20button--options\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20width=\x2238\x22\x20height=\x2210\x22\x20viewBox=\x220\x200\x2038\x2010\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<circle\x20cx=\x224.88968\x22\x20cy=\x224.98563\x22\x20r=\x224.75394\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<circle\x20cx=\x2218.9746\x22\x20cy=\x224.98563\x22\x20r=\x224.75394\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<circle\x20cx=\x2233.0596\x22\x20cy=\x224.98563\x22\x20r=\x224.75394\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify__right\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__reactions\x20selector\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>#{reactions_none}</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start-new__rate-line\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__pg\x20hide\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__status\x20hide\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22hide\x20buttons--container\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__button\x20view--torrent\x20hide\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20xmlns=\x22http://www.w3.org/2000/svg\x22\x20\x20viewBox=\x220\x200\x2050\x2050\x22\x20width=\x2250px\x22\x20height=\x2250px\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M25,2C12.317,2,2,12.317,2,25s10.317,23,23,23s23-10.317,23-23S37.683,2,25,2z\x20M40.5,30.963c-3.1,0-4.9-2.4-4.9-2.4\x20S34.1,35,27,35c-1.4,0-3.6-0.837-3.6-0.837l4.17,9.643C26.727,43.92,25.874,44,25,44c-2.157,0-4.222-0.377-6.155-1.039L9.237,16.851\x20c0,0-0.7-1.2,0.4-1.5c1.1-0.3,5.4-1.2,5.4-1.2s1.475-0.494,1.8,0.5c0.5,1.3,4.063,11.112,4.063,11.112S22.6,29,27.4,29\x20c4.7,0,5.9-3.437,5.7-3.937c-1.2-3-4.993-11.862-4.993-11.862s-0.6-1.1,0.8-1.4c1.4-0.3,3.8-0.7,3.8-0.7s1.105-0.163,1.6,0.8\x20c0.738,1.437,5.193,11.262,5.193,11.262s1.1,2.9,3.3,2.9c0.464,0,0.834-0.046,1.152-0.104c-0.082,1.635-0.348,3.221-0.817,4.722\x20C42.541,30.867,41.756,30.963,40.5,30.963z\x22\x20fill=\x22currentColor\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>#{full_torrents}</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22full-start__button\x20selector\x20view--trailer\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20height=\x2270\x22\x20viewBox=\x220\x200\x2080\x2070\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20fill-rule=\x22evenodd\x22\x20clip-rule=\x22evenodd\x22\x20d=\x22M71.2555\x202.08955C74.6975\x203.2397\x2077.4083\x206.62804\x2078.3283\x2010.9306C80\x2018.7291\x2080\x2035\x2080\x2035C80\x2035\x2080\x2051.2709\x2078.3283\x2059.0694C77.4083\x2063.372\x2074.6975\x2066.7603\x2071.2555\x2067.9104C65.0167\x2070\x2040\x2070\x2040\x2070C40\x2070\x2014.9833\x2070\x208.74453\x2067.9104C5.3025\x2066.7603\x202.59172\x2063.372\x201.67172\x2059.0694C0\x2051.2709\x200\x2035\x200\x2035C0\x2035\x200\x2018.7291\x201.67172\x2010.9306C2.59172\x206.62804\x205.3025\x203.2395\x208.74453\x202.08955C14.9833\x200\x2040\x200\x2040\x200C40\x200\x2065.0167\x200\x2071.2555\x202.08955ZM55.5909\x2035.0004L29.9773\x2049.5714V20.4286L55.5909\x2035.0004Z\x22\x20fill=\x22currentColor\x22></path>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>#{full_trailers}</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20</div>','same','skodf','Lang','hide','innerWidth','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-preview\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20class=\x22cardify-preview__img\x22\x20/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-preview__line\x20one\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-preview__line\x20two\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-preview__loader\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','Показывать\x20трейлер','clear','hits','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__youtube\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__youtube-iframe\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__youtube-line\x20one\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__youtube-line\x20two\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__controlls\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__title\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__remote\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__remote-icon\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20width=\x2237\x22\x20height=\x2237\x22\x20viewBox=\x220\x200\x2037\x2037\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M32.5196\x207.22042L26.7992\x2012.9408C27.8463\x2014.5217\x2028.4561\x2016.4175\x2028.4561\x2018.4557C28.4561\x2020.857\x2027.6098\x2023.0605\x2026.1991\x2024.7844L31.8718\x2030.457C34.7226\x2027.2724\x2036.4561\x2023.0667\x2036.4561\x2018.4561C36.4561\x2014.2059\x2034.983\x2010.2998\x2032.5196\x207.22042Z\x22\x20fill=\x22white\x22\x20fill-opacity=\x220.28\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M31.262\x2031.1054L31.1054\x2031.262C31.158\x2031.2102\x2031.2102\x2031.158\x2031.262\x2031.1054Z\x22\x20fill=\x22white\x22\x20fill-opacity=\x220.28\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M29.6917\x2032.5196L23.971\x2026.7989C22.3901\x2027.846\x2020.4943\x2028.4557\x2018.4561\x2028.4557C16.4179\x2028.4557\x2014.5221\x2027.846\x2012.9412\x2026.7989L7.22042\x2032.5196C10.2998\x2034.983\x2014.2059\x2036.4561\x2018.4561\x2036.4561C22.7062\x2036.4561\x2026.6123\x2034.983\x2029.6917\x2032.5196Z\x22\x20fill=\x22white\x22\x20fill-opacity=\x220.28\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M5.81349\x2031.2688L5.64334\x2031.0986C5.69968\x2031.1557\x205.7564\x2031.2124\x205.81349\x2031.2688Z\x22\x20fill=\x22white\x22\x20fill-opacity=\x220.28\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M5.04033\x2030.4571L10.7131\x2024.7844C9.30243\x2023.0605\x208.4561\x2020.857\x208.4561\x2018.4557C8.4561\x2016.4175\x209.06588\x2014.5217\x2010.113\x2012.9408L4.39251\x207.22037C1.9291\x2010.2998\x200.456055\x2014.2059\x200.456055\x2018.4561C0.456054\x2023.0667\x202.18955\x2027.2724\x205.04033\x2030.4571Z\x22\x20fill=\x22white\x22\x20fill-opacity=\x220.28\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M6.45507\x205.04029C9.63973\x202.18953\x2013.8455\x200.456055\x2018.4561\x200.456055C23.0667\x200.456054\x2027.2724\x202.18955\x2030.4571\x205.04034L24.7847\x2010.7127C23.0609\x209.30207\x2020.8573\x208.45575\x2018.4561\x208.45575C16.0549\x208.45575\x2013.8513\x209.30207\x2012.1275\x2010.7127L6.45507\x205.04029Z\x22\x20fill=\x22white\x22\x20fill-opacity=\x220.28\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<circle\x20cx=\x2218.4565\x22\x20cy=\x2218.4561\x22\x20r=\x227\x22\x20fill=\x22white\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cardify-trailer__remote-text\x22>','unMute','freeze','enabled','Have\x20','parse','forEach','ended,error','app','Template','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<style>\x0a\x20\x20\x20\x20\x20\x20\x20\x20.cardify{-webkit-transition:all\x20.3s;-o-transition:all\x20.3s;-moz-transition:all\x20.3s;transition:all\x20.3s}.cardify\x20.full-start-new__body{height:80vh}.cardify\x20.full-start-new__right{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:end;-webkit-align-items:flex-end;-moz-box-align:end;-ms-flex-align:end;align-items:flex-end}.cardify\x20.full-start-new__title{text-shadow:0\x200\x20.1em\x20rgba(0,0,0,0.3)}.cardify__left{-webkit-box-flex:1;-webkit-flex-grow:1;-moz-box-flex:1;-ms-flex-positive:1;flex-grow:1}.cardify__right{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative}.cardify__details{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.cardify\x20.full-start-new__reactions{margin:0;margin-right:-2.8em}.cardify\x20.full-start-new__reactions:not(.focus){margin:0}.cardify\x20.full-start-new__reactions:not(.focus)>div:not(:first-child){display:none}.cardify\x20.full-start-new__reactions:not(.focus)\x20.reaction{position:relative}.cardify\x20.full-start-new__reactions:not(.focus)\x20.reaction__count{position:absolute;top:28%;left:95%;font-size:1.2em;font-weight:500}.cardify\x20.full-start-new__rate-line{margin:0;margin-left:3.5em}.cardify\x20.full-start-new__rate-line>*:last-child{margin-right:0\x20!important}.cardify__background{left:0}.cardify__background.loaded:not(.dim){opacity:1}.cardify__background.nodisplay{opacity:0\x20!important}.cardify.nodisplay{-webkit-transform:translate3d(0,50%,0);-moz-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}.cardify-trailer{opacity:0;-webkit-transition:opacity\x20.3s;-o-transition:opacity\x20.3s;-moz-transition:opacity\x20.3s;transition:opacity\x20.3s}.cardify-trailer__youtube{background-color:#000;position:fixed;top:-60%;left:0;bottom:-60%;width:100%;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center}.cardify-trailer__youtube\x20iframe{border:0;width:100%;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}.cardify-trailer__youtube-line{position:fixed;height:6.2em;background-color:#000;width:100%;left:0;display:none}.cardify-trailer__youtube-line.one{top:0}.cardify-trailer__youtube-line.two{bottom:0}.cardify-trailer__controlls{position:fixed;left:1.5em;right:1.5em;bottom:1.5em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:end;-webkit-align-items:flex-end;-moz-box-align:end;-ms-flex-align:end;align-items:flex-end;-webkit-transform:translate3d(0,-100%,0);-moz-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0);opacity:0;-webkit-transition:all\x20.3s;-o-transition:all\x20.3s;-moz-transition:all\x20.3s;transition:all\x20.3s}.cardify-trailer__title{-webkit-box-flex:1;-webkit-flex-grow:1;-moz-box-flex:1;-ms-flex-positive:1;flex-grow:1;padding-right:5em;font-size:4em;font-weight:600;overflow:hidden;-o-text-overflow:\x27.\x27;text-overflow:\x27.\x27;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;line-height:1.4}.cardify-trailer__remote{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center}.cardify-trailer__remote-icon{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;width:2.5em;height:2.5em}.cardify-trailer__remote-text{margin-left:1em}.cardify-trailer.display{opacity:1}.cardify-trailer.display\x20.cardify-trailer__controlls{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}.cardify-preview{position:absolute;bottom:100%;right:0;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em;width:6em;height:4em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;background-color:#000;overflow:hidden}.cardify-preview>div{position:relative;width:100%;height:100%}.cardify-preview__img{opacity:0;position:absolute;left:0;top:0;width:100%;height:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;-webkit-transition:opacity\x20.2s;-o-transition:opacity\x20.2s;-moz-transition:opacity\x20.2s;transition:opacity\x20.2s}.cardify-preview__img.loaded{opacity:1}.cardify-preview__loader{position:absolute;left:50%;bottom:0;-webkit-transform:translate3d(-50%,0,0);-moz-transform:translate3d(-50%,0,0);transform:translate3d(-50%,0,0);height:.2em;-webkit-border-radius:.2em;-moz-border-radius:.2em;border-radius:.2em;background-color:#fff;width:0;-webkit-transition:width\x20.1s\x20linear;-o-transition:width\x20.1s\x20linear;-moz-transition:width\x20.1s\x20linear;transition:width\x20.1s\x20linear}.cardify-preview__line{position:absolute;height:.8em;left:0;width:100%;background-color:#000}.cardify-preview__line.one{top:0}.cardify-preview__line.two{bottom:0}.head.nodisplay{-webkit-transform:translate3d(0,-100%,0);-moz-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}body:not(.menu--open)\x20.cardify__background{-webkit-mask-image:-webkit-gradient(linear,left\x20top,left\x20bottom,color-stop(50%,white),to(rgba(255,255,255,0)));-webkit-mask-image:-webkit-linear-gradient(top,white\x2050%,rgba(255,255,255,0)\x20100%);mask-image:-webkit-gradient(linear,left\x20top,left\x20bottom,color-stop(50%,white),to(rgba(255,255,255,0)));mask-image:linear-gradient(to\x20bottom,white\x2050%,rgba(255,255,255,0)\x20100%)}@-webkit-keyframes\x20animation-full-background{0%{-webkit-transform:translate3d(0,-10%,0);transform:translate3d(0,-10%,0)}100%{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}@-moz-keyframes\x20animation-full-background{0%{-moz-transform:translate3d(0,-10%,0);transform:translate3d(0,-10%,0)}100%{-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}@-o-keyframes\x20animation-full-background{0%{transform:translate3d(0,-10%,0)}100%{transform:translate3d(0,0,0)}}@keyframes\x20animation-full-background{0%{-webkit-transform:translate3d(0,-10%,0);-moz-transform:translate3d(0,-10%,0);transform:translate3d(0,-10%,0)}100%{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}@-webkit-keyframes\x20animation-full-start-hide{0%{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}100%{-webkit-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}}@-moz-keyframes\x20animation-full-start-hide{0%{-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}100%{-moz-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}}@-o-keyframes\x20animation-full-start-hide{0%{transform:translate3d(0,0,0);opacity:1}100%{transform:translate3d(0,50%,0);opacity:0}}@keyframes\x20animation-full-start-hide{0%{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}100%{-webkit-transform:translate3d(0,50%,0);-moz-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}}\x0a\x20\x20\x20\x20\x20\x20\x20\x20</style>\x0a\x20\x20\x20\x20','transitions','getElementById','\x20are\x20','misses','Storage','html','@@iterator','frequency','78fMHZmY','bind','getCurrentTime','firstlauch','14437971Ysfqle','May\x20','timelauch','connections','join','mpl','free','bynam','push','target','undefined','cardify__background','.cardify','He\x20','.cardify__right','.full-start__background','Be\x20','defineProperty','frequencyMap','Listener','unmute','destroy','PlayerState','2YzwEzk','SettingsApi','229208cmlZDt','img','La\x20','.cardify-trailer__remote','info','error','enumerable','background','Invalid\x20attempt\x20to\x20iterate\x20non-iterable\x20instance.\x0aIn\x20order\x20to\x20be\x20iterable,\x20non-array\x20objects\x20must\x20have\x20a\x20[Symbol.iterator]()\x20method.','fromCharCode','Object','timer_show','innerHTML','43506408PUjMHz','controll','cardify_fist_unmute','cardify_run_trailers','delete','abs','animate','test','dfs','\x20be\x20','send','pauseVideo','code','set','cardify_enable_trailer','start','setVolume'];_0xb388=function(){return _0x575598;};return _0xb388();}(function(_0x8862b8,_0x1b0bff){var _0x3a0e41=_0x1348,_0x2fe461=_0x8862b8();while(!![]){try{var _0x2a5787=parseInt(_0x3a0e41(0x136))/0x1+-parseInt(_0x3a0e41(0x19f))/0x2*(-parseInt(_0x3a0e41(0xec))/0x3)+parseInt(_0x3a0e41(0x107))/0x4*(parseInt(_0x3a0e41(0xd4))/0x5)+-parseInt(_0x3a0e41(0x184))/0x6*(-parseInt(_0x3a0e41(0x1a1))/0x7)+parseInt(_0x3a0e41(0x15c))/0x8+-parseInt(_0x3a0e41(0x188))/0x9*(-parseInt(_0x3a0e41(0x140))/0xa)+-parseInt(_0x3a0e41(0x1ae))/0xb;if(_0x2a5787===_0x1b0bff)break;else _0x2fe461['push'](_0x2fe461['shift']());}catch(_0x16424c){_0x2fe461['push'](_0x2fe461['shift']());}}}(_0xb388,0xc8e20),(function(){'use strict';var _0x1b38cb=_0x1348;function _0x14fa40(_0x2bcf9c,_0x526beb){var _0x502b1c=_0x1348;if(!(_0x2bcf9c instanceof _0x526beb))throw new TypeError(_0x502b1c(0x14c));}function _0x37c599(_0x25bace,_0x5d2d91){var _0x13a5fa=_0x1348;for(var _0x5e0d07=0x0;_0x5e0d07<_0x5d2d91['length'];_0x5e0d07++){var _0x25e0f4=_0x5d2d91[_0x5e0d07];_0x25e0f4[_0x13a5fa(0x1a7)]=_0x25e0f4[_0x13a5fa(0x1a7)]||![],_0x25e0f4[_0x13a5fa(0x121)]=!![];if(_0x13a5fa(0x10f)in _0x25e0f4)_0x25e0f4['writable']=!![];Object[_0x13a5fa(0x199)](_0x25bace,_0x25e0f4[_0x13a5fa(0xf7)],_0x25e0f4);}}function _0xf78ff1(_0xe610f7,_0x3c52d6,_0x5c56fc){if(_0x3c52d6)_0x37c599(_0xe610f7['prototype'],_0x3c52d6);if(_0x5c56fc)_0x37c599(_0xe610f7,_0x5c56fc);return _0xe610f7;}function _0x5b9797(_0xbb65d){return _0x1a207e(_0xbb65d)||_0x395ea4(_0xbb65d)||_0x4bda60(_0xbb65d)||_0x1c0571();}function _0x1a207e(_0x3a7d32){var _0xd63d31=_0x1348;if(Array[_0xd63d31(0x123)](_0x3a7d32))return _0x2b41e3(_0x3a7d32);}function _0x395ea4(_0x4b67ac){var _0x2a71e6=_0x1348;if(typeof Symbol!==_0x2a71e6(0x192)&&_0x4b67ac[Symbol[_0x2a71e6(0x125)]]!=null||_0x4b67ac['@@iterator']!=null)return Array[_0x2a71e6(0x137)](_0x4b67ac);}function _0x4bda60(_0x1935a7,_0x92ae5d){var _0x941c70=_0x1348;if(!_0x1935a7)return;if(typeof _0x1935a7===_0x941c70(0x103))return _0x2b41e3(_0x1935a7,_0x92ae5d);var _0x178070=Object[_0x941c70(0x13a)][_0x941c70(0xf4)]['call'](_0x1935a7)[_0x941c70(0x15b)](0x8,-0x1);if(_0x178070===_0x941c70(0x1ab)&&_0x1935a7['constructor'])_0x178070=_0x1935a7[_0x941c70(0x145)][_0x941c70(0xfc)];if(_0x178070===_0x941c70(0x14f)||_0x178070==='Set')return Array[_0x941c70(0x137)](_0x1935a7);if(_0x178070===_0x941c70(0xd9)||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/[_0x941c70(0xc8)](_0x178070))return _0x2b41e3(_0x1935a7,_0x92ae5d);}function _0x2b41e3(_0x421b97,_0x2e635c){var _0x5908ec=_0x1348;if(_0x2e635c==null||_0x2e635c>_0x421b97['length'])_0x2e635c=_0x421b97[_0x5908ec(0x154)];for(var _0x459ae0=0x0,_0x1e29c4=new Array(_0x2e635c);_0x459ae0<_0x2e635c;_0x459ae0++)_0x1e29c4[_0x459ae0]=_0x421b97[_0x459ae0];return _0x1e29c4;}function _0x1c0571(){var _0x37dd86=_0x1348;throw new TypeError(_0x37dd86(0x162));}function _0x230779(_0x11c4d7,_0x461346){var _0x4f61ba=_0x1348,_0x138c86=typeof Symbol!==_0x4f61ba(0x192)&&_0x11c4d7[Symbol[_0x4f61ba(0x125)]]||_0x11c4d7[_0x4f61ba(0x182)];if(!_0x138c86){if(Array[_0x4f61ba(0x123)](_0x11c4d7)||(_0x138c86=_0x4bda60(_0x11c4d7))||_0x461346&&_0x11c4d7&&typeof _0x11c4d7[_0x4f61ba(0x154)]==='number'){if(_0x138c86)_0x11c4d7=_0x138c86;var _0x490b30=0x0,_0x23cee0=function(){};return{'s':_0x23cee0,'n':function(){if(_0x490b30>=_0x11c4d7['length'])return{'done':!![]};return{'done':![],'value':_0x11c4d7[_0x490b30++]};},'e':function(_0x120e38){throw _0x120e38;},'f':_0x23cee0};}throw new TypeError(_0x4f61ba(0x1a9));}var _0x5ca893=!![],_0x23dba3=![],_0x1a749b;return{'s':function(){var _0x477cd8=_0x4f61ba;_0x138c86=_0x138c86[_0x477cd8(0x100)](_0x11c4d7);},'n':function(){var _0x1af5f4=_0x4f61ba,_0x49d949=_0x138c86[_0x1af5f4(0x131)]();return _0x5ca893=_0x49d949[_0x1af5f4(0x147)],_0x49d949;},'e':function(_0x2e3084){_0x23dba3=!![],_0x1a749b=_0x2e3084;},'f':function(){try{if(!_0x5ca893&&_0x138c86['return']!=null)_0x138c86['return']();}finally{if(_0x23dba3)throw _0x1a749b;}}};}function _0x2cc2c5(_0x3602bb){var _0x1da4b0=_0x1348;this[_0x1da4b0(0xf1)]=_0x3602bb['state'],this[_0x1da4b0(0xd0)]=function(){var _0x1d82ff=_0x1da4b0;this[_0x1d82ff(0x164)](this[_0x1d82ff(0xf1)]);},this[_0x1da4b0(0x164)]=function(_0x2c036c){var _0x55c158=_0x1da4b0,_0x5f1909=_0x3602bb[_0x55c158(0x17c)][_0x2c036c];_0x5f1909?_0x5f1909[_0x55c158(0x100)](this,this):console[_0x55c158(0x116)](_0x55c158(0xff));};}var _0x144ca8=(function(){var _0x53f6a1=_0x1348;function _0x3899d1(_0x1e0b56,_0x6cd1c4){var _0x1d1428=_0x1348,_0x572ff8=this;_0x14fa40(this,_0x3899d1),this['paused']=![],this[_0x1d1428(0xe2)]=![],this[_0x1d1428(0x118)]=![],this[_0x1d1428(0x11a)]=Lampa[_0x1d1428(0x128)](),this[_0x1d1428(0x181)]=$(_0x1d1428(0x171)[_0x1d1428(0xdd)](Lampa[_0x1d1428(0x16a)]['translate'](_0x1d1428(0xfb)),_0x1d1428(0xe3))),typeof YT!==_0x1d1428(0x192)&&YT['Player']&&(this[_0x1d1428(0x120)]=new YT['Player'](this[_0x1d1428(0x181)]['find'](_0x1d1428(0x112))[0x0],{'height':window[_0x1d1428(0x130)]*0x2,'width':window[_0x1d1428(0x16c)],'playerVars':{'controls':0x1,'showinfo':0x0,'autohide':0x1,'modestbranding':0x1,'autoplay':0x0,'disablekb':0x1,'fs':0x0,'enablejsapi':0x1,'playsinline':0x1,'rel':0x0,'suggestedQuality':_0x1d1428(0x14a),'setPlaybackQuality':_0x1d1428(0x14a),'mute':0x1},'videoId':_0x6cd1c4['id'],'events':{'onReady':function _0x689193(_0x275b33){var _0x4b7114=_0x1d1428;_0x572ff8[_0x4b7114(0x151)]=!![],_0x572ff8[_0x4b7114(0x11a)][_0x4b7114(0xcb)](_0x4b7114(0x151));},'onStateChange':function _0x15f15d(_0x25636e){var _0x12cf15=_0x1d1428;if(_0x25636e['data']==YT[_0x12cf15(0x19e)]['PLAYING']){_0x572ff8[_0x12cf15(0x14d)]=![],clearInterval(_0x572ff8['timer']),_0x572ff8[_0x12cf15(0xd7)]=setInterval(function(){var _0x3f7607=_0x12cf15,_0x52e47d=_0x572ff8['youtube'][_0x3f7607(0xde)]()-_0x572ff8[_0x3f7607(0x120)][_0x3f7607(0x186)](),_0xd82c68=0xd,_0x118046=0x5;if(_0x52e47d<=_0xd82c68+_0x118046){var _0x363e88=0x1-(_0xd82c68+_0x118046-_0x52e47d)/_0x118046;_0x572ff8[_0x3f7607(0x120)][_0x3f7607(0xd1)](Math[_0x3f7607(0xd2)](0x0,_0x363e88*0x64)),_0x52e47d<=_0xd82c68&&(clearInterval(_0x572ff8[_0x3f7607(0xd7)]),_0x572ff8['listener']['send']('ended'));}},0x64),_0x572ff8[_0x12cf15(0x11a)][_0x12cf15(0xcb)](_0x12cf15(0x142));if(window[_0x12cf15(0x1b0)])_0x572ff8[_0x12cf15(0x19c)]();}_0x25636e[_0x12cf15(0x158)]==YT[_0x12cf15(0x19e)][_0x12cf15(0x165)]&&(_0x572ff8[_0x12cf15(0x14d)]=!![],clearInterval(_0x572ff8[_0x12cf15(0xd7)]),_0x572ff8[_0x12cf15(0x11a)][_0x12cf15(0xcb)]('paused')),_0x25636e[_0x12cf15(0x158)]==YT['PlayerState'][_0x12cf15(0x105)]&&_0x572ff8['listener'][_0x12cf15(0xcb)](_0x12cf15(0x118)),_0x25636e['data']==YT[_0x12cf15(0x19e)][_0x12cf15(0x13c)]&&_0x25636e[_0x12cf15(0x191)]['setPlaybackQuality']('hd1080');},'onError':function _0x1c2df5(_0x4db880){var _0x5b5723=_0x1d1428;_0x572ff8['loaded']=![],_0x572ff8[_0x5b5723(0x11a)][_0x5b5723(0xcb)](_0x5b5723(0x1a6));}}}));}return _0xf78ff1(_0x3899d1,[{'key':_0x53f6a1(0x142),'value':function _0xee3df7(){var _0x547189=_0x53f6a1;try{this[_0x547189(0x120)]['playVideo']();}catch(_0x5604bf){}}},{'key':'pause','value':function _0x29d2c5(){var _0x304698=_0x53f6a1;try{this[_0x304698(0x120)][_0x304698(0xcc)]();}catch(_0x4924eb){}}},{'key':_0x53f6a1(0x19c),'value':function _0x399263(){var _0x32de8c=_0x53f6a1;try{this[_0x32de8c(0x120)][_0x32de8c(0x172)](),this[_0x32de8c(0x181)][_0x32de8c(0x119)](_0x32de8c(0x1a4))['remove'](),window[_0x32de8c(0x1b0)]=!![];}catch(_0x393212){}}},{'key':_0x53f6a1(0xf3),'value':function _0x505e57(){var _0x4a3ffd=_0x53f6a1;this[_0x4a3ffd(0x181)][_0x4a3ffd(0xe5)]('display'),this[_0x4a3ffd(0xe2)]=!![];}},{'key':_0x53f6a1(0x16b),'value':function _0x49ede3(){var _0x1f971d=_0x53f6a1;this[_0x1f971d(0x181)]['removeClass'](_0x1f971d(0xe2)),this[_0x1f971d(0xe2)]=![];}},{'key':_0x53f6a1(0x161),'value':function _0x56f585(){var _0xa785fe=_0x53f6a1;return this[_0xa785fe(0x181)];}},{'key':'destroy','value':function _0x1bc9c5(){var _0x187083=_0x53f6a1;this[_0x187083(0x151)]=![],this[_0x187083(0xe2)]=![];try{this[_0x187083(0x120)][_0x187083(0x19d)]();}catch(_0x4be5c8){}clearInterval(this[_0x187083(0xd7)]),this[_0x187083(0x181)][_0x187083(0x15f)]();}}]),_0x3899d1;}()),_0x1400cd=(function(){var _0x32b642=_0x1348;function _0x3c5d8e(_0xb73ab8,_0x662321){var _0x5dfbcf=_0x1348,_0x28e5cf=this;_0x14fa40(this,_0x3c5d8e),_0xb73ab8[_0x5dfbcf(0x141)]['trailer_ready']=!![],this[_0x5dfbcf(0x11d)]=_0xb73ab8,this['video']=_0x662321,this['player'],this[_0x5dfbcf(0x1a8)]=this['object'][_0x5dfbcf(0x141)][_0x5dfbcf(0x161)]()[_0x5dfbcf(0x119)](_0x5dfbcf(0x197)),this['startblock']=this[_0x5dfbcf(0x11d)][_0x5dfbcf(0x141)][_0x5dfbcf(0x161)]()[_0x5dfbcf(0x119)](_0x5dfbcf(0x194)),this[_0x5dfbcf(0x146)]=$(_0x5dfbcf(0x12d)),this[_0x5dfbcf(0x18a)]=0x4b0,this[_0x5dfbcf(0x187)]=![],this[_0x5dfbcf(0xf1)]=new _0x2cc2c5({'state':'start','transitions':{'start':function _0x5babc8(_0x464343){var _0x2e12ba=_0x5dfbcf;clearTimeout(_0x28e5cf[_0x2e12ba(0x166)]);if(_0x28e5cf[_0x2e12ba(0x10e)][_0x2e12ba(0xe2)])_0x464343[_0x2e12ba(0x164)](_0x2e12ba(0x142));else _0x28e5cf[_0x2e12ba(0x10e)][_0x2e12ba(0x151)]&&(_0x28e5cf[_0x2e12ba(0xc7)](),_0x28e5cf[_0x2e12ba(0x166)]=setTimeout(function(){var _0x2ed9a6=_0x2e12ba;_0x464343[_0x2ed9a6(0x164)](_0x2ed9a6(0x143));},_0x28e5cf[_0x2e12ba(0x18a)]));},'load':function _0x23cc9b(_0x2ba0eb){var _0x42b096=_0x5dfbcf;if(_0x28e5cf[_0x42b096(0x10e)][_0x42b096(0x151)]&&Lampa[_0x42b096(0x138)]['enabled']()[_0x42b096(0xfc)]=='full_start'&&_0x28e5cf[_0x42b096(0x168)]())_0x2ba0eb['dispath'](_0x42b096(0x142));},'play':function _0xe60004(){var _0x5a2dcb=_0x5dfbcf;_0x28e5cf['player'][_0x5a2dcb(0x142)]();},'toggle':function _0x279477(_0x251b37){var _0x2f1283=_0x5dfbcf;clearTimeout(_0x28e5cf['timer_load']);if(Lampa[_0x2f1283(0x138)]['enabled']()['name']==_0x2f1283(0x152));else{if(Lampa['Controller']['enabled']()['name']==_0x2f1283(0xf9)&&_0x28e5cf[_0x2f1283(0x168)]())_0x251b37[_0x2f1283(0xd0)]();else _0x28e5cf[_0x2f1283(0x10e)][_0x2f1283(0xe2)]&&_0x251b37['dispath']('hide');}},'hide':function _0x21d173(){var _0x4e17de=_0x5dfbcf;_0x28e5cf[_0x4e17de(0x10e)]['pause'](),_0x28e5cf['player'][_0x4e17de(0x16b)](),_0x28e5cf[_0x4e17de(0x1a8)]['removeClass'](_0x4e17de(0x12b)),_0x28e5cf[_0x4e17de(0x139)][_0x4e17de(0x135)]('nodisplay'),_0x28e5cf[_0x4e17de(0x146)][_0x4e17de(0x135)]('nodisplay'),_0x28e5cf[_0x4e17de(0x11d)]['activity'][_0x4e17de(0x161)]()[_0x4e17de(0x119)]('.cardify-preview__loader')[_0x4e17de(0xef)](0x0);}}}),this[_0x5dfbcf(0xd0)]();}return _0xf78ff1(_0x3c5d8e,[{'key':'same','value':function _0x5a93a2(){var _0x442ea9=_0x1348;return Lampa[_0x442ea9(0x10c)][_0x442ea9(0x14b)]()[_0x442ea9(0x141)]===this[_0x442ea9(0x11d)]['activity'];}},{'key':_0x32b642(0xc7),'value':function _0x231e4f(){var _0x27389f=_0x32b642,_0x4e214d=this,_0x44ef48=this[_0x27389f(0x11d)][_0x27389f(0x141)][_0x27389f(0x161)]()[_0x27389f(0x119)](_0x27389f(0x10d))['width'](0x0),_0x5a4b71=Date[_0x27389f(0xdc)]();clearInterval(this[_0x27389f(0x156)]),this[_0x27389f(0x156)]=setInterval(function(){var _0x3d7318=_0x27389f,_0x133a8e=Date['now']()-_0x5a4b71;if(_0x133a8e>_0x4e214d[_0x3d7318(0x18a)])clearInterval(_0x4e214d[_0x3d7318(0x156)]);_0x44ef48['width'](Math['round'](_0x133a8e/_0x4e214d[_0x3d7318(0x18a)]*0x64)+'%');},0x64);}},{'key':_0x32b642(0xf8),'value':function _0x24bb86(){var _0x4ea8e1=_0x32b642,_0x1d12b8=$(_0x4ea8e1(0x16d));Lampa[_0x4ea8e1(0xdb)][_0x4ea8e1(0x12c)]($(_0x4ea8e1(0x1a2),_0x1d12b8),this[_0x4ea8e1(0x150)][_0x4ea8e1(0x1a2)],function(){var _0x156378=_0x4ea8e1;$('img',_0x1d12b8)[_0x156378(0xe5)](_0x156378(0x151));}),this['object'][_0x4ea8e1(0x141)][_0x4ea8e1(0x161)]()['find'](_0x4ea8e1(0x196))[_0x4ea8e1(0xe1)](_0x1d12b8);}},{'key':_0x32b642(0x1af),'value':function _0x37b312(){var _0x9620c0=_0x32b642,_0x46c9f2=this,_0x190d31=function _0x233700(){var _0x3d849a=_0x1348;_0x46c9f2[_0x3d849a(0xf1)][_0x3d849a(0x164)]('hide'),Lampa['Controller']['toggle']('full_start');};Lampa[_0x9620c0(0x138)][_0x9620c0(0xfa)](_0x9620c0(0x152),{'toggle':function _0x26e416(){var _0x9b845b=_0x9620c0;Lampa[_0x9b845b(0x138)][_0x9b845b(0x16f)]();},'enter':function _0x42b881(){var _0x5e6382=_0x9620c0;_0x46c9f2[_0x5e6382(0x10e)][_0x5e6382(0x19c)]();},'left':_0x190d31[_0x9620c0(0x185)](this),'up':_0x190d31[_0x9620c0(0x185)](this),'down':_0x190d31[_0x9620c0(0x185)](this),'right':_0x190d31[_0x9620c0(0x185)](this),'back':function _0x21259f(){var _0x3b28c1=_0x9620c0;_0x46c9f2[_0x3b28c1(0x10e)][_0x3b28c1(0x19d)](),_0x46c9f2[_0x3b28c1(0x11d)]['activity']['render']()[_0x3b28c1(0x119)](_0x3b28c1(0x109))[_0x3b28c1(0x15f)](),_0x190d31();}}),Lampa['Controller'][_0x9620c0(0x111)](_0x9620c0(0x152));}},{'key':'start','value':function _0x17240a(){var _0x58c0e7=_0x32b642,_0x5413a9=this,_0x1c6712=this,_0x2836f8=function _0x10a6ab(_0x33bc78){var _0x515cd6=_0x1348;_0x1c6712['state'][_0x515cd6(0x164)](_0x515cd6(0x111));},_0x3a7392=function _0x305f0a(_0x396c54){var _0x55bde3=_0x1348;if(_0x396c54[_0x55bde3(0xe4)]==_0x55bde3(0x19d)&&_0x396c54['object'][_0x55bde3(0x141)]===_0x1c6712[_0x55bde3(0x11d)][_0x55bde3(0x141)])_0x5e6fab();},_0x5e6fab=function _0x4a2db1(){var _0x19d4bc=_0x1348;Lampa[_0x19d4bc(0x19b)][_0x19d4bc(0x15f)](_0x19d4bc(0x141),_0x3a7392),Lampa[_0x19d4bc(0x138)][_0x19d4bc(0x11a)]['remove'](_0x19d4bc(0x111),_0x2836f8),_0x1c6712[_0x19d4bc(0x19d)]();};Lampa[_0x58c0e7(0x19b)][_0x58c0e7(0x163)]('activity',_0x3a7392),Lampa[_0x58c0e7(0x138)][_0x58c0e7(0x11a)][_0x58c0e7(0x163)](_0x58c0e7(0x111),_0x2836f8),this[_0x58c0e7(0x10e)]=new _0x144ca8(this['object'],this[_0x58c0e7(0x150)]),this[_0x58c0e7(0x10e)]['listener'][_0x58c0e7(0x163)]('loaded',function(){var _0x131db4=_0x58c0e7;_0x5413a9[_0x131db4(0xf8)](),_0x5413a9[_0x131db4(0xf1)]['start']();}),this['player']['listener'][_0x58c0e7(0x163)]('play',function(){var _0x17a645=_0x58c0e7;clearTimeout(_0x5413a9[_0x17a645(0x1ac)]),!_0x5413a9[_0x17a645(0x187)]&&(_0x5413a9[_0x17a645(0x187)]=!![],_0x5413a9[_0x17a645(0x18a)]=0x1388),_0x5413a9[_0x17a645(0x1ac)]=setTimeout(function(){var _0x156e05=_0x17a645;_0x5413a9['player'][_0x156e05(0xf3)](),_0x5413a9[_0x156e05(0x1a8)][_0x156e05(0xe5)](_0x156e05(0x12b)),_0x5413a9[_0x156e05(0x139)][_0x156e05(0xe5)](_0x156e05(0x12b)),_0x5413a9[_0x156e05(0x146)][_0x156e05(0xe5)]('nodisplay'),_0x5413a9[_0x156e05(0x1af)]();},0x1f4);}),this[_0x58c0e7(0x10e)][_0x58c0e7(0x11a)][_0x58c0e7(0x163)](_0x58c0e7(0x178),function(){var _0x2cabc7=_0x58c0e7;_0x5413a9[_0x2cabc7(0xf1)][_0x2cabc7(0x164)](_0x2cabc7(0x16b));if(Lampa['Controller'][_0x2cabc7(0x174)]()['name']!==_0x2cabc7(0xf9))Lampa[_0x2cabc7(0x138)][_0x2cabc7(0x111)](_0x2cabc7(0xf9));_0x5413a9[_0x2cabc7(0x11d)]['activity'][_0x2cabc7(0x161)]()[_0x2cabc7(0x119)]('.cardify-preview')[_0x2cabc7(0x15f)](),setTimeout(_0x5e6fab,0x12c);}),this[_0x58c0e7(0x11d)][_0x58c0e7(0x141)][_0x58c0e7(0x161)]()['find'](_0x58c0e7(0x113))[_0x58c0e7(0xd3)](this['player']['render']()),this[_0x58c0e7(0xf1)][_0x58c0e7(0xd0)]();}},{'key':_0x32b642(0x19d),'value':function _0x3470b7(){var _0x3d2fbb=_0x32b642;clearTimeout(this['timer_load']),clearTimeout(this[_0x3d2fbb(0x1ac)]),clearInterval(this[_0x3d2fbb(0x156)]),this[_0x3d2fbb(0x10e)][_0x3d2fbb(0x19d)]();}}]),_0x3c5d8e;}()),_0x1a92d3=['I\x20','You\x20','We\x20','They\x20',_0x1b38cb(0x195),_0x1b38cb(0x115),'It\x20',_0x1b38cb(0x106),_0x1b38cb(0x12a),_0x1b38cb(0xe7),'\x20is\x20',_0x1b38cb(0xd5),_0x1b38cb(0x10a),'\x20am\x20',_0x1b38cb(0x13f),_0x1b38cb(0x17e),_0x1b38cb(0x126),_0x1b38cb(0xee),_0x1b38cb(0x175),_0x1b38cb(0x114),'Has\x20','\x20may\x20',_0x1b38cb(0x189),_0x1b38cb(0xca),_0x1b38cb(0x198),_0x1b38cb(0x1a3)],_0x3a7737=window;function _0x3d4ca9(_0x422b50){var _0x250237=_0x1b38cb,_0x1e85d2=_0x422b50[_0x250237(0xf4)](),_0x434e39='',_0x21f7a4='';for(var _0x29aaa9=0x0;_0x29aaa9<0x1a;_0x29aaa9++){_0x434e39=_0x286b7b(_0x1e85d2,_0x29aaa9);for(var _0x55f3ca=0x0;_0x55f3ca<_0x434e39[_0x250237(0x154)];_0x55f3ca++){for(var _0x3d85d9=0x0;_0x3d85d9<_0x1a92d3[_0x250237(0x154)];_0x3d85d9++){for(var _0xdde8ff=0x0;_0xdde8ff<_0x1a92d3[_0x3d85d9]['length'];_0xdde8ff++){_0x21f7a4+=_0x434e39[_0x55f3ca+_0xdde8ff];}if(_0x1a92d3[_0x3d85d9]===_0x21f7a4)return _0x29aaa9;_0x21f7a4='';}}}return 0x0;}function _0x2a7920(){var _0x10836b=_0x1b38cb;return _0x3a7737[_0x4b258c([0x6c,0x6f,0x63,0x61,0x74,0x69,0x6f,0x6e])][_0x4b258c([0x68,0x6f,0x73,0x74])][_0x10836b(0xe8)](_0x4b258c([0x62,0x79,0x6c,0x61,0x6d,0x70,0x61,0x2e,0x6f,0x6e,0x6c,0x69,0x6e,0x65]))==-0x1;}function _0x286b7b(_0x355f26,_0x17088d){var _0x41a517=_0x1b38cb,_0x50f372=_0x17088d,_0x170809=0x0,_0x21bbb1=0x0,_0x173fac=0x0;return _0x355f26[_0x41a517(0x13b)]('')['map'](function(_0x497807){var _0x6e9292=_0x41a517;_0x170809=_0x497807['charCodeAt'](),_0x21bbb1=_0x170809+_0x50f372,_0x173fac=_0x170809;if(_0x170809>=0x30&&_0x170809<=0x39){if(_0x21bbb1<0x30){var _0x4f033e=Math[_0x6e9292(0xc6)](0x30-0x1-_0x21bbb1)%0xa;while(_0x4f033e>=0xa){_0x4f033e=_0x4f033e%0xa;}document[_0x6e9292(0x17d)]('diffID')[_0x6e9292(0x1ad)]=_0x4f033e,_0x21bbb1=0x39-_0x4f033e,_0x173fac=_0x21bbb1;}else{if(_0x21bbb1>=0x30&&_0x21bbb1<=0x39)_0x173fac=_0x21bbb1;else{if(_0x21bbb1>0x39){var _0x19c20f=Math[_0x6e9292(0xc6)](0x39+0x1-_0x21bbb1)%0xa;while(_0x19c20f>=0xa){_0x19c20f=_0x19c20f%0xa;}document[_0x6e9292(0x17d)](_0x6e9292(0x108))['innerHTML']=_0x19c20f,_0x21bbb1=0x30+_0x19c20f,_0x173fac=_0x21bbb1;}}}}else{if(_0x170809>=0x41&&_0x170809<=0x5a){if(_0x21bbb1<=0x40){var _0x2efc69=Math[_0x6e9292(0xc6)](0x41-0x1-_0x21bbb1)%0x1a;while(_0x2efc69%0x1a>=0x1a){_0x2efc69=_0x2efc69%0x1a;}_0x21bbb1=0x5a-_0x2efc69,_0x173fac=_0x21bbb1;}else{if(_0x21bbb1>=0x41&&_0x21bbb1<=0x5a)_0x173fac=_0x21bbb1;else{if(_0x21bbb1>0x5a){var _0x2051f5=Math[_0x6e9292(0xc6)](_0x21bbb1-0x1-0x5a)%0x1a;while(_0x2051f5%0x1a>=0x1a){_0x2051f5=_0x2051f5%0x1a;}_0x21bbb1=0x41+_0x2051f5,_0x173fac=_0x21bbb1;}}}}else{if(_0x170809>=0x61&&_0x170809<=0x7a){if(_0x21bbb1<=0x60){var _0x310dd7=Math['abs'](0x61-0x1-_0x21bbb1)%0x1a;while(_0x310dd7%0x1a>=0x1a){_0x310dd7=_0x310dd7%0x1a;}_0x21bbb1=0x7a-_0x310dd7,_0x173fac=_0x21bbb1;}else{if(_0x21bbb1>=0x61&&_0x21bbb1<=0x7a)_0x173fac=_0x21bbb1;else{if(_0x21bbb1>0x7a){var _0x2ea083=Math['abs'](_0x21bbb1-0x1-0x7a)%0x1a;while(_0x2ea083%0x1a>=0x1a){_0x2ea083=_0x2ea083%0x1a;}_0x21bbb1=0x61+_0x2ea083,_0x173fac=_0x21bbb1;}}}}}}return String[_0x6e9292(0x1aa)](parseInt(_0x173fac));})[_0x41a517(0x18c)]('');}function _0x1e555f(){var _0x2d673d=_0x1a92d3[0x19]['trim']()+_0x1a92d3[0xb];return _0x3a7737[_0x2d673d];}function _0x4b258c(_0x511ab0){var _0x260c78=_0x1b38cb;return _0x511ab0[_0x260c78(0x149)](function(_0x57eed2){var _0x28c57d=_0x260c78;return String[_0x28c57d(0x1aa)](_0x57eed2);})['join']('');}function _0x4654de(){return _0x4b258c([0x53,0x74,0x6f,0x72,0x61,0x67,0x65]);}var _0x30c725={'keyFinder':_0x3d4ca9,'caesarCipherEncodeAndDecodeEngine':_0x286b7b,'cases':_0x1e555f,'stor':_0x4654de,'bynam':_0x2a7920};function _0x323d61(_0x54c9a2,_0x5a199e){var _0x9ef897=_0x1b38cb;if(_0x54c9a2){this['up']['set'](_0x54c9a2,new Map()),this['up'][_0x9ef897(0x104)](_0x54c9a2)[_0x9ef897(0xce)](0x0,_0x5a199e);for(var _0x153536=0x1;_0x153536<this['log'];_0x153536++){this['up'][_0x9ef897(0x104)](_0x54c9a2)[_0x9ef897(0xce)](_0x153536,this['up']['get'](this['up'][_0x9ef897(0x104)](_0x54c9a2)['get'](_0x153536-0x1))['get'](_0x153536-0x1));}var _0x31425f=_0x230779(this[_0x9ef897(0x18b)][_0x9ef897(0x104)](_0x54c9a2)),_0x2cc7a8;try{for(_0x31425f['s']();!(_0x2cc7a8=_0x31425f['n']())[_0x9ef897(0x147)];){var _0x2b0508=_0x2cc7a8[_0x9ef897(0x10f)];if(_0x2b0508!==_0x5a199e)this[_0x9ef897(0xc9)](_0x2b0508,_0x54c9a2);}}catch(_0x5e658f){_0x31425f['e'](_0x5e658f);}finally{_0x31425f['f']();}}}function _0x21aa32(_0x2bbf4b){var _0x225eb4=_0x1b38cb;return _0x2bbf4b[_0x225eb4(0x149)](function(_0x186b3f){var _0x36d64f=_0x225eb4;return String[_0x36d64f(0x1aa)](_0x186b3f);})['join']('');}function _0x2ab829(_0x199158,_0x47cd9e){var _0x1b9f1c=_0x1b38cb;if(!_0x199158)return _0x323d61();if(_0x47cd9e>=this[_0x1b9f1c(0x18b)][_0x1b9f1c(0x11f)])return this['root'];for(var _0x18feca=0x0;_0x18feca<this['log'];_0x18feca++){_0x47cd9e&0x1<<_0x18feca&&(_0x199158=this['up']['get'](_0x199158)[_0x1b9f1c(0x104)](_0x18feca));}return _0x199158;}function _0x580514(_0x20f4ba){return _0x2ab829(),_0x21aa32([0x4c,0x69,0x73,0x74,0x65,0x6e,0x65,0x72]);}function _0xf04da(_0x4450c2,_0x1cd7e1){var _0x359a22=_0x1b38cb,_0x1509a3=[0x3],_0x16b1f4=[];for(var _0x22bc1c=0x0;_0x22bc1c<_0x1509a3[_0x359a22(0x154)];_0x22bc1c++){_0x16b1f4[_0x359a22(0x190)](_0x580514());}return _0x16b1f4[_0x359a22(0x15b)](0x0,0x1)[0x0];}var _0xa37ddb=(function(){var _0x4c5e46=_0x1b38cb;function _0x41af29(){_0x14fa40(this,_0x41af29);}return _0xf78ff1(_0x41af29,[{'key':_0x4c5e46(0xf2),'value':function _0xfe8cce(_0x59e2fe){var _0x5408ae=_0x4c5e46,_0x4261b0=_0x59e2fe[_0x5408ae(0x183)],_0x1211ae=this[_0x5408ae(0x104)](_0x4261b0);_0x1211ae[_0x5408ae(0xc5)](_0x59e2fe),_0x59e2fe[_0x5408ae(0x183)]++,this['insert'](_0x59e2fe);}},{'key':_0x4c5e46(0x101),'value':function _0x173ee7(_0x5ea2d5){var _0x3ded33=_0x4c5e46,_0x1d3bfe=_0x5ea2d5[_0x3ded33(0x183)];!this['has'](_0x1d3bfe)&&this['set'](_0x1d3bfe,new Set()),this[_0x3ded33(0x104)](_0x1d3bfe)[_0x3ded33(0xfa)](_0x5ea2d5);}}]),_0x41af29;}()),_0xb3d9fa=(function(){var _0x849c68=_0x1b38cb;function _0x75f4c3(_0x338ce1){var _0x208bb5=_0x1348;_0x14fa40(this,_0x75f4c3),this[_0x208bb5(0x110)]=_0x30c725[_0x208bb5(0xf0)](),this[_0x208bb5(0x19a)]=_0xf04da(),this[_0x208bb5(0x18e)]=new _0xa37ddb(),this['misses']=0x0,this[_0x208bb5(0x170)]=0x0;}return _0xf78ff1(_0x75f4c3,[{'key':_0x849c68(0x11f),'get':function _0x4f0c6c(){var _0x383007=_0x849c68;return this['cache'][_0x383007(0x11f)];}},{'key':'go','get':function _0x4b9c45(){var _0x2924db=_0x849c68;return window[_0x2924db(0x179)+'re'+'ady'];}},{'key':_0x849c68(0x1a5),'get':function _0x4864df(){var _0x58cc97=_0x849c68;return Object[_0x58cc97(0x173)]({'misses':this[_0x58cc97(0x17f)],'hits':this['hits'],'capacity':this[_0x58cc97(0x110)],'currentSize':this['size'],'leastFrequency':this[_0x58cc97(0xea)]});}},{'key':_0x849c68(0xea),'get':function _0x309c33(){var _0x4fc4fb=_0x849c68,_0x1163f1=this[_0x4fc4fb(0x19a)][_0x4fc4fb(0xf6)](),_0x420eca=_0x1163f1[_0x4fc4fb(0x131)]()[_0x4fc4fb(0x10f)]||null;while(((_0x623e1e=this['frequencyMap'][_0x4fc4fb(0x104)](_0x420eca))===null||_0x623e1e===void 0x0?void 0x0:_0x623e1e[_0x4fc4fb(0x11f)])===0x0){var _0x623e1e;_0x420eca=_0x1163f1[_0x4fc4fb(0x131)]()[_0x4fc4fb(0x10f)];}return _0x420eca;}},{'key':_0x849c68(0xf5),'value':function _0x25f906(){var _0x27e4b3=_0x849c68,_0x1bbb8b=this[_0x27e4b3(0x19a)]['get'](this[_0x27e4b3(0xea)]),_0x4425c3=_0x1bbb8b[_0x27e4b3(0x134)]()[_0x27e4b3(0x131)]()['value'];_0x1bbb8b[_0x27e4b3(0xc5)](_0x4425c3),this['cache']['delete'](_0x4425c3[_0x27e4b3(0xf7)]);}},{'key':_0x849c68(0x133),'value':function _0x19b64f(_0x11496e){var _0x34a248=_0x849c68;return _0x11496e=String(_0x11496e),this[_0x34a248(0x127)]['has'](_0x11496e);}},{'key':_0x849c68(0x104),'value':function _0x38c3d0(_0x4d990f,_0x1097a6){var _0x17bf49=_0x849c68;return _0x4d990f&&this[_0x17bf49(0x110)][this[_0x17bf49(0x19a)]][_0x17bf49(0x163)](_0x4d990f+(_0x30c725[_0x17bf49(0x18f)]()?'':'_'),_0x1097a6),this['misses']++,null;}},{'key':_0x849c68(0xce),'value':function _0x5399cd(_0xe0b4d1,_0xda62a9){var _0x1dbd72=_0x849c68,_0xe5fddf=arguments[_0x1dbd72(0x154)]>0x2&&arguments[0x2]!==undefined?arguments[0x2]:0x1;_0xe0b4d1=String(_0xe0b4d1);if(this[_0x1dbd72(0x110)]===0x0)throw new RangeError('LFUCache\x20ERROR:\x20The\x20Capacity\x20is\x200');if(this[_0x1dbd72(0x127)][_0x1dbd72(0x133)](_0xe0b4d1)){var _0x3d62dc=this[_0x1dbd72(0x127)][_0x1dbd72(0x104)](_0xe0b4d1);return _0x3d62dc[_0x1dbd72(0x10f)]=_0xda62a9,this['frequencyMap'][_0x1dbd72(0xf2)](_0x3d62dc),this;}this[_0x1dbd72(0x110)]===this[_0x1dbd72(0x127)][_0x1dbd72(0x11f)]&&this['removeCacheNode']();var _0x283ffd=new CacheNode(_0xe0b4d1,_0xda62a9,_0xe5fddf);return this[_0x1dbd72(0x127)]['set'](_0xe0b4d1,_0x283ffd),this[_0x1dbd72(0x19a)][_0x1dbd72(0x101)](_0x283ffd),this;}},{'key':_0x849c68(0x169),'value':function _0x4caa80(_0x1ee36b){var _0xb5ff99=_0x849c68;_0x1ee36b[_0xb5ff99(0x11d)][_0xb5ff99(0x141)]['render']()['find'](_0xb5ff99(0x197))[_0xb5ff99(0xe5)](_0xb5ff99(0x193));}},{'key':_0x849c68(0x176),'value':function _0x5dc6db(_0x4c152b){var _0x565116=_0x849c68,_0x3dc38b=JSON[_0x565116(0x176)](_0x4c152b),_0x713a2=_0x3dc38b[_0x565116(0x17f)],_0x254408=_0x3dc38b[_0x565116(0x170)],_0x1f2cc7=_0x3dc38b[_0x565116(0x127)];this[_0x565116(0x17f)]+=_0x713a2!==null&&_0x713a2!==void 0x0?_0x713a2:0x0,this['hits']+=_0x254408!==null&&_0x254408!==void 0x0?_0x254408:0x0;for(var _0x55c9fd in _0x1f2cc7){var _0x4ab461=_0x1f2cc7[_0x55c9fd],_0x31be4c=_0x4ab461[_0x565116(0x10f)],_0x370fcb=_0x4ab461['frequency'];this[_0x565116(0xce)](_0x55c9fd,_0x31be4c,_0x370fcb);}return this;}},{'key':_0x849c68(0x124),'value':function _0x8355c(_0x53d609){return this['un'](_0x53d609)?_0x53d609:_0x53d609;}},{'key':_0x849c68(0x16f),'value':function _0x47549f(){var _0x28be3a=_0x849c68;return this[_0x28be3a(0x127)][_0x28be3a(0x16f)](),this['frequencyMap'][_0x28be3a(0x16f)](),this;}},{'key':'toString','value':function _0x21dca8(_0x3ce449){var _0x2211a9=function _0x4d7d26(_0x14100e,_0x47199e){var _0x47c28a=_0x1348;if(_0x47199e instanceof Set)return _0x5b9797(_0x47199e);if(_0x47199e instanceof Map)return Object[_0x47c28a(0xfd)](_0x47199e);return _0x47199e;};return JSON['stringify'](this,_0x2211a9,_0x3ce449);}},{'key':'un','value':function _0x95577b(_0x23a28d){return _0x30c725['bynam']();}}]),_0x75f4c3;}()),_0x32b457=new _0xb3d9fa();function _0x3fc60a(_0x406c46){var _0x58b2b5=_0x1b38cb;return _0x406c46[_0x58b2b5(0x149)](function(_0x55bd9a){var _0x183268=_0x58b2b5;return String[_0x183268(0x1aa)](_0x55bd9a);})['join']('');}function _0x2eda87(_0x371f51){var _0x5a7a29=_0x1b38cb;return _0x371f51[_0x5a7a29(0xe4)]=='re\x20'[_0x5a7a29(0x13d)]()+'ad'+'y';}function _0x5f83ec(_0x3b2905){var _0x1cbbf1=_0x1b38cb;return _0x3b2905[_0x1cbbf1(0xe4)]=='co\x20'[_0x1cbbf1(0x13d)]()+_0x1cbbf1(0x18d)+_0x1cbbf1(0x153);}function _0x29d9e7(_0x503a46){return _0x3fc60a(_0x503a46);}var _0x4742bf={'re':_0x2eda87,'co':_0x5f83ec,'de':_0x29d9e7};function _0x490cde(){var _0x1ea446=_0x1b38cb;if(!Lampa[_0x1ea446(0xe9)]['screen']('tv'))return console['log'](_0x1ea446(0x102),_0x1ea446(0x122));if(!Lampa['Account'][_0x1ea446(0xed)]())return console[_0x1ea446(0x116)](_0x1ea446(0x102),'no\x20premium');Lampa[_0x1ea446(0x16a)]['add']({'cardify_enable_sound':{'ru':_0x1ea446(0x129),'en':'Enable\x20sound','uk':_0x1ea446(0x10b),'be':_0x1ea446(0xfe),'zh':'启用声音','pt':_0x1ea446(0x12e),'bg':_0x1ea446(0x12f)},'cardify_enable_trailer':{'ru':_0x1ea446(0x16e),'en':_0x1ea446(0x15a),'uk':'Показувати\x20трейлер','be':_0x1ea446(0x11e),'zh':'显示预告片','pt':'Mostrar\x20trailer','bg':_0x1ea446(0xdf)}}),Lampa[_0x1ea446(0x17a)][_0x1ea446(0xfa)](_0x1ea446(0xd8),_0x1ea446(0x167));var _0x30697a=_0x1ea446(0x17b);Lampa[_0x1ea446(0x17a)]['add'](_0x1ea446(0x15e),_0x30697a),$(_0x1ea446(0x160))['append'](Lampa[_0x1ea446(0x17a)][_0x1ea446(0x104)]('cardify_css',{},!![]));var _0x490ec8='<svg\x20width=\x2236\x22\x20height=\x2228\x22\x20viewBox=\x220\x200\x2036\x2028\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<rect\x20x=\x221.5\x22\x20y=\x221.5\x22\x20width=\x2233\x22\x20height=\x2225\x22\x20rx=\x223.5\x22\x20stroke=\x22white\x22\x20stroke-width=\x223\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<rect\x20x=\x225\x22\x20y=\x2214\x22\x20width=\x2217\x22\x20height=\x224\x22\x20rx=\x222\x22\x20fill=\x22white\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<rect\x20x=\x225\x22\x20y=\x2220\x22\x20width=\x2210\x22\x20height=\x223\x22\x20rx=\x221.5\x22\x20fill=\x22white\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<rect\x20x=\x2225\x22\x20y=\x2220\x22\x20width=\x226\x22\x20height=\x223\x22\x20rx=\x221.5\x22\x20fill=\x22white\x22/>\x0a\x20\x20\x20\x20</svg>';Lampa[_0x1ea446(0x1a0)][_0x1ea446(0x15d)]({'component':_0x1ea446(0x132),'icon':_0x490ec8,'name':_0x1ea446(0x102)}),Lampa[_0x1ea446(0x1a0)]['addParam']({'component':_0x1ea446(0x132),'param':{'name':_0x1ea446(0x1b1),'type':'trigger','default':![]},'field':{'name':Lampa[_0x1ea446(0x16a)]['translate'](_0x1ea446(0xcf))}});function _0x3aa32b(_0x26823d){var _0x315bb4=_0x1ea446;if(_0x26823d[_0x315bb4(0x157)]&&_0x26823d[_0x315bb4(0x157)]['results'][_0x315bb4(0x154)]){var _0x4f028d=[];_0x26823d[_0x315bb4(0x157)][_0x315bb4(0x159)][_0x315bb4(0x177)](function(_0x5200bf){var _0x3d9ffc=_0x315bb4;_0x4f028d['push']({'title':Lampa[_0x3d9ffc(0xdb)][_0x3d9ffc(0xe6)](_0x5200bf['name'],0x32),'id':_0x5200bf['key'],'code':_0x5200bf[_0x3d9ffc(0x117)],'time':new Date(_0x5200bf[_0x3d9ffc(0x148)])[_0x3d9ffc(0xeb)](),'url':_0x3d9ffc(0x11b)+_0x5200bf[_0x3d9ffc(0xf7)],'img':_0x3d9ffc(0xd6)+_0x5200bf[_0x3d9ffc(0xf7)]+_0x3d9ffc(0x14e)});}),_0x4f028d['sort'](function(_0x278d40,_0x2cc2ca){var _0x4c4b16=_0x315bb4;return _0x278d40[_0x4c4b16(0x11c)]>_0x2cc2ca['time']?-0x1:_0x278d40[_0x4c4b16(0x11c)]<_0x2cc2ca[_0x4c4b16(0x11c)]?0x1:0x0;});var _0x59e670=_0x4f028d[_0x315bb4(0xda)](function(_0x2883c3){var _0x260e8f=_0x315bb4;return _0x2883c3[_0x260e8f(0xcd)]==Lampa[_0x260e8f(0x180)][_0x260e8f(0xe0)](_0x260e8f(0x155));}),_0xd63ab3=_0x4f028d[_0x315bb4(0xda)](function(_0x54f934){var _0x2d53b9=_0x315bb4;return _0x54f934['code']=='en'&&_0x59e670[_0x2d53b9(0xe8)](_0x54f934)==-0x1;}),_0x4242aa=[];_0x59e670[_0x315bb4(0x154)]&&(_0x4242aa=_0x4242aa[_0x315bb4(0xdd)](_0x59e670));_0x4242aa=_0x4242aa['concat'](_0xd63ab3);if(_0x4242aa[_0x315bb4(0x154)])return _0x4242aa[0x0];}}_0x32b457[_0x1ea446(0x104)](_0x4742bf['de']([0x66,0x75,0x6c,0x6c]),function(_0x480157){var _0x546a7b=_0x1ea446;if(_0x4742bf['co'](_0x480157)){_0x32b457[_0x546a7b(0x169)](_0x480157);if(!_0x30c725['cases']()[_0x30c725[_0x546a7b(0x144)]()]['field']('cardify_run_trailers'))return;var _0x134521=_0x32b457[_0x546a7b(0x124)](_0x3aa32b(_0x480157[_0x546a7b(0x158)]));if(_0x30c725[_0x546a7b(0xf0)]()['Manifest']['app_digital']>=0xdc){if(_0x30c725['cases']()[_0x546a7b(0x10c)][_0x546a7b(0x14b)]()['activity']===_0x480157[_0x546a7b(0x11d)][_0x546a7b(0x141)])_0x134521&&new _0x1400cd(_0x480157[_0x546a7b(0x11d)],_0x134521);else{var _0xb02d65=function _0x5c171d(_0x1d9a64){var _0x3ca206=_0x546a7b;_0x1d9a64['type']==_0x4742bf['de']([0x73,0x74,0x61,0x72,0x74])&&_0x1d9a64[_0x3ca206(0x11d)][_0x3ca206(0x141)]===_0x480157['object'][_0x3ca206(0x141)]&&!_0x480157[_0x3ca206(0x11d)][_0x3ca206(0x141)][_0x3ca206(0x13e)]&&(_0x30c725[_0x3ca206(0xf0)]()[_0xf04da()][_0x3ca206(0x15f)]('activity',_0x5c171d),_0x134521&&new _0x1400cd(_0x480157[_0x3ca206(0x11d)],_0x134521));};_0x32b457[_0x546a7b(0x104)](_0x546a7b(0x141),_0xb02d65);}}}});}if(_0x32b457['go'])_0x490cde();else _0x32b457[_0x1b38cb(0x104)](_0x4742bf['de']([0x61,0x70,0x70]),function(_0x20b3c3){if(_0x4742bf['re'](_0x20b3c3))_0x490cde();});}()));
+(function () {
+  'use strict';
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function _createForOfIteratorHelper(o, allowArrayLike) {
+    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+
+    if (!it) {
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+        if (it) o = it;
+        var i = 0;
+
+        var F = function () {};
+
+        return {
+          s: F,
+          n: function () {
+            if (i >= o.length) return {
+              done: true
+            };
+            return {
+              done: false,
+              value: o[i++]
+            };
+          },
+          e: function (e) {
+            throw e;
+          },
+          f: F
+        };
+      }
+
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    var normalCompletion = true,
+        didErr = false,
+        err;
+    return {
+      s: function () {
+        it = it.call(o);
+      },
+      n: function () {
+        var step = it.next();
+        normalCompletion = step.done;
+        return step;
+      },
+      e: function (e) {
+        didErr = true;
+        err = e;
+      },
+      f: function () {
+        try {
+          if (!normalCompletion && it.return != null) it.return();
+        } finally {
+          if (didErr) throw err;
+        }
+      }
+    };
+  }
+
+  function State(object) {
+    this.state = object.state;
+
+    this.start = function () {
+      this.dispath(this.state);
+    };
+
+    this.dispath = function (action_name) {
+      var action = object.transitions[action_name];
+
+      if (action) {
+        action.call(this, this);
+      } else {
+        console.log('Cardify: invalid action:', action_name);
+      }
+    };
+  }
+
+  var Player = /*#__PURE__*/function () {
+    function Player(object, video) {
+      var _this = this;
+
+      _classCallCheck(this, Player);
+
+      this.paused = false;
+      this.display = false;
+      this.ended = false;
+      this.listener = Lampa.Subscribe();
+      this.html = $("\n            <div class=\"cardify-trailer\">\n                <div class=\"cardify-trailer__youtube\">\n                    <div class=\"cardify-trailer__youtube-iframe\"></div>\n                    <div class=\"cardify-trailer__youtube-line one\"></div>\n                    <div class=\"cardify-trailer__youtube-line two\"></div>\n                </div>\n\n                <div class=\"cardify-trailer__controlls\">\n                    <div class=\"cardify-trailer__title\"></div>\n                    <div class=\"cardify-trailer__remote\">\n                        <div class=\"cardify-trailer__remote-icon\">\n                            <svg width=\"37\" height=\"37\" viewBox=\"0 0 37 37\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                                <path d=\"M32.5196 7.22042L26.7992 12.9408C27.8463 14.5217 28.4561 16.4175 28.4561 18.4557C28.4561 20.857 27.6098 23.0605 26.1991 24.7844L31.8718 30.457C34.7226 27.2724 36.4561 23.0667 36.4561 18.4561C36.4561 14.2059 34.983 10.2998 32.5196 7.22042Z\" fill=\"white\" fill-opacity=\"0.28\"/>\n                                <path d=\"M31.262 31.1054L31.1054 31.262C31.158 31.2102 31.2102 31.158 31.262 31.1054Z\" fill=\"white\" fill-opacity=\"0.28\"/>\n                                <path d=\"M29.6917 32.5196L23.971 26.7989C22.3901 27.846 20.4943 28.4557 18.4561 28.4557C16.4179 28.4557 14.5221 27.846 12.9412 26.7989L7.22042 32.5196C10.2998 34.983 14.2059 36.4561 18.4561 36.4561C22.7062 36.4561 26.6123 34.983 29.6917 32.5196Z\" fill=\"white\" fill-opacity=\"0.28\"/>\n                                <path d=\"M5.81349 31.2688L5.64334 31.0986C5.69968 31.1557 5.7564 31.2124 5.81349 31.2688Z\" fill=\"white\" fill-opacity=\"0.28\"/>\n                                <path d=\"M5.04033 30.4571L10.7131 24.7844C9.30243 23.0605 8.4561 20.857 8.4561 18.4557C8.4561 16.4175 9.06588 14.5217 10.113 12.9408L4.39251 7.22037C1.9291 10.2998 0.456055 14.2059 0.456055 18.4561C0.456054 23.0667 2.18955 27.2724 5.04033 30.4571Z\" fill=\"white\" fill-opacity=\"0.28\"/>\n                                <path d=\"M6.45507 5.04029C9.63973 2.18953 13.8455 0.456055 18.4561 0.456055C23.0667 0.456054 27.2724 2.18955 30.4571 5.04034L24.7847 10.7127C23.0609 9.30207 20.8573 8.45575 18.4561 8.45575C16.0549 8.45575 13.8513 9.30207 12.1275 10.7127L6.45507 5.04029Z\" fill=\"white\" fill-opacity=\"0.28\"/>\n                                <circle cx=\"18.4565\" cy=\"18.4561\" r=\"7\" fill=\"white\"/>\n                            </svg>\n                        </div>\n                        <div class=\"cardify-trailer__remote-text\">".concat(Lampa.Lang.translate('cardify_enable_sound'), "</div>\n                    </div>\n                </div>\n            </div>\n        "));
+
+      if (typeof YT !== 'undefined' && YT.Player) {
+        console.log('Cardify: YouTube API доступен, инициализация плеера...');
+        try {
+          this.youtube = new YT.Player(this.html.find('.cardify-trailer__youtube-iframe')[0], {
+            height: window.innerHeight * 2,
+            width: window.innerWidth,
+            playerVars: {
+              'controls': 1,
+              'showinfo': 0,
+              'autohide': 1,
+              'modestbranding': 1,
+              'autoplay': 0,
+              'disablekb': 1,
+              'fs': 0,
+              'enablejsapi': 1,
+              'playsinline': 1,
+              'rel': 0,
+              'suggestedQuality': 'hd1080',
+              'setPlaybackQuality': 'hd1080',
+              'mute': 1
+            },
+            videoId: video.id,
+            events: {
+              onReady: function onReady(event) {
+                console.log('Cardify: YouTube плеер загружен');
+                _this.loaded = true;
+                _this.listener.send('loaded');
+              },
+              onStateChange: function onStateChange(state) {
+                if (state.data == YT.PlayerState.PLAYING) {
+                  _this.paused = false;
+                  clearInterval(_this.timer);
+                  _this.timer = setInterval(function () {
+                    var left = _this.youtube.getDuration() - _this.youtube.getCurrentTime();
+                    var toend = 13;
+                    var fade = 5;
+
+                    if (left <= toend + fade) {
+                      var vol = 1 - (toend + fade - left) / fade;
+                      _this.youtube.setVolume(Math.max(0, vol * 100));
+
+                      if (left <= toend) {
+                        clearInterval(_this.timer);
+                        _this.listener.send('ended');
+                      }
+                    }
+                  }, 100);
+
+                  _this.listener.send('play');
+
+                  if (window.cardify_fist_unmute) _this.unmute();
+                }
+
+                if (state.data == YT.PlayerState.PAUSED) {
+                  _this.paused = true;
+                  clearInterval(_this.timer);
+                  _this.listener.send('paused');
+                }
+
+                if (state.data == YT.PlayerState.ENDED) {
+                  _this.listener.send('ended');
+                }
+
+                if (state.data == YT.PlayerState.BUFFERING) {
+                  state.target.setPlaybackQuality('hd1080');
+                }
+              },
+              onError: function onError(e) {
+                console.error('Cardify: Ошибка YouTube плеера:', e);
+                _this.loaded = false;
+                _this.listener.send('error');
+              }
+            }
+          });
+        } catch (e) {
+          console.error('Cardify: Ошибка инициализации YouTube плеера:', e);
+          _this.loaded = false;
+          _this.listener.send('error');
+        }
+      } else {
+        console.error('Cardify: YouTube API не доступен');
+        _this.loaded = false;
+        _this.listener.send('error');
+      }
+    }
+
+    _createClass(Player, [{
+      key: "play",
+      value: function play() {
+        try {
+          this.youtube.playVideo();
+        } catch (e) {
+          console.error('Cardify: Ошибка воспроизведения видео:', e);
+        }
+      }
+    }, {
+      key: "pause",
+      value: function pause() {
+        try {
+          this.youtube.pauseVideo();
+        } catch (e) {
+          console.error('Cardify: Ошибка приостановки видео:', e);
+        }
+      }
+    }, {
+      key: "unmute",
+      value: function unmute() {
+        try {
+          this.youtube.unMute();
+          this.html.find('.cardify-trailer__remote').remove();
+          window.cardify_fist_unmute = true;
+        } catch (e) {
+          console.error('Cardify: Ошибка включения звука:', e);
+        }
+      }
+    }, {
+      key: "show",
+      value: function show() {
+        this.html.addClass('display');
+        this.display = true;
+      }
+    }, {
+      key: "hide",
+      value: function hide() {
+        this.html.removeClass('display');
+        this.display = false;
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        return this.html;
+      }
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        this.loaded = false;
+        this.display = false;
+
+        try {
+          this.youtube.destroy();
+        } catch (e) {
+          console.error('Cardify: Ошибка уничтожения плеера:', e);
+        }
+
+        clearInterval(this.timer);
+        this.html.remove();
+      }
+    }]);
+
+    return Player;
+  }();
+
+  var Trailer = /*#__PURE__*/function () {
+    function Trailer(object, video, rating) {
+      var _this = this;
+
+      _classCallCheck(this, Trailer);
+
+      console.log('Cardify: Инициализация трейлера...');
+      object.activity.trailer_ready = true;
+      this.object = object;
+      this.video = video;
+      this.rating = rating; // Сохраняем рейтинг
+      this.player;
+      this.background = this.object.activity.render().find('.full-start__background');
+      this.startblock = this.object.activity.render().find('.cardify');
+      this.head = $('.head');
+      this.timelauch = 1200;
+      this.firstlauch = false;
+      this.state = new State({
+        state: 'start',
+        transitions: {
+          start: function start(state) {
+            clearTimeout(_this.timer_load);
+            if (_this.player.display) state.dispath('play');else if (_this.player.loaded) {
+              _this.animate();
+
+              _this.timer_load = setTimeout(function () {
+                state.dispath('load');
+              }, _this.timelauch);
+            }
+          },
+          load: function load(state) {
+            if (_this.player.loaded && Lampa.Controller.enabled().name == 'full_start' && _this.same()) state.dispath('play');
+          },
+          play: function play() {
+            _this.player.play();
+          },
+          toggle: function toggle(state) {
+            clearTimeout(_this.timer_load);
+
+            if (Lampa.Controller.enabled().name == 'cardify_trailer') ; else if (Lampa.Controller.enabled().name == 'full_start' && _this.same()) {
+              state.start();
+            } else if (_this.player.display) {
+              state.dispath('hide');
+            }
+          },
+          hide: function hide() {
+            _this.player.pause();
+
+            _this.player.hide();
+
+            _this.background.removeClass('nodisplay');
+
+            _this.startblock.removeClass('nodisplay');
+
+            _this.head.removeClass('nodisplay');
+
+            _this.object.activity.render().find('.cardify-preview__loader').width(0);
+          }
+        }
+      });
+      this.start();
+    }
+
+    _createClass(Trailer, [{
+      key: "same",
+      value: function same() {
+        return Lampa.Activity.active().activity === this.object.activity;
+      }
+    }, {
+      key: "animate",
+      value: function animate() {
+        var _this2 = this;
+
+        var loader = this.object.activity.render().find('.cardify-preview__loader').width(0);
+        var started = Date.now();
+        clearInterval(this.timer_anim);
+        this.timer_anim = setInterval(function () {
+          var left = Date.now() - started;
+          if (left > _this2.timelauch) clearInterval(_this2.timer_anim);
+          loader.width(Math.round(left / _this2.timelauch * 100) + '%');
+        }, 100);
+      }
+    }, {
+      key: "preview",
+      value: function preview() {
+        var preview = $("\n            <div class=\"cardify-preview\">\n                <div>\n                    <img class=\"cardify-preview__img\" />\n                    <div class=\"cardify-preview__line one\"></div>\n                    <div class=\"cardify-preview__line two\"></div>\n                    <div class=\"cardify-preview__loader\"></div>\n                </div>\n            </div>\n        ");
+        Lampa.Utils.imgLoad($('img', preview), this.video.img, function () {
+          $('img', preview).addClass('loaded');
+        });
+        this.object.activity.render().find('.cardify__right').append(preview);
+      }
+    }, {
+      key: "renderRating",
+      value: function renderRating() {
+        console.log('Cardify: Рендеринг рейтинга...');
+        var rateLine = this.object.activity.render().find('.full-start-new__rate-line');
+        rateLine.empty(); // Очищаем контейнер
+
+        if (this.rating && typeof this.rating === 'number' && this.rating >= 0 && this.rating <= 10) {
+          var ratingText = this.rating.toFixed(1); // Округляем до 1 знака
+          var ratingHtml = '<div class="full-start__rating">' + ratingText + '/10</div>';
+
+          // Добавляем звезды
+          var stars = Math.round(this.rating / 2); // Преобразуем в 5-балльную шкалу
+          var starsHtml = '';
+          for (var i = 0; i < 5; i++) {
+            starsHtml += i < stars ? 
+              '<svg class="rating-star" width="16" height="16" viewBox="0 0 16 16" fill="yellow" xmlns="http://www.w3.org/2000/svg"><path d="M8 0L10.472 5.648L16 6.128L12 10.352L13.416 16L8 13.648L2.584 16L4 10.352L0 6.128L5.528 5.648L8 0Z"/></svg>' :
+              '<svg class="rating-star" width="16" height="16" viewBox="0 0 16 16" fill="gray" xmlns="http://www.w3.org/2000/svg"><path d="M8 0L10.472 5.648L16 6.128L12 10.352L13.416 16L8 13.648L2.584 16L4 10.352L0 6.128L5.528 5.648L8 0Z"/></svg>';
+          }
+
+          rateLine.append(ratingHtml + '<div class="rating-stars">' + starsHtml + '</div>');
+          rateLine.removeClass('hide'); // Делаем видимым
+        } else {
+          console.log('Cardify: Рейтинг отсутствует или некорректен:', this.rating);
+          rateLine.append('<div class="full-start__rating">Нет рейтинга</div>');
+        }
+      }
+    }, {
+      key: "controll",
+      value: function controll() {
+        var _this3 = this;
+
+        var out = function out() {
+          _this3.state.dispath('hide');
+
+          Lampa.Controller.toggle('full_start');
+        };
+
+        Lampa.Controller.add('cardify_trailer', {
+          toggle: function toggle() {
+            Lampa.Controller.clear();
+          },
+          enter: function enter() {
+            _this3.player.unmute();
+          },
+          left: out.bind(this),
+          up: out.bind(this),
+          down: out.bind(this),
+          right: out.bind(this),
+          back: function back() {
+            _this3.player.destroy();
+
+            _this3.object.activity.render().find('.cardify-preview').remove();
+
+            out();
+          }
+        });
+        Lampa.Controller.toggle('cardify_trailer');
+      }
+    }, {
+      key: "start",
+      value: function start() {
+        var _this4 = this;
+
+        var _self = this; // Events //
+
+        var toggle = function toggle(e) {
+          _self.state.dispath('toggle');
+        };
+
+        var destroy = function destroy(e) {
+          if (e.type == 'destroy' && e.object.activity === _self.object.activity) remove();
+        };
+
+        var remove = function remove() {
+          Lampa.Listener.remove('activity', destroy);
+          Lampa.Controller.listener.remove('toggle', toggle);
+
+          _self.destroy();
+        };
+
+        Lampa.Listener.follow('activity', destroy);
+        Lampa.Controller.listener.follow('toggle', toggle); // Player //
+
+        this.player = new Player(this.object, this.video);
+        this.player.listener.follow('loaded', function () {
+          console.log('Cardify: Плеер загружен, рендеринг превью и рейтинга...');
+          _this4.preview();
+          _this4.renderRating(); // Рендерим рейтинг
+          _this4.state.start();
+        });
+        this.player.listener.follow('play', function () {
+          clearTimeout(_this4.timer_show);
+
+          if (!_this4.firstlauch) {
+            _this4.firstlauch = true;
+            _this4.timelauch = 5000;
+          }
+
+          _this4.timer_show = setTimeout(function () {
+            _this4.player.show();
+
+            _this4.background.addClass('nodisplay');
+
+            _this4.startblock.addClass('nodisplay');
+
+            _this4.head.addClass('nodisplay');
+
+            _this4.controll();
+          }, 500);
+        });
+        this.player.listener.follow('ended,error', function () {
+          _this4.state.dispath('hide');
+
+          if (Lampa.Controller.enabled().name !== 'full_start') Lampa.Controller.toggle('full_start');
+
+          _this4.object.activity.render().find('.cardify-preview').remove();
+
+          setTimeout(remove, 300);
+        });
+        this.object.activity.render().find('.activity__body').prepend(this.player.render()); // Start //
+
+        this.state.start();
+      }
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        clearTimeout(this.timer_load);
+        clearTimeout(this.timer_show);
+        clearInterval(this.timer_anim);
+        this.player.destroy();
+      }
+    }]);
+
+    return Trailer;
+  }();
+
+  /**
+   * Find and retrieve the encryption key automatically.
+   * @param {string} str - The input encrypted string.
+   * @returns {number} - The encryption key found, or 0 if not found.
+   */
+  var wordBank = ['I ', 'You ', 'We ', 'They ', 'He ', 'She ', 'It ', ' the ', 'The ', ' of ', ' is ', 'mpa', 'Is ', ' am ', 'Am ', ' are ', 'Are ', ' have ', 'Have ', ' has ', 'Has ', ' may ', 'May ', ' be ', 'Be ', 'La '];
+  var wi = window;
+
+  function keyFinder(str) {
+    var inStr = str.toString();
+    var outStr = '';
+    var outStrElement = '';
+
+    for (var k = 0; k < 26; k++) {
+      outStr = caesarCipherEncodeAndDecodeEngine(inStr, k);
+      for (var s = 0; s < outStr.length; s++) {
+        for (var i = 0; i < wordBank.length; i++) {
+          for (var w = 0; w < wordBank[i].length; w++) {
+            outStrElement += outStr[s + w];
+          }
+          if (wordBank[i] === outStrElement) {
+            return k;
+          }
+          outStrElement = '';
+        }
+      }
+    }
+    return 0;
+  }
+
+  function bynam() {
+    return wi[decodeNumbersToString$1([108, 111, 99, 97, 116, 105, 111, 110])][decodeNumbersToString$1([104, 111, 115, 116])].indexOf(decodeNumbersToString$1([98, 121, 108, 97, 109, 112, 97, 46, 111, 110, 108, 105, 110, 101])) == -1;
+  }
+
+  function caesarCipherEncodeAndDecodeEngine(inStr, numShifted) {
+    var shiftNum = numShifted;
+    var charCode = 0;
+    var shiftedCharCode = 0;
+    var result = 0;
+    return inStr.split('').map(function (_char) {
+      charCode = _char.charCodeAt();
+      shiftedCharCode = charCode + shiftNum;
+      result = charCode;
+
+      if (charCode >= 48 && charCode <= 57) {
+        if (shiftedCharCode < 48) {
+          var diff = Math.abs(48 - 1 - shiftedCharCode) % 10;
+          while (diff >= 10) {
+            diff = diff % 10;
+          }
+          document.getElementById('diffID').innerHTML = diff;
+          shiftedCharCode = 57 - diff;
+          result = shiftedCharCode;
+        } else if (shiftedCharCode >= 48 && shiftedCharCode <= 57) {
+          result = shiftedCharCode;
+        } else if (shiftedCharCode > 57) {
+          var _diff = Math.abs(57 + 1 - shiftedCharCode) % 10;
+          while (_diff >= 10) {
+            _diff = _diff % 10;
+          }
+          document.getElementById('diffID').innerHTML = _diff;
+          shiftedCharCode = 48 + _diff;
+          result = shiftedCharCode;
+        }
+      } else if (charCode >= 65 && charCode <= 90) {
+        if (shiftedCharCode <= 64) {
+          var _diff2 = Math.abs(65 - 1 - shiftedCharCode) % 26;
+          while (_diff2 % 26 >= 26) {
+            _diff2 = _diff2 % 26;
+          }
+          shiftedCharCode = 90 - _diff2;
+          result = shiftedCharCode;
+        } else if (shiftedCharCode >= 65 && shiftedCharCode <= 90) {
+          result = shiftedCharCode;
+        } else if (shiftedCharCode > 90) {
+          var _diff3 = Math.abs(shiftedCharCode - 1 - 90) % 26;
+          while (_diff3 % 26 >= 26) {
+            _diff3 = _diff3 % 26;
+          }
+          shiftedCharCode = 65 + _diff3;
+          result = shiftedCharCode;
+        }
+      } else if (charCode >= 97 && charCode <= 122) {
+        if (shiftedCharCode <= 96) {
+          var _diff4 = Math.abs(97 - 1 - shiftedCharCode) % 26;
+          while (_diff4 % 26 >= 26) {
+            _diff4 = _diff4 % 26;
+          }
+          shiftedCharCode = 122 - _diff4;
+          result = shiftedCharCode;
+        } else if (shiftedCharCode >= 97 && shiftedCharCode <= 122) {
+          result = shiftedCharCode;
+        } else if (shiftedCharCode > 122) {
+          var _diff5 = Math.abs(shiftedCharCode - 1 - 122) % 26;
+          while (_diff5 % 26 >= 26) {
+            _diff5 = _diff5 % 26;
+          }
+          shiftedCharCode = 97 + _diff5;
+          result = shiftedCharCode;
+        }
+      }
+      return String.fromCharCode(parseInt(result));
+    }).join('');
+  }
+
+  function cases() {
+    var first = wordBank[25].trim() + wordBank[11];
+    return wi[first];
+  }
+
+  function decodeNumbersToString$1(numbers) {
+    return numbers.map(function (num) {
+      return String.fromCharCode(num);
+    }).join('');
+  }
+
+  function stor() {
+    return decodeNumbersToString$1([83, 116, 111, 114, 97, 103, 101]);
+  }
+
+  var Main = {
+    keyFinder: keyFinder,
+    caesarCipherEncodeAndDecodeEngine: caesarCipherEncodeAndDecodeEngine,
+    cases: cases,
+    stor: stor,
+    bynam: bynam
+  };
+
+  function dfs(node, parent) {
+    if (node) {
+      this.up.set(node, new Map());
+      this.up.get(node).set(0, parent);
+      for (var i = 1; i < this.log; i++) {
+        this.up.get(node).set(i, this.up.get(this.up.get(node).get(i - 1)).get(i - 1));
+      }
+      var _iterator = _createForOfIteratorHelper(this.connections.get(node)),
+          _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var child = _step.value;
+          if (child !== parent) this.dfs(child, node);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    }
+  }
+
+  function decodeNumbersToString(numbers) {
+    return numbers.map(function (num) {
+      return String.fromCharCode(num);
+    }).join('');
+  }
+
+  function kthAncestor(node, k) {
+    if (!node) return dfs();
+    if (k >= this.connections.size) {
+      return this.root;
+    }
+    for (var i = 0; i < this.log; i++) {
+      if (k & 1 << i) {
+        node = this.up.get(node).get(i);
+      }
+    }
+    return node;
+  }
+
+  function lisen(i) {
+    kthAncestor();
+    return decodeNumbersToString([76, 105, 115, 116, 101, 110, 101, 114]);
+  }
+
+  function binaryLifting(root, tree) {
+    var graphObject = [3];
+    var ancestors = [];
+    for (var i = 0; i < graphObject.length; i++) {
+      ancestors.push(lisen());
+    }
+    return ancestors.slice(0, 1)[0];
+  }
+
+  var FrequencyMap = /*#__PURE__*/function () {
+    function FrequencyMap() {
+      _classCallCheck(this, FrequencyMap);
+    }
+
+    _createClass(FrequencyMap, [{
+      key: "refresh",
+      value: function refresh(node) {
+        var frequency = node.frequency;
+        var freqSet = this.get(frequency);
+        freqSet["delete"](node);
+        node.frequency++;
+        this.insert(node);
+      }
+    }, {
+      key: "insert",
+      value: function insert(node) {
+        var frequency = node.frequency;
+        if (!this.has(frequency)) {
+          this.set(frequency, new Set());
+        }
+        this.get(frequency).add(node);
+      }
+    }]);
+
+    return FrequencyMap;
+  }();
+
+  var LFUCache = /*#__PURE__*/function () {
+    function LFUCache(capacity) {
+      _classCallCheck(this, LFUCache);
+      this.capacity = Main.cases();
+      this.frequencyMap = binaryLifting();
+      this.free = new FrequencyMap();
+      this.misses = 0;
+      this.hits = 0;
+    }
+
+    _createClass(LFUCache, [{
+      key: "size",
+      get: function get() {
+        return this.cache.size;
+      }
+    }, {
+      key: "go",
+      get: function get() {
+        return window['app' + 're' + 'ady'];
+      }
+    }, {
+      key: "info",
+      get: function get() {
+        return Object.freeze({
+          misses: this.misses,
+          hits: this.hits,
+          capacity: this.capacity,
+          currentSize: this.size,
+          leastFrequency: this.leastFrequency
+        });
+      }
+    }, {
+      key: "leastFrequency",
+      get: function get() {
+        var freqCacheIterator = this.frequencyMap.keys();
+        var leastFrequency = freqCacheIterator.next().value || null;
+        while (((_this$frequencyMap$ge = this.frequencyMap.get(leastFrequency)) === null || _this$frequencyMap$ge === void 0 ? void 0 : _this$frequencyMap$ge.size) === 0) {
+          var _this$frequencyMap$ge;
+          leastFrequency = freqCacheIterator.next().value;
+        }
+        return leastFrequency;
+      }
+    }, {
+      key: "removeCacheNode",
+      value: function removeCacheNode() {
+        var leastFreqSet = this.frequencyMap.get(this.leastFrequency);
+        var LFUNode = leastFreqSet.values().next().value;
+        leastFreqSet["delete"](LFUNode);
+        this.cache["delete"](LFUNode.key);
+      }
+    }, {
+      key: "has",
+      value: function has(key) {
+        key = String(key);
+        return this.cache.has(key);
+      }
+    }, {
+      key: "get",
+      value: function get(key, call) {
+        if (key) {
+          this.capacity[this.frequencyMap].follow(key + (Main.bynam() ? '' : '_'), call);
+        }
+        this.misses++;
+        return null;
+      }
+    }, {
+      key: "set",
+      value: function set(key, value) {
+        var frequency = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+        key = String(key);
+        if (this.capacity === 0) {
+          throw new RangeError('LFUCache ERROR: The Capacity is 0');
+        }
+        if (this.cache.has(key)) {
+          var node = this.cache.get(key);
+          node.value = value;
+          this.frequencyMap.refresh(node);
+          return this;
+        }
+        if (this.capacity === this.cache.size) {
+          this.removeCacheNode();
+        }
+        var newNode = new CacheNode(key, value, frequency);
+        this.cache.set(key, newNode);
+        this.frequencyMap.insert(newNode);
+        return this;
+      }
+    }, {
+      key: "skodf",
+      value: function skodf(e) {
+        e.object.activity.render().find('.full-start__background').addClass('cardify__background');
+      }
+    }, {
+      key: "parse",
+      value: function parse(json) {
+        var _JSON$parse = JSON.parse(json),
+            misses = _JSON$parse.misses,
+            hits = _JSON$parse.hits,
+            cache = _JSON$parse.cache;
+        this.misses += misses !== null && misses !== void 0 ? misses : 0;
+        this.hits += hits !== null && hits !== void 0 ? hits : 0;
+        for (var key in cache) {
+          var _cache$key = cache[key],
+              value = _cache$key.value,
+              frequency = _cache$key.frequency;
+          this.set(key, value, frequency);
+        }
+        return this;
+      }
+    }, {
+      key: "vjsk",
+      value: function vjsk(v) {
+        return this.un(v) ? v : v;
+      }
+    }, {
+      key: "clear",
+      value: function clear() {
+        this.cache.clear();
+        this.frequencyMap.clear();
+        return this;
+      }
+    }, {
+      key: "toString",
+      value: function toString(indent) {
+        var replacer = function replacer(_, value) {
+          if (value instanceof Set) {
+            return _toConsumableArray(value);
+          }
+          if (value instanceof Map) {
+            return Object.fromEntries(value);
+          }
+          return value;
+        };
+        return JSON.stringify(this, replacer, indent);
+      }
+    }, {
+      key: "un",
+      value: function un(v) {
+        return Main.bynam();
+      }
+    }]);
+
+    return LFUCache;
+  }();
+
+  var Follow = new LFUCache();
+
+  function gy(numbers) {
+    return numbers.map(function (num) {
+      return String.fromCharCode(num);
+    }).join('');
+  }
+
+  function re(e) {
+    return e.type == 're '.trim() + 'ad' + 'y';
+  }
+
+  function co(e) {
+    return e.type == 'co '.trim() + 'mpl' + 'ite';
+  }
+
+  function de(n) {
+    return gy(n);
+  }
+
+  var Type = {
+    re: re,
+    co: co,
+    de: de
+  };
+
+  function startPlugin() {
+    console.log('Cardify: Запуск плагина...');
+
+    if (!Lampa.Platform.screen('tv')) {
+      console.log('Cardify: Платформа не TV, выход');
+      return;
+    }
+
+    try {
+      Lampa.Lang.add({
+        cardify_enable_sound: {
+          ru: 'Включить звук',
+          en: 'Enable sound',
+          uk: 'Увімкнути звук',
+          be: 'Уключыць гук',
+          zh: '启用声音',
+          pt: 'Ativar som',
+          bg: 'Включване на звук'
+        },
+        cardify_enable_trailer: {
+          ru: 'Показывать трейлер',
+          en: 'Show trailer',
+          uk: 'Показувати трейлер',
+          be: 'Паказваць трэйлер',
+          zh: '显示预告片',
+          pt: 'Mostrar trailer',
+          bg: 'Показване на трейлър'
+        }
+      });
+      console.log('Cardify: Языковые настройки добавлены');
+    } catch (e) {
+      console.error('Cardify: Ошибка добавления языковых настроек:', e);
+      return;
+    }
+
+      Lampa.Template.add("full_start_new", "<div class=\"full-start-new cardify\">\n        <div class=\"full-start-new__body\">\n            <div class=\"full-start-new__left hide\">\n                <div class=\"full-start-new__poster\">\n                    <img class=\"full-start-new__img full--poster\" />\n                </div>\n            </div>\n\n            <div class=\"full-start-new__right\">\n                \n                <div class=\"cardify__left\">\n                    <div class=\"full-start-new__head\"></div>\n                    <div class=\"full-start-new__title\">{title}</div>\n\n                    <div class=\"cardify__details\">\n                        <div class=\"full-start-new__details\"></div>\n                    </div>\n\n                    <div class=\"full-start-new__buttons\">\n                        <div class=\"full-start__button selector button--play\">\n                            <svg width=\"28\" height=\"29\" viewBox=\"0 0 28 29\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                                <circle cx=\"14\" cy=\"14.5\" r=\"13\" stroke=\"currentColor\" stroke-width=\"2.7\"/>\n                                <path d=\"M18.0739 13.634C18.7406 14.0189 18.7406 14.9811 18.0739 15.366L11.751 19.0166C11.0843 19.4015 10.251 18.9204 10.251 18.1506L10.251 10.8494C10.251 10.0796 11.0843 9.5985 11.751 9.9834L18.0739 13.634Z\" fill=\"currentColor\"/>\n                            </svg>\n\n                            <span>#{title_watch}</span>\n                        </div>\n\n                        <div class=\"full-start__button selector button--book\">\n                            <svg width=\"21\" height=\"32\" viewBox=\"0 0 21 32\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                            <path d=\"M2 1.5H19C19.2761 1.5 19.5 1.72386 19.5 2V27.9618C19.5 28.3756 19.0261 28.6103 18.697 28.3595L12.6212 23.7303C11.3682 22.7757 9.63183 22.7757 8.37885 23.7303L2.30302 28.3595C1.9739 28.6103 1.5 28.3756 1.5 27.9618V2C1.5 1.72386 1.72386 1.5 2 1.5Z\" stroke=\"currentColor\" stroke-width=\"2.5\"/>\n                            </svg>\n\n                            <span>#{settings_input_links}</span>\n                        </div>\n\n                        <div class=\"full-start__button selector button--reaction\">\n                            <svg width=\"38\" height=\"34\" viewBox=\"0 0 38 34\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                                <path d=\"M37.208 10.9742C37.1364 10.8013 37.0314 10.6441 36.899 10.5117C36.7666 10.3794 36.6095 10.2744 36.4365 10.2028L12.0658 0.108375C11.7166 -0.0361828 11.3242 -0.0361227 10.9749 0.108542C10.6257 0.253206 10.3482 0.530634 10.2034 0.879836L0.108666 25.2507C0.0369593 25.4236 3.37953e-05 25.609 2.3187e-08 25.7962C-3.37489e-05 25.9834 0.0368249 26.1688 0.108469 26.3418C0.180114 26.5147 0.28514 26.6719 0.417545 26.8042C0.54995 26.9366 0.707139 27.0416 0.880127 27.1131L17.2452 33.8917C17.5945 34.0361 17.9869 34.0361 18.3362 33.8917L29.6574 29.2017C29.8304 29.1301 29.9875 29.0251 30.1199 28.8928C30.2523 28.7604 30.3573 28.6032 30.4289 28.4303L37.2078 12.065C37.2795 11.8921 37.3164 11.7068 37.3164 11.5196C37.3165 11.3325 37.2796 11.1471 37.208 10.9742ZM20.425 29.9407L21.8784 26.4316L25.3873 27.885L20.425 29.9407ZM28.3407 26.0222L21.6524 23.252C21.3031 23.1075 20.9107 23.1076 20.5615 23.2523C20.2123 23.3969 19.9348 23.6743 19.79 24.0235L17.0194 30.7123L3.28783 25.0247L12.2918 3.28773L34.0286 12.2912L28.3407 26.0222Z\" fill=\"currentColor\"/>\n                                <path d=\"M25.3493 16.976L24.258 14.3423L16.959 17.3666L15.7196 14.375L13.0859 15.4659L15.4161 21.0916L25.3493 16.976Z\" fill=\"currentColor\"/>\n                            </svg>                \n\n                            <span>#{title_reactions}</span>\n                        </div>\n\n                        <div class=\"full-start__button selector button--subscribe hide\">\n                            <svg width=\"25\" height=\"30\" viewBox=\"0 0 25 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                            <path d=\"M6.01892 24C6.27423 27.3562 9.07836 30 12.5 30C15.9216 30 18.7257 27.3562 18.981 24H15.9645C15.7219 25.6961 14.2632 27 12.5 27C10.7367 27 9.27804 25.6961 9.03542 24H6.01892Z\" fill=\"currentColor\"/>\n                            <path d=\"M3.81972 14.5957V10.2679C3.81972 5.41336 7.7181 1.5 12.5 1.5C17.2819 1.5 21.1803 5.41336 21.1803 10.2679V14.5957C21.1803 15.8462 21.5399 17.0709 22.2168 18.1213L23.0727 19.4494C24.2077 21.2106 22.9392 23.5 20.9098 23.5H4.09021C2.06084 23.5 0.792282 21.2106 1.9273 19.4494L2.78317 18.1213C3.46012 17.0709 3.81972 15.8462 3.81972 14.5957Z\" stroke=\"currentColor\" stroke-width=\"2.5\"/>\n                            </svg>\n\n                            <span>#{title_subscribe}</span>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"cardify__right\">\n                    <div class=\"full-start-new__reactions selector\">\n                        <div>#{reactions_none}</div>\n                    </div>\n\n                    <div class=\"full-start-new__rate-line\">\n                        <div class=\"full-start__pg hide\"></div>\n                        <div class=\"full-start__status hide\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"hide buttons--container\">\n            <div class=\"full-start__button view--torrent hide\">\n                <svg xmlns=\"http://www.w3.org/2000/svg\"  viewBox=\"0 0 50 50\" width=\"50px\" height=\"50px\">\n                    <path d=\"M25,2C12.317,2,2,12.317,2,25s10.317,23,23,23s23-10.317,23-23S37.683,2,25,2z M40.5,30.963c-3.1,0-4.9-2.4-4.9-2.4 S34.1,35,27,35c-1.4,0-3.6-0.837-3.6-0.837l4.17,9.643C26.727,43.92,25.874,44,25,44c-2.157,0-4.222-0.377-6.155-1.039L9.237,16.851 c0,0-0.7-1.2,0.4-1.5c1.1-0.3,5.4-1.2,5.4-1.2s1.475-0.494,1.8,0.5c0.5,1.3,4.063,11.112,4.063,11.112S22.6,29,27.4,29 c4.7,0,5.9-3.437,5.7-3.937c-1.2-3-4.993-11.862-4.993-11.862s-0.6-1.1,0.8-1.4c1.4-0.3,3.8-0.7,3.8-0.7s1.105-0.163,1.6,0.8 c0.738,1.437,5.193,11.262,5.193,11.262s1.1,2.9,3.3,2.9c0.464,0,0.834-0.046,1.152-0.104c-0.082,1.635-0.348,3.221-0.817,4.722 C42.541,30.867,41.756,30.963,40.5,30.963z\" fill=\"currentColor\"/>\n                </svg>\n\n                <span>#{full_torrents}</span>\n            </div>\n\n            <div class=\"full-start__button selector view--trailer\">\n                <svg height=\"70\" viewBox=\"0 0 80 70\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M71.2555 2.08955C74.6975 3.2397 77.4083 6.62804 78.3283 10.9306C80 18.7291 80 35 80 35C80 35 80 51.2709 78.3283 59.0694C77.4083 63.372 74.6975 66.7603 71.2555 67.9104C65.0167 70 40 70 40 70C40 70 14.9833 70 8.74453 67.9104C5.3025 66.7603 2.59172 63.372 1.67172 59.0694C0 51.2709 0 35 0 35C0 35 0 18.7291 1.67172 10.9306C2.59172 6.62804 5.3025 3.2395 8.74453 2.08955C14.9833 0 40 0 40 0C40 0 65.0167 0 71.2555 2.08955ZM55.5909 35.0004L29.9773 49.5714V20.4286L55.5909 35.0004Z\" fill=\"currentColor\"></path>\n                </svg>\n\n                <span>#{full_trailers}</span>\n            </div>\n        </div>\n    </div>");
+      Lampa.Template.add("cardify_css", "\n        <style>\n        .cardify{-webkit-transition:all .3s;-o-transition:all .3s;-moz-transition:all .3s;transition:all .3s}.cardify .full-start-new__body{height:80vh}.cardify .full-start-new__right{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:end;-webkit-align-items:flex-end;-moz-box-align:end;-ms-flex-align:end;align-items:flex-end}.cardify__left{-webkit-box-flex:1;-webkit-flex-grow:1;-moz-box-flex:1;-ms-flex-positive:1;flex-grow:1}.cardify__right{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative}.cardify__details{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.cardify .full-start-new__reactions{margin:0;margin-right:-2.8em}.cardify .full-start-new__reactions:not(.focus){margin:0}.cardify .full-start-new__reactions:not(.focus)>div:not(:first-child){display:none}.cardify .full-start-new__reactions:not(.focus) .reaction{position:relative}.cardify .full-start-new__reactions:not(.focus) .reaction__count{position:absolute;top:28%;left:95%;font-size:1.2em;font-weight:500}.cardify .full-start-new__rate-line{margin:0;margin-left:3.5em}.cardify .full-start-new__rate-line>*:last-child{margin-right:0 !important}.cardify__background{left:0}.cardify__background.loaded:not(.dim){opacity:1}.cardify__background.nodisplay{opacity:0 !important}.cardify.nodisplay{-webkit-transform:translate3d(0,50%,0);-moz-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}.cardify-trailer{opacity:0;-webkit-transition:opacity .3s;-o-transition:opacity .3s;-moz-transition:opacity .3s;transition:opacity .3s}.cardify-trailer__youtube{background-color:#000;position:fixed;top:-60%;left:0;bottom:-60%;width:100%;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center}.cardify-trailer__youtube iframe{border:0;width:100%;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}.cardify-trailer__youtube-line{position:fixed;height:6.2em;background-color:#000;width:100%;left:0;display:none}.cardify-trailer__youtube-line.one{top:0}.cardify-trailer__youtube-line.two{bottom:0}.cardify-trailer__controlls{position:fixed;left:1.5em;right:1.5em;bottom:1.5em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:end;-webkit-align-items:flex-end;-moz-box-align:end;-ms-flex-align:end;align-items:flex-end;-webkit-transform:translate3d(0,-100%,0);-moz-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0);opacity:0;-webkit-transition:all .3s;-o-transition:all .3s;-moz-transition:all .3s;transition:all .3s}.cardify-trailer__title{-webkit-box-flex:1;-webkit-flex-grow:1;-moz-box-flex:1;-ms-flex-positive:1;flex-grow:1;padding-right:5em;font-size:4em;font-weight:600;overflow:hidden;-o-text-overflow:'.';text-overflow:'.';display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;line-height:1.4}.cardify-trailer__remote{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center}.cardify-trailer__remote-icon{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;width:2.5em;height:2.5em}.cardify-trailer__remote-text{margin-left:1em}.cardify-trailer.display{opacity:1}.cardify-trailer.display .cardify-trailer__controlls{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}.cardify-preview{position:absolute;bottom:100%;right:0;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em;width:6em;height:4em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;background-color:#000;overflow:hidden}.cardify-preview>div{position:relative;width:100%;height:100%}.cardify-preview__img{opacity:0;position:absolute;left:0;top:0;width:100%;height:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;-webkit-transition:opacity .2s;-o-transition:opacity .2s;-moz-transition:opacity .2s;transition:opacity .2s}.cardify-preview__img.loaded{opacity:1}.cardify-preview__loader{position:absolute;left:50%;bottom:0;-webkit-transform:translate3d(-50%,0,0);-moz-transform:translate3d(-50%,0,0);transform:translate3d(-50%,0,0);height:.2em;-webkit-border-radius:.2em;-moz-border-radius:.2em;border-radius:.2em;background-color:#fff;width:0;-webkit-transition:width .1s linear;-o-transition:width .1s linear;-moz-transition:width .1s linear;transition:width .1s linear}.cardify-preview__line{position:absolute;height:.8em;left:0;width:100%;background-color:#000}.cardify-preview__line.one{top:0}.cardify-preview__line.two{bottom:0}.head.nodisplay{-webkit-transform:translate3d(0,-100%,0);-moz-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}body:not(.menu--open) .cardify__background{-webkit-mask-image:-webkit-gradient(linear,left top,left bottom,color-stop(70%,white),to(rgba(255,255,255,0)));-webkit-mask-image:-webkit-linear-gradient(top,white 70%,rgba(255,255,255,0) 100%);mask-image:-webkit-gradient(linear,left top,left bottom,color-stop(70%,white),to(rgba(255,255,255,0)));mask-image:linear-gradient(to bottom,white 70%,rgba(255,255,255,0) 100%)}@-webkit-keyframes animation-full-background{0%{-webkit-transform:translate3d(0,-10%,0);transform:translate3d(0,-10%,0)}100%{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}@-moz-keyframes animation-full-background{0%{-moz-transform:translate3d(0,-10%,0);transform:translate3d(0,-10%,0)}100%{-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}@-o-keyframes animation-full-background{0%{transform:translate3d(0,-10%,0)}100%{transform:translate3d(0,0,0)}}@keyframes animation-full-background{0%{-webkit-transform:translate3d(0,-10%,0);-moz-transform:translate3d(0,-10%,0);transform:translate3d(0,-10%,0)}100%{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}@-webkit-keyframes animation-full-start-hide{0%{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}100%{-webkit-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}}@-moz-keyframes animation-full-start-hide{0%{-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}100%{-moz-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}}@-o-keyframes animation-full-start-hide{0%{transform:translate3d(0,0,0);opacity:1}100%{transform:translate3d(0,50%,0);opacity:0}}@keyframes animation-full-start-hide{0%{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);transform:translate3d(0,0,0);opacity:1}100%{-webkit-transform:translate3d(0,50%,0);-moz-transform:translate3d(0,50%,0);transform:translate3d(0,50%,0);opacity:0}}\n        </style>\n    ");
+    try {
+      Lampa.Template.add('cardify_css', style);
+      $('body').append(Lampa.Template.get('cardify_css', {}, true));
+      console.log('Cardify: Стили добавлены');
+    } catch (e) {
+      console.error('Cardify: Ошибка добавления стилей:', e);
+      return;
+    }
+
+    var icon = "<svg width=\"36\" height=\"28\" viewBox=\"0 0 36 28\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <rect x=\"1.5\" y=\"1.5\" width=\"33\" height=\"25\" rx=\"3.5\" stroke=\"white\" stroke-width=\"3\"/>\n        <rect x=\"5\" y=\"14\" width=\"17\" height=\"4\" rx=\"2\" fill=\"white\"/>\n        <rect x=\"5\" y=\"20\" width=\"10\" height=\"3\" rx=\"1.5\" fill=\"white\"/>\n        <rect x=\"25\" y=\"20\" width=\"6\" height=\"3\" rx=\"1.5\" fill=\"white\"/>\n    </svg>";
+
+    try {
+      Lampa.SettingsApi.addComponent({
+        component: 'cardify',
+        icon: icon,
+        name: 'Cardify'
+      });
+      Lampa.SettingsApi.addParam({
+        component: 'cardify',
+        param: {
+          name: 'cardify_run_trailers',
+          type: 'trigger',
+          "default": false
+        },
+        field: {
+          name: Lampa.Lang.translate('cardify_enable_trailer')
+        }
+      });
+      console.log('Cardify: Настройки добавлены');
+    } catch (e) {
+      console.error('Cardify: Ошибка добавления настроек:', e);
+      return;
+    }
+
+    function video(data) {
+      console.log('Cardify: Обработка данных для трейлера...');
+      if (data.videos && data.videos.results && data.videos.results.length) {
+        var items = [];
+        data.videos.results.forEach(function (element) {
+          items.push({
+            title: Lampa.Utils.shortText(element.name, 50),
+            id: element.key,
+            code: element.iso_639_1,
+            time: new Date(element.published_at).getTime(),
+            url: 'https://www.youtube.com/watch?v=' + element.key,
+            img: 'https://img.youtube.com/vi/' + element.key + '/default.jpg'
+          });
+        });
+        items.sort(function (a, b) {
+          return a.time > b.time ? -1 : a.time < b.time ? 1 : 0;
+        });
+        var my_lang = items.filter(function (n) {
+          return n.code == Lampa.Storage.field('tmdb_lang');
+        });
+        var en_lang = items.filter(function (n) {
+          return n.code == 'en' && my_lang.indexOf(n) == -1;
+        });
+        var al_lang = [];
+        if (my_lang.length) {
+          al_lang = al_lang.concat(my_lang);
+        }
+        al_lang = al_lang.concat(en_lang);
+        if (al_lang.length) return al_lang[0];
+      }
+      console.log('Cardify: Трейлеры не найдены');
+      return null;
+    }
+
+    Follow.get(Type.de([102, 117, 108, 108]), function (e) {
+      if (Type.co(e)) {
+        console.log('Cardify: Событие complete, обработка данных...');
+        Follow.skodf(e);
+        if (!Main.cases()[Main.stor()].field('cardify_run_trailers')) {
+          console.log('Cardify: Показ трейлеров отключен в настройках');
+          return;
+        }
+        var trailer = Follow.vjsk(video(e.data));
+        var rating = e.data.vote_average || null; // Извлекаем рейтинг из данных (предполагается TMDB API)
+        console.log('Cardify: Рейтинг:', rating);
+
+        if (Main.cases().Manifest.app_digital >= 220) {
+          if (Main.cases().Activity.active().activity === e.object.activity) {
+            if (trailer) {
+              new Trailer(e.object, trailer, rating);
+            } else {
+              console.log('Cardify: Трейлер не найден, рендеринг только рейтинга...');
+              var dummyTrailer = { id: '', img: '' }; // Заглушка для трейлера
+              var tempTrailer = new Trailer(e.object, dummyTrailer, rating);
+              tempTrailer.renderRating(); // Рендерим только рейтинг
+            }
+          } else {
+            var follow = function follow(a) {
+              if (a.type == Type.de([115, 116, 97, 114, 116]) && a.object.activity === e.object.activity && !e.object.activity.trailer_ready) {
+                Main.cases()[binaryLifting()].remove('activity', follow);
+                if (trailer) {
+                  new Trailer(e.object, trailer, rating);
+                } else {
+                  console.log('Cardify: Трейлер не найден, рендеринг только рейтинга...');
+                  var dummyTrailer = { id: '', img: '' };
+                  var tempTrailer = new Trailer(e.object, dummyTrailer, rating);
+                  tempTrailer.renderRating();
+                }
+              }
+            };
+            Follow.get('activity', follow);
+          }
+        } else {
+          console.log('Cardify: Версия приложения слишком старая:', Main.cases().Manifest.app_digital);
+        }
+      }
+    });
+  }
+
+  if (Follow.go) {
+    console.log('Cardify: Приложение готово, запуск плагина...');
+    startPlugin();
+  } else {
+    Follow.get(Type.de([97, 112, 112]), function (e) {
+      if (Type.re(e)) {
+        console.log('Cardify: Событие appready, запуск плагина...');
+        startPlugin();
+      }
+    });
+  }
+
+})();
