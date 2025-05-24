@@ -68,10 +68,6 @@
             .cardify .full-start-new__reactions:not(.focus) .reaction__count{position:absolute; top:28%; left:95%; font-size:1.2em; font-weight:500}
             .cardify .full-start-new__rate-line{margin:0; margin-left:3.5em}
             .cardify .full-start-new__rate-line>*:last-child{margin-right:0 !important}
-            .cardify__background{left:0; background:none !important; opacity:1 !important}
-            .cardify__background.loaded:not(.dim){opacity:1}
-            body:not(.menu--open) .cardify__background{background:none !important}
-            @-webkit-keyframes animation-full-background{0%{transform:translate3d(0,-10%,0)}100%{transform:translate3d(0,0,0)}}
         </style>
       `);
 
