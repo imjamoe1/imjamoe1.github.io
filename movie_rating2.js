@@ -1066,14 +1066,14 @@
                 right: 1em;
                 max-width: 30%;
                 max-height: 5em;
-                font-size: 1.9em;
+                font-size: 1.6em;
                 color: #ffffff;
                 background: none;
                 padding: 0.5em;
                 border-radius: 0.3em;
                 box-shadow: none;
                 overflow: hidden;
-                line-height: 1.1em; }
+                line-height: 1em; }
 
             .new-interface-info__description-inner {
                 display: inline-block;
