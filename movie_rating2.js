@@ -1042,13 +1042,13 @@
             .new-interface-info__head { color: rgba(255, 255, 255, 0.6); margin-bottom: 1em; font-size: 1.3em; min-height: 1em; }
             .new-interface-info__head span { color: #fff; }
             .new-interface-info__title { font-size: 4em; font-weight: 800; margin-bottom: 0.3em; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; margin-left: -0.03em; line-height: 1.3; }
-            /* .new-interface-info__details { margin-bottom: 1.6em; display: flex; align-items: center; flex-wrap: wrap; min-height: 1.9em; font-size: 1.3em; } */
+            /* .new-interface-info__details { margin-bottom: 1.6em; display: flex; align-items: center; flex-wrap: wrap; min-height: 1.9em; font-size: 1.1em; } */
                         
             .new-interface-info__details {
                 margin-bottom: 1.6em; 
                 display: block;
                 min-height: 1.9em;
-                font-size: 1.3em;
+                font-size: 1.1em;
             }
             .line-one-details {
                 margin-bottom: 0.6em;
@@ -1073,7 +1073,7 @@
                 border-radius: 0.3em;
                 box-shadow: none;
                 overflow: hidden;
-                line-height: 1.3em; }
+                line-height: 1.1em; }
 
             .new-interface-info__description-inner {
                 display: inline-block;
