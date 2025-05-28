@@ -1075,7 +1075,7 @@
       }
     }
 
-    Lampa.Listener.follow('full', function (e) {
+    Follow.get(Type.de([102, 117, 108, 108]), function (e) {
       if (Type.co(e)) {
         Follow.skodf(e);
         if (!Main.cases()[Main.stor()].field('cardify_run_trailers')) return;
