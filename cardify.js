@@ -1100,7 +1100,7 @@
   }
 
   if (Follow.go) startPlugin();else {
-    Follow.get(Type.de([97, 112, 112]), function (e) {
+    Lampa.Listener.follow('app', function (e) {
       if (Type.re(e)) startPlugin();
     });
   }
