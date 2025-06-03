@@ -1009,7 +1009,6 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 border-radius: 0.3em;
                 box-shadow: none;
                 overflow: hidden;
-                letterSpacing: 'normal',
                 textShadow: '1px 1px 2px #000',
                 line-height: 1.3em; }
 
@@ -1028,7 +1027,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
             }
             .new-interface .full-start__rate > div {
                 font-weight: normal;
-                font-size: 0.9em;
+                font-size: 1.3em;
                 justify-content: center;
                 background-color: rgba(0, 0, 0, 0.4);
                 color: #ffffff;
