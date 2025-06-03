@@ -1001,7 +1001,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 right: 1em;
                 max-width: 32%;
                 max-height: 6em;
-                font-size: 1.5em;
+                font-size: 1.3em;
                 font-style: italic;
                 color: #ffffff;
                 background: none;
