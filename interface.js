@@ -1027,7 +1027,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
             }
             .new-interface .full-start__rate > div {
                 font-weight: normal;
-                font-size: 1.3em;
+                font-size: 0.9em;
                 justify-content: center;
                 background-color: rgba(0, 0, 0, 0.4);
                 color: #ffffff;
