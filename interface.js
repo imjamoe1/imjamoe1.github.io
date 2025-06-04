@@ -1002,6 +1002,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 max-width: 32%;
                 max-height: 6em;
                 font-size: 1.7em;
+                font-weight: 700;
                 font-style: italic;
                 color: #ffffff;
                 background: none;
@@ -1009,7 +1010,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 border-radius: 0.3em;
                 box-shadow: none;
                 overflow: hidden;
-                textShadow: '1px 1px 2px #000',
+                text-shadow: 1px 1px 2px #000;
                 line-height: 1.2em; }
 
             .new-interface-info__description-inner {
