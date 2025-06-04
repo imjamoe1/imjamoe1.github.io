@@ -1011,7 +1011,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 box-shadow: none;
                 overflow: hidden;
                 text-shadow: 1px 1px 2px #000;
-                line-height: 1.2em; }
+                line-height: 1.1em; }
 
             .new-interface-info__description-inner {
                 display: inline-block;
