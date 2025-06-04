@@ -969,7 +969,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
             .genre-details-line {
                 margin-top: 1em;
                 line-height: 1.5;
-                font-size: 1.7em;
+                font-size: 1.3em;
             }
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
             .new-interface .card-more__box { padding-bottom: 95%; }
