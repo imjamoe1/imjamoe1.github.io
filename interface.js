@@ -1001,7 +1001,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 right: 1em;
                 max-width: 32%;
                 max-height: 6em;
-                font-size: 1.7em;
+                font-size: 1.5em;
                 font-weight: 700;
                 font-style: italic;
                 color: #ffffff;
@@ -1011,6 +1011,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 box-shadow: none;
                 overflow: hidden;
                 text-shadow: 1px 1px 2px #000;
+                letter-spacing: normal;
                 line-height: 1.1em; }
 
             .new-interface-info__description-inner {
