@@ -1,110 +1,83 @@
-(() => {
-    const plugin = {
+(function () {
+    'use strict';
+
+    var plugin = {
         name: 'ReloadAndExitLampa',
         version: '1.0',
-        description: 'Кнопки для перезагрузки и выхода из приложения Lampa с поддержкой TV-пульта',
+        description: 'Кнопки для перезагрузки и выхода из приложения Lampa с TV-фокусом',
         
         init() {
-            setTimeout(() => {
-                const buttonsContainer = document.createElement('div');
-                buttonsContainer.style.cssText = `
-                    position: fixed;
-                    top: 12px;
-                    right: 1px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                    z-index: 9999;
-                `;
+            if (window.plugin_reload_exit_ready) return;
+            window.plugin_reload_exit_ready = true;
 
-                const reloadButton = document.createElement('div');
-                reloadButton.innerText = '🔄';
-                reloadButton.style.cssText = `
-                    position: fixed;
-                    top: 1px;
-                    right: 1px;
-                    color: white;
-                    padding: 1px;
-                    border-radius: 8px;
-                    z-index: 9999;
-                    cursor: pointer;
-                    font-size: 18px;
-                    transition: all 0.2s;
-                `;
-                reloadButton.onclick = () => {
-                    if (typeof Lampa !== 'undefined') {
-                        if (Lampa.Activity?.restart) {
-                            Lampa.Activity.restart();
-                        } else {
-                            location.reload();
-                        }
-                    } else {
-                        location.reload();
-                    }
-                };
-
-                const exitButton = document.createElement('div');
-                exitButton.innerText = '⏻';
-                exitButton.style.cssText = `
-                    position: fixed;
-                    top: 22px;
-                    right: 4px;
-                    color: red;
-                    background: none;
-                    padding: 1px;
-                    border-radius: 8px;
-                    z-index: 9999;
-                    cursor: pointer;
-                    font-size: 18px;
-                    transition: all 0.2s;
-                `;
-                exitButton.onclick = () => {
-                    if (typeof Lampa !== 'undefined' && Lampa.Activity?.finish) {
-                        Lampa.Activity.finish();
-                    } else if (window.navigator.app?.exitApp) {
-                        window.navigator.app.exitApp();
-                    } else {
-                        alert('Выход невозможен. Закройте приложение вручную.');
-                    }
-                };
-
-                // Добавляем стили для фокуса (TV-пульт)
-                reloadButton.addEventListener('focus', () => {
-                    reloadButton.style.transform = 'scale(1.2)';
-                    reloadButton.style.color = '#6200EE';
-                    reloadButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+            if (window.appready) {
+                this.createButtons();
+            } else {
+                Lampa.Listener.follow('app', (e) => {
+                    if (e.type === 'ready') this.createButtons();
                 });
-                reloadButton.addEventListener('blur', () => {
-                    reloadButton.style.transform = 'scale(1)';
-                    reloadButton.style.color = 'white';
-                    reloadButton.style.backgroundColor = 'transparent';
-                });
+            }
+        },
 
-                exitButton.addEventListener('focus', () => {
-                    exitButton.style.transform = 'scale(1.2)';
-                    exitButton.style.color = '#FF0000';
-                    exitButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                });
-                exitButton.addEventListener('blur', () => {
-                    exitButton.style.transform = 'scale(1)';
-                    exitButton.style.color = 'red';
-                    exitButton.style.backgroundColor = 'transparent';
-                });
+        createButtons() {
+            // Контейнер для кнопок (в правом верхнем углу)
+            let container = $(`<div class="head__action reload-exit-buttons"></div>`);
+            $('.head__actions').prepend(container);
 
-                // Делаем кнопки фокусируемыми (для пульта)
-                reloadButton.setAttribute('tabindex', '0');
-                exitButton.setAttribute('tabindex', '0');
+            // Кнопка "Перезагрузка"
+            let reloadBtn = $(`<div class="source-logo" style="font-weight: bold;">🔄</div>`);
+            container.append(reloadBtn);
 
-                buttonsContainer.appendChild(reloadButton);
-                buttonsContainer.appendChild(exitButton);
-                document.body.appendChild(buttonsContainer);
-            }, 2000);
+            // Кнопка "Выход"
+            let exitBtn = $(`<div class="source-logo" style="font-weight: bold; color: red;">⏻</div>`);
+            container.append(exitBtn);
+
+            // Обработчики TV-фокуса и нажатий
+            reloadBtn.on('hover:enter click', () => {
+                if (typeof Lampa !== 'undefined' && Lampa.Activity?.restart) {
+                    Lampa.Activity.restart();
+                } else {
+                    location.reload();
+                }
+            });
+
+            exitBtn.on('hover:enter click', () => {
+                if (typeof Lampa !== 'undefined' && Lampa.Activity?.finish) {
+                    Lampa.Activity.finish();
+                } else if (window.navigator.app?.exitApp) {
+                    window.navigator.app.exitApp();
+                } else {
+                    Lampa.Noty.show('Выход невозможен. Закройте приложение вручную.');
+                }
+            });
+
+            // Стили для фокуса (аналогично другим элементам Lampa)
+            reloadBtn.on('hover:focus', (e) => {
+                reloadBtn.css('transform', 'scale(1.2)');
+                reloadBtn.css('color', '#6200EE');
+            });
+            reloadBtn.on('hover:blur', () => {
+                reloadBtn.css('transform', 'scale(1)');
+                reloadBtn.css('color', 'white');
+            });
+
+            exitBtn.on('hover:focus', () => {
+                exitBtn.css('transform', 'scale(1.2)');
+                exitBtn.css('color', '#FF0000');
+            });
+            exitBtn.on('hover:blur', () => {
+                exitBtn.css('transform', 'scale(1)');
+                exitBtn.css('color', 'red');
+            });
         }
     };
 
+    // Регистрация плагина
     if (typeof Lampa !== 'undefined' && Lampa.Plugin?.register) {
         Lampa.Plugin.register(plugin);
     } else {
         plugin.init();
     }
+
+    console.log("🚀 Lampa Plugin Loaded: Кнопки 'Перезагрузка' и 'Выход' добавлены в верхнюю панель");
 })();
