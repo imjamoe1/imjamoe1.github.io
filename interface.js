@@ -1010,7 +1010,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 border-radius: 0.3em;
                 box-shadow: none;
                 overflow: hidden;
-                text-shadow: 1px 1px 2px #000;
+                text-shadow: 5px 5px 5px #000;
                 letter-spacing: normal;
                 line-height: 1.1em; }
 
