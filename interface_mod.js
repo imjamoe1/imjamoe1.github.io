@@ -375,7 +375,7 @@
         style.id = 'settings_custom_styles';
         style.textContent = `
             .settings-folder {
-                border-radius: 20px !important;
+                border-radius: 15px !important;
                 overflow: hidden;
             }
         `;
