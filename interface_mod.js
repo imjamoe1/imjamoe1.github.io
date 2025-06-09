@@ -380,6 +380,15 @@
             }
         `;
         document.head.appendChild(style);
+
+        var style = document.createElement('style');
+        style.textContent = `
+            .settings__content .settings-param {
+                border-radius: 15px !important;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(style);
         // Перемещаем пункт "Интерфейс MOD" сразу после "Интерфейс" (без зацикливания)
         function moveModSettingsFolder() {
             var $folders = $('.settings-folder');
@@ -1930,6 +1939,7 @@
                 .settings__content, .settings-input__content, .selectbox__content, .modal__content {
                     background: rgba(26, 42, 58, 0.98);
                     border: 1px solid rgba(67, 206, 162, 0.1);
+                    border-radius: 5px;
                 }
             `,
             aurora: `
@@ -2086,6 +2096,7 @@
                     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                     margin-bottom: 5px;
                     padding-bottom: 5px;
+                    border-radius: 5px;
                 }
                 .settings-folder + .settings-folder {
                     border-top: none;
