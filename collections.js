@@ -389,6 +389,6 @@
       }
     }
 
-    if (!window.cub_collections_ready && Lampa.Manifest.app_digital >= 242) startPlugin();
+    if (!window.cub_collections_ready && Lampa.Manifest.app_digital) startPlugin();
 
 })();
