@@ -384,11 +384,11 @@
 
       if (window.appready) add();else {
         Lampa.Listener.follow('app', function (e) {
-          if (e.type == 'ready') add();
+          if (e.type !== 'bylampa') add();
         });
       }
     }
 
-    if (!window.plugin_interface_ready) startPlugin();
+    if (!window.cub_collections_ready && Lampa.Manifest.app_digital >= 242) startPlugin();
 
 })();
