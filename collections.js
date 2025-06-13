@@ -383,12 +383,10 @@
       }
 
     if (window.appready) {
-        startPlugin();
+        initPlugin();
     } else {
-        Lampa.Listener.follow('app', function (event) {
-            if (event.type === 'ready') {
-                startPlugin();
-            }
+        Lampa.Listener.follow('app', function(e) {
+            if (e.type === 'ready') initPlugin();
         });
     }
-})();
+})()
