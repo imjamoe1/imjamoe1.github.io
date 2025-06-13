@@ -382,9 +382,13 @@
         $('.menu .menu__list').eq(0).append(button);
       }
 
-      if (window.appready) add();else {
-        Lampa.Listener.follow('app', function (e) {
-            if (e.type === 'ready') initPlugin();
+    if (window.appready) {
+        startPlugin();
+    } else {
+        Lampa.Listener.follow('app', function (event) {
+            if (event.type === 'ready') {
+                startPlugin();
+            }
         });
     }
 })();
