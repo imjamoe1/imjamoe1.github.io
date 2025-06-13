@@ -382,11 +382,13 @@
         $('.menu .menu__list').eq(0).append(button);
       }
 
-    if (window.appready) {
-        initPlugin();
-    } else {
-        Lampa.Listener.follow('app', function(e) {
-            if (e.type === 'ready') initPlugin();
+      if (window.appready) add();else {
+        Lampa.Listener.follow('app', function (e) {
+          if (e.type == 'ready') add();
         });
+      }
     }
-})()
+
+    if (!window.plugin_interface_ready) startPlugin();
+
+})();
