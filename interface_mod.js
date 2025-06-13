@@ -370,25 +370,6 @@
             name: Lampa.Lang.translate('interface_mod_new_plugin_name'),
             icon: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5C4 4.44772 4.44772 4 5 4H19C19.5523 4 20 4.44772 20 5V7C20 7.55228 19.5523 8 19 8H5C4.44772 8 4 7.55228 4 7V5Z" fill="currentColor"/><path d="M4 11C4 10.4477 4.44772 10 5 10H19C19.5523 10 20 10.4477 20 11V13C20 13.5523 19.5523 14 19 14H5C4.44772 14 4 13.5523 4 13V11Z" fill="currentColor"/><path d="M4 17C4 16.4477 4.44772 16 5 16H19C19.5523 16 20 16.4477 20 17V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V17Z" fill="currentColor"/></svg>'
         });
-        
-        var style = document.createElement('style');
-        style.id = 'settings_custom_styles';
-        style.textContent = `
-            .settings-folder {
-                border-radius: 15px !important;
-                overflow: hidden;
-            }
-        `;
-        document.head.appendChild(style);
-
-        var style = document.createElement('style');
-        style.textContent = `
-            .settings__content .settings-param {
-                border-radius: 15px !important;
-                overflow: hidden;
-            }
-        `;
-        document.head.appendChild(style);
         // Перемещаем пункт "Интерфейс MOD" сразу после "Интерфейс" (без зацикливания)
         function moveModSettingsFolder() {
             var $folders = $('.settings-folder');
@@ -1891,8 +1872,12 @@
         // Определяем стили для разных тем
         const themes = {
             neon: `
-                body { background: #0a0a0a; color: #ffffff; }\n.menu__item.focus, .menu__item.traverse, .menu__item.hover, .settings-folder.focus, .settings-param.focus, .selectbox-item.focus, \n.full-start__button.focus, .full-descr__tag.focus, .player-panel .button.focus,\n.custom-online-btn.focus, .custom-torrent-btn.focus, .main2-more-btn.focus, .simple-button.focus, .menu__version.focus {\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    color: #ffffff;\n    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);\n    animation: rainbow 8s linear infinite;\n    border: none;\n}\n@keyframes rainbow {\n    0% { background-position: 0% 50%; }\n    100% { background-position: 100% 50%; }\n}\n.card.focus .card__view::after, .card.hover .card__view::after {\n    border: none;\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    animation: rainbow 8s linear infinite;\n    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);\n}\n.settings__content, .settings-input__content, .selectbox__content, .modal__content {\n    background: rgba(10, 10, 10, 0.95);\n    border: 1px solid rgba(128, 128, 128, 0.2);
-                }
+    body { background: #0a0a0a; color: #ffffff; }\n.menu__item.focus, .menu__item.traverse, .menu__item.hover, .settings-folder.focus, .settings-param.focus, .selectbox-item.focus, \n.full-start__button.focus, .full-descr__tag.focus, .player-panel .button.focus,\n.custom-online-btn.focus, .custom-torrent-btn.focus, .main2-more-btn.focus, .simple-button.focus, .menu__version.focus {\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    color: #ffffff;\n    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);\n    animation: rainbow 8s linear infinite;\n    border: none;\n}\n@keyframes rainbow {\n    0% { background-position: 0% 50%; }\n    100% { background-position: 100% 50%; }\n}\n.card.focus .card__view::after, .card.hover .card__view::after {\n    border: none;\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    animation: rainbow 8s linear infinite;\n    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);\n}\n.settings__content, .settings-input__content, .selectbox__content, .modal__content {\n    background: rgba(10, 10, 10, 0.95);\n    border: 1px solid rgba(128, 128, 128, 0.2);
+    }
+    .card, .card__view, .full-start__button, .simple-button, .settings-folder, .settings-param, .selectbox-item, 
+    .modal__content, .selectbox__content, .settings__content, .settings-input__content {
+        border-radius: 20px !important;
+    }
             `,
             sunset: `
                 body { background: linear-gradient(135deg, #2d1f3d 0%, #614385 50%, #516395 100%); color: #ffffff; }
