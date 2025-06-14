@@ -1,5 +1,3 @@
-
-
   // Функция для удаления и сортировки элементов в настройках
 function removeSettingsComponents() {
   var settingsToggled = false;
