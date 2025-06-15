@@ -1876,7 +1876,7 @@
     }
     .card, .card__view, .full-start__button, .simple-button, .settings-folder, .settings-param, .selectbox-item, 
     .modal__content, .selectbox__content, .settings__content, .settings-input__content {
-        border-radius: 18px !important;
+        border-radius: 15px !important;
     }
             `,
             sunset: `
