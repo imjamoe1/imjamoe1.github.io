@@ -1012,7 +1012,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 overflow: hidden;
                 text-shadow: 5px 5px 5px #000;
                 letter-spacing: normal;
-                line-height: 1.1em; }
+                line-height: 1em; }
 
             .new-interface-info__description-inner {
                 display: inline-block;
