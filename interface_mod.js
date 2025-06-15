@@ -1,4 +1,4 @@
-(function () {
+    (function () {
     'use strict';
 
     // Полифилл для String.prototype.startsWith для ES5
@@ -1872,7 +1872,7 @@
         // Определяем стили для разных тем
         const themes = {
             neon: `
-    body { background: #0a0a0a; color: #ffffff; }\n.menu__item.focus, .menu__item.traverse, .menu__item.hover, .settings-folder.focus, .settings-param.focus, .selectbox-item.focus, \n.full-start__button.focus, .full-descr__tag.focus, .player-panel .button.focus,\n.custom-online-btn.focus, .custom-torrent-btn.focus, .main2-more-btn.focus, .simple-button.focus, .menu__version.focus {\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    color: #ffffff;\n    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);\n    animation: rainbow 8s linear infinite;\n    border: none;\n}\n@keyframes rainbow {\n    0% { background-position: 0% 50%; }\n    100% { background-position: 100% 50%; }\n}\n.card.focus .card__view::after, .card.hover .card__view::after {\n    border: 1px solid !important;\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    animation: rainbow 8s linear infinite;\n    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);\n}\n.settings__content, .settings-input__content, .selectbox__content, .modal__content {\n    background: rgba(10, 10, 10, 0.95);\n    border: 1px solid rgba(128, 128, 128, 0.2);
+    body { background: #0a0a0a; color: #ffffff; }\n.menu__item.focus, .menu__item.traverse, .menu__item.hover, .settings-folder.focus, .settings-param.focus, .selectbox-item.focus, \n.full-start__button.focus, .full-descr__tag.focus, .player-panel .button.focus,\n.custom-online-btn.focus, .custom-torrent-btn.focus, .main2-more-btn.focus, .simple-button.focus, .menu__version.focus {\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    color: #ffffff;\n    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);\n    animation: rainbow 8s linear infinite;\n    border: none;\n}\n@keyframes rainbow {\n    0% { background-position: 0% 50%; }\n    100% { background-position: 100% 50%; }\n}\n.card.focus .card__view::after, .card.hover .card__view::after {\n    border: none;\n    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);\n    background-size: 700% 100%;\n    animation: rainbow 8s linear infinite;\n    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);\n}\n.settings__content, .settings-input__content, .selectbox__content, .modal__content {\n    background: rgba(10, 10, 10, 0.95);\n    border: 1px solid rgba(128, 128, 128, 0.2);\n
     }
     .settings-folder, .settings-param, .selectbox-item {
         border-radius: 15px !important;
