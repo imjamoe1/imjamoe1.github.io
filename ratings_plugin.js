@@ -250,14 +250,9 @@
     // Стили
     var style = "<style id=\"maxsm_ratings\">" +
         ".full-start__status.maxsm-quality {" +
-        "background: #FFD700 !important;" +
-        "color: #000 !important;" +
-        "border: 1px solid white !important;" +
-        "padding: 2px 4px !important;" +
-        "border-radius: 5px;" +
-        "font-size: 27px;" +
+        "background: #FFD700;" +
+        "color: #000;" +
         "font-weight: bold;" +
-        "display: inline-block;" +
         "}" +
         ".full-start-new__rate-line {" +
         "visibility: hidden;" +
