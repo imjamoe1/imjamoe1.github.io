@@ -351,8 +351,8 @@
     var JACRED_PROTOCOL = 'https://'; // Протокол JacRed
     var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
-    // var JACRED_URL = 'jacred.xyz';
-    // var JACRED_API_KEY = '1';
+    var JACRED_URL = 'jacred.xyz';
+    var JACRED_API_KEY = '1';
     var PROXY_LIST = [  // Корс прокси для запросов 
         'https://api.allorigins.win/raw?url=',
         'https://cors.bwa.workers.dev/'
