@@ -12,7 +12,7 @@ async function fetchJSFiles() {
     const res = await fetch(apiUrl);
     const data = await res.json();
 
-    const jsFiles = data.tree.filter(file => file.path.endsWith(".js") && !file.path.includes("github_user.js"));
+    const jsFiles = data.tree.filter(file => file.path.endsWith(".js") && !file.path.includes("script.js"));
 
     jsFiles.forEach(file => {
       const url = `https://${GITHUB_USER}.github.io/${REPO_NAME}/${file.path}`;
