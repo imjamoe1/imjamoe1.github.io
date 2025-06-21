@@ -1,12 +1,12 @@
 // Укажите своё имя пользователя и репозиторий
-const GITHUB_USER = "imjamoe1.github.io";
-const REPO_NAME = "";
+const GITHUB_USER = "";
+const REPO_NAME = "imjamoe1.github.io";
 const BRANCH = "main"; // Или "master"
 
 const scriptList = document.getElementById("script-list");
 
 async function fetchJSFiles() {
-  const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/git/trees/${BRANCH}?recursive=1`;
+  const apiUrl = `https://api.github.com/repos/${REPO_NAME}/git/trees/${BRANCH}?recursive=1`;
 
   try {
     const res = await fetch(apiUrl);
@@ -15,7 +15,7 @@ async function fetchJSFiles() {
     const jsFiles = data.tree.filter(file => file.path.endsWith(".js") && !file.path.includes("script.js"));
 
     jsFiles.forEach(file => {
-      const url = `https://${GITHUB_USER}.github.io/${REPO_NAME}/${file.path}`;
+      const url = `https://${REPO_NAME}/${file.path}`;
       const container = document.createElement("div");
       container.className = "bg-white p-4 rounded shadow flex justify-between items-center";
 
