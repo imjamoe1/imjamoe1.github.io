@@ -1,4 +1,3 @@
-// Укажите своё имя пользователя и репозиторий
 const GITHUB_USER = "imjamoe1";
 const REPO_NAME = "imjamoe1.github.io";
 const BRANCH = "main"; // Или "master"
@@ -12,16 +11,22 @@ async function fetchJSFiles() {
     const res = await fetch(apiUrl);
     const data = await res.json();
 
-    const jsFiles = data.tree.filter(file => file.path.endsWith(".js") && !file.path.includes("script.js"));
+    const jsFiles = data.tree.filter(file => 
+      file.path.endsWith(".js") && 
+      !file.path.includes("script.js") &&
+      file.path.split('/').length === 1
+    );
 
     jsFiles.forEach(file => {
-      const url = `https://${GITHUB_USER}.github.io/${REPO_NAME}/${file.path}`;
+      const fileName = file.path.split('/').pop(); // Берем только имя файла
+      const url = `https://${GITHUB_USER}.github.io/${fileName}`;
+      
       const container = document.createElement("div");
       container.className = "bg-white p-4 rounded shadow flex justify-between items-center";
 
       const link = document.createElement("a");
       link.href = url;
-      link.textContent = file.path;
+      link.textContent = fileName;
       link.className = "text-blue-600 hover:underline break-all";
 
       const button = document.createElement("button");
