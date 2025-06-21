@@ -1,5 +1,5 @@
 // Укажите своё имя пользователя и репозиторий
-const GITHUB_USER = "imjamoe1";
+const GITHUB_USER = "";
 const REPO_NAME = "imjamoe1.github.io";
 const BRANCH = "main"; // Или "master"
 
