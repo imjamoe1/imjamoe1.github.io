@@ -1,6 +1,6 @@
 // Укажите своё имя пользователя и репозиторий
 const GITHUB_USER = "imjamoe1";
-const REPO_NAME = "plugins";
+const REPO_NAME = "imjamoe1.github.io";
 const BRANCH = "main"; // Или "master"
 
 const scriptList = document.getElementById("script-list");
