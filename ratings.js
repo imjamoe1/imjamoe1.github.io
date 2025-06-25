@@ -17,7 +17,6 @@
 
 */
 
-
 (function() {
     'use strict';
   
@@ -231,42 +230,7 @@
             he: 'איכות לסדרות',
             cs: 'Kvalita pro seriály',
             bg: 'Качество за сериали'
-        },
-        /*
-        maxsm_ratings_optimize: {
-            ru: 'Оптимизация запросов',
-            en: 'Request Optimization',
-            uk: 'Оптимізація запитів',
-            be: 'Аптымізацыя запытаў',
-            pt: 'Otimização de Requisições',
-            zh: '请求优化',
-            he: 'אופטימיזציית בקשות',
-            cs: 'Optimalizace dotazů',
-            bg: 'Оптимизация на заявките'
-        },
-        maxsm_ratings_optimize_accuracy: {
-            ru: 'Качество данных',
-            en: 'Data Accuracy',
-            uk: 'Якість даних',
-            be: 'Якасць дадзеных',
-            pt: 'Precisão dos Dados',
-            zh: '数据准确性',
-            he: 'דיוק נתונים',
-            cs: 'Přesnost dat',
-            bg: 'Точност на данните'
-        },
-        maxsm_ratings_optimize_efficiency: {
-            ru: 'Экономия запросов',
-            en: 'Request Efficiency',
-            uk: 'Економія запитів',
-            be: 'Эканомія запытаў',
-            pt: 'Eficiência de Requisições',
-            zh: '请求效率',
-            he: 'יעילות בקשות',
-            cs: 'Úspora dotazů',
-            bg: 'Икономия на заявки'
         }
-        */
     });
 
     // Стили
@@ -377,8 +341,7 @@
 
     // Перепемнные настройки 
     var C_LOGGING = false;  // Общий логгинг 
-    var Q_LOGGING = true;  // Логгинг качества
-    var CARDLIST_LOGGING = false; // Логгинг в списках карточек
+    var Q_LOGGING = false;  // Логгинг качества
     var CACHE_TIME = 3 * 24 * 60 * 60 * 1000;  // Время, которое кеш считается валидным
     var Q_CACHE_TIME = 24 * 60 * 60 * 1000;  // Время, которое кеш считается валидным
     var OMDB_CACHE = 'maxsm_ratings_omdb_cache';
@@ -386,12 +349,12 @@
     var ID_MAPPING_CACHE = 'maxsm_ratings_id_mapping_cache';
     var QUALITY_CACHE = 'maxsm_ratings_quality_cache';
     var OMDB_API_KEYS = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEYS) || ['c4fe9fcf']; // api ключи массивом
-    var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['cc0875d7-b351-46bb-b97f-56787d2ea25d']; // api ключи массивом
+    var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['Ycc0875d7-b351-46bb-b97f-56787d2ea25d']; // api ключи массивом
     var PROXY_TIMEOUT = 5000; // Таймаут прокси
     var JACRED_PROTOCOL = 'https://'; // Протокол JacRed
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     //var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
-    //var JACRED_URL = 'jacred.xyz';
+    //var JACRED_URL = 'jacred.xyz'; 
     var JACRED_URL = 'parser.ruzha.ru';
     var JACRED_API_KEY = 'BCqr1JX01ISh';
     var PROXY_LIST = [  // Корс прокси для запросов 
@@ -693,12 +656,8 @@
 
     // Улучшенная функция удаления анимации
     function removeLoadingAnimation(localCurrentCard, render) {
-        // Получаем активный рендер из текущей активности
-        // var render = Lampa.Activity.active().activity.render();
         if (!render) return;
-    
         if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Remove animation");
-    
         // Ищем контейнеры с анимацией только внутри render
         var containers = $('.loading-dots-container', render);
         containers.each(function(index, element) {
@@ -719,17 +678,6 @@
         if (rating >= 7.0) return 'rate--lime';
         if (rating >= 5.0) return 'rate--orange';
         return 'rate--red';
-    }
-
-    // Проверка в той мы карточке (сейчас не используется)
-    function stillHere(localCurrentCard) {
-        if (globalCurrentCard !== localCurrentCard) {
-                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Card changed! Skip!");
-                    return false;
-                } else {
-                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Card ok!");
-                    return true;
-                }
     }
     
 // ------------------------------------------------------------JacRed------------------------------------------------------------------------------   
@@ -823,6 +771,15 @@
             }
     
             try {
+                
+                // ЛОГИРОВАНИЕ ПОЛНОГО ОТВЕТА
+                /*
+                if (Q_LOGGING) {
+                    console.log("MAXSM-RATINGS JacRed FULL RESPONSE", response);
+        
+                }
+                */
+                
                 // Парсим ответ и извлекаем Results
                 var data = typeof response === 'string' ? JSON.parse(response) : response;
                 var torrents = data.Results || [];
@@ -845,10 +802,23 @@
     
                 for (var i = 0; i < torrents.length; i++) {
                     var t = torrents[i];
-                    var info = t.Info || {};
+                    var info = t.info || t.Info || {};
                     var usedQuality = info.quality;
                     var usedYear = info.relased;
                     var titleForCheck = t.Title || '';
+                    
+                    // ЛОГИРОВАНИЕ ДЕТАЛЕЙ ТОРРЕНТА
+                    /*
+                    if (Q_LOGGING) {
+                        console.log('MAXSM-RATINGS Processing torrent [${i+1}/${torrents.length}]: ${titleForCheck');
+                        console.log("Raw data:", {
+                            quality: usedQuality,
+                            year: usedYear,
+                            title: titleForCheck,
+                            info: info
+                        });
+                    } 
+                    */
     
                     // Пропускаем торренты без информации о качестве
                     if (typeof usedQuality !== 'number' || usedQuality === 0) {
@@ -1290,15 +1260,6 @@
                     fetchQualitySequentially(normalizedCard, localCurrentCard, qCacheKey, render);
                 }
             } 
-        
-        // Если есть оба - пропускаем запрос к KP API, если оптимизация
-        /*
-        if (kpExists && imdbExists && optimize === 1) {
-            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Skip KP ratings, allrady in card and optimize = 1");
-            processNextStep();
-            return;
-        }
-        */
                 
         // 1. Обрабатываем кеш Кинопоиска
         if (cachedKpData) {
@@ -1507,16 +1468,16 @@
             width: 600,
             onBack: function() {
                 Lampa.Modal.close();
+                Lampa.Controller.toggle('content');
+                return true;
             }
         });
     }
 //------------------------------------------------------------------------------------------------------------------------
     //Меняем лейблы на иконки
     function insertIcons(localCurrentCard, render) {
-        // var render = Lampa.Activity.active().activity.render();
         if (!render) return;   
         if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert icons");       
-        // if (!stillHere(localCurrentCard)) return;
         
         function replaceIcon(className, svg) {
             var Element = $('.' + className, render);
@@ -1556,9 +1517,6 @@
     }
 
     function saveOmdbCache(key, data, localCurrentCard) {
-        // Оптимищируем ли запросы 1 - экономия, 0 - точность (Сохраняем в кеш на N  дней и пустые результаты)
-        // var optimize = parseInt(localStorage.getItem('maxsm_ratings_optimize'));
-        
         // Проверяем валидные рейтинги
         var hasValidRating = (
             (data.rt && data.rt !== "N/A") ||
@@ -1577,8 +1535,6 @@
         var hasOscars = typeof data.oscars === 'number' && data.oscars > 0;
         var hasEmmy = typeof data.emmy === 'number' && data.emmy > 0;
         var hasAwards = typeof data.awards === 'number' && data.awards > 0;
-
-        // if (/*optimize === 0 &&*/ !hasValidRating && !hasValidAgeRating && !hasOscars && !hasEmmy && !hasAwards) return;
         
         if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Save OMDB cache");
         
@@ -1766,10 +1722,8 @@
     }
     
     function updateHiddenElements(ratings, localCurrentCard, render) {
-        // var render = Lampa.Activity.active().activity.render();
         if (!render) return;
         if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Update hidden elements");        
-        //if (!stillHere(localCurrentCard)) return;
         
         // Обновление возрастного рейтинга с проверкой "Not Rated"
          var pgElement = $('.full-start__pg.hide', render);
@@ -1829,8 +1783,6 @@
     }
     
     function insertRatings(rtRating, mcRating, oscars, awards, emmy, localCurrentCard, render) {
-        //if (!stillHere(localCurrentCard)) return;
-        //var render = Lampa.Activity.active().activity.render();
         if (!render) return;
         if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert OMDB ratings");  
         
@@ -1925,11 +1877,8 @@
     }
     
     function calculateAverageRating(localCurrentCard, render) {
-        //var render = Lampa.Activity.active().activity.render();
         if (!render) return;
         if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Calculate avarage rating");   
-        
-        //if (!stillHere(localCurrentCard)) return;
     
         var rateLine = $('.full-start-new__rate-line', render);
         if (!rateLine.length) return;
@@ -2159,11 +2108,7 @@
         if (!localStorage.getItem('maxsm_ratings_quality')) {
             localStorage.setItem('maxsm_ratings_quality', 'true');
         }  
-        /*
-        if (!localStorage.getItem('maxsm_ratings_optimize')) {
-            localStorage.setItem('maxsm_ratings_optimize', '1');
-        }  
-        */
+
         if (!localStorage.getItem('maxsm_ratings_quality_inlist')) {
             localStorage.setItem('maxsm_ratings_quality_inlist', 'true');
         }  
@@ -2203,31 +2148,6 @@
                 }
             });
         }
-        
-        // Создание объекта для значений выбора режима
-        /*
-        var optimizeValue = {};
-        optimizeValue[0] = Lampa.Lang.translate("maxsm_ratings_optimize_accuracy");   // optimize = 0 - точность 
-        optimizeValue[1] = Lampa.Lang.translate("maxsm_ratings_optimize_efficiency"); // optimize = 1 - экономия 
-        
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: {
-                name: "maxsm_ratings_optimize",
-                type: 'select',
-                values: optimizeValue,
-                default: 1
-            },
-            field: {
-                name: Lampa.Lang.translate("maxsm_ratings_optimize"),
-                description: ''
-            },
-            onChange: function(value) {
-
-            }
-        });
-        
-        */
 
         Lampa.SettingsApi.addParam({
             component: "maxsm_ratings",
