@@ -352,8 +352,8 @@
     var KP_CACHE = 'maxsm_ratings_kp_cache';
     var ID_MAPPING_CACHE = 'maxsm_ratings_id_mapping_cache';
     var QUALITY_CACHE = 'maxsm_ratings_quality_cache';
-    var OMDB_API_KEYS = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEYS) || ['18a1eec9']; // api ключи массивом
-    var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a']; // api ключи массивом
+    var OMDB_API_KEYS = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEYS) || ['18a1eec9', 'd3a7a896']; // api ключи массивом
+    var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a', '5421e2f6-e0ed-4c08-aee9-492334f88937', '34abd082-4543-44a2-84fb-2169f49ce93e']; // api ключи массивом
     var PROXY_TIMEOUT = 5000; // Таймаут прокси
     var JACRED_PROTOCOL = 'https://'; // Протокол JacRed
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
