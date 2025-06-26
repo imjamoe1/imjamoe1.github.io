@@ -265,7 +265,7 @@
       key: "visible",
       value: function visible() {
         var src = this.params.type === 'watch' ? this.data.image_horizontal : this.data.image_vertical;
-        src = src ? 'https://livesportvideo.deepstream.in' + src : './img/img_load.svg';
+        src = src ? src : './img/img_load.svg';
         this.img.src = src;
         if (this.onVisible) this.onVisible(this.card, {});
       }
