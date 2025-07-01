@@ -162,120 +162,168 @@
     })();
     const { CFG, LOG, PUBLIC_PARSERS, ICON } = Config;
 
-    // ───────────────────── core ▸ API ────────────────────────────────
-    const Api = (() => {
-        const MAIN = 'https://api.torbox.app/v1/api';
+// ───────────────────── core ▸ API ────────────────────────────────
+const Api = (() => {
+    const MAIN = 'https://api.torbox.app/v1/api';
+    const MAX_RETRIES = 2;
+    const RETRY_DELAY = 1000;
 
-        const _process = (txt, status) => {
-            if (status === 401) throw { type: 'auth', message: '401 – неверный API-ключ' };
-            if (status === 403) throw { type: 'auth', message: '403 – доступ запрещен, проверьте права ключа' };
-            if (status === 429) throw { type: 'network', message: '429 – слишком много запросов, попробуйте позже' };
-            if (status >= 500) throw { type: 'network', message: `Ошибка сервера TorBox (${status})` };
-            if (status >= 400) throw { type: 'network', message: `Ошибка клиента (${status})` };
-            if (!txt) throw { type: 'api', message: 'Пустой ответ от сервера' };
-            try {
-                if (typeof txt === 'string' && txt.startsWith('http')) return { success: true, url: txt };
-                const j = typeof txt === 'object' ? txt : JSON.parse(txt);
-                if (j?.success === false) {
-                     const errorMsg = j.detail || j.message || 'Неизвестная ошибка API';
-                     throw { type: 'api', message: errorMsg };
-                }
-                return j;
-            } catch (e) {
-                if (e.type) throw e;
-                throw { type: 'api', message: 'Некорректный JSON в ответе' };
+    const _process = (txt, status) => {
+        if (status === 401) throw { type: 'auth', message: '401 – неверный API-ключ' };
+        if (status === 403) throw { type: 'auth', message: '403 – доступ запрещен, проверьте права ключа' };
+        if (status === 429) throw { type: 'network', message: '429 – слишком много запросов, попробуйте позже' };
+        if (status >= 500) throw { type: 'network', message: `Ошибка сервера TorBox (${status})` };
+        if (status >= 400) throw { type: 'network', message: `Ошибка клиента (${status})` };
+        if (!txt) throw { type: 'api', message: 'Пустой ответ от сервера' };
+        try {
+            if (typeof txt === 'string' && txt.startsWith('http')) return { success: true, url: txt };
+            const j = typeof txt === 'object' ? txt : JSON.parse(txt);
+            if (j?.success === false) {
+                 const errorMsg = j.detail || j.message || 'Неизвестная ошибка API';
+                 throw { type: 'api', message: errorMsg };
             }
-        };
+            return j;
+        } catch (e) {
+            if (e.type) throw e;
+            throw { type: 'api', message: 'Некорректный JSON в ответе' };
+        }
+    };
 
-        const request = async (url, opt = {}, signal) => {
-            if (!CFG.proxyUrl) throw { type: 'validation', message: 'CORS-proxy не задан в настройках' };
+    const request = async (url, opt = {}, signal, retryCount = 0) => {
+        if (!CFG.proxyUrl) throw { type: 'validation', message: 'CORS-proxy не задан в настройках' };
 
-            const TIMEOUT_MS = 20000;
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
-            if (signal) signal.addEventListener('abort', () => controller.abort());
+        const TIMEOUT_MS = 15000;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+        if (signal) signal.addEventListener('abort', () => controller.abort());
 
-            const proxy = `${CFG.proxyUrl}?url=${encodeURIComponent(url)}`;
+        try {
+            // Формируем URL прокси с проверкой на уже закодированный URL
+            let proxyUrl = CFG.proxyUrl;
+            if (!proxyUrl.includes('?url=')) {
+                proxyUrl = proxyUrl.includes('?') 
+                    ? `${proxyUrl}&url=${encodeURIComponent(url)}` 
+                    : `${proxyUrl}?url=${encodeURIComponent(url)}`;
+            }
+
+            // Добавляем API-ключ если требуется
             opt.headers = opt.headers || {};
-            if (opt.is_torbox_api !== false) opt.headers['X-Api-Key'] = CFG.apiKey;
+            if (opt.is_torbox_api !== false && CFG.apiKey) {
+                opt.headers['X-Api-Key'] = CFG.apiKey;
+            }
             delete opt.headers['Authorization'];
+
+            const res = await fetch(proxyUrl, { 
+                ...opt, 
+                signal: controller.signal,
+                referrerPolicy: 'no-referrer'
+            });
+
+            const result = await _process(await res.text(), res.status);
+            clearTimeout(timeoutId);
+            return result;
+
+        } catch (e) {
+            clearTimeout(timeoutId);
+            
+            if (e.name === 'AbortError') {
+                if (!signal || !signal.aborted) throw { type: 'network', message: `Таймаут запроса (${TIMEOUT_MS / 1000} сек)` };
+                throw e;
+            }
+
+            // Повторяем запрос при определенных ошибках
+            if (retryCount < MAX_RETRIES && [
+                'Failed to fetch',
+                'NetworkError when attempting to fetch resource',
+                'TypeError: Failed to fetch'
+            ].some(err => e.message.includes(err))) {
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (retryCount + 1)));
+                return request(url, opt, signal, retryCount + 1);
+            }
+
+            throw { 
+                type: 'network', 
+                message: e.message.includes('Failed to fetch') 
+                    ? 'Не удалось подключиться к серверу. Проверьте интернет-соединение и настройки прокси.' 
+                    : e.message 
+            };
+        }
+    };
+
+    const searchPublicTrackers = async (movie, signal) => {
+        for (const p of PUBLIC_PARSERS) {
+            const qs = new URLSearchParams({
+                apikey: p.key,
+                Query: `${movie.title} ${movie.year || ''}`.trim(),
+                title: movie.title,
+                title_original: movie.original_title,
+                Category: '2000,5000'
+            });
+            if (movie.year) qs.append('year', movie.year);
+            const u = `https://${p.url}/api/v2.0/indexers/all/results?${qs}`;
+            LOG('Parser', p.name, u);
             try {
-                const res = await fetch(proxy, { ...opt, signal: controller.signal });
-                return _process(await res.text(), res.status);
+                const j = await request(u, { method: 'GET', is_torbox_api: false }, signal);
+                if (j && Array.isArray(j.Results) && j.Results.length) {
+                    LOG('Parser success', p.name, j.Results.length);
+                    return j.Results;
+                }
+                LOG('Parser empty', p.name);
+            } catch (err) {
+                LOG('Parser fail', p.name, err.message);
+            }
+        }
+        throw { type: 'api', message: 'Все публичные парсеры недоступны или без результатов' };
+    };
+
+    const checkCached = async (hashes, signal) => {
+        if (!hashes.length) return {};
+        const data = {};
+        for (let i = 0; i < hashes.length; i += 100) {
+            const chunk = hashes.slice(i, i + 100);
+            const qs = new URLSearchParams();
+            chunk.forEach(h => qs.append('hash', h));
+            qs.append('format', 'object');
+            qs.append('list_files', 'false');
+            try {
+                const r = await request(`${MAIN}/torrents/checkcached?${qs}`, { method: 'GET' }, signal);
+                if (r?.data) Object.assign(data, r.data);
             } catch (e) {
-                if (e.name === 'AbortError') {
-                    if (!signal || !signal.aborted) throw { type: 'network', message: `Таймаут запроса (${TIMEOUT_MS / 1000} сек)` };
-                    throw e;
-                }
-                throw { type: 'network', message: e.message };
-            } finally {
-                clearTimeout(timeoutId);
+                LOG('checkCached chunk error', e.message);
+                // Продолжаем с оставшимися хешами
             }
-        };
+        }
+        return data;
+    };
 
-        const searchPublicTrackers = async (movie, signal) => {
-            for (const p of PUBLIC_PARSERS) {
-                const qs = new URLSearchParams({
-                    apikey: p.key,
-                    Query: `${movie.title} ${movie.year || ''}`.trim(),
-                    title: movie.title,
-                    title_original: movie.original_title,
-                    Category: '2000,5000'
-                });
-                if (movie.year) qs.append('year', movie.year);
-                const u = `https://${p.url}/api/v2.0/indexers/all/results?${qs}`;
-                LOG('Parser', p.name, u);
-                try {
-                    const j = await request(u, { method: 'GET', is_torbox_api: false }, signal);
-                    if (j && Array.isArray(j.Results) && j.Results.length) {
-                        LOG('Parser success', p.name, j.Results.length);
-                        return j.Results;
-                    }
-                    LOG('Parser empty', p.name);
-                } catch (err) {
-                    LOG('Parser fail', p.name, err.message);
-                }
-            }
-            throw { type: 'api', message: 'Все публичные парсеры недоступны или без результатов' };
-        };
+    const addMagnet = (magnet, signal) => {
+        const fd = new FormData();
+        fd.append('magnet', magnet);
+        fd.append('seed', '3');
+        return request(`${MAIN}/torrents/createtorrent`, { 
+            method: 'POST', 
+            body: fd 
+        }, signal);
+    };
 
-        const checkCached = async (hashes, signal) => {
-            if (!hashes.length) return {};
-            const data = {};
-            for (let i = 0; i < hashes.length; i += 100) {
-                const chunk = hashes.slice(i, i + 100);
-                const qs = new URLSearchParams();
-                chunk.forEach(h => qs.append('hash', h));
-                qs.append('format', 'object');
-                qs.append('list_files', 'false');
-                try {
-                    const r = await request(`${MAIN}/torrents/checkcached?${qs}`, { method: 'GET' }, signal);
-                    if (r?.data) Object.assign(data, r.data);
-                } catch (e) {
-                    LOG('checkCached chunk error', e.message);
-                }
-            }
-            return data;
-        };
+    const myList = async (id, s) => {
+        const json = await request(`${MAIN}/torrents/mylist?id=${id}&bypass_cache=true`, { method: 'GET' }, s);
+        if (json && json.data && !Array.isArray(json.data)) {
+            json.data = [json.data];
+        }
+        return json;
+    };
 
-        const addMagnet = (magnet, signal) => request(`${MAIN}/torrents/createtorrent`, (() => {
-            const fd = new FormData();
-            fd.append('magnet', magnet);
-            fd.append('seed', '3');
-            return { method: 'POST', body: fd };
-        })(), signal);
+    const requestDl = (tid, fid, s) => {
+        const url = `${MAIN}/torrents/requestdl?torrent_id=${tid}&file_id=${fid}`;
+        return request(url, { 
+            method: 'GET',
+            headers: CFG.apiKey ? { 'X-Api-Key': CFG.apiKey } : {}
+        }, s);
+    };
 
-        const myList = async (id, s) => {
-            const json = await request(`${MAIN}/torrents/mylist?id=${id}&bypass_cache=true`, { method: 'GET' }, s);
-            if (json && json.data && !Array.isArray(json.data)) {
-                json.data = [json.data];
-            }
-            return json;
-        };
-        const requestDl = (tid, fid, s) => request(`${MAIN}/torrents/requestdl?torrent_id=${tid}&file_id=${fid}&token=${CFG.apiKey}`, { method: 'GET' }, s);
-
-        return { searchPublicTrackers, checkCached, addMagnet, myList, requestDl };
-    })();
+    return { searchPublicTrackers, checkCached, addMagnet, myList, requestDl };
+})();
 
     const ErrorHandler = {
         show(t, e) {
