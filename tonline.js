@@ -1,9 +1,9 @@
-/* TorBox Lampa Plugin - Rewritten for Stability */
+/* TorBox Lampa Plugin - Stable Version for Android TV */
 (function () {
     'use strict';
 
     // ───────────────────────────── guard ──────────────────────────────
-    const PLUGIN_ID = 'torbox_lampa_plugin_integrated';
+    const PLUGIN_ID = 'torbox_lampa_plugin_stable';
     if (window[PLUGIN_ID]) return;
     window[PLUGIN_ID] = true;
 
@@ -69,6 +69,9 @@
                 }
             }
             return a.name.length - b.name.length;
+        },
+        safeUpperCase(str) {
+            return str ? String(str).toUpperCase() : '';
         }
     };
 
@@ -282,7 +285,7 @@
         }
     };
 
-    // ───────────────────── component ▸ Main List Component ───     ───────────
+    // ───────────────────── component ▸ Main List Component ───────────────────
     function MainComponent(object) {
         let scroll = new Lampa.Scroll({mask: true, over: true, step: 250});
         let files = new Lampa.Explorer(object);
@@ -345,35 +348,53 @@
             };
         };
 
-this.buildTechBar = function(t, raw) {
-    const tag = (txt, cls) => `<div class="torbox-item__tech-item torbox-item__tech-item--${cls}">${txt}</div>`;
-    let inner_html = '';
+        this.buildTechBar = function(t, raw) {
+            const tag = (txt, cls) => {
+                if (!txt) return '';
+                return `<div class="torbox-item__tech-item torbox-item__tech-item--${cls}">${txt}</div>`;
+            };
+            
+            let inner_html = '';
 
-    if (t.video_resolution) inner_html += tag(t.video_resolution, 'res');
-    if (t.video_codec) inner_html += tag((t.video_codec || '').toUpperCase(), 'codec');
-    if (t.has_hdr) inner_html += tag('HDR', 'hdr');
-    if (t.has_dv) inner_html += tag('Dolby Vision', 'dv');
+            // Видео характеристики
+            if (t.video_resolution) inner_html += tag(t.video_resolution, 'res');
+            if (t.video_codec) inner_html += tag(Utils.safeUpperCase(t.video_codec), 'codec');
+            if (t.has_hdr) inner_html += tag('HDR', 'hdr');
+            if (t.has_dv) inner_html += tag('Dolby Vision', 'dv');
 
-    const audioStreams = raw.ffprobe?.filter(s => s.codec_type === 'audio') || [];
-    let voiceIndex = 0;
+            // Аудио дорожки
+            const audioStreams = Array.isArray(raw.ffprobe) ? raw.ffprobe.filter(s => s?.codec_type === 'audio') : [];
+            let voiceIndex = 0;
 
-    audioStreams.forEach(s => {
-        let lang_or_voice = (s.tags?.language || s.tags?.LANGUAGE || '').toUpperCase();
-        if (!lang_or_voice || lang_or_voice === 'UND') {
-            if (raw.info?.voices && raw.info.voices[voiceIndex]) {
-                lang_or_voice = raw.info.voices[voiceIndex];
-                voiceIndex++;
-            } else {
-                lang_or_voice = null; 
-            }
-        }
-        const codec = (s.codec_name || '').toUpperCase();
-        const layout = s.channel_layout || '';
-        const displayText = [lang_or_voice, codec, layout].filter(Boolean).join(' ').trim();
-        if (displayText) inner_html += tag(displayText, 'audio');
-    });
-    return inner_html ? `<div class="torbox-item__tech-bar">${inner_html}</div>` : '';
-}
+            audioStreams.forEach(s => {
+                // Язык аудио
+                let lang_or_voice = '';
+                try {
+                    lang_or_voice = Utils.safeUpperCase(s.tags?.language || s.tags?.LANGUAGE || '');
+                } catch(e) { lang_or_voice = ''; }
+                
+                if (!lang_or_voice || lang_or_voice === 'UND') {
+                    if (Array.isArray(raw.info?.voices) && raw.info.voices[voiceIndex]) {
+                        lang_or_voice = Utils.safeUpperCase(raw.info.voices[voiceIndex]);
+                        voiceIndex++;
+                    }
+                }
+
+                // Кодек и каналы
+                const codec = s.codec_name ? Utils.safeUpperCase(s.codec_name) : '';
+                const layout = s.channel_layout ? String(s.channel_layout) : '';
+                
+                // Формируем строку
+                const displayText = [lang_or_voice, codec, layout]
+                    .filter(part => part && part.trim())
+                    .join(' ')
+                    .trim();
+
+                if (displayText) inner_html += tag(displayText, 'audio');
+            });
+
+            return inner_html ? `<div class="torbox-item__tech-bar">${inner_html}</div>` : '';
+        };
 
         const search = (force = false) => {
             abort.abort();
@@ -397,6 +418,9 @@ this.buildTechBar = function(t, raw) {
             Api.searchPublicTrackers(object.movie, signal)
                 .then(raw => {
                     if (signal.aborted) return;
+                    if (!raw || !Array.isArray(raw)) {
+                        throw new Error('Некорректный ответ от сервера');
+                    }
                     if (!raw.length) return this.empty('Парсер не вернул результатов.');
                     const withHash = raw.map(r => {
                         const m = r.MagnetUri.match(/urn:btih:([a-fA-F0-9]{40})/i);
@@ -588,8 +612,12 @@ this.buildTechBar = function(t, raw) {
         this.buildFilter = function () {
             const build = (key, title, arr) => {
                 const uni = [...new Set(arr.flat().filter(Boolean))].sort();
-                const items = ['all', ...uni].map(v => ({ title: v === 'all' ? 'Все' : v.toUpperCase(), value: v, selected: state.filters[key] === v }));
-                const sub = state.filters[key] === 'all' ? 'Все' : state.filters[key].toUpperCase();
+                const items = ['all', ...uni].map(v => ({ 
+                    title: v === 'all' ? 'Все' : Utils.safeUpperCase(v), 
+                    value: v, 
+                    selected: state.filters[key] === v 
+                }));
+                const sub = state.filters[key] === 'all' ? 'Все' : Utils.safeUpperCase(state.filters[key]);
                 return { title, subtitle: sub, items, stype: key };
             };
     
@@ -639,6 +667,11 @@ this.buildTechBar = function(t, raw) {
         };
         
         this.draw = function (items) {
+            if (!Array.isArray(items)) {
+                console.error('Items is not array', items);
+                return this.empty('Ошибка данных');
+            }
+
             last = false;
             scroll.clear();
 
@@ -736,11 +769,19 @@ this.buildTechBar = function(t, raw) {
             search();
         };
 
+        this.reinit = function() {
+            this.destroy();
+            this.activity = object.activity;
+            this.initialize();
+        };
+
         this.start = function () {
             if (Lampa.Activity.active().activity !== this.activity) return;
             if (!initialized) {
                 initialized = true;
                 this.initialize();
+            } else {
+                this.reinit();
             }
             Lampa.Controller.enable('content');
         };
@@ -757,6 +798,7 @@ this.buildTechBar = function(t, raw) {
             if (files) files.destroy();
             if (filter) filter.destroy();
             scroll = files = filter = last = null;
+            initialized = false;
         };
 
         this.pause = function() {};
@@ -767,7 +809,7 @@ this.buildTechBar = function(t, raw) {
     (function () {
         const manifest = {
             type: 'video',
-            version: '38.0.0', // Architectural refactoring
+            version: '38.1.0',
             name: 'TorBox (Stable)',
             description: 'Плагин для просмотра торрентов через TorBox',
             component: 'torbox_main',
@@ -807,12 +849,10 @@ this.buildTechBar = function(t, raw) {
         }
 
         function boot() {
-            // Register all components with Lampa
             Lampa.Component.add('torbox_main', MainComponent);
             addTemplates();
             addSettings();
 
-            // Add button to movie card
             Lampa.Listener.follow('full', e => {
                 if (e.type !== 'complite' || !e.data.movie) return;
                 const root = e.object.activity.render();
@@ -829,7 +869,6 @@ this.buildTechBar = function(t, raw) {
                 torrentBtn.length ? torrentBtn.after(btn) : root.find('.full-start__play').after(btn);
             });
 
-            // Add CSS styles
             const css = document.createElement('style');
             css.id = 'torbox-stable-styles';
             css.textContent = `
@@ -864,7 +903,7 @@ this.buildTechBar = function(t, raw) {
             document.head.appendChild(css);
 
             Lampa.Manifest.plugins[manifest.name] = manifest;
-            LOG('TorBox Stable v38.0.0 ready');
+            LOG('TorBox Stable v38.1.0 ready');
         }
 
         if (window.Lampa?.Activity) {
