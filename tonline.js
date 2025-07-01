@@ -1,9 +1,6 @@
 /* TorBox Lampa Plugin - Rewritten for Stability */
 (function () {
     'use strict';
-    if (!String.prototype.trim) {
-    String.prototype.trim = function() { return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, ''); };
-}
 
     // ───────────────────────────── guard ──────────────────────────────
     const PLUGIN_ID = 'torbox_lampa_plugin_integrated';
@@ -51,8 +48,7 @@
             if (h < 24) return h + ' год. назад';
             return days + ' д. назад';
         },
-        Utils.getQualityLabel(title = '', raw) {
-    const safeTitle = (title || '').toString();
+        getQualityLabel(title = '', raw) {
             if (raw?.info?.quality) return raw.info.quality + 'p';
             if (/2160p|4K|UHD/i.test(title)) return '4K';
             if (/1080p|FHD/i.test(title)) return 'FHD';
@@ -135,7 +131,7 @@
     const Config = (() => {
         const DEF = {
             proxyUrl: 'https://my-torbox-proxy.slonce70.workers.dev/',
-            apiKey: ''
+            apiKey: '4b7b263b-b5a8-483f-a9a5-53b4127c4bb2'
         };
         const CFG = {
             get debug() { return Store.get('torbox_debug', '0') === '1'; },
@@ -286,7 +282,7 @@
         }
     };
 
-    // ───────────────────── component ▸ Main List Component ───     ───────────
+    // ───────────────────── component ▸ Main List Component ───�����───────────
     function MainComponent(object) {
         let scroll = new Lampa.Scroll({mask: true, over: true, step: 250});
         let files = new Lampa.Explorer(object);
@@ -358,10 +354,11 @@
             if (t.has_hdr) inner_html += tag('HDR', 'hdr');
             if (t.has_dv) inner_html += tag('Dolby Vision', 'dv');
         
-            const audioStreams = (raw.ffprobe || []).filter(s => s?.codec_type === 'audio');
-audioStreams.forEach(s => {
-    const tags = s.tags || {};
-    let lang_or_voice = (tags.language || tags.LANGUAGE || '').toString().toUpperCase();
+            const audioStreams = raw.ffprobe?.filter(s => s.codec_type === 'audio') || [];
+            let voiceIndex = 0;
+        
+            audioStreams.forEach(s => {
+                let lang_or_voice = s.tags?.language?.toUpperCase() || s.tags?.LANGUAGE?.toUpperCase();
                 if (!lang_or_voice || lang_or_voice === 'UND') {
                     if (raw.info?.voices && raw.info.voices[voiceIndex]) {
                         lang_or_voice = raw.info.voices[voiceIndex];
