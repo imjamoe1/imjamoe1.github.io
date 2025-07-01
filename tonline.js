@@ -1,6 +1,9 @@
 /* TorBox Lampa Plugin - Rewritten for Stability */
 (function () {
     'use strict';
+    if (!String.prototype.trim) {
+    String.prototype.trim = function() { return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, ''); };
+}
 
     // ───────────────────────────── guard ──────────────────────────────
     const PLUGIN_ID = 'torbox_lampa_plugin_integrated';
@@ -48,7 +51,8 @@
             if (h < 24) return h + ' год. назад';
             return days + ' д. назад';
         },
-        getQualityLabel(title = '', raw) {
+        Utils.getQualityLabel(title = '', raw) {
+    const safeTitle = (title || '').toString();
             if (raw?.info?.quality) return raw.info.quality + 'p';
             if (/2160p|4K|UHD/i.test(title)) return '4K';
             if (/1080p|FHD/i.test(title)) return 'FHD';
@@ -314,7 +318,7 @@
             const tech_info = {
                 video_codec: v?.codec_name,
                 video_resolution: v ? `${v.width}x${v.height}` : null,
-                audio_langs: [...new Set(a.map(s => s.tags?.language).filter(lang => !!lang))],
+                audio_langs: [...new Set(a.map(s => s.tags?.language).filter(Boolean))],
                 audio_codecs: [...new Set(a.map(s => s.codec_name).filter(Boolean))],
                 has_hdr: /hdr/i.test(raw.Title) || raw.info?.videotype?.toLowerCase() === 'hdr',
                 has_dv: /dv|dolby vision/i.test(raw.Title) || raw.info?.videotype?.toLowerCase() === 'dovi',
@@ -334,8 +338,7 @@
                 cached: is_cached,
                 publish_date: raw.PublishDate,
                 age: Utils.formatAge(raw.PublishDate),
-                quality: Utils.getQualityLabel(title = '', raw) {
-    const safeTitle = title || '';
+                quality: Utils.getQualityLabel(raw.Title, raw),
                 video_type: raw.info?.videotype?.toLowerCase(),
                 voices: raw.info?.voices,
                 ...tech_info,
@@ -355,12 +358,11 @@
             if (t.has_hdr) inner_html += tag('HDR', 'hdr');
             if (t.has_dv) inner_html += tag('Dolby Vision', 'dv');
         
-            const audioStreams = raw.ffprobe?.filter(s => s.codec_type === 'audio') || [];
-            let voiceIndex = 0;
-        
-            audioStreams.forEach(s => {
-                let lang_or_voice = (s.tags?.language || s.tags?.LANGUAGE || '').toUpperCase();
-    if (!lang_or_voice || lang_or_voice === 'UND') {
+            const audioStreams = (raw.ffprobe || []).filter(s => s?.codec_type === 'audio');
+audioStreams.forEach(s => {
+    const tags = s.tags || {};
+    let lang_or_voice = (tags.language || tags.LANGUAGE || '').toString().toUpperCase();
+                if (!lang_or_voice || lang_or_voice === 'UND') {
                     if (raw.info?.voices && raw.info.voices[voiceIndex]) {
                         lang_or_voice = raw.info.voices[voiceIndex];
                         voiceIndex++;
