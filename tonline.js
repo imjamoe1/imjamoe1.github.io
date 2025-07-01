@@ -314,7 +314,7 @@
             const tech_info = {
                 video_codec: v?.codec_name,
                 video_resolution: v ? `${v.width}x${v.height}` : null,
-                audio_langs: [...new Set(a.map(s => s.tags?.language).filter(Boolean))],
+                audio_langs: [...new Set(a.map(s => s.tags?.language).filter(lang => !!lang))],
                 audio_codecs: [...new Set(a.map(s => s.codec_name).filter(Boolean))],
                 has_hdr: /hdr/i.test(raw.Title) || raw.info?.videotype?.toLowerCase() === 'hdr',
                 has_dv: /dv|dolby vision/i.test(raw.Title) || raw.info?.videotype?.toLowerCase() === 'dovi',
@@ -334,7 +334,8 @@
                 cached: is_cached,
                 publish_date: raw.PublishDate,
                 age: Utils.formatAge(raw.PublishDate),
-                quality: Utils.getQualityLabel(raw.Title, raw),
+                quality: Utils.getQualityLabel(title = '', raw) {
+    const safeTitle = title || '';
                 video_type: raw.info?.videotype?.toLowerCase(),
                 voices: raw.info?.voices,
                 ...tech_info,
