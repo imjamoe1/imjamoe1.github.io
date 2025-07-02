@@ -1,4 +1,10 @@
 (function() {
+    // Ждем полной загрузки Lampa
+    if (!window.Lampa || !Lampa.Listener) {
+        setTimeout(arguments.callee, 100);
+        return;
+    }
+
     const PLUGIN_NAME = 'SettingsMenuEditorPro';
     const STORAGE_KEY = 'lampa_settings_custom_order';
     const HIDDEN_KEY = 'lampa_hidden_settings_items';
@@ -13,20 +19,25 @@
     function init() {
         console.log(`[${PLUGIN_NAME}] Initializing...`);
 
-        // Ждем когда Lampa полностью загрузится
-        Lampa.Listener.follow('app', function(e) {
-            if (e.type === 'ready') {
-                // Теперь когда Lampa готова, мы можем обращаться к Settings
-                Lampa.Settings.listener.follow('open', function(e) {
-                    if (!settingsContainer && e.body) {
-                        settingsContainer = e.body.find('.scroll__body > div');
-                        setupEditor();
-                    }
-                });
+        // Подписываемся на открытие настроек
+        Lampa.Settings.listener.follow('open', function(e) {
+            if (!settingsContainer && e.body) {
+                settingsContainer = e.body.find('.scroll__body > div');
+                
+                // Добавляем небольшую задержку для гарантированной инициализации
+                setTimeout(() => {
+                    setupEditor();
+                }, 300);
             }
         });
 
-        Controller.add('settings_editor', {
+        // Создаем контроллер
+        Lampa.Controller.add('settings_editor', {
+            toggle: () => {
+                if (currentItem) {
+                    Lampa.Controller.collectionFocus(currentItem[0]);
+                }
+            },
             up: () => editMode && moveSelection(-1),
             down: () => editMode && moveSelection(1),
             left: () => editMode && toggleVisibility(currentItem),
@@ -36,15 +47,18 @@
         });
     }
 
-    // Остальные функции остаются без изменений
     function setupEditor() {
-        addStyles();
-        bindLongPress();
-        loadSettings();
+        try {
+            addStyles();
+            bindLongPress();
+            loadSettings();
+        } catch (e) {
+            console.error(`[${PLUGIN_NAME}] Setup error:`, e);
+        }
     }
 
     function bindLongPress() {
-        settingsContainer.find('.settings-folder').on('hover:long', function() {
+        settingsContainer.find('.settings-folder').off('hover:long').on('hover:long', function() {
             if (!editMode) {
                 toggleEditMode(true);
                 currentItem = $(this);
@@ -58,10 +72,10 @@
         $('body').toggleClass(EDIT_MODE_CLASS, editMode);
         
         if (editMode) {
-            Controller.toggle('settings_editor');
+            Lampa.Controller.toggle('settings_editor');
             console.log(`[${PLUGIN_NAME}] Edit mode activated`);
         } else {
-            Controller.toggle('settings');
+            Lampa.Controller.toggle('settings');
             saveSettings();
             console.log(`[${PLUGIN_NAME}] Edit mode deactivated`);
         }
@@ -69,6 +83,8 @@
 
     function moveSelection(direction) {
         const items = getVisibleItems();
+        if (items.length === 0) return;
+
         const currentIndex = items.index(currentItem);
         let newIndex = (currentIndex + direction + items.length) % items.length;
         
@@ -79,7 +95,18 @@
         clearHighlight();
         currentItem = item;
         currentItem.addClass(ACTIVE_CLASS);
-        currentItem[0].scrollIntoView({block: 'nearest', behavior: 'smooth'});
+        
+        // Плавная прокрутка к элементу
+        const container = settingsContainer.parent();
+        const itemPos = currentItem.position().top;
+        const containerHeight = container.height();
+        const scrollPos = container.scrollTop();
+        
+        if (itemPos < 0 || itemPos > containerHeight) {
+            container.animate({
+                scrollTop: scrollPos + itemPos - containerHeight/2
+            }, 200);
+        }
     }
 
     function clearHighlight() {
@@ -96,65 +123,93 @@
         if (!currentItem) return;
 
         const actions = [
-            {title: 'Переместить вверх', key: 'up'},
-            {title: 'Переместить вниз', key: 'down'},
-            {title: currentItem.hasClass(HIDDEN_CLASS) ? 'Показать' : 'Скрыть', key: 'toggle'}
+            {title: Lampa.Lang.translate('move_up') || 'Переместить вверх', key: 'up'},
+            {title: Lampa.Lang.translate('move_down') || 'Переместить вниз', key: 'down'},
+            {title: currentItem.hasClass(HIDDEN_CLASS) ? 
+                (Lampa.Lang.translate('show_item') || 'Показать') : 
+                (Lampa.Lang.translate('hide_item') || 'Скрыть'), 
+             key: 'toggle'}
         ];
 
+        Lampa.Modal.close();
+        
         Lampa.Select.show({
-            title: 'Действия с пунктом',
+            title: Lampa.Lang.translate('item_actions') || 'Действия',
             items: actions,
             onSelect: (action) => {
                 switch (action.key) {
                     case 'up':
-                        currentItem.insertBefore(currentItem.prev());
+                        if (currentItem.prev().length) {
+                            currentItem.insertBefore(currentItem.prev());
+                            saveSettings();
+                        }
                         break;
                     case 'down':
-                        currentItem.insertAfter(currentItem.next());
+                        if (currentItem.next().length) {
+                            currentItem.insertAfter(currentItem.next());
+                            saveSettings();
+                        }
                         break;
                     case 'toggle':
                         toggleVisibility(currentItem);
                         break;
                 }
-                saveSettings();
+                Lampa.Controller.toggle('settings_editor');
             },
             onBack: () => {
-                Controller.toggle('settings_editor');
+                Lampa.Controller.toggle('settings_editor');
             }
         });
     }
 
     function getVisibleItems() {
-        return settingsContainer.find('.settings-folder');
+        return settingsContainer.find('.settings-folder').not('[data-action="settings_editor"]');
     }
 
     function loadSettings() {
-        const order = JSON.parse(Lampa.Storage.get(STORAGE_KEY, '[]'));
-        if (order.length) {
-            order.forEach(id => {
-                const item = settingsContainer.find(`[data-component="${id}"]`);
-                if (item.length) settingsContainer.append(item);
-            });
-        }
+        try {
+            // Загрузка порядка
+            const order = JSON.parse(Lampa.Storage.get(STORAGE_KEY) || '[]');
+            if (order.length) {
+                order.forEach(id => {
+                    const item = settingsContainer.find(`[data-component="${id}"]`);
+                    if (item.length) settingsContainer.append(item);
+                });
+            }
 
-        const hidden = JSON.parse(Lampa.Storage.get(HIDDEN_KEY, '[]'));
-        hidden.forEach(id => {
-            settingsContainer.find(`[data-component="${id}"]`).addClass(HIDDEN_CLASS);
-        });
+            // Загрузка скрытых элементов
+            const hidden = JSON.parse(Lampa.Storage.get(HIDDEN_KEY) || '[]');
+            hidden.forEach(id => {
+                settingsContainer.find(`[data-component="${id}"]`).addClass(HIDDEN_CLASS);
+            });
+        } catch (e) {
+            console.error(`[${PLUGIN_NAME}] Load settings error:`, e);
+            // Сбрасываем некорректные настройки
+            Lampa.Storage.set(STORAGE_KEY, JSON.stringify([]));
+            Lampa.Storage.set(HIDDEN_KEY, JSON.stringify([]));
+        }
     }
 
     function saveSettings() {
-        const order = [];
-        settingsContainer.find('.settings-folder').each(function() {
-            order.push($(this).data('component'));
-        });
-        Lampa.Storage.set(STORAGE_KEY, JSON.stringify(order));
+        try {
+            // Сохраняем порядок
+            const order = [];
+            settingsContainer.find('.settings-folder').each(function() {
+                const component = $(this).data('component');
+                if (component) order.push(component);
+            });
+            Lampa.Storage.set(STORAGE_KEY, JSON.stringify(order));
 
-        const hidden = [];
-        settingsContainer.find(`.${HIDDEN_CLASS}`).each(function() {
-            hidden.push($(this).data('component'));
-        });
-        Lampa.Storage.set(HIDDEN_KEY, JSON.stringify(hidden));
+            // Сохраняем скрытые элементы
+            const hidden = [];
+            settingsContainer.find(`.${HIDDEN_CLASS}`).each(function() {
+                const component = $(this).data('component');
+                if (component) hidden.push(component);
+            });
+            Lampa.Storage.set(HIDDEN_KEY, JSON.stringify(hidden));
+        } catch (e) {
+            console.error(`[${PLUGIN_NAME}] Save settings error:`, e);
+        }
     }
 
     function addStyles() {
@@ -183,9 +238,16 @@
                 color: #ff3d3d;
             }
         `;
-        $('<style>').html(css).appendTo('head');
+        
+        if (!$('#settings-editor-styles').length) {
+            $('<style id="settings-editor-styles">').html(css).appendTo('head');
+        }
     }
 
     // Запускаем инициализацию
-    init();
+    Lampa.Listener.follow('app', function(e) {
+        if (e.type === 'ready') {
+            init();
+        }
+    });
 })();
