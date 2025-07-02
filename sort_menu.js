@@ -11,17 +11,21 @@
     let settingsContainer = null;
 
     function init() {
-        console.log(`[${PLUGIN_NAME}] Initializing advanced settings editor...`);
+        console.log(`[${PLUGIN_NAME}] Initializing...`);
 
-        // Ожидаем открытия настроек
-        Settings.listener.follow('open', (e) => {
-            if (!settingsContainer && e.body) {
-                settingsContainer = e.body.find('.scroll__body > div');
-                setupEditor();
+        // Ждем когда Lampa полностью загрузится
+        Lampa.Listener.follow('app', function(e) {
+            if (e.type === 'ready') {
+                // Теперь когда Lampa готова, мы можем обращаться к Settings
+                Lampa.Settings.listener.follow('open', function(e) {
+                    if (!settingsContainer && e.body) {
+                        settingsContainer = e.body.find('.scroll__body > div');
+                        setupEditor();
+                    }
+                });
             }
         });
 
-        // Контроллер для управления в режиме редактирования
         Controller.add('settings_editor', {
             up: () => editMode && moveSelection(-1),
             down: () => editMode && moveSelection(1),
@@ -32,14 +36,10 @@
         });
     }
 
+    // Остальные функции остаются без изменений
     function setupEditor() {
-        // Добавляем стили
         addStyles();
-        
-        // Назначаем обработчик долгого нажатия
         bindLongPress();
-        
-        // Загружаем сохраненные настройки
         loadSettings();
     }
 
@@ -96,16 +96,13 @@
         if (!currentItem) return;
 
         const actions = [
-            {title: Lang.translate('move_up') || 'Переместить вверх', key: 'up'},
-            {title: Lang.translate('move_down') || 'Переместить вниз', key: 'down'},
-            {title: currentItem.hasClass(HIDDEN_CLASS) ? 
-                (Lang.translate('show_item') || 'Показать') : 
-                (Lang.translate('hide_item') || 'Скрыть'), 
-             key: 'toggle'}
+            {title: 'Переместить вверх', key: 'up'},
+            {title: 'Переместить вниз', key: 'down'},
+            {title: currentItem.hasClass(HIDDEN_CLASS) ? 'Показать' : 'Скрыть', key: 'toggle'}
         ];
 
-        Select.show({
-            title: Lang.translate('item_actions') || 'Действия',
+        Lampa.Select.show({
+            title: 'Действия с пунктом',
             items: actions,
             onSelect: (action) => {
                 switch (action.key) {
@@ -128,12 +125,11 @@
     }
 
     function getVisibleItems() {
-        return settingsContainer.find('.settings-folder').not('[data-action="settings_editor"]');
+        return settingsContainer.find('.settings-folder');
     }
 
     function loadSettings() {
-        // Загрузка порядка
-        const order = JSON.parse(Storage.get(STORAGE_KEY, '[]'));
+        const order = JSON.parse(Lampa.Storage.get(STORAGE_KEY, '[]'));
         if (order.length) {
             order.forEach(id => {
                 const item = settingsContainer.find(`[data-component="${id}"]`);
@@ -141,27 +137,24 @@
             });
         }
 
-        // Загрузка скрытых элементов
-        const hidden = JSON.parse(Storage.get(HIDDEN_KEY, '[]'));
+        const hidden = JSON.parse(Lampa.Storage.get(HIDDEN_KEY, '[]'));
         hidden.forEach(id => {
             settingsContainer.find(`[data-component="${id}"]`).addClass(HIDDEN_CLASS);
         });
     }
 
     function saveSettings() {
-        // Сохраняем порядок
         const order = [];
         settingsContainer.find('.settings-folder').each(function() {
             order.push($(this).data('component'));
         });
-        Storage.set(STORAGE_KEY, JSON.stringify(order));
+        Lampa.Storage.set(STORAGE_KEY, JSON.stringify(order));
 
-        // Сохраняем скрытые элементы
         const hidden = [];
         settingsContainer.find(`.${HIDDEN_CLASS}`).each(function() {
             hidden.push($(this).data('component'));
         });
-        Storage.set(HIDDEN_KEY, JSON.stringify(hidden));
+        Lampa.Storage.set(HIDDEN_KEY, JSON.stringify(hidden));
     }
 
     function addStyles() {
@@ -170,17 +163,14 @@
                 position: relative;
                 transition: all 0.2s;
             }
-            
             .${ACTIVE_CLASS} {
                 background: rgba(255,165,0,0.3) !important;
                 border-left: 3px solid orange !important;
             }
-            
             .${HIDDEN_CLASS} {
                 opacity: 0.4;
                 filter: grayscale(80%);
             }
-            
             .${EDIT_MODE_CLASS} .settings-folder::after {
                 content: "✓";
                 position: absolute;
@@ -188,19 +178,14 @@
                 color: orange;
                 font-size: 20px;
             }
-            
             .${EDIT_MODE_CLASS} .${HIDDEN_CLASS}::after {
                 content: "✕";
                 color: #ff3d3d;
             }
         `;
-        
         $('<style>').html(css).appendTo('head');
     }
 
-    // Инициализация после загрузки Lampa
-    Lampa.Listener.follow('app', e => {
-        if (e.type === 'ready') init();
-    });
-
+    // Запускаем инициализацию
+    init();
 })();
