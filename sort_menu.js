@@ -1,157 +1,174 @@
 (function() {
-    const PLUGIN_NAME = 'SettingsMenuEditor';
-    const STORAGE_KEY = 'lampa_settings_order';
-    const HIDDEN_KEY = 'lampa_hidden_settings';
-    const ACTIVE_CLASS = 'settings-item--active';
+    const PLUGIN_NAME = 'SettingsMenuEditorPro';
+    const STORAGE_KEY = 'lampa_settings_custom_order';
+    const HIDDEN_KEY = 'lampa_hidden_settings_items';
+    const ACTIVE_CLASS = 'settings-folder--active';
     const EDIT_MODE_CLASS = 'settings--edit-mode';
-    const HIDDEN_CLASS = 'settings-item--hidden';
+    const HIDDEN_CLASS = 'settings-folder--hidden';
 
     let editMode = false;
     let currentItem = null;
+    let settingsContainer = null;
 
     function init() {
-        console.log(`[${PLUGIN_NAME}] Initializing...`);
+        console.log(`[${PLUGIN_NAME}] Initializing advanced settings editor...`);
 
-        Lampa.Listener.follow('app', e => {
-            if (e.type !== 'ready') return;
+        // Ожидаем инициализации компонента настроек
+        Settings.listener.follow('open', (e) => {
+            if (!settingsContainer && e.body) {
+                settingsContainer = e.body.find('.scroll__body > div');
+                setupEditor();
+            }
+        });
 
-            // Добавляем кнопку редактирования
-            addEditButton();
-            
-            // Загружаем сохраненные настройки
-            loadSettings();
-            
-            // Настраиваем обработчики
-            setupHandlers();
-            
-            // Добавляем стили
-            addStyles();
+        // Обработчик клавиш
+        Controller.add('settings_editor', {
+            up: () => editMode && moveSelection(-1),
+            down: () => editMode && moveSelection(1),
+            left: () => editMode && toggleVisibility(currentItem),
+            right: () => editMode && toggleVisibility(currentItem),
+            back: () => editMode && toggleEditMode(),
+            ok: () => editMode && showItemActions()
         });
     }
 
+    function setupEditor() {
+        // Добавляем кнопку редактирования
+        addEditButton();
+        
+        // Загружаем сохраненные настройки
+        loadSettings();
+        
+        // Добавляем стили
+        addStyles();
+    }
+
     function addEditButton() {
-        const $editBtn = $(`
-            <div class="settings-folder" data-action="edit_settings">
+        if (settingsContainer.find('[data-action="settings_editor"]').length) return;
+
+        const editBtn = $(`
+            <div class="settings-folder selector" data-action="settings_editor">
                 <div class="settings-folder__ico">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff">
                         <path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75 1.84-1.83zM3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/>
                     </svg>
                 </div>
-                <div class="settings-folder__name">Редактировать</div>
+                <div class="settings-folder__name">${Lang.translate('menu_editor') || 'Редактировать'}</div>
             </div>
         `);
-        
-        $('.settings-folder[data-action="settings"]').after($editBtn);
-        
-        $editBtn.on('hover:enter', () => {
-            toggleEditMode();
-        });
+
+        editBtn.on('hover:enter', toggleEditMode);
+        settingsContainer.append(editBtn);
     }
 
     function toggleEditMode() {
         editMode = !editMode;
         
         if (editMode) {
-            $('.settings__content').addClass(EDIT_MODE_CLASS);
-            currentItem = $('.settings-folder:visible').not('[data-action="edit_settings"]').first();
-            highlightItem(currentItem);
+            $('body').addClass(EDIT_MODE_CLASS);
+            Controller.toggle('settings_editor');
+            const items = getVisibleItems();
+            if (items.length > 0) {
+                currentItem = items.eq(0);
+                highlightItem(currentItem);
+            }
         } else {
-            $('.settings__content').removeClass(EDIT_MODE_CLASS);
-            $('.settings-folder').removeClass(ACTIVE_CLASS);
-            currentItem = null;
+            $('body').removeClass(EDIT_MODE_CLASS);
+            Controller.toggle('settings');
+            clearHighlight();
             saveSettings();
         }
     }
 
-    function setupHandlers() {
-        // Обработка кнопок пульта
-        Lampa.Listener.follow('keyboard', e => {
-            if (!editMode || !currentItem) return;
+    function moveSelection(direction) {
+        const items = getVisibleItems();
+        const currentIndex = items.index(currentItem);
+        let newIndex = (currentIndex + direction + items.length) % items.length;
+        
+        highlightItem(items.eq(newIndex));
+    }
 
-            switch (e.key) {
-                case 'up':
-                    moveSelection(-1);
-                    break;
-                    
-                case 'down':
-                    moveSelection(1);
-                    break;
-                    
-                case 'ok':
-                    toggleVisibility(currentItem);
-                    break;
-                    
-                case 'back':
-                    toggleEditMode();
-                    break;
-                    
-                case 'left':
-                case 'right':
-                    moveItem(e.key === 'left' ? -1 : 1);
-                    break;
+    function highlightItem(item) {
+        clearHighlight();
+        currentItem = item;
+        currentItem.addClass(ACTIVE_CLASS);
+        currentItem[0].scrollIntoView({block: 'nearest', behavior: 'smooth'});
+    }
+
+    function clearHighlight() {
+        if (currentItem) currentItem.removeClass(ACTIVE_CLASS);
+        currentItem = null;
+    }
+
+    function toggleVisibility(item) {
+        item.toggleClass(HIDDEN_CLASS);
+        saveSettings();
+    }
+
+    function showItemActions() {
+        if (!currentItem) return;
+
+        const actions = [
+            {title: Lang.translate('move_up'), key: 'up'},
+            {title: Lang.translate('move_down'), key: 'down'},
+            {title: currentItem.hasClass(HIDDEN_CLASS) ? Lang.translate('show_item') : Lang.translate('hide_item'), key: 'toggle'}
+        ];
+
+        Select.show({
+            title: Lang.translate('item_actions'),
+            items: actions,
+            onSelect: (action) => {
+                switch (action.key) {
+                    case 'up':
+                        currentItem.insertBefore(currentItem.prev());
+                        break;
+                    case 'down':
+                        currentItem.insertAfter(currentItem.next());
+                        break;
+                    case 'toggle':
+                        toggleVisibility(currentItem);
+                        break;
+                }
+                saveSettings();
             }
         });
     }
 
-    function moveSelection(direction) {
-        const $items = $('.settings-folder:visible').not('[data-action="edit_settings"]');
-        const currentIndex = $items.index(currentItem);
-        let newIndex = currentIndex + direction;
-
-        if (newIndex < 0) newIndex = $items.length - 1;
-        if (newIndex >= $items.length) newIndex = 0;
-
-        highlightItem($items.eq(newIndex));
-    }
-
-    function highlightItem($item) {
-        $('.settings-folder').removeClass(ACTIVE_CLASS);
-        currentItem = $item.addClass(ACTIVE_CLASS);
-    }
-
-    function toggleVisibility($item) {
-        $item.toggleClass(HIDDEN_CLASS);
-    }
-
-    function moveItem(direction) {
-        if (direction === -1) {
-            currentItem.insertBefore(currentItem.prev());
-        } else {
-            currentItem.insertAfter(currentItem.next());
-        }
+    function getVisibleItems() {
+        return settingsContainer.find('.settings-folder:not([data-action="settings_editor"])').filter(':visible');
     }
 
     function loadSettings() {
         // Загрузка порядка
-        const order = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (order) {
-            const $container = $('.settings-folder').parent();
+        const order = JSON.parse(Storage.get(STORAGE_KEY, '[]'));
+        if (order.length) {
             order.forEach(id => {
-                $container.append($(`.settings-folder[data-component="${id}"]`));
+                const item = settingsContainer.find(`[data-component="${id}"]`);
+                if (item.length) settingsContainer.append(item);
             });
         }
 
         // Загрузка скрытых элементов
-        const hidden = JSON.parse(localStorage.getItem(HIDDEN_KEY)) || [];
+        const hidden = JSON.parse(Storage.get(HIDDEN_KEY, '[]'));
         hidden.forEach(id => {
-            $(`.settings-folder[data-component="${id}"]`).addClass(HIDDEN_CLASS);
+            settingsContainer.find(`[data-component="${id}"]`).addClass(HIDDEN_CLASS);
         });
     }
 
     function saveSettings() {
         // Сохраняем порядок
         const order = [];
-        $('.settings-folder').each(function() {
+        settingsContainer.find('.settings-folder').each(function() {
             order.push($(this).data('component'));
         });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(order));
+        Storage.set(STORAGE_KEY, JSON.stringify(order));
 
         // Сохраняем скрытые элементы
         const hidden = [];
-        $(`.${HIDDEN_CLASS}`).each(function() {
+        settingsContainer.find(`.${HIDDEN_CLASS}`).each(function() {
             hidden.push($(this).data('component'));
         });
-        localStorage.setItem(HIDDEN_KEY, JSON.stringify(hidden));
+        Storage.set(HIDDEN_KEY, JSON.stringify(hidden));
     }
 
     function addStyles() {
@@ -164,28 +181,36 @@
             .${ACTIVE_CLASS} {
                 background: rgba(255,165,0,0.3) !important;
                 border-left: 3px solid orange !important;
-                transform: scale(1.02);
             }
             
             .${HIDDEN_CLASS} {
-                opacity: 0.3;
+                opacity: 0.4;
+                filter: grayscale(80%);
             }
             
             .${EDIT_MODE_CLASS} .${ACTIVE_CLASS}::after {
-                content: "✚";
+                content: "✓";
                 position: absolute;
                 right: 15px;
                 color: orange;
                 font-size: 20px;
+                font-weight: bold;
             }
             
             .${EDIT_MODE_CLASS} .${ACTIVE_CLASS}.${HIDDEN_CLASS}::after {
-                content: "✖";
-                color: red;
+                content: "✕";
+                color: #ff3d3d;
             }
         `;
+        
         $('<style>').html(css).appendTo('head');
     }
 
-    init();
+    // Инициализация после загрузки Lampa
+    Lampa.Listener.follow('app', e => {
+        if (e.type === 'ready') {
+            init();
+        }
+    });
+
 })();
