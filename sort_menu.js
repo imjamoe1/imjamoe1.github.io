@@ -1,1 +1,131 @@
-!function(){const e="MenuDragPlugin",t="lampa_menu_order",n="menu-item--dragging",o="menu-item--placeholder";function i(){console.log(`[${e}] Initializing...`),Lampa.Listener.follow("app",e=>{"ready"!==e.type||(c(),d())})}function c(){const e=JSON.parse(localStorage.getItem(t));if(e){const t=$(".settings-folder").parent();e.forEach(e=>{const n=$(`.settings-folder[data-component="${e}"]`);n.length&&t.append(n)}),console.log(`[${e}] Menu order loaded`)}}function l(){const e=[];$(".settings-folder").each(function(){e.push($(this).data("component"))}),localStorage.setItem(t,JSON.stringify(e)),console.log(`[${e}] Menu order saved`)}function d(){const e=$(".settings-folder");let t=null,o=null,i=null;e.on("mousedown touchstart",function(e){const c=$(this);i=setTimeout((function(){t=c,t.addClass(n),o=$("<div>").addClass(o),t.after(o),$(document).on("mousemove touchmove",u),$(document).on("mouseup touchend",f)}),500)}),$(document).on("mouseup touchend",(function(){clearTimeout(i)}));function c(e){if(!t)return;const n=e.pageY||e.originalEvent.touches[0].pageY;t.css("transform",`translateY(${n-t.offset().top-t.outerHeight()/2}px)`);const o=$(".settings-folder").not(t);let i=null;o.each(function(){const e=$(this),c=e.offset().top,l=e.outerHeight();n>c&&n<c+l/2?i=e:n>c+l/2&&n<c+l&&(i=e.next())}),i&&i.length?o.insertBefore(i):$(".settings-folder").parent().append(o)}function u(e){c(e)}function f(){t&&(t.insertBefore(o).removeClass(n).css("transform",""),o.remove(),t=null,o=null,l(),$(document).off("mousemove touchmove",u),$(document).off("mouseup touchend",f))}}const p=`.${n}{opacity:0.7;background-color:rgba(255,255,255,0.2)!important;transition:transform 0.1s;z-index:1000}.${o}{height:40px;background:rgba(255,255,255,0.1);border:2px dashed rgba(255,255,255,0.3);margin:5px 0;border-radius:6px}`;$("<style>").html(p).appendTo("head"),i()}();
+(function() {
+  // Конфигурация
+  const PLUGIN_NAME = 'MenuDragTVPlugin';
+  const STORAGE_KEY = 'lampa_menu_order_tv';
+  const ACTIVE_CLASS = 'menu-item--active';
+  const HIGHLIGHT_CLASS = 'menu-item--highlight';
+
+  // Инициализация
+  function init() {
+    console.log(`[${PLUGIN_NAME}] Initializing TV control...`);
+
+    Lampa.Listener.follow('app', e => {
+      if (e.type !== 'ready') return;
+
+      // Ждём загрузки меню
+      setTimeout(() => {
+        loadMenuOrder();
+        setupTVControls();
+        addStyles();
+      }, 1000);
+    });
+  }
+
+  // Загрузка сохранённого порядка
+  function loadMenuOrder() {
+    const savedOrder = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!savedOrder) return;
+
+    const $menu = $('.settings-folder').parent();
+    savedOrder.forEach(id => {
+      const $item = $(`.settings-folder[data-component="${id}"]`);
+      if ($item.length) $menu.append($item);
+    });
+  }
+
+  // Сохранение порядка
+  function saveMenuOrder() {
+    const order = [];
+    $('.settings-folder').each(function() {
+      order.push($(this).data('component'));
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(order));
+  }
+
+  // Настройка TV-управления
+  function setupTVControls() {
+    const $items = $('.settings-folder');
+    let currentIndex = -1;
+    let isEditMode = false;
+
+    // Активация режима редактирования
+    $items.on('hover:enter', function() {
+      if (isEditMode) return;
+      
+      isEditMode = true;
+      currentIndex = $items.index(this);
+      updateHighlight();
+      
+      console.log(`[${PLUGIN_NAME}] Edit mode activated`);
+    });
+
+    // Обработка кнопок пульта
+    Lampa.Listener.follow('keyboard', e => {
+      if (!isEditMode) return;
+
+      const key = e.key;
+      
+      if (key === 'up') {
+        moveItem(-1); // Вверх
+      } 
+      else if (key === 'down') {
+        moveItem(1); // Вниз
+      }
+      else if (key === 'back') {
+        exitEditMode(); // Выход
+      }
+    });
+
+    // Перемещение пункта
+    function moveItem(direction) {
+      const newIndex = currentIndex + direction;
+      if (newIndex < 0 || newIndex >= $items.length) return;
+
+      const $current = $items.eq(currentIndex);
+      const $target = $items.eq(newIndex);
+
+      if (direction === -1) {
+        $current.insertBefore($target);
+      } else {
+        $current.insertAfter($target);
+      }
+
+      currentIndex = newIndex;
+      updateHighlight();
+      saveMenuOrder();
+    }
+
+    // Обновление подсветки
+    function updateHighlight() {
+      $items.removeClass(HIGHLIGHT_CLASS)
+             .eq(currentIndex)
+             .addClass(HIGHLIGHT_CLASS);
+    }
+
+    // Выход из режима редактирования
+    function exitEditMode() {
+      isEditMode = false;
+      $items.removeClass(HIGHLIGHT_CLASS);
+      currentIndex = -1;
+      console.log(`[${PLUGIN_NAME}] Edit mode deactivated`);
+    }
+  }
+
+  // Добавление стилей
+  function addStyles() {
+    const css = `
+      .${HIGHLIGHT_CLASS} {
+        background-color: rgba(255, 165, 0, 0.3) !important;
+        border: 2px solid orange !important;
+        box-shadow: 0 0 10px orange !important;
+      }
+      .${ACTIVE_CLASS} {
+        transform: scale(1.02);
+      }
+    `;
+    $('<style>').html(css).appendTo('head');
+  }
+
+  // Запуск плагина
+  init();
+})();
