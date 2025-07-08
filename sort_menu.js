@@ -8,9 +8,10 @@
     const PLUGIN_NAME = 'SettingsMenuEditorPro';
     const STORAGE_KEY = 'lampa_settings_custom_order';
     const HIDDEN_KEY = 'lampa_hidden_settings_items';
-    const ACTIVE_CLASS = 'settings-folder--active';
-    const EDIT_MODE_CLASS = 'settings--edit-mode';
-    const HIDDEN_CLASS = 'settings-folder--hidden';
+    const ACTIVE_CLASS = 'focus';
+    const TRAVERSE_CLASS = 'traverse';
+    const EDIT_MODE_CLASS = 'editable';
+    const HIDDEN_CLASS = 'hidden';
 
     let editMode = false;
     let currentItem = null;
@@ -69,7 +70,7 @@
 
     function toggleEditMode(enable) {
         editMode = enable;
-        $('body').toggleClass(EDIT_MODE_CLASS, editMode);
+        settingsContainer.toggleClass(EDIT_MODE_CLASS, editMode);
         
         if (editMode) {
             Lampa.Controller.toggle('settings_editor');
@@ -96,6 +97,11 @@
         currentItem = item;
         currentItem.addClass(ACTIVE_CLASS);
         
+        // Добавляем стрелки для перемещения
+        if (editMode) {
+            currentItem.addClass(TRAVERSE_CLASS);
+        }
+        
         // Плавная прокрутка к элементу
         const container = settingsContainer.parent();
         const itemPos = currentItem.position().top;
@@ -110,7 +116,10 @@
     }
 
     function clearHighlight() {
-        if (currentItem) currentItem.removeClass(ACTIVE_CLASS);
+        if (currentItem) {
+            currentItem.removeClass(ACTIVE_CLASS);
+            currentItem.removeClass(TRAVERSE_CLASS);
+        }
         currentItem = null;
     }
 
@@ -163,7 +172,7 @@
     }
 
     function getVisibleItems() {
-        return settingsContainer.find('.settings-folder').not('[data-action="settings_editor"]');
+        return settingsContainer.find('.settings-folder');
     }
 
     function loadSettings() {
@@ -214,28 +223,58 @@
 
     function addStyles() {
         const css = `
-            .${EDIT_MODE_CLASS} .settings-folder {
+            .settings-folder {
+                display: flex;
+                align-items: center;
+                color: #ddd;
                 position: relative;
-                transition: all 0.2s;
+                padding: 0.9em 1em;
+                border-radius: 1em;
+                margin: 0.1em 0;
             }
-            .${ACTIVE_CLASS} {
-                background: rgba(255,165,0,0.3) !important;
-                border-left: 3px solid orange !important;
+            
+            .settings-folder.focus,
+            .settings-folder.traverse,
+            .settings-folder.hover {
+                background-color: #fff;
+                color: #000;
             }
-            .${HIDDEN_CLASS} {
-                opacity: 0.4;
-                filter: grayscale(80%);
-            }
-            .${EDIT_MODE_CLASS} .settings-folder::after {
-                content: "✓";
+            
+            .settings-folder.traverse::before,
+            .settings-folder.traverse::after {
                 position: absolute;
-                right: 15px;
-                color: orange;
-                font-size: 20px;
+                left: 27%;
+                margin-left: -0.5em;
+                color: #fff;
             }
-            .${EDIT_MODE_CLASS} .${HIDDEN_CLASS}::after {
-                content: "✕";
-                color: #ff3d3d;
+            
+            .settings-folder.traverse::before {
+                content: '▲';
+                top: -1.1em;
+            }
+            
+            .settings-folder.traverse::after {
+                content: '▼';
+                bottom: -1.1em;
+            }
+            
+            .editable .settings-folder.hidden {
+                opacity: 0.5;
+            }
+            
+            .editable .settings-folder.focus:not(.traverse)::after {
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 492.49284 492'%3E%3Cpath d='m304.140625 82.472656-270.976563 270.996094c-1.363281 1.367188-2.347656 3.09375-2.816406 4.949219l-30.035156 120.554687c-.898438 3.628906.167969 7.488282 2.816406 10.136719 2.003906 2.003906 4.734375 3.113281 7.527344 3.113281.855469 0 1.730469-.105468 2.582031-.320312l120.554688-30.039063c1.878906-.46875 3.585937-1.449219 4.949219-2.8125l271-270.976562zm0 0' fill='%23000000'%3E%3C/path%3E%3Cpath d='m476.875 45.523438-30.164062-30.164063c-20.160157-20.160156-55.296876-20.140625-75.433594 0l-36.949219 36.949219 105.597656 105.597656 36.949219-36.949219c10.070312-10.066406 15.617188-23.464843 15.617188-37.714843s-5.546876-27.648438-15.617188-37.71875zm0 0' fill='%23000000'%3E%3C/path%3E%3C/svg%3E");
+                position: absolute;
+                right: 0.7em;
+                top: 50%;
+                color: #000;
+                width: 1em;
+                height: 1em;
+                margin-top: -0.5em;
+            }
+            
+            body.light--version .settings-folder {
+                border-radius: 0.3em;
             }
         `;
         
