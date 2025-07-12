@@ -447,6 +447,6 @@
     window.cub_sport_ready = true;
   }
 
-  if (!window.cub_sport_ready && Lampa.Manifest.app_digital) startPlugin();
+  if (!window.cub_sport_ready && Lampa.Manifest.app_digital >= 240) startPlugin();
 
 })();
