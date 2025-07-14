@@ -35,5 +35,5 @@
     document.addEventListener('keydown', playRandomBurp);
     document.addEventListener('click', playRandomBurp);
 
-    console.log('Плагин "Пьяная отрыжка" загружен!');
+    console.log('Плагин загружен!');
 })();
