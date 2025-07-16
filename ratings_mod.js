@@ -412,7 +412,7 @@
         var loaded = {}; 
         
         this.create = function () { // --- Original this.create --- //
-            html = $("<div class=\"new-interface-info\">\n            <div class=\"new-interface-info__body\">\n                <div class=\"new-interface-info__head\"></div>\n                <div class=\"new-interface-info__title\"></div>\n                <div class=\"new-interface-info__details\"></div>\n                <div class=\"new-interface-info__description\"></div>\n            </div>\n        </div>"); 
+             
         }; 
         
         this.update = function(data) { // Called on focus change with new movie data
@@ -464,13 +464,7 @@
 
             // --- Title Handling ---
             if (showLogos && data.method && data.title) { // Ensure method exists for logo fetch
-                this.displayLogoOrTitle(data); // Call helper for logo logic
-            } else if (data.title) {
-                html.find('.new-interface-info__title').text(data.title); // Logo mode off, set text
-            } else {
-                html.find('.new-interface-info__title').empty(); // No title, clear area
-            }
-            // --- End Title Handling ---
+                            // --- End Title Handling ---
 
 
             // --- Ratings Fetch (existing logic) ---
@@ -2627,12 +2621,12 @@
         replaceIcon('rate--imdb', imdb_svg);
         replaceIcon('rate--kp', kp_svg);
         replaceIcon('rate--tmdb', tmdb_svg);
-        replaceIcon('rate--oscars', oscars_svg);
-        replaceIcon('rate--emmy', emmy_svg);
+        replaceIcon('rate--oscars', "");
+        replaceIcon('rate--emmy', "");
         replaceIcon('rate--awards', awards_svg);
         replaceIcon('rate--rt', rt_svg);
         replaceIcon('rate--mc', mc_svg);
-        replaceIcon('rate--avg', avg_svg);
+        replaceIcon('rate--avg', "");
     }
     
     // Функции работы с кешем
@@ -3246,7 +3240,7 @@
         Lampa.SettingsApi.addComponent({
             component: "maxsm_ratings",
             name: Lampa.Lang.translate("maxsm_ratings"),
-            icon: star_svg
+            icon: ""
         });
 
         // Создание объекта для значений выбора режима
