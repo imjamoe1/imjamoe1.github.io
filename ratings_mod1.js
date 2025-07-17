@@ -1033,7 +1033,34 @@
              $('style[data-id^="new_interface_style_"]').remove(); // Clean up previous
 
             Lampa.Template.add(style_id, `
-            <style data-id="${style_id}">	    
+            <style data-id="${style_id}">
+
+             .new-interface-info__details {
+                margin-bottom: 1em; 
+                display: block;
+                min-height: 1.9em;
+                font-size: 1.1em;
+            }
+            .line-one-details {
+                margin-bottom: 0.6em;
+                line-height: 1.5;
+            }
+            .genre-details-line {
+                margin-top: 1em;
+                line-height: 1.5;
+            }
+
+            .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
+            .new-interface-info__description { font-size: 1.2em; font-weight: 300; line-height: 1.5; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; width: 70%; }
+            .new-interface .card-more__box { padding-bottom: 95%; }
+            .new-interface .full-start__background { height: 108%; top: -6em; }
+            .new-interface .card__promo { display: none; }
+            .new-interface .card.card--wide+.card-more .card-more__box { padding-bottom: 95%; }
+            .new-interface .card.card--wide .card-watched { display: none !important; }
+            body.light--version .new-interface-info__body { width: 69%; padding-top: 1.5em; }
+            body.light--version .new-interface-info { height: 25.3em; }
+            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.focus .card__view { animation: animation-card-focus 0.2s; }
+            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.animate-trigger-enter .card__view { animation: animation-trigger-enter 0.2s forwards; }    
 	    
             /* --- Rating Box Styles --- */
             .new-interface .full-start__rate {
