@@ -14,164 +14,71 @@
 
     
     // --- Language Strings ---
-if (window.Lampa && Lampa.Lang) {
-    Lampa.Lang.add({
-        // --- MDBList / Logo Plugin Strings ---
-        mdblist_api_key_desc: {
-            ru: "Введите ваш API ключ с сайта MDBList.com",
-            en: "Enter your API key from MDBList.com",
-            uk: "Введіть ваш API ключ з сайту MDBList.com"
-        },
-        additional_ratings_title: {
-            ru: "Дополнительные Рейтинги", 
-            en: "Additional Ratings",
-            uk: "Додаткові Рейтинги"
-        },
-        select_ratings_button_name: {
-            en: "Select Rating Providers",
-            ru: "Выбрать Источники Рейтингов",
-            uk: "Обрати Джерела Рейтингів"
-        },
-        select_ratings_button_desc: {
-            en: "Choose which ratings to display",
-            ru: "Выберите, какие рейтинги отображать",
-            uk: "Оберіть, які рейтинги відображати"
-        },
-        select_ratings_dialog_title: {
-            en: "Select Ratings",
-            ru: "Выбор Рейтингов",
-            uk: "Вибір Рейтингів"
-        },
-        logo_toggle_name: {
-            ru: "Логотип вместо заголовка",
-            en: "Logo Instead of Title",
-            uk: "Логотип замість заголовка"
-        },
-        logo_toggle_desc: {
-            ru: "Заменяет текстовый заголовок фильма логотипом",
-            en: "Replaces movie text title with a logo",
-            uk: "Замінює текстовий заголовок логотипом"
-        },
-        settings_show: {
-            ru: "Показать",
-            en: "Show",
-            uk: "Показати"
-        },
-        settings_hide: {
-            ru: "Скрыть",
-            en: "Hide",
-            uk: "Приховати"
-        },
-        full_notext: { 
-            en: 'No description', 
-            ru: 'Нет описания',
-            uk: 'Немає опису'
-        },
-        info_panel_logo_height_name: {
-            ru: "Размер логотипа",
-            en: "Logo Size",
-            uk: "Висота логотипу"
-        },
-        info_panel_logo_height_desc: {
-            ru: "Максимальная высота логотипа",
-            en: "Maximum logo height",
-            uk: "Максимальна висота логотипу"
-        },
+    if (window.Lampa && Lampa.Lang) {
+        Lampa.Lang.add({
+            mdblist_api_key_desc: {
+                ru: "Введите ваш API ключ с сайта MDBList.com",
+                en: "Enter your API key from MDBList.com",
+                uk: "Введіть ваш API ключ з сайту MDBList.com"
+            },
+            additional_ratings_title: {
+                 ru: "Дополнительные Рейтинги", 
+                 en: "Additional Ratings",
+                 uk: "Додаткові Рейтинги"
+            },
 
-        // --- OMDb / KP Plugin Strings ---
-        maxsm_ratings: {
-            ru: 'Рейтинг и качество',
-            en: 'Rating & Quality',
-            uk: 'Рейтинг і якість'
-        },
-        maxsm_ratings_cc: {
-            ru: 'Очистить локальный кеш',
-            en: 'Clear local cache',
-            uk: 'Очистити локальний кеш'
-        },
-        maxsm_ratings_critic: {
-            ru: 'Оценки критиков',
-            en: 'Critic Ratings',
-            uk: 'Оцінки критиків'
-        },
-        maxsm_ratings_mode: {
-            ru: 'Средний рейтинг',
-            en: 'Average rating',
-            uk: 'Середній рейтинг'
-        },
-        maxsm_ratings_mode_normal: {
-            ru: 'Показывать средний рейтинг',
-            en: 'Show average rating',
-            uk: 'Показувати середній рейтинг'
-        },
-        maxsm_ratings_mode_simple: {
-            ru: 'Только средний рейтинг',
-            en: 'Only average rating',
-            uk: 'Лише середній рейтинг'
-        },
-        maxsm_ratings_mode_noavg: {
-            ru: 'Без среднего рейтинга',
-            en: 'No average',
-            uk: 'Без середнього рейтингу'
-        },
-        maxsm_ratings_icons: {
-            ru: 'Значки',
-            en: 'Icons',
-            uk: 'Значки'
-        },
-        maxsm_ratings_colors: {
-            ru: 'Цвета',
-            en: 'Colors',
-            uk: 'Кольори'
-        },
-        maxsm_ratings_avg: {
-            ru: 'ИТОГ',
-            en: 'TOTAL',
-            uk: 'ПІДСУМОК'
-        },
-        maxsm_ratings_avg_simple: {
-            ru: 'Оценка',
-            en: 'Rating',
-            uk: 'Оцінка'
-        },
-        maxsm_ratings_loading: {
-            ru: 'Загрузка',
-            en: 'Loading',
-            uk: 'Завантаження'
-        },
-        maxsm_ratings_oscars: {
-            ru: 'Оскар',
-            en: 'Oscar',
-            uk: 'Оскар'
-        },
-        maxsm_ratings_emmy: {
-            ru: 'Эмми',
-            en: 'Emmy',
-            uk: 'Еммі'
-        },
-        maxsm_ratings_awards: {
-            ru: 'Награды',
-            en: 'Awards',
-            uk: 'Нагороди'
-        },
-        maxsm_ratings_quality: {
-            ru: 'Качество внутри карточек',
-            en: 'Quality inside cards',
-            uk: 'Якість всередині карток'
-        },
-        maxsm_ratings_quality_inlist: {
-            ru: 'Качество на карточках',
-            en: 'Quality on cards',
-            uk: 'Якість на картках'
-        },
-        maxsm_ratings_quality_tv: {
-            ru: 'Качество для сериалов',
-            en: 'Quality for series',
-            uk: 'Якість для серіалів'
-        }
-    });
-}
-
+            select_ratings_button_name: {
+                 en: "Select Rating Providers",
+                 ru: "Выбрать Источники Рейтингов",
+                 uk: "Обрати Джерела Рейтингів"
+            },
+            select_ratings_button_desc: {
+                 en: "Choose which ratings to display",
+                 ru: "Выберите, какие рейтинги отображать",
+                 uk: "Оберіть, які рейтинги відображати"
+            },
+            select_ratings_dialog_title: {
+                 en: "Select Ratings",
+                 ru: "Выбор Рейтингов",
+                 uk: "Вибір Рейтингів"
+            },
+            logo_toggle_name: {
+                ru: "Логотип вместо заголовка",
+                en: "Logo Instead of Title",
+                uk: "Логотип замість заголовка"
+            },
+            logo_toggle_desc: {
+                ru: "Заменяет текстовый заголовок фильма логотипом",
+                en: "Replaces movie text title with a logo",
+                uk: "Замінює текстовий заголовок логотипом"
+            },
+            settings_show: {
+                ru: "Показать",
+                en: "Show", // Or "On" if you prefer
+                uk: "Показати"
+            },
+            settings_hide: {
+                ru: "Скрыть",
+                en: "Hide", // Or "Off" if you prefer
+                uk: "Приховати"
+            },
+            full_notext: { 
+                en: 'No description', 
+                ru: 'Нет описания',
+                uk: 'Немає опису'
+            },
+            info_panel_logo_height_name: {
+                ru: "Размер логотипа",
+                en: "Logo Size",
+                uk: "Висота логотипу"
+            },
+            info_panel_logo_height_desc: {
+                ru: "Максимальная высота логотипа",
+                en: "Maximum logo height",
+                uk: "Максимальна висота логотипу"
+            }
+        });
+    }
 
 
     // --- Settings UI Registration ---
@@ -1217,6 +1124,8 @@ if (window.Lampa && Lampa.Lang) {
 
     // Original check before starting
     if (!window.plugin_interface_ready) startPlugin();
+
+})();
 /*
 
 Для получения данных с кинопоиск используется https://kinopoiskapiunofficial.tech/ - получите API ключ 
@@ -1247,7 +1156,209 @@ if (window.Lampa && Lampa.Lang) {
     var kp_svg = '<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg>';
     var rt_svg = '<svg id="svg3390" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg>';
     var mc_svg = '<svg xmlns="http://www.w3.org/2000/svg>';
+
     
+    Lampa.Lang.add({
+         maxsm_ratings: {
+            ru: 'Рейтинг и качество',
+            en: 'Rating & Quality',
+            uk: 'Рейтинг і якість',
+            be: 'Рэйтынг і якасць',
+            pt: 'Classificação e Qualidade',
+            zh: '评分与画质',
+            he: 'דירוג ואיכות',
+            cs: 'Hodnocení a kvalita',
+            bg: 'Рейтинг и качество'
+        },
+        maxsm_ratings_cc: {
+            ru: 'Очистить локальный кеш',
+            en: 'Clear local cache',
+            uk: 'Очистити локальний кеш',
+            be: 'Ачысціць лакальны кэш',
+            pt: 'Limpar cache local',
+            zh: '清除本地缓存',
+            he: 'נקה מטמון מקומי',
+            cs: 'Vymazat místní mezipaměť',
+            bg: 'Изчистване на локалния кеш'
+        },
+        maxsm_ratings_critic: {
+            ru: 'Оценки критиков',
+            en: 'Critic Ratings',
+            uk: 'Оцінки критиків',
+            be: 'Ацэнкі крытыкаў',
+            pt: 'Avaliações da crítica',
+            zh: '影评人评分',
+            he: 'דירוגי מבקרים',
+            cs: 'Hodnocení kritiků',
+            bg: 'Оценки на критиците'
+        },
+        maxsm_ratings_mode: {
+            ru: 'Средний рейтинг',
+            en: 'Average rating',
+            uk: 'Середній рейтинг',
+            be: 'Сярэдні рэйтынг',
+            pt: 'Classificação média',
+            zh: '平均评分',
+            he: 'דירוג ממוצע',
+            cs: 'Průměrné hodnocení',
+            bg: 'Среден рейтинг'
+        },
+        maxsm_ratings_mode_normal: {
+            ru: 'Показывать средний рейтинг',
+            en: 'Show average rating',
+            uk: 'Показувати середній рейтинг',
+            be: 'Паказваць сярэдні рэйтынг',
+            pt: 'Mostrar classificação média',
+            zh: '显示平均评分',
+            he: 'הצג דירוג ממוצע',
+            cs: 'Zobrazit průměrné hodnocení',
+            bg: 'Показване на среден рейтинг'
+        },
+        maxsm_ratings_mode_simple: {
+            ru: 'Только средний рейтинг',
+            en: 'Only average rating',
+            uk: 'Лише середній рейтинг',
+            be: 'Толькі сярэдні рэйтынг',
+            pt: 'Apenas classificação média',
+            zh: '仅显示平均评分',
+            he: 'רק דירוג ממוצע',
+            cs: 'Pouze průměrné hodnocení',
+            bg: 'Само среден рейтинг'
+        },
+        maxsm_ratings_mode_noavg: {
+            ru: 'Без среднего рейтинга',
+            en: 'No average',
+            uk: 'Без середнього рейтингу',
+            be: 'Без сярэдняга рэйтынгу',
+            pt: 'Sem média',
+            zh: '无平均值',
+            he: 'ללא ממוצע',
+            cs: 'Bez průměru',
+            bg: 'Без среден рейтинг'
+        }, 
+        maxsm_ratings_icons: {
+            ru: 'Значки',
+            en: 'Icons',
+            uk: 'Значки',
+            be: 'Значкі',
+            pt: 'Ícones',
+            zh: '图标',
+            he: 'סמלים',
+            cs: 'Ikony',
+            bg: 'Икони'
+        },
+        maxsm_ratings_colors: {
+            ru: 'Цвета',
+            en: 'Colors',
+            uk: 'Кольори',
+            be: 'Колеры',
+            pt: 'Cores',
+            zh: '颜色',
+            he: 'צבעים',
+            cs: 'Barvy',
+            bg: 'Цветове'
+        },
+        maxsm_ratings_avg: {
+            ru: 'ИТОГ',
+            en: 'TOTAL',
+            uk: 'ПІДСУМОК',
+            be: 'ВЫНІК',
+            pt: 'TOTAL',
+            zh: '总评',
+            he: 'סה"כ',
+            cs: 'VÝSLEDEK',
+            bg: 'РЕЗУЛТАТ'
+        },
+        maxsm_ratings_avg_simple: {
+            ru: 'Оценка',
+            en: 'Rating',
+            uk: 'Оцінка',
+            be: 'Ацэнка',
+            pt: 'Avaliação',
+            zh: '评分',
+            he: 'דירוג',
+            cs: 'Hodnocení',
+            bg: 'Оценка'
+        },
+        maxsm_ratings_loading: {
+            ru: 'Загрузка',
+            en: 'Loading',
+            uk: 'Завантаження',
+            be: 'Загрузка',
+            pt: 'Carregando',
+            zh: '加载中',
+            he: 'טוען',
+            cs: 'Načítání',
+            bg: 'Зареждане'
+        },
+        maxsm_ratings_oscars: { 
+            ru: 'Оскар',
+            en: 'Oscar',
+            uk: 'Оскар',
+            be: 'Оскар',
+            pt: 'Oscar',
+            zh: '奥斯卡奖',
+            he: 'אוסקר',
+            cs: 'Oscar',
+            bg: 'Оскар'
+        },
+        maxsm_ratings_emmy: {
+            ru: 'Эмми',
+            en: 'Emmy',
+            uk: 'Еммі',
+            be: 'Эммі',
+            pt: 'Emmy',
+            zh: '艾美奖',
+            he: 'אמי',
+            cs: 'Emmy',
+            bg: 'Еми'
+        },
+        maxsm_ratings_awards: {
+            ru: 'Награды',
+            en: 'Awards',
+            uk: 'Нагороди',
+            be: 'Узнагароды',
+            pt: 'Prêmios',
+            zh: '奖项',
+            he: 'פרסים',
+            cs: 'Ocenění',
+            bg: 'Награди'
+        },
+        maxsm_ratings_quality: {
+            ru: 'Качество внутри карточек',
+            en: 'Quality inside cards',
+            uk: 'Якість всередині карток',
+            be: 'Якасць унутры картак',
+            pt: 'Qualidade dentro dos cartões',
+            zh: '卡片内的质量',
+            he: 'איכות בתוך כרטיסים',
+            cs: 'Kvalita uvnitř karet',
+            bg: 'Качество вътре в картите'
+        },
+        maxsm_ratings_quality_inlist: {
+            ru: 'Качество на карточках',
+            en: 'Quality on cards',
+            uk: 'Якість на картках',
+            be: 'Якасць на картках',
+            pt: 'Qualidade nos cartões',
+            zh: '卡片上的质量',
+            he: 'איכות בכרטיסים',
+            cs: 'Kvalita na kartách',
+            bg: 'Качество по картите'
+        },
+        maxsm_ratings_quality_tv: {
+            ru: 'Качество для сериалов',
+            en: 'Quality for series',
+            uk: 'Якість для серіалів',
+            be: 'Якасць для серыялаў',
+            pt: 'Qualidade para séries',
+            zh: '剧集的质量',
+            he: 'איכות לסדרות',
+            cs: 'Kvalita pro seriály',
+            bg: 'Качество за сериали'
+        }
+    });
+
     // Стили
     var modalStyle = "<style id=\"maxsm_ratings_modal\">" +
         ".maxsm-quality {" +
