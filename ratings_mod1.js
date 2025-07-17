@@ -410,7 +410,7 @@
         var loaded = {}; 
         
         this.create = function () { // --- Original this.create --- //
-            html = $("<div class=\"new-interface-info\">\n            <div class=\"new-interface-info__body\">\n                <div class=\"new-interface-info__head\"></div>\n                <div class=\"new-interface-info__title\"></div>\n                <div class=\"new-interface-info__details\"></div>\n                <div class=\"new-interface-info__description\"></div>\n            </div>\n        </div>"); 
+            html = $("<div class=\"style_interface-info\">\n            <div class=\"style_interface-info__body\">\n                <div class=\"style_interface-info__head\"></div>\n                <div class=\"style_interface-info__title\"></div>\n                <div class=\"style_interface-info__details\"></div>\n                <div class=\"style_interface-info__description\"></div>\n            </div>\n        </div>"); 
         }; 
         
         this.update = function(data) { // Called on focus change with new movie data
@@ -429,7 +429,7 @@
             }
 
             // --- Standard updates (non-title, non-description text) ---
-            html.find('.new-interface-info__head, .new-interface-info__details').text('---'); // Placeholder
+            html.find('.style_interface-info__head, .style_interface-info__details').text('---'); // Placeholder
             Lampa.Background.change(Lampa.Api.img(data.backdrop_path, 'w200'));
             delete mdblistRatingsCache[data.id]; // Existing logic for ratings
             delete mdblistRatingsPending[data.id]; // Existing logic for ratings
@@ -438,7 +438,7 @@
             // --- Set Description Text ---
             // Set the actual description text content first
             var descriptionText = data.overview || Lampa.Lang.translate('full_notext');
-            html.find('.new-interface-info__description').text(descriptionText);
+            html.find('.style_interface-info__description').text(descriptionText);
             // --- End Set Description Text ---
 
 
@@ -448,7 +448,7 @@
             
 
             // --- Adjust Description Line Clamp Based on Setting ---
-            var descElement = html.find('.new-interface-info__description');
+            var descElement = html.find('.style_interface-info__description');
             if (descElement.length) {
                 var targetLineClamp = showLogos ? '2' : '4'; // Determine target clamp value
                 descElement.css({ // Apply styles directly
@@ -464,9 +464,9 @@
             if (showLogos && data.method && data.title) { // Ensure method exists for logo fetch
                 this.displayLogoOrTitle(data); // Call helper for logo logic
             } else if (data.title) {
-                html.find('.new-interface-info__title').text(data.title); // Logo mode off, set text
+                html.find('.style_interface-info__title').text(data.title); // Logo mode off, set text
             } else {
-                html.find('.new-interface-info__title').empty(); // No title, clear area
+                html.find('.style_interface-info__title').empty(); // No title, clear area
             }
             // --- End Title Handling ---
 
@@ -587,10 +587,10 @@
             }
 
             // --- Update HTML ---
-            html.find('.new-interface-info__head').empty().append(head.join(', '));
+            html.find('.style_interface-info__head').empty().append(head.join(', '));
 
             // ** Construct final details HTML with specific lines **
-            let lineOneHtml = lineOneDetails.join('<span class="new-interface-info__split">&#9679;</span>');
+            let lineOneHtml = lineOneDetails.join('<span class="style_interface-info__split">&#9679;</span>');
             // Genres string is already joined by '|', so just get the first element if it exists
             let genresHtml = genreDetails.length > 0 ? genreDetails[0] : '';
 
@@ -605,7 +605,7 @@
              }
 
             // Set the new HTML structure into the details element
-            html.find('.new-interface-info__details').html(finalDetailsHtml);
+            html.find('.style_interface-info__details').html(finalDetailsHtml);
         }; // End draw function
                        
         this.load = function (data) {
@@ -632,7 +632,7 @@
         this.displayLogoOrTitle = function(movieData) {
             // 'html' is accessible here from the outer 'create' scope
             if (!html) return; // Ensure panel element exists
-            var titleElement = html.find('.new-interface-info__title');
+            var titleElement = html.find('.style_interface-info__title');
             if (!titleElement.length) return; // Ensure title element exists
 
             // Ensure movieData is valid before proceeding
@@ -666,7 +666,7 @@
 
                 // --- Find element AGAIN inside callback and update ---
                 // Use the 'html' variable from the outer 'create' scope
-                var currentTitleElement = html ? html.find('.new-interface-info__title') : null;
+                var currentTitleElement = html ? html.find('.style_interface-info__title') : null;
 
                 if (currentTitleElement && currentTitleElement.length) {
                     if (logoPath) {
@@ -696,7 +696,7 @@
             }, function(xhr, status) { // ERROR CALLBACK
                  console.error(`displayLogoOrTitle (ID ${id}): API Error ${status}. Ensuring text remains.`);
                  // Ensure text title is displayed on error
-                 var currentTitleElement = html ? html.find('.new-interface-info__title') : null;
+                 var currentTitleElement = html ? html.find('.style_interface-info__title') : null;
                   if (currentTitleElement && currentTitleElement.length) {
                       // Check movieData exists before accessing title
                       if(movieData && movieData.title) {
@@ -727,7 +727,7 @@
         var network = new Lampa.Reguest(); 
         var scroll = new Lampa.Scroll({ mask: true, over: true, scroll_by_item: true }); 
         var items = []; 
-        var html = $('<div class="new-interface"><img class="full-start__background"></div>'); 
+        var html = $('<div class="style_interface"><img class="full-start__background"></div>'); 
         var active = 0; 
         var newlampa = Lampa.Manifest.app_digital >= 166; 
         var info; 
@@ -1028,23 +1028,23 @@
         };
 
         // **MODIFIED CSS**: Adjusted padding for number divs
-        var style_id = 'new_interface_style_adjusted_padding'; // Style ID
+        var style_id = 'style_interface_style_adjusted_padding'; // Style ID
         if (!$('style[data-id="' + style_id + '"]').length) {
              $('style[data-id^="new_interface_style_"]').remove(); // Clean up previous
 
             Lampa.Template.add(style_id, `
             <style data-id="${style_id}">
             /* Base styles... (kept from pivot point script) */
-            .new-interface .card--small.card--wide { width: 18.3em; }
-            .new-interface-info { position: relative; padding: 1.5em; height: 20em; } /* original was 24em*/
+            .style_interface .card--small.card--wide { width: 18.3em; }
+            .style_interface-info { position: relative; padding: 1.5em; height: 20em; } /* original was 24em*/
             /* ... rest of base styles identical to pivot script ... */
-            .new-interface-info__body { width: 80%; padding-top: 1.1em; }
-            .new-interface-info__head { color: rgba(255, 255, 255, 0.6); margin-bottom: 1em; font-size: 1.3em; min-height: 1em; }
-            .new-interface-info__head span { color: #fff; }
-            .new-interface-info__title { font-size: 4em; font-weight: 600; margin-bottom: 0.3em; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; margin-left: -0.03em; line-height: 1.3; }
-            /* .new-interface-info__details { margin-bottom: 1.6em; display: flex; align-items: center; flex-wrap: wrap; min-height: 1.9em; font-size: 1.1em; } */
+            .style_interface-info__body { width: 80%; padding-top: 1.1em; }
+            .style_interface-info__head { color: rgba(255, 255, 255, 0.6); margin-bottom: 1em; font-size: 1.3em; min-height: 1em; }
+            .style_interface-info__head span { color: #fff; }
+            .style_interface-info__title { font-size: 4em; font-weight: 600; margin-bottom: 0.3em; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; margin-left: -0.03em; line-height: 1.3; }
+            /* .style_interface-info__details { margin-bottom: 1.6em; display: flex; align-items: center; flex-wrap: wrap; min-height: 1.9em; font-size: 1.1em; } */
                         
-            .new-interface-info__details {
+            .style_interface-info__details {
                 margin-bottom: 1em; 
                 display: block;
                 min-height: 1.9em;
@@ -1059,21 +1059,21 @@
                 line-height: 1.5;
             }
 
-            .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
-            .new-interface-info__description { font-size: 1.2em; font-weight: 300; line-height: 1.5; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; width: 70%; }
-            .new-interface .card-more__box { padding-bottom: 95%; }
-            .new-interface .full-start__background { height: 108%; top: -6em; }
-            .new-interface .card__promo { display: none; }
-            .new-interface .card.card--wide+.card-more .card-more__box { padding-bottom: 95%; }
-            .new-interface .card.card--wide .card-watched { display: none !important; }
-            body.light--version .new-interface-info__body { width: 69%; padding-top: 1.5em; }
-            body.light--version .new-interface-info { height: 25.3em; }
-            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.focus .card__view { animation: animation-card-focus 0.2s; }
-            body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.animate-trigger-enter .card__view { animation: animation-trigger-enter 0.2s forwards; }	    
-  
-	    
+            .style_interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
+            .style_interface-info__description { font-size: 1.2em; font-weight: 300; line-height: 1.5; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; width: 70%; }
+            .style_interface .card-more__box { padding-bottom: 95%; }
+            .style_interface .full-start__background { height: 108%; top: -6em; }
+            .style_interface .card__promo { display: none; }
+            .style_interface .card.card--wide+.card-more .card-more__box { padding-bottom: 95%; }
+            .style_interface .card.card--wide .card-watched { display: none !important; }
+            body.light--version .style_interface-info__body { width: 69%; padding-top: 1.5em; }
+            body.light--version .style_interface-info { height: 25.3em; }
+            body.advanced--animation:not(.no--animation) .style_interface .card--small.card--wide.focus .card__view { animation: animation-card-focus 0.2s; }
+            body.advanced--animation:not(.no--animation) .style_interface .card--small.card--wide.animate-trigger-enter .card__view { animation: animation-trigger-enter 0.2s forwards; }
+
+
             /* --- Rating Box Styles --- */
-            .new-interface .full-start__rate {
+            .style_interface .full-start__rate {
                 font-size: 1.3em;        /* Lampa Source base size is 1.3, we had it 1.45 */
                 margin-right: 0em;        /* modified was 1em */
                 display: inline-flex;
@@ -1087,7 +1087,7 @@
                 height: auto;
             }
             /* Style for the Number Div (common to all ratings) */
-            .new-interface .full-start__rate > div {
+            .style_interface .full-start__rate > div {
                 font-weight: normal;      /* Normal weight */
                 font-size: 0.9em;         /* Changing back to original from 0.9 */
                 justify-content: center;  /* From source analysis */
@@ -1114,13 +1114,13 @@
              /* Specific Logo Adjustments - UNCHANGED from pivot point */
             .tmdb-logo { height: 0.9em; }
             .rt-logo { height: 1.1em; }
-            /* --- End Rating Box Styles --- */	
+            /* --- End Rating Box Styles --- */
 
             </style>
             `);
           $('body').append(Lampa.Template.get(style_id, {}, true));
         }
-    }	    
+    }
 
     // Original check before starting
     if (!window.plugin_interface_ready) startPlugin();
