@@ -1026,6 +1026,50 @@
             if (Lampa.Manifest.app_digital < 153) use = old_interface; 
             return new use(object); 
         };
+	    
+            /* --- Rating Box Styles --- */
+            .new-interface .full-start__rate {
+                font-size: 1.3em;        /* Lampa Source base size is 1.3, we had it 1.45 */
+                margin-right: 0em;        /* modified was 1em */
+                display: inline-flex;
+                align-items: center;
+                vertical-align: middle;
+                background-color: rgba(255, 255, 255, 0.12); /* Light wrapper background */
+                padding: 0 0.2em 0 0; /* Zero Left Padding */
+                border-radius: 0.3em;  /* Smoother edges */
+                gap: 0.4em; /* modified was 0.5 */
+                overflow: hidden;
+                height: auto;
+            }
+            /* Style for the Number Div (common to all ratings) */
+            .new-interface .full-start__rate > div {
+                font-weight: normal;      /* Normal weight */
+                font-size: 0.9em;         /* Changing back to original from 0.9 */
+                justify-content: center;  /* From source analysis */
+                background-color: rgba(0, 0, 0, 0.4); /* Darker background */
+                color: #ffffff;
+                padding: 0em 0.2em;     /* ** MODIFIED: Narrower L/R padding (was 0.3em) ** */
+                border-radius: 0.3em;       /* Smoother edges */
+                line-height: 1;          /* MODIFIED: Was 1.3 */
+                order: 1;
+                display: flex;
+                align-items: center;
+                flex-shrink: 0;
+            }
+         
+            /* General Logo Style - UNCHANGED from pivot point */
+            .rating-logo {
+                height: 1.1em;
+                width: auto;
+                max-width: 75px; /* changed from 55 */
+                vertical-align: middle;
+                order: 2;
+                line-height: 0;
+            }
+             /* Specific Logo Adjustments - UNCHANGED from pivot point */
+            .tmdb-logo { height: 0.9em; }
+            .rt-logo { height: 1.1em; }
+            /* --- End Rating Box Styles --- */	    
 
     // Original check before starting
     if (!window.plugin_interface_ready) startPlugin();
