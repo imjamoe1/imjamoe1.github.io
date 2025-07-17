@@ -1026,6 +1026,14 @@
             if (Lampa.Manifest.app_digital < 153) use = old_interface; 
             return new use(object); 
         };
+
+        // **MODIFIED CSS**: Adjusted padding for number divs
+        var style_id = 'new_interface_style_adjusted_padding'; // Style ID
+        if (!$('style[data-id="' + style_id + '"]').length) {
+             $('style[data-id^="new_interface_style_"]').remove(); // Clean up previous
+
+            Lampa.Template.add(style_id, `
+            <style data-id="${style_id}">	    
 	    
             /* --- Rating Box Styles --- */
             .new-interface .full-start__rate {
@@ -1069,7 +1077,13 @@
              /* Specific Logo Adjustments - UNCHANGED from pivot point */
             .tmdb-logo { height: 0.9em; }
             .rt-logo { height: 1.1em; }
-            /* --- End Rating Box Styles --- */	    
+            /* --- End Rating Box Styles --- */	
+
+            </style>
+            `);
+          $('body').append(Lampa.Template.get(style_id, {}, true));
+        }
+    }	    
 
     // Original check before starting
     if (!window.plugin_interface_ready) startPlugin();
