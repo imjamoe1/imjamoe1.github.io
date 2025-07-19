@@ -2934,10 +2934,13 @@
     
     function insertRatings(rtRating, mcRating, oscars, awards, emmy, localCurrentCard, render) {
         if (!render) return;
-        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert OMDB ratings");  
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert OMDB ratings");
+
+        var isStylishInterfaceActive = typeof window.plugin_interface_ready !== 'undefined';  
         
-        var rateLine = $('.full-start-new__rate-line', render);
-        if (!rateLine.length) return;
+        var rateLine = isStylishInterfaceActive 
+            ? $('.new-interface-info__details .line-one-details', render)
+            : $('.full-start-new__rate-line', render);
 
         var lastRate = $('.full-start__rate:last', rateLine);
         
