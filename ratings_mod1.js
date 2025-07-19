@@ -12,6 +12,16 @@
         request_timeout: 10000 // 10 seconds request timeout
     };
 
+
+    if (window.plugin_interface_ready) {
+        // Изменяем селекторы для совместимости
+        var RATE_LINE_SELECTOR = '.new-interface-info__details';
+        var RATE_ITEM_SELECTOR = '.full-start__rate';
+    } else {
+        var RATE_LINE_SELECTOR = '.full-start-new__rate-line';
+        var RATE_ITEM_SELECTOR = '.full-start__rate';
+    }
+
     
     // --- Language Strings ---
     if (window.Lampa && Lampa.Lang) {
@@ -935,6 +945,16 @@
         window.plugin_interface_ready = true; 
         var old_interface = Lampa.InteractionMain; 
         var new_interface = component;
+
+        if (window.plugin_interface_ready) {
+            Lampa.Listener.follow('interface_updated', function() {
+                var active = Lampa.Activity.active();
+                if (active && active.activity && active.activity.render) {
+                    var render = active.activity.render();
+                    checkAndFixRatingsVisibility(render);
+                }
+            });
+        }
         
         // --- Add Listener for Full Card Logo Replacement (Complete Logic) ---
         if (Lampa.Listener && network) { // Check Listener and global network
