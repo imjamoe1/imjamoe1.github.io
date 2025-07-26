@@ -824,7 +824,7 @@
             var _this3 = this; 
             element.ready = true; 
             var item = new Lampa.InteractionLine(element, { 
-                url: element.url, card_small: true, cardClass: element.cardClass, genres: object.genres, object: object, card_wide: false, nomore: element.nomore 
+                url: element.url, card_small: true, cardClass: element.cardClass, genres: object.genres, object: object, card_wide: true, nomore: element.nomore 
             }); 
             item.create(); 
             item.onDown = this.down.bind(this); 
