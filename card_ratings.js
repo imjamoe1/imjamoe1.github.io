@@ -18,14 +18,14 @@
 
     // Иконки для рейтингов
     const KP_ICON_SVG = `
-        <svg width="12" height="12" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <svg width="12" height="12" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
             <path d="M120 0L31.5771 47.3297L77.6571 0H52.1143L20.7429 43.5446V0H0V120H20.7429V76.5257L52.1143 120H77.6571L32.7737 74.1583L120 120V97.7143L40.4434 65.7977L120 71.1429V48.8571L40.9474 53.9966L120 22.2857V0Z" fill="#FF5500"/>
         </svg>
     `;
 
     const LAMPA_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 667 622"><g transform="scale(1, -1) translate(0, -622)"><path fill="currentColor" d="M304 566c-27-3-45-7-66-15-66-24-120-75-149-139-7-15-14-37-18-55l-3-15 0-34c0-38 1-46 7-68 5-18 9-30 18-47 8-17 18-32 27-45 12-16 37-40 54-53 11-8 13-9 6-2-44 38-71 84-82 137-3 15-4 40-2 64 1 20 4 33 10 51 17 51 49 93 94 124 9 6 39 22 44 22 2 0 4 1 6 2 3 2 18 6 34 9 11 2 16 3 35 3 35 1 54-2 81-11 53-18 97-54 125-101 12-19 24-49 28-71 5-23 5-69 0-94-7-35-28-76-52-105-10-12-22-23-32-31-4-3-7-6-7-6 0 0 3 2 7 5 34 23 63 54 84 90 14 25 25 56 30 87 2 10 2 17 2 34-1 35-2 54-10 78-21 71-68 127-134 160-25 12-49 20-79 25-9 1-51 3-59 2zM299 471c-4-1-13-2-19-4-68-17-122-67-143-134-7-22-9-39-8-65 1-20 2-30 7-49 3-11 9-27 10-26 0 0 0 4-1 8-1 5-2 15-2 30-1 19 0 24 2 35 7 39 26 71 56 100 24 22 51 37 86 46 10 2 13 3 35 3 20 0 25 0 36-2 27-4 58-18 79-34 38-30 61-68 71-113 2-10 2-14 2-35-1-17-1-25-2-30-1-4-1-7-1-7 1-1 5 10 8 20 12 36 12 80 1 117-15 50-50 94-98 119-10 6-20 10-34 14-22 7-27 7-53 8-14 0-28 0-32-1zM313 353c-12-2-28-9-38-17-22-16-35-45-33-72 1-16 7-33 16-45 4-6 16-17 22-21 23-15 57-18 82-6 23 11 38 29 46 54 4 12 4 31 1 44-8 30-33 55-62 61-7 2-28 3-34 2zM210 320c-8-10-19-30-23-43-5-15-6-22-6-46 0-24 1-29 6-45 15-45 50-79 95-94 15-5 25-6 46-6 26 0 42 4 64 15 14 7 26 16 39 29 13 13 19 21 27 39 11 22 13 35 13 63 0 14-1 21-2 28-4 20-11 36-24 55-11 16-16 20-9 8 9-18 13-41 11-66-2-28-15-55-38-76-12-12-22-18-38-25-17-7-24-8-45-8-26 0-36 2-57 12-13 6-24 15-35 27-14 15-23 30-29 52-3 10-3 11-3 31 0 20 0 22 3 31 1 6 5 14 7 19 2 5 4 9 4 9 0 0-4-4-8-9z"/></g></svg>`;
 
-    // Вспомогательные функции (оставлены без изменений)
+    // Вспомогательные функции
     function normalizeTitle(str) {
         return (str || '')
             .toLowerCase()
@@ -222,16 +222,19 @@
             position: absolute;
             color: white;
             font-weight: bold;
-            padding: 0.2em 0.4em;
-            border-radius: 0.7em;
+            padding: 0.12em 0.2em;
+            margin-left: 0;
+            border-radius: 0.55em;
             z-index: 10;
             pointer-events: none;
-            font-size: 1.3em;
+            font-size: 1.2em;
             user-select: none;
             display: flex;
             align-items: center;
-            gap: 0.1em;
+            gap: 0;
             text-shadow: 1px 1px 2px #000;
+            background: rgba(0, 0, 0, 0.5);
+            min-width: max-content; 
         `;
 
         const iconEl = document.createElement('div');
@@ -244,24 +247,25 @@
                 align-items: center;
                 justify-content: center;
                 transform: translateY(1.2px);
+                 margin-left: 0.3em;
+                 margin-right: 0.1em;
             `;
             ratingEl.style.top = '0.1em';
             ratingEl.style.right = '4px';
         } else {
             iconEl.innerHTML = LAMPA_ICON_SVG;
             iconEl.style.cssText = `
-                width: 1.1em;
-                height: 1.1em;
+                width: 1m;
+                height: 1em;
                 display: flex;
-                filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.9));
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                left: 3px;
-                transform: translateY(1.8px);
+                transform: translateY(1.2px);
             `;
             ratingEl.style.bottom = '4px';
             ratingEl.style.right = '4px';
+            ratingEl.style.gap = '0';
         }
 
         const textEl = document.createElement('span');
@@ -282,7 +286,7 @@
         }
     }
 
-    // Отрисовка рейтингов на карточке
+    // Отрисовка рейтингов на карточке (постер)
     async function renderRating(card) {
         if (processedCards.has(card)) return;
 
@@ -347,7 +351,7 @@
 
         if (view.querySelector('.card__rating--kp') || view.querySelector('.card__rating--lampa')) return;
 
-        // Создаем элементы рейтингов
+        // Создаем элементы рейтингов (Кинопоиск + Lampa на постере)
         const { element: kpElement, text: kpText } = createRatingElement('kp');
         kpText.textContent = '...';
         view.style.position = 'relative';
@@ -355,11 +359,10 @@
 
         const { element: lampaElement, text: lampaText } = createRatingElement('lampa');
         lampaText.textContent = '...';
-        view.style.position = 'relative';
         view.appendChild(lampaElement);
 
         try {
-            // Получаем рейтинг Kinopoisk
+            // Получаем рейтинг Kinopoisk (оставляем без изменений)
             const { kp } = await searchFilm(title, year);
             if (kp && kp !== '0.0') {
                 kpText.textContent = kp;
@@ -367,7 +370,7 @@
                 kpElement.remove();
             }
 
-            // Получаем рейтинг Lampa
+            // Получаем рейтинг Lampa (только для постера)
             const lampaRating = await fetchLampaRating(data, card);
             if (lampaRating && lampaRating !== '0.0') {
                 lampaText.textContent = lampaRating;
@@ -375,10 +378,8 @@
                 lampaElement.remove();
             }
         } catch (e) {
-            setTimeout(() => {
-                if (kpElement && kpElement.parentNode) kpElement.remove();
-                if (lampaElement && lampaElement.parentNode) lampaElement.remove();
-            }, 1000);
+            kpElement?.remove();
+            lampaElement?.remove();
         }
     }
 
@@ -434,44 +435,10 @@
                 }
             });
 
-            // Добавление рейтинга Lampa на страницу полного описания
+            // Убираем рейтинг Lampa внутри карточки (на странице описания)
             Lampa.Listener.follow('full', function(e) {
                 if (e.type === 'complite') {
-                    const render = e.object.activity.render();
-                    const method = e.object.method;
-                    const id = e.object.id;
-                    
-                    // Проверяем, не находится ли мы в разделе sisi
-                    if (window.location.href.indexOf('sisi') === -1) {
-                        fetchWithTimeout(`${LAMPA_RATING_URL}${method}_${id}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                const result = data.result;
-                                let positive = 0, negative = 0;
-                                
-                                result.forEach(item => {
-                                    if (item.type === 'fire' || item.type === 'nice') {
-                                        positive += parseInt(item.counter, 10);
-                                    }
-                                    if (item.type === "think" || item.type === "bore" || item.type === 'shit') {
-                                        negative += parseInt(item.counter, 10);
-                                    }
-                                });
-                                
-                                const total = positive + negative;
-                                const rating = total > 0 ? (positive / total * 10).toFixed(1) : 0;
-                                
-                                const ratingElement = $(`<div class="full-start__rate rate--lampa"></div>`);
-                                const ratingValue = $(`<div></div>`).text(rating);
-                                const sourceIcon = $(`<div class="source--icon">${LAMPA_ICON_SVG}</div>`);
-                                
-                                ratingElement.append(ratingValue);
-                                ratingElement.append(sourceIcon);
-                                
-                                $(".rate--kp", render).after(ratingElement);
-                            })
-                            .catch(() => {});
-                    }
+                    // Ничего не делаем — рейтинг Lampa не добавляется
                 }
             });
         }
