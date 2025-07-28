@@ -233,7 +233,7 @@
             align-items: center;
             gap: 0;
             text-shadow: 1px 1px 2px #000;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);
             min-width: max-content; 
         `;
 
