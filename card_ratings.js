@@ -255,10 +255,10 @@
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                transform: translateY(0.6px);
+                transform: translateY(0.7px);
                 margin-top: 2px;
             `;
-            ratingEl.style.bottom = '6px';
+            ratingEl.style.bottom = '7px';
             ratingEl.style.right = '4px';
         }
 
