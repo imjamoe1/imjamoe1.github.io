@@ -240,7 +240,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transform: translateY(0.1px);
+                transform: translateY(0.5px);
                 margin-left: 0.1em;
                 margin-right: 0.1em;
             `;
@@ -255,7 +255,7 @@
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                transform: translateY(1px);
+                transform: translateY(0.5px);
             `;
             ratingEl.style.bottom = '4px';
             ratingEl.style.right = '4px';
