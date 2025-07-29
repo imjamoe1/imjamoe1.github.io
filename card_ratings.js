@@ -256,7 +256,6 @@
                 justify-content: center;
                 position: relative;
                 transform: translateY(1px);
-                margin-right: 0.1em;
             `;
             ratingEl.style.bottom = '4px';
             ratingEl.style.right = '4px';
