@@ -16,7 +16,7 @@
       font-weight: bold;
       padding: 0.2em 0.3em;
       border-radius: 0.5em;
-      transform: translateY(2px);
+      transform: translateY(3px);
       z-index: 2;
       pointer-events: none;
     }
