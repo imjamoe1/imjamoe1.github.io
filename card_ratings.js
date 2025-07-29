@@ -240,7 +240,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transform: translateY(0.5px);
+                transform: translateY(0.1px);
                 margin-left: 0.1em;
                 margin-right: 0.1em;
             `;
