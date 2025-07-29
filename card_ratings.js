@@ -241,10 +241,10 @@
                 align-items: center;
                 justify-content: center;
                 transform: translateY(0.5px);
-                margin-left: 0.3em;
-                margin-right: 0.2em;
+                margin-left: 0.1em;
+                margin-right: 0.1em;
             `;
-            ratingEl.style.top = '0.1em';
+            ratingEl.style.top = '0.2em';
             ratingEl.style.right = '4px';
         } else {
             iconEl.innerHTML = LAMPA_ICON_SVG;
