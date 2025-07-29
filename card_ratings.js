@@ -17,13 +17,9 @@
     const processedCards = new WeakSet();
 
     // Иконки для рейтингов
-    const KP_ICON_SVG = `
-        <svg width="12" height="12" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
-            <path d="M120 0L31.5771 47.3297L77.6571 0H52.1143L20.7429 43.5446V0H0V120H20.7429V76.5257L52.1143 120H77.6571L32.7737 74.1583L120 120V97.7143L40.4434 65.7977L120 71.1429V48.8571L40.9474 53.9966L120 22.2857V0Z" fill="#FF5500"/>
-        </svg>
-    `;
+    const KP_ICON_SVG = '<svg width="12" height="12" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="120" height="120" fill="black"/><path d="M120 0L31.5771 47.3297L77.6571 0H52.1143L20.7429 43.5446V0H0V120H20.7429V76.5257L52.1143 120H77.6571L32.7737 74.1583L120 120V97.7143L40.4434 65.7977L120 71.1429V48.8571L40.9474 53.9966L120 22.2857V0Z" fill="url(#paint0_radial_4902_370)"/><defs><radialGradient id="paint0_radial_4902_370" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="rotate(45) scale(169.706)"><stop offset="0.5" stop-color="#FF5500"/><stop offset="1" stop-color="#BBFF00"/></radialGradient></defs></svg>';      
 
-    const LAMPA_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 667 622"><g transform="scale(1, -1) translate(0, -622)"><path fill="currentColor" d="M304 566c-27-3-45-7-66-15-66-24-120-75-149-139-7-15-14-37-18-55l-3-15 0-34c0-38 1-46 7-68 5-18 9-30 18-47 8-17 18-32 27-45 12-16 37-40 54-53 11-8 13-9 6-2-44 38-71 84-82 137-3 15-4 40-2 64 1 20 4 33 10 51 17 51 49 93 94 124 9 6 39 22 44 22 2 0 4 1 6 2 3 2 18 6 34 9 11 2 16 3 35 3 35 1 54-2 81-11 53-18 97-54 125-101 12-19 24-49 28-71 5-23 5-69 0-94-7-35-28-76-52-105-10-12-22-23-32-31-4-3-7-6-7-6 0 0 3 2 7 5 34 23 63 54 84 90 14 25 25 56 30 87 2 10 2 17 2 34-1 35-2 54-10 78-21 71-68 127-134 160-25 12-49 20-79 25-9 1-51 3-59 2zM299 471c-4-1-13-2-19-4-68-17-122-67-143-134-7-22-9-39-8-65 1-20 2-30 7-49 3-11 9-27 10-26 0 0 0 4-1 8-1 5-2 15-2 30-1 19 0 24 2 35 7 39 26 71 56 100 24 22 51 37 86 46 10 2 13 3 35 3 20 0 25 0 36-2 27-4 58-18 79-34 38-30 61-68 71-113 2-10 2-14 2-35-1-17-1-25-2-30-1-4-1-7-1-7 1-1 5 10 8 20 12 36 12 80 1 117-15 50-50 94-98 119-10 6-20 10-34 14-22 7-27 7-53 8-14 0-28 0-32-1zM313 353c-12-2-28-9-38-17-22-16-35-45-33-72 1-16 7-33 16-45 4-6 16-17 22-21 23-15 57-18 82-6 23 11 38 29 46 54 4 12 4 31 1 44-8 30-33 55-62 61-7 2-28 3-34 2zM210 320c-8-10-19-30-23-43-5-15-6-22-6-46 0-24 1-29 6-45 15-45 50-79 95-94 15-5 25-6 46-6 26 0 42 4 64 15 14 7 26 16 39 29 13 13 19 21 27 39 11 22 13 35 13 63 0 14-1 21-2 28-4 20-11 36-24 55-11 16-16 20-9 8 9-18 13-41 11-66-2-28-15-55-38-76-12-12-22-18-38-25-17-7-24-8-45-8-26 0-36 2-57 12-13 6-24 15-35 27-14 15-23 30-29 52-3 10-3 11-3 31 0 20 0 22 3 31 1 6 5 14 7 19 2 5 4 9 4 9 0 0-4-4-8-9z"/></g></svg>`;
+    const LAMPA_ICON_SVG = '<svg width="12" height="12" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="55" fill="black"/><path d="M81.6744 103.11C98.5682 93.7234 110 75.6967 110 55C110 24.6243 85.3757 0 55 0C24.6243 0 0 24.6243 0 55C0 75.6967 11.4318 93.7234 28.3255 103.11C14.8869 94.3724 6 79.224 6 62C6 34.938 27.938 13 55 13C82.062 13 104 34.938 104 62C104 79.224 95.1131 94.3725 81.6744 103.11Z" fill="white"/><path d="M92.9546 80.0076C95.5485 74.5501 97 68.4446 97 62C97 38.804 78.196 20 55 20C31.804 20 13 38.804 13 62C13 68.4446 14.4515 74.5501 17.0454 80.0076C16.3618 77.1161 16 74.1003 16 71C16 49.4609 33.4609 32 55 32C76.5391 32 94 49.4609 94 71C94 74.1003 93.6382 77.1161 92.9546 80.0076Z" fill="white"/><path d="M55 89C69.3594 89 81 77.3594 81 63C81 57.9297 79.5486 53.1983 77.0387 49.1987C82.579 54.7989 86 62.5 86 71C86 88.1208 72.1208 102 55 102C37.8792 102 24 88.1208 24 71C24 62.5 27.421 54.7989 32.9613 49.1987C30.4514 53.1983 29 57.9297 29 63C29 77.3594 40.6406 89 55 89Z" fill="white"/><path d="M73 63C73 72.9411 64.9411 81 55 81C45.0589 81 37 72.9411 37 63C37 53.0589 45.0589 45 55 45C64.9411 45 73 53.0589 73 63Z" fill="white"/></svg></div>';
 
     // Вспомогательные функции
     function normalizeTitle(str) {
@@ -222,18 +218,16 @@
             position: absolute;
             color: white;
             font-weight: bold;
-            padding: 0.12em 0.2em;
+            padding: 0.1em 0.2em;
             margin-left: 0;
-            border-radius: 0.55em;
+            border-radius: 0.5em;
             z-index: 10;
             pointer-events: none;
             font-size: 1.2em;
             user-select: none;
             display: flex;
             align-items: center;
-            gap: 0;
-            text-shadow: 1px 1px 2px #000;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.2);
             min-width: max-content; 
         `;
 
@@ -241,31 +235,31 @@
         if (type === 'kp') {
             iconEl.innerHTML = KP_ICON_SVG;
             iconEl.style.cssText = `
-                width: 0.7em;
-                height: 0.7em;
+                width: 0.8em;
+                height: 0.9em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transform: translateY(1.2px);
-                 margin-left: 0.3em;
-                 margin-right: 0.1em;
+                transform: translateY(0.5px);
+                margin-left: 0.3em;
+                margin-right: 0.2em;
             `;
             ratingEl.style.top = '0.1em';
             ratingEl.style.right = '4px';
         } else {
             iconEl.innerHTML = LAMPA_ICON_SVG;
             iconEl.style.cssText = `
-                width: 1m;
+                width: 0.9m;
                 height: 1em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                transform: translateY(1.2px);
+                transform: translateY(1px);
+                margin-right: 0.1em;
             `;
             ratingEl.style.bottom = '4px';
             ratingEl.style.right = '4px';
-            ratingEl.style.gap = '0';
         }
 
         const textEl = document.createElement('span');
