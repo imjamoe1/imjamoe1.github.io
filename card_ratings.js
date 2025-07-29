@@ -114,8 +114,8 @@
             const kp = text.match(/<kp_rating[^>]*>([\d.]+)<\/kp_rating>/);
             const imdb = text.match(/<imdb_rating[^>]*>([\d.]+)<\/imdb_rating>/);
             return {
-                kp: kp ? parseFloat(kp[1]).toFixed(1) : null,
-                imdb: imdb ? parseFloat(imdb[1]).toFixed(1) : null,
+                kp: kp ? parseFloat(kp[1]).toFixed(1) : '0.0',
+                imdb: imdb ? parseFloat(imdb[1]).toFixed(1) : '0.0',
                 source: 'xml'
             };
         } catch (e) {}
@@ -128,19 +128,19 @@
             );
             const json = await res.json();
             return {
-                kp: json.ratingKinopoisk ? parseFloat(json.ratingKinopoisk).toFixed(1) : null,
-                imdb: json.ratingImdb ? parseFloat(json.ratingImdb).toFixed(1) : null,
+                kp: json.ratingKinopoisk ? parseFloat(json.ratingKinopoisk).toFixed(1) : '0.0',
+                imdb: json.ratingImdb ? parseFloat(json.ratingImdb).toFixed(1) : '0.0',
                 source: 'api'
             };
         } catch (e) {
-            return { kp: null, imdb: null, source: 'error' };
+            return { kp: '0.0', imdb: '0.0', source: 'error' };
         }
     }
 
     // Поиск фильма на Kinopoisk
     async function searchFilm(title, year = '') {
         if (!title || title.length < 2) {
-            return { kp: null, imdb: null, filmId: null, year: null, source: 'error' };
+            return { kp: '0.0', imdb: '0.0', filmId: null, year: null, source: 'error' };
         }
 
         const cacheKey = `${normalizeTitle(title)}_${year}`;
@@ -171,7 +171,7 @@
             setCache(cacheKey, result);
             return result;
         } catch (e) {
-            const fallback = { kp: null, imdb: null, filmId: null, year: null, source: 'error' };
+            const fallback = { kp: '0.0', imdb: '0.0', filmId: null, year: null, source: 'error' };
             setCache(cacheKey, fallback);
             return fallback;
         }
@@ -179,10 +179,10 @@
 
     // Получение рейтинга Lampa
     async function fetchLampaRating(data, card) {
-        if (Lampa.Manifest.origin !== "bylampa") return null;
+        if (Lampa.Manifest.origin !== "bylampa") return '0.0';
         
         const id = getContentId(data, card);
-        if (!id) return null;
+        if (!id) return '0.0';
         
         const type = getContentType(data, card);
         const url = `${LAMPA_RATING_URL}${type}_${id}`;
@@ -204,9 +204,9 @@
             });
             
             const total = positive + negative;
-            return total > 0 ? (positive / total * 10).toFixed(1) : null;
+            return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
         } catch (e) {
-            return null;
+            return '0.0';
         }
     }
 
@@ -356,24 +356,16 @@
         view.appendChild(lampaElement);
 
         try {
-            // Получаем рейтинг Kinopoisk (оставляем без изменений)
+            // Получаем рейтинг Kinopoisk
             const { kp } = await searchFilm(title, year);
-            if (kp && kp !== '0.0') {
-                kpText.textContent = kp;
-            } else {
-                kpElement.remove();
-            }
-
-            // Получаем рейтинг Lampa (только для постера)
+            kpText.textContent = kp; // Будет "0.0" если рейтинга нет
+            
+            // Получаем рейтинг Lampa
             const lampaRating = await fetchLampaRating(data, card);
-            if (lampaRating && lampaRating !== '0.0') {
-                lampaText.textContent = lampaRating;
-            } else {
-                lampaElement.remove();
-            }
+            lampaText.textContent = lampaRating; // Будет "0.0" если рейтинга нет
         } catch (e) {
-            kpElement?.remove();
-            lampaElement?.remove();
+            kpText.textContent = '0.0';
+            lampaText.textContent = '0.0';
         }
     }
 
