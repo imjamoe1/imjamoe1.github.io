@@ -255,7 +255,7 @@
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                transform: translateY(0.5px);
+                transform: translateY(0.6px);
             `;
             ratingEl.style.bottom = '4px';
             ratingEl.style.right = '4px';
