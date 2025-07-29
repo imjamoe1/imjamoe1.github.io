@@ -258,7 +258,7 @@
                 transform: translateY(0.6px);
                 margin-top: 2px;
             `;
-            ratingEl.style.bottom = '4px';
+            ratingEl.style.bottom = '6px';
             ratingEl.style.right = '4px';
         }
 
