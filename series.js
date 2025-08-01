@@ -18,7 +18,8 @@
       border-radius: 0.5em;
       z-index: 2;
       pointer-events: none;
-      transform: translateY(0.7px);
+      transform: translateY(0.5px);
+      margin-bottom: -0.5em;  
     }
   `;
 
