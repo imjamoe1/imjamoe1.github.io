@@ -10,7 +10,7 @@
       position: absolute;
       bottom: 0.5em;
       left: 0.5em;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.3);
       color: #fff;
       font-size: 0.9em;
       font-weight: bold;
