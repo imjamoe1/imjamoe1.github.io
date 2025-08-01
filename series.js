@@ -18,7 +18,7 @@
       border-radius: 0.5em;
       z-index: 2;
       pointer-events: none;
-      transform: translateY(0.5px);
+      transform: translateY(0.3px);
     }
   `;
 
