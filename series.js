@@ -8,7 +8,7 @@
   const STYLE = `
     .card__series-label {
       position: absolute;
-      bottom: 0.2em;
+      bottom: 0.1em;
       left: 0.5em;
       background: rgba(0,0,0,0.3);
       color: #fff;
