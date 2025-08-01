@@ -8,7 +8,7 @@
   const STYLE = `
     .card__series-label {
       position: absolute;
-      bottom: 0.5em;
+      bottom: 0.2em;
       left: 0.5em;
       background: rgba(0,0,0,0.3);
       color: #fff;
@@ -18,8 +18,7 @@
       border-radius: 0.5em;
       z-index: 2;
       pointer-events: none;
-      transform: translateY(0.5px);
-      margin-bottom: -0.5em;  
+      transform: translateY(0.5px);  
     }
   `;
 
