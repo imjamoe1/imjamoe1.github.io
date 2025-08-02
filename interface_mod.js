@@ -186,7 +186,7 @@ style.innerHTML = `
 .card__vote {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0.1px;
   padding: 1px 4px;
   margin: 1px;
   border-radius: 10px;
