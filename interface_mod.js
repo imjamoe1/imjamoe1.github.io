@@ -193,7 +193,7 @@ style.innerHTML = `
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   color: #fff;
   align-items: center;
-  transform: translate(7px, 7px);
+  transform: translate(3px, 3px);
 }
 .card__vote::before {
   height: 24px;
