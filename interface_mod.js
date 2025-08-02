@@ -209,7 +209,7 @@ style.innerHTML = `
     /* Рейтинг в карточке */
     color: #62a3c9;
     position: relative;
-    top: 3px;
+    top: 7px;
     left: 5px;
 }
 .explorer-card__head-rate > span {
