@@ -196,7 +196,7 @@ style.innerHTML = `
 }
 .card__vote::before {
   height: 24px;
-  margin-bottom: 1px;
+  margin-bottom: 0.1px;
   display: flex;
   justify-content: center;
 }
