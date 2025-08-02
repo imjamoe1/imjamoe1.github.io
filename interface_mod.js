@@ -201,7 +201,7 @@ style.innerHTML = `
   justify-content: center;
 }
 .card__vote-count {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   line-height: 1;
 }
