@@ -187,7 +187,7 @@ style.innerHTML = `
   display: flex;
   flex-direction: column;
   gap: 1px;
-  padding: 2px 5px;
+  padding: 1px 4px;
   margin: 2px;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
