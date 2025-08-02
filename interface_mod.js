@@ -193,7 +193,7 @@ style.innerHTML = `
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   color: #fff;
   align-items: center;
-  transform: translate(3px, 2px);
+  transform: translate(2px, 3px);
 }
 .card__vote::before {
   height: 24px;
@@ -209,7 +209,7 @@ style.innerHTML = `
 .explorer-card__head-rate {
     /* Рейтинг в карточке */
     color: #62a3c9;
-    transform: translate(3px, 2px);
+    transform: translate(2px, 3px);
 }
 .explorer-card__head-rate > span {
     /* Число рейтинга */
