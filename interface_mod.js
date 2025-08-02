@@ -195,8 +195,6 @@ style.innerHTML = `
   align-items: center;
 }
 .card__vote::before {
-    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 -960 960 960'%3E%3Cpath fill='%2362a3c9' d='M349.923-241.308 480-320.077l131.077 79.769-34.615-148.307 115.384-99.924L540.077-502 480-642.308 420.923-503l-151.769 13.461 115.384 99.693-34.615 148.538ZM283-150.076l52.615-223.539-173.923-150.847 229.231-18.846L480-754.693l90.077 211.385 228.231 18.846-173.923 150.847L677-150.076 480-268.923 283-150.076Zm197-281.616Z'/%3E%3C/svg%3E");
-  width: 24px;
   height: 24px;
   margin-bottom: 1px;
   display: flex;
@@ -210,12 +208,6 @@ style.innerHTML = `
 .explorer-card__head-rate {
     /* Рейтинг в карточке */
     color: #62a3c9;
-}
-.explorer-card__head-rate > svg {
-    /* Иконка звезды */
-    width: 1.5em !important;
-    height: 1.5em !important;
-    margin-right: 0.5em;
 }
 .explorer-card__head-rate > span {
     /* Число рейтинга */
@@ -1965,7 +1957,7 @@ document.head.appendChild(style);
     }
     .card, .card__view, .full-start__button, .simple-button, .settings-folder, .settings-param, .selectbox-item, 
     .modal__content, .selectbox__content, .settings__content, .settings-input__content {
-        border-radius: 20px !important;
+        border-radius: 15px !important;
     }
             `,
             sunset: `
