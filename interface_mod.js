@@ -189,7 +189,7 @@ style.innerHTML = `
   gap: 1px;
   padding: 3px 3px;
   margin: 2px;
-  border-radius: 4px;
+  border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   color: #fff;
   align-items: center;
