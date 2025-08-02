@@ -208,6 +208,9 @@ style.innerHTML = `
 .explorer-card__head-rate {
     /* Рейтинг в карточке */
     color: #62a3c9;
+    position: relative;
+    top: 5px;
+    left: 5px;
 }
 .explorer-card__head-rate > span {
     /* Число рейтинга */
