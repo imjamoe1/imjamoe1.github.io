@@ -2331,7 +2331,7 @@ Lampa.Listener.follow('full', function(e) {
                     
                     const ratingElement = $(`<div class="full-start__rate rate--lampa"></div>`);
                     const ratingValue = $(`<div></div>`).text(rating);
-                    const sourceIcon = $(`<div class="source--name rate--icon">${lampa_svg}</div>`);
+                    const sourceIcon = $(`<div class="source--name rate--icon" style="transform: scale(1.1);">${lampa_svg}</div>`);
                     
                     ratingElement.append(ratingValue);
                     ratingElement.append(sourceIcon);
@@ -2354,3 +2354,4 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
