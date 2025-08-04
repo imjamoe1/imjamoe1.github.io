@@ -240,6 +240,7 @@
         "background: #FFD700;" +
         "color: #000;" +
         "font-weight: bold;" +
+	"}" +    
         ".maxsm-modal-ratings {" +
         "    padding: 1.25em;" +
         "    font-size: 1.4em;" +
@@ -2354,4 +2355,5 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
