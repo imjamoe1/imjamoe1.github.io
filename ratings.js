@@ -268,8 +268,7 @@
         ".full-start-new__rate-line {" +
         "visibility: hidden;" +
         //"flex-wrap: wrap;" +
-        //"gap: 0.4em 0;" +
-	"border-radius: 12px;" +    
+        //"gap: 0.4em 0;" +   
         "}" +
         ".full-start-new__rate-line > * {" +
         "margin-right: 0.5em !important;" +
@@ -2356,6 +2355,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
