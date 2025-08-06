@@ -273,6 +273,16 @@
         ".full-start-new__rate-line > * {" +
         "margin-right: 0.5em !important;" +
         "}" +
+        ".full-start__rate {" +
+        "background-color: rgba(0, 0, 0, 0.25)
+        "border-radius: 15px !important;" +
+        "padding: 0.1px 1px !important;" +
+        "}" +
+        ".full-start__rate > div:first-child {" +
+        "border: none !important;" +
+        "background: transparent !important;" +
+        "padding: 0 !important;" +
+        "}" +	    
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
         ".rate--orange { color: #ff9800; }" +
@@ -2355,3 +2365,4 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
