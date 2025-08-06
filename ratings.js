@@ -248,7 +248,7 @@
         "}" +
         ".maxsm-modal-rating-line {" +
         "    padding: 0.5em 0;" +
-        "    border-bottom: 0.0625em solid rgba(255, 255, 255, 0.1);" +
+        "    border-bottom: 0.0625em solid rgba(255, 255, 255, 0.8);" +
         "}" +
         ".maxsm-modal-rating-line:last-child {" +
         "    border-bottom: none;" +
@@ -274,15 +274,15 @@
         "margin-right: 0.5em !important;" +
         "}" +
         ".full-start__rate {" +
-        "background-color: rgba(0, 0, 0, 0.25)
-        "border-radius: 15px !important;" +
-        "padding: 0.1px 1px !important;" +
+        "background-color: rgba(0, 0, 0, 0.25) !important;" + // Добавлено: фон для каждого рейтинга
+        "border-radius: 15px !important;" + // Добавлено: скругление углов
+        "padding: 0.1px 1px !important;" + // Добавлено: внутренние отступы
         "}" +
         ".full-start__rate > div:first-child {" +
         "border: none !important;" +
         "background: transparent !important;" +
         "padding: 0 !important;" +
-        "}" +	    
+        "}" +
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
         ".rate--orange { color: #ff9800; }" +
@@ -2365,4 +2365,3 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
-
