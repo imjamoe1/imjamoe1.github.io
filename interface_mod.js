@@ -1962,7 +1962,7 @@ document.head.appendChild(style);
         border-radius: 15px !important;
     }
     .card.focus .card__view::after, .card.hover .card__view::after {
-        border-width: 1px !important;
+        border-width: 0.1px !important;
     }
             `,
             sunset: `
