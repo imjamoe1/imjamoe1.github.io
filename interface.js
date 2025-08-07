@@ -934,7 +934,7 @@
             Lampa.Template.add(style_id, `
             <style data-id="${style_id}">
             .new-interface .card--small.card--wide { width: 18.3em; }
-            .new-interface-info { position: relative; padding: 1.5em; height: 20em; }
+            .new-interface-info { position: relative; padding: 1.5em; height: 19em; }
             .new-interface-info__body { width: 80%; padding-top: 1.1em; }
             .new-interface-info__head { color: rgba(255, 255, 255, 0.6); margin-bottom: 1em; font-size: 1.3em; min-height: 1em; }
             .new-interface-info__head span { color: #fff; }
