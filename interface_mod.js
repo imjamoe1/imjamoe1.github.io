@@ -1961,6 +1961,9 @@ document.head.appendChild(style);
     .modal__content, .selectbox__content, .settings__content, .settings-input__content {
         border-radius: 15px !important;
     }
+    .card.focus .card__view::after, .card.hover .card__view::after {
+        border-width: 1px !important;
+    }
             `,
             sunset: `
                 body { background: linear-gradient(135deg, #2d1f3d 0%, #614385 50%, #516395 100%); color: #ffffff; }
