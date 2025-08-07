@@ -1961,24 +1961,6 @@ document.head.appendChild(style);
     .modal__content, .selectbox__content, .settings__content, .settings-input__content {
         border-radius: 15px !important;
     }
-    @keyframes cosmic-pulse {
-                    0% { box-shadow: 0 0 20px rgba(252, 0, 255, 0.3); }
-                    50% { box-shadow: 0 0 30px rgba(0, 219, 222, 0.3); }
-                    100% { box-shadow: 0 0 20px rgba(252, 0, 255, 0.3); }
-                }
-                .card.focus .card__view::after, .card.hover .card__view::after {
-                    border: 1px;
-                    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-                }
-                .full-start__background {
-                    opacity: 0.8;
-                    filter: saturate(1.3) contrast(1.1);
-                }
-                .settings__content, .settings-input__content, .selectbox__content, .modal__content {
-                    background: rgba(9, 2, 39, 0.95);
-                    border: 1px solid rgba(252, 0, 255, 0.1);
-                    box-shadow: 0 0 30px rgba(0, 219, 222, 0.1);
-                }
             `,
             sunset: `
                 body { background: linear-gradient(135deg, #2d1f3d 0%, #614385 50%, #516395 100%); color: #ffffff; }
