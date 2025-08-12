@@ -236,8 +236,8 @@
         if (type === 'kp') {
             iconEl.innerHTML = KP_ICON_SVG;
             iconEl.style.cssText = `
-                width: 0.8em;
-                height: 0.8em;
+                width: 1em;
+                height: 0.9em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
