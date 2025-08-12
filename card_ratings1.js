@@ -236,12 +236,12 @@
         if (type === 'kp') {
             iconEl.innerHTML = KP_ICON_SVG;
             iconEl.style.cssText = `
-                width: 0.8em;
-                height: 0.8em;
+                width: 1em;
+                height: 1em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transform: translateY(0.5px);
+                transform: translateY(0.4px);
                 margin-left: 0.1em;
                 margin-right: 0.1em;
             `;
@@ -251,7 +251,7 @@
             iconEl.innerHTML = LAMPA_ICON_SVG;
             iconEl.style.cssText = `
                 width: 1em;
-                height: 0.9em;
+                height: 1em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
