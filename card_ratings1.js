@@ -17,7 +17,8 @@
     const processedCards = new WeakSet();
 
     // Иконки для рейтингов
-    const KP_ICON_SVG = '<svg width="20" height="20" viewBox="0 0 110 110" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="46" fill="black"/><g transform="translate(10, 10) scale(0.4)"><path fill="white" d="M215 121.415l-99.297-6.644 90.943 36.334a106.416 106.416 0 0 0 8.354-29.69z"/><path fill="white" d="M194.608 171.609C174.933 197.942 143.441 215 107.948 215 48.33 215 0 166.871 0 107.5 0 48.13 48.33 0 107.948 0c35.559 0 67.102 17.122 86.77 43.539l-90.181 48.07L162.57 32.25h-32.169L90.892 86.862V32.25H64.77v150.5h26.123v-54.524l39.509 54.524h32.169l-56.526-57.493 88.564 46.352z"/><path d="M206.646 63.895l-90.308 36.076L215 93.583a106.396 106.396 0 0 0-8.354-29.688z" fill="white"/></g></svg>';
+    const KP_ICON_SVG = '<svg width="20" height="20" viewBox="0 0 110 110" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="46" fill="black"/><g transform="translate(10, 10) scale(0.4)"><path fill="white" d="M215 121.415l-99.297-6.644 90.943 36.334a106.416 106.416 0 0 0 8.354-29.69z"/><path fill="white" d="M194.608 171.609C174.933 197.942 143.441 215 107.948 215 48.33 215 0 166.871 0 107.5 0 48.13 48.33 0 107.948 0c35.559 0 67.102 17.122 86.77 43.539l-90.181 48.07L162.57 32.25h-32.169L90.892 86.862V32.25H64.77v150.5h26.123v-54.524l39.509 54.524h32.169l-56.526-57.493 88.564 46.352z"/><path d="M206.646 63.895l-90.308 36.076L215 93.583a106.396 106.396 0 0 0-8.354-29.688z" fill="white"/></g></svg>';      
+
     const LAMPA_ICON_SVG = '<svg width="12" height="12" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="55" fill="black"/><path d="M81.6744 103.11C98.5682 93.7234 110 75.6967 110 55C110 24.6243 85.3757 0 55 0C24.6243 0 0 24.6243 0 55C0 75.6967 11.4318 93.7234 28.3255 103.11C14.8869 94.3724 6 79.224 6 62C6 34.938 27.938 13 55 13C82.062 13 104 34.938 104 62C104 79.224 95.1131 94.3725 81.6744 103.11Z" fill="white"/><path d="M92.9546 80.0076C95.5485 74.5501 97 68.4446 97 62C97 38.804 78.196 20 55 20C31.804 20 13 38.804 13 62C13 68.4446 14.4515 74.5501 17.0454 80.0076C16.3618 77.1161 16 74.1003 16 71C16 49.4609 33.4609 32 55 32C76.5391 32 94 49.4609 94 71C94 74.1003 93.6382 77.1161 92.9546 80.0076Z" fill="white"/><path d="M55 89C69.3594 89 81 77.3594 81 63C81 57.9297 79.5486 53.1983 77.0387 49.1987C82.579 54.7989 86 62.5 86 71C86 88.1208 72.1208 102 55 102C37.8792 102 24 88.1208 24 71C24 62.5 27.421 54.7989 32.9613 49.1987C30.4514 53.1983 29 57.9297 29 63C29 77.3594 40.6406 89 55 89Z" fill="white"/><path d="M73 63C73 72.9411 64.9411 81 55 81C45.0589 81 37 72.9411 37 63C37 53.0589 45.0589 45 55 45C64.9411 45 73 53.0589 73 63Z" fill="white"/></svg></div>';
 
     // Вспомогательные функции
@@ -113,8 +114,8 @@
             const kp = text.match(/<kp_rating[^>]*>([\d.]+)<\/kp_rating>/);
             const imdb = text.match(/<imdb_rating[^>]*>([\d.]+)<\/imdb_rating>/);
             return {
-                kp: kp ? parseFloat(kp[1]).toFixed(1) : null,
-                imdb: imdb ? parseFloat(imdb[1]).toFixed(1) : null,
+                kp: kp ? parseFloat(kp[1]).toFixed(1) : '0.0',
+                imdb: imdb ? parseFloat(imdb[1]).toFixed(1) : '0.0',
                 source: 'xml'
             };
         } catch (e) {}
@@ -127,19 +128,19 @@
             );
             const json = await res.json();
             return {
-                kp: json.ratingKinopoisk ? parseFloat(json.ratingKinopoisk).toFixed(1) : null,
-                imdb: json.ratingImdb ? parseFloat(json.ratingImdb).toFixed(1) : null,
+                kp: json.ratingKinopoisk ? parseFloat(json.ratingKinopoisk).toFixed(1) : '0.0',
+                imdb: json.ratingImdb ? parseFloat(json.ratingImdb).toFixed(1) : '0.0',
                 source: 'api'
             };
         } catch (e) {
-            return { kp: null, imdb: null, source: 'error' };
+            return { kp: '0.0', imdb: '0.0', source: 'error' };
         }
     }
 
     // Поиск фильма на Kinopoisk
     async function searchFilm(title, year = '') {
         if (!title || title.length < 2) {
-            return { kp: null, imdb: null, filmId: null, year: null, source: 'error' };
+            return { kp: '0.0', imdb: '0.0', filmId: null, year: null, source: 'error' };
         }
 
         const cacheKey = `${normalizeTitle(title)}_${year}`;
@@ -170,7 +171,7 @@
             setCache(cacheKey, result);
             return result;
         } catch (e) {
-            const fallback = { kp: null, imdb: null, filmId: null, year: null, source: 'error' };
+            const fallback = { kp: '0.0', imdb: '0.0', filmId: null, year: null, source: 'error' };
             setCache(cacheKey, fallback);
             return fallback;
         }
@@ -178,21 +179,21 @@
 
     // Получение рейтинга Lampa
     async function fetchLampaRating(data, card) {
-        if (Lampa.Manifest.origin !== "bylampa") return null;
-
+        if (Lampa.Manifest.origin !== "bylampa") return '0.0';
+        
         const id = getContentId(data, card);
-        if (!id) return null;
-
+        if (!id) return '0.0';
+        
         const type = getContentType(data, card);
         const url = `${LAMPA_RATING_URL}${type}_${id}`;
-
+        
         try {
             const response = await fetchWithTimeout(url);
             const json = await response.json();
             const result = json.result;
-
+            
             let positive = 0, negative = 0;
-
+            
             result.forEach(item => {
                 if (item.type === 'fire' || item.type === 'nice') {
                     positive += parseInt(item.counter, 10);
@@ -201,11 +202,11 @@
                     negative += parseInt(item.counter, 10);
                 }
             });
-
+            
             const total = positive + negative;
-            return total > 0 ? (positive / total * 10).toFixed(1) : null;
+            return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
         } catch (e) {
-            return null;
+            return '0.0';
         }
     }
 
@@ -239,11 +240,11 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transform: translateY(0.4px);
+                transform: translateY(0.5px);
                 margin-left: 0.5em;
                 margin-right: 0.1em;
             `;
-            ratingEl.style.top = '0.4em';
+            ratingEl.style.top = '0.2em';
             ratingEl.style.right = '4px';
         } else {
             iconEl.innerHTML = LAMPA_ICON_SVG;
@@ -272,7 +273,7 @@
     function hideTmdbRating(card) {
         const view = card.element?.querySelector('.card__view') || card.querySelector('.card__view');
         if (!view) return;
-
+        
         const voteContainer = view.querySelector('.card__vote');
         if (voteContainer) {
             voteContainer.style.display = 'none';
@@ -288,25 +289,25 @@
         const isCategory = 
             card.classList.contains('cub-collection-card') ||
             card.querySelector('.card__count');
-
+            
         if (isCategory) {
             processedCards.add(card);
             return;
         }
-
+        
         // Проверяем, находится ли карточка в разделе
         const isSisiContent = card.closest('.sisi-results, .sisi-videos, .sisi-section') || 
                              card.closest('[data-component*="sisi"]') || 
                              card.closest('[data-name*="sisi"]') ||
                              window.location.href.indexOf('sisi') !== -1;
-
+        
         // Пропускаем обработку рейтингов для раздела
         if (isSisiContent) {
             processedCards.add(card);
             hideTmdbRating(card);
             return;
         }
-
+        
         // Стандартная обработка для других разделов
         processedCards.add(card);
         hideTmdbRating(card);
@@ -355,24 +356,16 @@
         view.appendChild(lampaElement);
 
         try {
-            // Получаем рейтинг Kinopoisk (оставляем без изменений)
+            // Получаем рейтинг Kinopoisk
             const { kp } = await searchFilm(title, year);
-            if (kp && kp !== null) {
-                kpText.textContent = kp;
-            } else {
-                kpElement.remove();
-            }
-
-            // Получаем рейтинг Lampa (только для постера)
+            kpText.textContent = kp; // Будет "0.0" если рейтинга нет
+            
+            // Получаем рейтинг Lampa
             const lampaRating = await fetchLampaRating(data, card);
-            if (lampaRating && lampaRating !== null) {
-                lampaText.textContent = lampaRating;
-            } else {
-                lampaElement.remove();
-            }
+            lampaText.textContent = lampaRating; // Будет "0.0" если рейтинга нет
         } catch (e) {
-            kpElement?.remove();
-            lampaElement?.remove();
+            kpText.textContent = '0.0';
+            lampaText.textContent = '0.0';
         }
     }
 
