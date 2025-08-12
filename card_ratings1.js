@@ -19,7 +19,7 @@
     // Иконки для рейтингов
    const KP_ICON_SVG = `
     <svg width="20" height="20" viewBox="0 0 110 110" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="55" cy="55" r="55" fill="black"/> <!-- Чёрный фон -->
+        <circle cx="55" cy="55" r="45" fill="black"/> <!-- Чёрный фон -->
         <path fill="currentColor" d="M215 121.415l-99.297-6.644 90.943 36.334a106.416 106.416 0 0 0 8.354-29.69z" transform="translate(-100 -50) scale(0.5)"/>
         <path fill="currentColor" d="M194.608 171.609C174.933 197.942 143.441 215 107.948 215 48.33 215 0 166.871 0 107.5 0 48.13 48.33 0 107.948 0c35.559 0 67.102 17.122 86.77 43.539l-90.181 48.07L162.57 32.25h-32.169L90.892 86.862V32.25H64.77v150.5h26.123v-54.524l39.509 54.524h32.169l-56.526-57.493 88.564 46.352z" transform="translate(-100 -50) scale(0.5)"/>
         <path d="M206.646 63.895l-90.308 36.076L215 93.583a106.396 106.396 0 0 0-8.354-29.688z" fill="currentColor" transform="translate(-100 -50) scale(0.5)"/>
