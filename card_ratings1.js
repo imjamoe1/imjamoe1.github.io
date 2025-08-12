@@ -251,7 +251,7 @@
                 align-items: center;
                 justify-content: center;
                 transform: translateY(0.4px);
-                margin-left: 0.4em;
+                margin-left: 0.5em;
                 margin-right: 0.1em;
             `;
             ratingEl.style.top = '0.4em';
