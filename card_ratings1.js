@@ -232,6 +232,18 @@
             min-width: max-content; 
         `;
 
+        const iconWrapper = document.createElement('div');
+        iconWrapper.style.cssText = `
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: black;
+            border-radius: 50%;
+            width: 1.2em;   // Размер круга (можно подобрать)
+            height: 1.2em;
+            padding: 0.1em; // Чтобы иконка не прилипала к краям
+        `;
+
         const iconEl = document.createElement('div');
         if (type === 'kp') {
             iconEl.innerHTML = KP_ICON_SVG;
