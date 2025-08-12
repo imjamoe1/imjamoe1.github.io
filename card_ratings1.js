@@ -240,7 +240,7 @@
                 align-items: center;
                 justify-content: center;
                 transform: translateY(0.5px);
-                margin-left: 0.1em;
+                margin-top: 1px;
                 margin-right: 0;
             `;
             ratingEl.style.top = '0.2em';
