@@ -220,7 +220,7 @@
             padding: 0.1em 0.2em;
             margin-left: 0;
             border-radius: 0.5em;
-            z-index: 10;
+            z-index: 1;
             pointer-events: none;
             font-size: 1.2em;
             user-select: none;
