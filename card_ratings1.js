@@ -241,6 +241,7 @@
                 justify-content: center;
                 position: relative; 
                 transform: translateX(2px) translateY(0.5px);
+                margin-top: 1px;
             `;
             ratingEl.style.top = '0.2em';
             ratingEl.style.right = '4px';
