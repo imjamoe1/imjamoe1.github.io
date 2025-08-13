@@ -214,7 +214,7 @@
         const ratingEl = document.createElement('div');
         ratingEl.className = `card__rating card__rating--${type}`;
         ratingEl.style.cssText = `
-            position: relative;
+            position: absolute;
             color: white;
             font-weight: bold;
             padding: 0.1em 0.2em;
