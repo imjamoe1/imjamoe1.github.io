@@ -218,7 +218,7 @@
             color: white;
             font-weight: bold;
             padding: 0.1em 0.2em;
-            margin-left: 0;
+            margin: 0;
             border-radius: 0.5em;
             z-index: 1;
             pointer-events: none;
