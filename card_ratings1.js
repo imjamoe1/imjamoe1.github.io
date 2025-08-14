@@ -219,7 +219,7 @@
             font-weight: bold;
             padding: 0.1em 0.18em;
             margin: 0;
-            border-radius: 0.5em;
+            border-radius: 1em;
             z-index: 1;
             pointer-events: none;
             font-size: 1.2em;
