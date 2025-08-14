@@ -17,9 +17,10 @@
                 .full-start__button.view--torrent svg path {
                     fill: lime !important;
                 }
-                .full-start__button.view--trailer svg path {
+                /* Убрали принудительное окрашивание для трейлера */
+                /* .full-start__button.view--trailer svg path {
                     fill: #f44336 !important;
-                }
+                } */
 
                 .full-start__button.loading::before {
                     content: '';
