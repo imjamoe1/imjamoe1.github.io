@@ -228,8 +228,6 @@
             align-items: center;
             background: rgba(0, 0, 0, 0.5);
             min-width: max-content;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         `;
 
         const iconEl = document.createElement('div');
@@ -243,7 +241,7 @@
                 justify-content: center;
                 position: relative;
                 margin-right: 0.1px;
-                transform: translateY(1.5px);
+                transform: translateY(1px);
             `;
             ratingEl.style.top = '0.1em';
             ratingEl.style.right = '0.1em';
