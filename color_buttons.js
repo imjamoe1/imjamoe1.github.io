@@ -17,7 +17,6 @@
                 .full-start__button.view--torrent svg path {
                     fill: lime !important;
                 }
-                /* Убрали принудительное окрашивание для трейлера */
                 /* .full-start__button.view--trailer svg path {
                     fill: #f44336 !important;
                 } */
