@@ -226,7 +226,7 @@
             user-select: none;
             display: flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             min-width: max-content; 
         `;
 
