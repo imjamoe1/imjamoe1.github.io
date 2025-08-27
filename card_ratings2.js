@@ -292,7 +292,7 @@
         const textEl = document.createElement('span');
         textEl.style.cssText = `
             font-size: 18px;
-            font-weight: 200;
+            font-weight: 700;
             line-height: 1;
             margin-right: 0.1px;
         `;
