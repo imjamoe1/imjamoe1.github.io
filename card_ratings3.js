@@ -5,6 +5,7 @@
     const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616'; // Ваш API ключ
     const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
     const FILM_INFO_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
+    const LAMPA_RATING_URL = 'http://cub.bylampa.online/api/reactions/get/';
     const CACHE_KEY = 'kp_rating_cache_v6';
     const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа
     const CONCURRENT_LIMIT = 4;
