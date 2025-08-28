@@ -2,12 +2,11 @@
     'use strict';
 
     // Настройки плагина
-    const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
+    const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616'; // Ваш API ключ
     const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
     const FILM_INFO_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
-    const LAMPA_RATING_URL = 'http://cub.bylampa.online/api/reactions/get/';
-    const CACHE_KEY = 'kp_rating_cache_v8';
-    const CACHE_TIME = 1000 * 60 * 60 * 24;
+    const CACHE_KEY = 'kp_rating_cache_v6';
+    const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа
     const CONCURRENT_LIMIT = 4;
 
     // Очередь запросов
@@ -35,25 +34,6 @@
         return cleanA === cleanB || 
                (cleanA.length > 5 && cleanB.includes(cleanA)) ||
                (cleanB.length > 5 && cleanA.includes(cleanB));
-    }
-
-    // Получение ID контента
-    function getContentId(data, card) {
-        return data.id || 
-               data.kinopoisk_id || 
-               data.kp_id || 
-               card.getAttribute('data-id') || 
-               card.getAttribute('id') ||
-               (card.card_data && card.card_data.id);
-    }
-
-    // Определение типа контента
-    function getContentType(data, card) {
-        if (data.type) return data.type;
-        if (card.classList.contains('card--movie')) return 'movie';
-        if (card.classList.contains('card--tv')) return 'tv';
-        if (card.classList.contains('card--serial')) return 'tv';
-        return 'movie'; // fallback
     }
 
     function getCache(key) {
@@ -125,6 +105,7 @@
         if (cached) return cached;
 
         try {
+            // Сначала ищем фильм по названию
             const searchUrl = `${SEARCH_URL}?keyword=${encodeURIComponent(title)}${year ? `&yearFrom=${year}&yearTo=${year}` : ''}`;
             const searchRes = await enqueue(() => fetchWithTimeout(searchUrl));
             const searchData = await searchRes.json();
@@ -133,20 +114,30 @@
                 throw new Error('No films found');
             }
 
+            // Ищем наилучшее совпадение
             let bestMatch = null;
             
             for (const film of searchData.films) {
                 if (titlesMatch(film.nameRu, title) || titlesMatch(film.nameEn, title)) {
+                    // Проверяем год, если указан
                     if (!year || !film.year || film.year.toString() === year.toString()) {
                         bestMatch = film;
                         break;
                     }
-                    if (!bestMatch) bestMatch = film;
+                    
+                    // Сохраняем лучшее совпадение
+                    if (!bestMatch) {
+                        bestMatch = film;
+                    }
                 }
             }
 
-            if (!bestMatch) bestMatch = searchData.films[0];
+            // Если не нашли точного совпадения, берем первый результат
+            if (!bestMatch) {
+                bestMatch = searchData.films[0];
+            }
 
+            // Получаем детальную информацию о фильме для рейтинга
             const filmInfoUrl = `${FILM_INFO_URL}${bestMatch.filmId}`;
             const filmInfoRes = await enqueue(() => fetchWithTimeout(filmInfoUrl));
             const filmInfo = await filmInfoRes.json();
@@ -173,11 +164,11 @@
     async function fetchLampaRating(data, card) {
         if (Lampa.Manifest.origin !== "bylampa") return '0.0';
         
-        const id = getContentId(data, card);
+        const id = data.id || data.kinopoisk_id || data.kp_id || card.getAttribute('data-id') || card.getAttribute('id');
         if (!id) return '0.0';
         
-        const type = getContentType(data, card);
-        const url = `${LAMPA_RATING_URL}${type}_${id}`;
+        const type = data.type || (card.classList.contains('card--tv') || card.classList.contains('card--serial') ? 'tv' : 'movie');
+        const url = `http://cub.bylampa.online/api/reactions/get/${type}_${id}`;
         
         try {
             const response = await fetchWithTimeout(url);
@@ -383,15 +374,13 @@
         view.appendChild(lampaElement);
 
         try {
-            // Получаем рейтинг Kinopoisk
+            // Получаем рейтинг Kinopoisk через официальное API
             const { kp } = await searchFilm(title, year);
             kpText.textContent = kp;
             
             // Получаем рейтинг Lampa
             const lampaRating = await fetchLampaRating(data, card);
             lampaText.textContent = lampaRating;
-            
-            console.log(`Ratings for "${title}": KP=${kp}, Lampa=${lampaRating}`);
         } catch (e) {
             kpText.textContent = '0.0';
             lampaText.textContent = '0.0';
@@ -400,13 +389,12 @@
 
     // Инициализация плагина
     function init() {
-        if (!Lampa.Manifest || Lampa.Manifest.origin !== "bylampa") {
+        if (Lampa.Manifest.origin !== "bylampa") {
             console.log("Рейтинги Lampa доступны только на origin bylampa");
             return;
         }
 
-        console.log("Initializing ratings plugin...");
-
+        // Наблюдатель за видимостью карточек
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -416,11 +404,13 @@
             });
         }, { rootMargin: '100px' });
 
+        // Обработка существующих карточек
         document.querySelectorAll('.card').forEach(card => {
             observer.observe(card);
             hideTmdbRating(card);
         });
 
+        // Наблюдатель за изменениями DOM
         const mo = new MutationObserver(muts => {
             muts.forEach(mut => {
                 mut.addedNodes.forEach(node => {
@@ -440,6 +430,7 @@
 
         mo.observe(document.body, { childList: true, subtree: true });
 
+        // Подписка на события Lampa
         if (Lampa.Listener) {
             Lampa.Listener.follow('card', e => {
                 if (e.type === 'build' && e.card) {
@@ -452,16 +443,12 @@
 
     // Запуск плагина
     if (typeof Lampa !== 'undefined') {
-        setTimeout(() => {
-            Lampa.Platform.tv();
-            init();
-        }, 1000);
+        Lampa.Platform.tv();
+        init();
     } else {
         document.addEventListener('lampaReady', function() {
-            setTimeout(() => {
-                Lampa.Platform.tv();
-                init();
-            }, 1000);
+            Lampa.Platform.tv();
+            init();
         });
     }
 })();
