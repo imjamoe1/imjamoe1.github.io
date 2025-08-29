@@ -520,7 +520,7 @@
     var m = name.match(/s(\d{1,2})e(\d{1,3})/i); if (m) return { season:Number(m[1]), ep:Number(m[2]) };
     m = name.match(/(\d{1,2})x(\d{1,3})/i);      if (m) return { season:Number(m[1]), ep:Number(m[2]) };
     m = name.match(/e[pP]?(\d{1,3})/i);          if (m) return { season:seasonHint||0, ep:Number(m[1]) };
-    m = name.match(/сер(ия|ия)?\s*(\d{1,3})/i);  if (m) return { season:seasonHint||0, ep:Number(m[2]) };
+    m = name.match(/сер(ия|ии)?\s*(\d{1,3})/i);  if (m) return { season:seasonHint||0, ep:Number(m[2]) };
     return { season:seasonHint||0, ep:0 };
   }
   function topFolderFromFiles(files){
