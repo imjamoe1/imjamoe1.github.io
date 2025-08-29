@@ -2,7 +2,7 @@
     'use strict';
 
     // Настройки плагина
-    const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
+    const API_KEY = 'ae8d6b29-b4ea-4f44-ad64-e99cb243289a';
     const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
     const RATING_URL = 'https://rating.kinopoisk.ru/';
     const KP_API_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
