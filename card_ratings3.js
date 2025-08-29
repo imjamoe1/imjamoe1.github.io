@@ -168,7 +168,7 @@
         if (!id) return '0.0';
         
         const type = data.type || (card.classList.contains('card--tv') || card.classList.contains('card--serial') ? 'tv' : 'movie');
-        const url = `http://cub.rip/api/reactions/get/${type}_${id}`;
+        const url = `http:/cub.bylampa.online/api/reactions/get/${type}_${id}`;
         
         try {
             const response = await fetchWithTimeout(url);
