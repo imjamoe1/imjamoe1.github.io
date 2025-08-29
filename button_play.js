@@ -509,7 +509,7 @@
     var out = {};
     var rng = str.match(/s(?:eason)?\s*(\d{1,2})\s*[-–…]\s*(\d{1,2})/i);
     if (rng){ var a=Number(rng[1]), b=Number(rng[2]); for(var i=a;i<=b;i++) out[i]=1; }
-    var re = /(?:s(?:eason)?\s*(\d{1,2})|\bS(\d{1,2})\b|(?:[^\d]|^)(\d{1,2})\s*сез)/gi, m;
+    var re = /(?:s(?:eason)?\s*(\d{1,2})|\bS(\d{1,2})\b|(?:[^\d]|^)(\d{1,2})\s*сезон)/gi, m;
     while((m=re.exec(str))!==null){ var n = Number(m[1]||m[2]||m[3]); if(n) out[n]=1; }
     var keys = Object.keys(out).map(function(x){return Number(x);});
     if (!keys.length) keys=[1];
