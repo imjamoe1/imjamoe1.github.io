@@ -2,10 +2,11 @@
     'use strict';
 
     // Настройки плагина
-    const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616'; // Ваш API ключ
+    const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
     const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
     const FILM_INFO_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
-    const CACHE_KEY = 'kp_rating_cache_v6';
+    const LAMPA_RATING_URL = 'http://cub.bylampa.online/api/reactions/get/';
+    const CACHE_KEY = 'kp_rating_cache_v7';
     const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа
     const CONCURRENT_LIMIT = 4;
 
@@ -160,7 +161,7 @@
         }
     }
 
-    // Получение рейтинга Lampa
+    // Получение рейтинга Lampa (ИСПРАВЛЕННАЯ ВЕРСИЯ)
     async function fetchLampaRating(data, card) {
         if (Lampa.Manifest.origin !== "bylampa") return '0.0';
         
@@ -168,27 +169,49 @@
         if (!id) return '0.0';
         
         const type = data.type || (card.classList.contains('card--tv') || card.classList.contains('card--serial') ? 'tv' : 'movie');
-        const url = `http:/cub.bylampa.online/api/reactions/get/${type}_${id}`;
+        const url = `${LAMPA_RATING_URL}${type}_${id}`;
         
         try {
+            console.log("Fetching Lampa rating from:", url);
             const response = await fetchWithTimeout(url);
+            
+            if (!response.ok) {
+                console.log("Lampa API response not OK:", response.status);
+                return '0.0';
+            }
+            
             const json = await response.json();
-            const result = json.result;
+            console.log("Lampa API response:", json);
+            
+            // Проверяем различные форматы ответа
+            let result = json.result || json.data || json;
+            
+            if (!Array.isArray(result)) {
+                console.log("Lampa API: result is not array", result);
+                return '0.0';
+            }
             
             let positive = 0, negative = 0;
             
             result.forEach(item => {
-                if (item.type === 'fire' || item.type === 'nice') {
-                    positive += parseInt(item.counter, 10);
+                const counter = parseInt(item.counter || item.count || 0, 10);
+                
+                if (item.type === 'fire' || item.type === 'nice' || item.reaction_type === 'positive') {
+                    positive += counter;
                 }
-                if (item.type === "think" || item.type === "bore" || item.type === 'shit') {
-                    negative += parseInt(item.counter, 10);
+                if (item.type === "think" || item.type === "bore" || item.type === 'shit' || item.reaction_type === 'negative') {
+                    negative += counter;
                 }
             });
             
             const total = positive + negative;
-            return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
+            const rating = total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
+            
+            console.log("Lampa rating calculated:", rating, "Positive:", positive, "Negative:", negative);
+            return rating;
+            
         } catch (e) {
+            console.error("Lampa API error:", e);
             return '0.0';
         }
     }
