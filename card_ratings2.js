@@ -3,7 +3,7 @@
 
     // Настройки плагина
     const API_KEY = 'ae8d6b29-b4ea-4f44-ad64-e99cb243289a';
-    const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
+    const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2/films/search-by-keyword';
     const RATING_URL = 'https://rating.kinopoisk.ru/';
     const KP_API_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
     const LAMPA_RATING_URL = 'http://cub.bylampa.online/api/reactions/get/';
