@@ -5,11 +5,10 @@
     const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
     const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
     const RATING_URL = 'https://rating.kinopoisk.ru/';
-    const KP_API_URL = 'https://kinopoiskapiunofficial.tech/';
+    const KP_API_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
     const LAMPA_RATING_URL = 'http://cub.rip/api/reactions/get/';
-    const CACHE_KEY = 'kp_rating_cache_v9';
+    const CACHE_KEY = 'kp_rating_cache_v3';
     const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа
-    const CACHE_ERROR_TIME = 1000 * 60 * 15; // 15 минут
     const CONCURRENT_LIMIT = 4;
 
     // Очередь запросов
@@ -40,44 +39,21 @@
                (cleanB.length > 5 && cleanA.includes(cleanB));
     }
 
-    // Получение ID контента
-    function getContentId(data, card) {
-        return data.id || 
-               data.kinopoisk_id || 
-               data.kp_id || 
-               card.getAttribute('data-id') || 
-               card.getAttribute('id') ||
-               (card.card_data && card.card_data.id);
-    }
-
-    // Определение типа контента
-    function getContentType(data, card) {
-        if (data.type) return data.type;
-        if (card.classList.contains('card--movie')) return 'movie';
-        if (card.classList.contains('card--tv')) return 'tv';
-        if (card.classList.contains('card--serial')) return 'tv';
-        return 'movie';
-    }
-
     function getCache(key) {
         try {
             const cache = Lampa.Storage.get(CACHE_KEY, {});
             const entry = cache[key];
-            if (entry && Date.now() - entry.timestamp < (entry.isError ? CACHE_ERROR_TIME : CACHE_TIME)) {
+            if (entry && Date.now() - entry.timestamp < CACHE_TIME) {
                 return entry;
             }
         } catch (e) {}
         return null;
     }
 
-    function setCache(key, data, cacheTime = CACHE_TIME) {
+    function setCache(key, data) {
         try {
             const cache = Lampa.Storage.get(CACHE_KEY, {});
-            cache[key] = { 
-                ...data, 
-                timestamp: Date.now(),
-                isError: cacheTime === CACHE_ERROR_TIME
-            };
+            cache[key] = { ...data, timestamp: Date.now() };
             Lampa.Storage.set(CACHE_KEY, cache);
         } catch (e) {}
     }
@@ -101,140 +77,123 @@
 
     async function fetchWithTimeout(url, options = {}) {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
+        const timeout = setTimeout(() => controller.abort(), 3000);
         try {
-            const res = await fetch(url, { 
-                ...options, 
-                signal: controller.signal,
-                headers: {
-                    'X-API-KEY': API_KEY,
-                    'Content-Type': 'application/json',
-                    ...options.headers
-                }
-            });
+            const res = await fetch(url, { ...options, signal: controller.signal });
             clearTimeout(timeout);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            if (!res.ok) throw new Error(res.status);
             return res;
-        } catch (e) {
+        } finally {
             clearTimeout(timeout);
-            throw e;
         }
     }
 
-    // Новые функции для работы с Кинопоиском
-    async function getKpRatingFromXml(kpId) {
-        if (!kpId) return '0.0';
-        
+    // Получение ID контента
+    function getContentId(data, card) {
+        return data.id || 
+               data.kinopoisk_id || 
+               data.kp_id || 
+               card.getAttribute('data-id') || 
+               card.getAttribute('id');
+    }
+
+    // Определение типа контента
+    function getContentType(data, card) {
+        if (data.type) return data.type;
+        if (card.classList.contains('card--movie')) return 'movie';
+        if (card.classList.contains('card--tv')) return 'tv';
+        if (card.classList.contains('card--serial')) return 'tv';
+        return 'movie'; // fallback
+    }
+
+    // Получение рейтинга Kinopoisk
+    async function fetchRating(filmId) {
         try {
-            const xmlUrl = `${KP_RATING_URL}${kpId}.xml`;
-            const response = await fetch(xmlUrl);
-            const xmlText = await response.text();
-            
-            const kpMatch = xmlText.match(/<kp_rating[^>]*>([\d.]+)<\/kp_rating>/);
-            if (kpMatch && kpMatch[1]) {
-                return parseFloat(kpMatch[1]).toFixed(1);
-            }
-            return await getKpRatingFromApiV22(kpId);
-        } catch (e) {
-            return await getKpRatingFromApiV22(kpId);
-        }
-    }
+            const xmlRes = await enqueue(() => fetchWithTimeout(`${RATING_URL}${filmId}.xml`));
+            const text = await xmlRes.text();
+            const kp = text.match(/<kp_rating[^>]*>([\d.]+)<\/kp_rating>/);
+            const imdb = text.match(/<imdb_rating[^>]*>([\d.]+)<\/imdb_rating>/);
+            return {
+                kp: kp ? parseFloat(kp[1]).toFixed(1) : '0.0',
+                imdb: imdb ? parseFloat(imdb[1]).toFixed(1) : '0.0',
+                source: 'xml'
+            };
+        } catch (e) {}
 
-    async function getKpRatingFromApiV22(kpId) {
         try {
-            const apiUrl = `${KP_API_URL}api/v2.2/films/${kpId}`;
-            const response = await fetchWithTimeout(apiUrl);
-            const filmData = await response.json();
-            return (filmData.ratingKinopoisk || '0.0').toString();
+            const res = await enqueue(() =>
+                fetchWithTimeout(`${KP_API_URL}${filmId}`, {
+                    headers: { 'X-API-KEY': API_KEY }
+                })
+            );
+            const json = await res.json();
+            return {
+                kp: json.ratingKinopoisk ? parseFloat(json.ratingKinopoisk).toFixed(1) : '0.0',
+                imdb: json.ratingImdb ? parseFloat(json.ratingImdb).toFixed(1) : '0.0',
+                source: 'api'
+            };
         } catch (e) {
-            console.log('Kinopoisk API v2.2 error:', e);
-            return '0.0';
+            return { kp: '0.0', imdb: '0.0', source: 'error' };
         }
     }
 
-    // Основная функция поиска рейтинга Кинопоиска
-    async function searchFilmByTMDBId(tmdbId, type, title, year) {
-        const cacheKey = `kp_search_tmdb_${tmdbId}`;
+    // Поиск фильма на Kinopoisk
+    async function searchFilm(title, year = '') {
+        if (!title || title.length < 2) {
+            return { kp: '0.0', imdb: '0.0', filmId: null, year: null, source: 'error' };
+        }
+
+        const cacheKey = `${normalizeTitle(title)}_${year}`;
         const cached = getCache(cacheKey);
         if (cached) return cached;
 
         try {
-            let kpId = null;
-            let kpRating = '0.0';
+            const url = `${SEARCH_URL}?keyword=${encodeURIComponent(title)}${year ? `&yearFrom=${year}&yearTo=${year}` : ''}`;
+            const res = await enqueue(() =>
+                fetchWithTimeout(url, {
+                    headers: { 'X-API-KEY': API_KEY }
+                })
+            );
+            const data = await res.json();
+            if (!data.films?.length) throw new Error('No results');
 
-            // 1. Пытаемся получить IMDb ID из TMDB
-            const tmdbUrl = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=5f4d9ebc5f5b8e34f01e87b9c5b8e34f&language=ru`;
-            const tmdbResponse = await fetch(tmdbUrl);
-            const tmdbData = await tmdbResponse.json();
-            const imdbId = tmdbData.imdb_id;
+            let match = data.films.find(f =>
+                titlesMatch(f.nameRu, title) || titlesMatch(f.nameEn, title))
+                || data.films[0];
 
-            // 2. Если есть IMDb ID, ищем по нему (наиболее точно)
-            if (imdbId) {
-                const searchUrl = `${KP_API_URL}api/v2.2/films?imdbId=${imdbId}`;
-                const searchRes = await fetchWithTimeout(searchUrl);
-                const searchData = await searchRes.json();
-
-                if (searchData.items && searchData.items.length > 0) {
-                    kpId = searchData.items[0].kinopoiskId;
-                    kpRating = await getKpRatingFromXml(kpId);
-                }
-            }
-
-            // 3. Если через IMDb не нашли, ищем по названию
-            if (!kpId) {
-                const searchUrl = `${KP_API_URL}api/v2.1/films/search-by-keyword?keyword=${encodeURIComponent(title)}${year ? `&yearFrom=${year}&yearTo=${year}` : ''}`;
-                const searchRes = await fetchWithTimeout(searchUrl);
-                const searchData = await searchRes.json();
-
-                if (searchData.films && searchData.films.length > 0) {
-                    let bestMatch = searchData.films[0];
-                    for (const film of searchData.films) {
-                        if (titlesMatch(film.nameRu, title) || titlesMatch(film.nameEn, title)) {
-                            if (!year || !film.year || film.year.toString() === year.toString()) {
-                                bestMatch = film;
-                                break;
-                            }
-                        }
-                    }
-                    kpId = bestMatch.filmId;
-                    kpRating = await getKpRatingFromXml(kpId);
-                }
-            }
-
+            const ratings = await fetchRating(match.filmId);
             const result = {
-                kp: kpRating,
-                filmId: kpId,
-                source: 'kinopoisk_api'
+                ...ratings,
+                filmId: match.filmId,
+                year: match.year
             };
 
             setCache(cacheKey, result);
             return result;
-
         } catch (e) {
-            console.log('Kinopoisk search error:', e);
-            const fallback = { kp: '0.0', filmId: null, source: 'error' };
-            setCache(cacheKey, fallback, CACHE_ERROR_TIME);
+            const fallback = { kp: '0.0', imdb: '0.0', filmId: null, year: null, source: 'error' };
+            setCache(cacheKey, fallback);
             return fallback;
         }
     }
-    
+
     // Получение рейтинга Lampa
     async function fetchLampaRating(data, card) {
         if (Lampa.Manifest.origin !== "bylampa") return '0.0';
-        
+
         const id = getContentId(data, card);
         if (!id) return '0.0';
-        
+
         const type = getContentType(data, card);
         const url = `${LAMPA_RATING_URL}${type}_${id}`;
-        
+
         try {
             const response = await fetchWithTimeout(url);
             const json = await response.json();
             const result = json.result;
-            
+
             let positive = 0, negative = 0;
-            
+
             result.forEach(item => {
                 if (item.type === 'fire' || item.type === 'nice') {
                     positive += parseInt(item.counter, 10);
@@ -243,7 +202,7 @@
                     negative += parseInt(item.counter, 10);
                 }
             });
-            
+
             const total = positive + negative;
             return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
         } catch (e) {
@@ -398,7 +357,7 @@
 
         try {
             // Получаем рейтинг Kinopoisk
-            const { kp } = await searchFilmByTMDBId(data.id, getContentType(data, card), title, year);
+            const { kp } = await searchFilm(title, year);
             kpText.textContent = kp; // Будет "0.0" если рейтинга нет
 
             // Получаем рейтинг Lampa
