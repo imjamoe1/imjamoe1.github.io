@@ -3,11 +3,17 @@
 
     // --- Fetcher Configuration ---
     var config = {
-        api_url: 'https://api.mdblist.com/tmdb/',
-        cache_time: 60 * 60 * 12 * 1000,
-        cache_key: 'mdblist_ratings_cache',
-        cache_limit: 500,
-        request_timeout: 10000
+        api_url: 'https://api.mdblist.com/tmdb/', // Base URL for MDBList TMDB endpoint
+        // api_key is now configured via Lampa Settings -> Additional Ratings
+        cache_time: 60 * 60 * 12 * 1000, // 12 hours cache duration
+        cache_key: 'mdblist_ratings_cache', // Unique storage key for ratings data
+        cache_limit: 500, // Max items in cache
+        request_timeout: 10000, // 10 seconds request timeout
+        // Kinopoisk API configuration
+        kp_api_url: 'https://kinopoiskapiunofficial.tech/',
+        kp_rating_url: 'https://rating.kinopoisk.ru/',
+        kp_api_key: '2a4a0808-81a3-40ae-b0d3-e11335ede616',
+        xml_timeout: 5000 // 5 seconds for faster XML endpoint
     };
     
     // --- Language Strings ---
@@ -113,6 +119,52 @@
         Lampa.Storage.set(config.cache_key, cache);
     }
 
+    // --- Helper Functions for Kinopoisk ---
+    function cleanTitle(str) {
+        return (str || '').replace(/[\s.,:;’'`!?]+/g, ' ').trim();
+    }
+
+    function kpCleanTitle(str) {
+        return cleanTitle(str).replace(/^[ \/\\]+/, '').replace(/[ \/\\]+$/, '').replace(/\+( *[+\/\\])+/g, '+').replace(/([+\/\\] *)+\+/g, '+').replace(/( *[\/\\]+ *)+/g, '+');
+    }
+
+    function normalizeTitle(str) {
+        return cleanTitle((str || '').toLowerCase().replace(/[\-\u2010-\u2015\u2E3A\u2E3B\uFE58\uFE63\uFF0D]+/g, '-').replace(/ё/g, 'е'));
+    }
+
+    function equalTitle(t1, t2) {
+        return typeof t1 === 'string' && typeof t2 === 'string' && normalizeTitle(t1) === normalizeTitle(t2);
+    }
+
+    function containsTitle(str, title) {
+        return typeof str === 'string' && typeof title === 'string' && normalizeTitle(str).indexOf(normalizeTitle(title)) !== -1;
+    }
+
+    // --- Kinopoisk Caching ---
+    function getKPCache(tmdb_id) {
+        if (!window.Lampa || !window.Lampa.Storage) return false;
+        var timestamp = new Date().getTime();
+        var cache = Lampa.Storage.cache('kp_ratings_cache', config.cache_limit, {});
+        if (cache[tmdb_id]) {
+            if ((timestamp - cache[tmdb_id].timestamp) > config.cache_time) {
+                delete cache[tmdb_id];
+                Lampa.Storage.set('kp_ratings_cache', cache);
+                return false;
+            }
+            return cache[tmdb_id];
+        }
+        return false;
+    }
+
+    function setKPCache(tmdb_id, data) {
+        if (!window.Lampa || !window.Lampa.Storage) return;
+        var timestamp = new Date().getTime();
+        var cache = Lampa.Storage.cache('kp_ratings_cache', config.cache_limit, {});
+        data.timestamp = timestamp;
+        cache[tmdb_id] = data;
+        Lampa.Storage.set('kp_ratings_cache', cache);
+    }
+
     // --- Core Fetching Logic ---
     function fetchRatings(movieData, callback) {
         if (!network) {
@@ -180,14 +232,191 @@
         });
     }
 
+    // --- Kinopoisk Fetching Logic ---
+    function fetchKPRatings(movieData, callback) {
+        // Ensure Lampa network is available
+        if (!network) {
+             console.error("KinopoiskFetcher: Lampa.Reguest not available.");
+             if (callback) callback({ kp: 0, error: "Network unavailable" });
+             return;
+        }
+        
+        // Basic validation of input
+        if (!movieData || !movieData.id || !movieData.title || !callback) {
+             console.error("KinopoiskFetcher: Invalid input data or missing callback.");
+             if (callback) callback({ kp: 0, error: "Invalid input" });
+             return;
+        }
+
+        var tmdb_id = movieData.id;
+
+        // 1. Check Cache
+        var cached_ratings = getKPCache(tmdb_id);
+        if (cached_ratings) {
+            callback(cached_ratings);
+            return;
+        }
+
+        // 2. Prepare Search Parameters
+        var clean_title = kpCleanTitle(movieData.title);
+        var search_date = movieData.release_date || movieData.first_air_date || '0000';
+        var search_year = parseInt((search_date + '').slice(0, 4));
+        var orig_title = movieData.original_title || movieData.original_name;
+        var imdb_id_from_tmdb = movieData.imdb_id;
+
+        // Network request logic
+        searchFilmOnKP();
+
+        // --- Nested Functions for Fetching ---
+        function searchFilmOnKP() {
+            var base_url = config.kp_api_url;
+            var headers = { 'X-API-KEY': config.kp_api_key };
+            var url_by_title = Lampa.Utils.addUrlComponent(base_url + 'api/v2.1/films/search-by-keyword', 'keyword=' + encodeURIComponent(clean_title));
+            var search_url;
+
+            if (imdb_id_from_tmdb) {
+                search_url = Lampa.Utils.addUrlComponent(base_url + 'api/v2.2/films', 'imdbId=' + encodeURIComponent(imdb_id_from_tmdb));
+            } else {
+                search_url = url_by_title;
+            }
+
+            network.clear();
+            network.timeout(config.request_timeout);
+            network.silent(search_url, function (json) {
+                var items = [];
+                if (json.items && json.items.length) items = json.items;
+                else if (json.films && json.films.length) items = json.films;
+
+                if (!items.length && search_url !== url_by_title) {
+                     network.clear();
+                     network.timeout(config.request_timeout);
+                     network.silent(url_by_title, function (json_title) {
+                        if (json_title.items && json_title.items.length) chooseFilmFromKP(json_title.items);
+                        else if (json_title.films && json_title.films.length) chooseFilmFromKP(json_title.films);
+                        else chooseFilmFromKP([]);
+                     }, function (a, c) { handleFinalError("Title search failed"); }, false, { headers: headers });
+                } else {
+                    chooseFilmFromKP(items);
+                }
+            }, function (a, c) {
+                if (search_url !== url_by_title) {
+                    network.clear();
+                    network.timeout(config.request_timeout);
+                    network.silent(url_by_title, function (json_title) {
+                        if (json_title.items && json_title.items.length) chooseFilmFromKP(json_title.items);
+                        else if (json_title.films && json_title.films.length) chooseFilmFromKP(json_title.films);
+                        else chooseFilmFromKP([]);
+                    }, function(a_title, c_title){ handleFinalError("Title search fallback failed"); }, false, { headers: headers });
+                } else {
+                    handleFinalError("Initial search failed");
+                }
+            }, false, { headers: headers });
+        }
+
+        function chooseFilmFromKP(items) {
+            if (!items || !items.length) {
+                return handleFinalError("No matches found");
+            }
+            var film_id_to_use = null;
+            var matched_film = null;
+             items.forEach(function (c) {
+                var year = c.start_date || c.year || '0000';
+                c.tmp_year = parseInt((year + '').slice(0, 4));
+                c.kp_id_unified = c.kp_id || c.kinopoisk_id || c.kinopoiskId || c.filmId;
+             });
+             var filtered = items;
+             if (imdb_id_from_tmdb) {
+                 var imdb_match = filtered.filter(function(item) { return (item.imdb_id || item.imdbId) === imdb_id_from_tmdb; });
+                 if (imdb_match.length === 1) matched_film = imdb_match[0];
+                 else if (imdb_match.length > 1) filtered = imdb_match;
+             }
+             if (!matched_film) {
+                var title_matches = filtered.filter(function(item) { return equalTitle(item.title || item.ru_title || item.nameRu, movieData.title) || equalTitle(item.orig_title || item.nameOriginal, orig_title) || equalTitle(item.en_title || item.nameEn, orig_title); });
+                 if (title_matches.length > 0) filtered = title_matches;
+                 else {
+                     var contains_matches = filtered.filter(function(item) { return containsTitle(item.title || item.ru_title || item.nameRu, movieData.title) || containsTitle(item.orig_title || item.nameOriginal, orig_title) || containsTitle(item.en_title || item.nameEn, orig_title); });
+                     if (contains_matches.length > 0) filtered = contains_matches;
+                 }
+             }
+             if (!matched_film && filtered.length > 1 && search_year > 0) {
+                 var year_matches = filtered.filter(function(c) { return c.tmp_year === search_year; });
+                 if (year_matches.length > 0) filtered = year_matches;
+                 else {
+                     var nearby_year_matches = filtered.filter(function(c) { return c.tmp_year && Math.abs(c.tmp_year - search_year) <= 1; });
+                     if (nearby_year_matches.length > 0) filtered = nearby_year_matches;
+                 }
+             }
+             if (matched_film) film_id_to_use = matched_film.kp_id_unified;
+             else if (filtered.length === 1) film_id_to_use = filtered[0].kp_id_unified;
+             else if (filtered.length > 1) film_id_to_use = filtered[0].kp_id_unified;
+
+             if (film_id_to_use) fetchRatingsForKPID(film_id_to_use);
+             else handleFinalError("Could not determine unique film ID");
+        }
+
+        function fetchRatingsForKPID(kp_id) {
+            var xml_url = config.kp_rating_url + kp_id + '.xml';
+            network.clear();
+            network.timeout(config.xml_timeout);
+            network["native"](xml_url, function (xml_str) {
+                var kp_rating = 0, found = false;
+                try {
+                    if (xml_str && xml_str.indexOf('<rating>') !== -1) {
+                        const kpMatch = xml_str.match(/<kp_rating[^>]*>([\d.]+)<\/kp_rating>/);
+                        if (kpMatch && kpMatch[1]) { 
+                            kp_rating = parseFloat(kpMatch[1]) || 0; 
+                            found = true; 
+                        }
+                    }
+                } catch (e) { }
+
+                if (found) {
+                    handleFinalSuccess({ kp: kp_rating });
+                } else {
+                     fetchRatingsFromApiV22(kp_id);
+                }
+            }, function (a, c) {
+                 fetchRatingsFromApiV22(kp_id);
+            }, false, { dataType: 'text' });
+        }
+
+        function fetchRatingsFromApiV22(kp_id) {
+            var api_v22_url = config.kp_api_url + 'api/v2.2/films/' + kp_id;
+            var headers = { 'X-API-KEY': config.kp_api_key };
+            network.clear();
+            network.timeout(config.request_timeout);
+            network.silent(api_v22_url, function (data) {
+                 handleFinalSuccess({
+                    kp: data.ratingKinopoisk || 0
+                 });
+            }, function (a, c) {
+                 handleFinalError("API v2.2 fetch failed");
+            }, false, { headers: headers });
+        }
+
+        function handleFinalSuccess(ratings) {
+            setKPCache(tmdb_id, ratings);
+            callback(ratings);
+        }
+
+        function handleFinalError(errorMessage) {
+            var emptyRatings = { kp: 0, error: errorMessage };
+            setKPCache(tmdb_id, emptyRatings);
+            callback(emptyRatings);
+        }
+    }
+
     // --- MDBList Fetcher State ---
     var mdblistRatingsCache = {};
     var mdblistRatingsPending = {};
+    var kpRatingsCache = {};
+    var kpRatingsPending = {};
 
     function showRatingProviderSelection() {
         const providers = [
-            { title: 'IMDb', id: 'show_rating_imdb', default: true },
             { title: 'TMDB', id: 'show_rating_tmdb', default: true },
+            { title: 'IMDb', id: 'show_rating_imdb', default: true },
+            { title: 'KinoPoisk', id: 'show_rating_kp', default: true },
             { title: 'Rotten Tomatoes (Critics)', id: 'show_rating_tomatoes', default: false },
             { title: 'Rotten Tomatoes (Audience)', id: 'show_rating_audience', default: false },
             { title: 'Metacritic', id: 'show_rating_metacritic', default: false },
@@ -316,6 +545,17 @@
                     var tmdb_url = Lampa.TMDB.api((data.name ? 'tv' : 'movie') + '/' + data.id + '?api_key=' + Lampa.TMDB.key() + '&append_to_response=content_ratings,release_dates&language=' + Lampa.Storage.get('language'));
                     if (loaded[tmdb_url]) { _this.draw(loaded[tmdb_url]); }
                 });
+
+                // Fetch Kinopoisk ratings
+                kpRatingsPending[data.id] = true;
+                fetchKPRatings(data, function(kpResult) {
+                    kpRatingsCache[data.id] = kpResult;
+                    delete kpRatingsPending[data.id];
+                    var tmdb_url = Lampa.TMDB.api((data.name ? 'tv' : 'movie') + '/' + data.id + '?api_key=' + Lampa.TMDB.key() + '&append_to_response=content_ratings,release_dates&language=' + Lampa.Storage.get('language'));
+                    if (typeof loaded !== 'undefined' && loaded[tmdb_url]) {
+                         _this.draw(loaded[tmdb_url]);
+                    }
+                });
             }
  
             if (isDestroyed || !html) {
@@ -434,9 +674,25 @@
             var descriptionText = data.overview || Lampa.Lang.translate('full_notext');
             html.find('.new-interface-info__description').html('<div class="new-interface-info__description-inner">' + descriptionText + '</div>');
 
+            // Добавляем проверку качества
+            var quality = '';
+            if (data.video_quality) {
+                quality = data.video_quality.toUpperCase();
+            } else if (data.quality) {
+                quality = data.quality.toUpperCase();
+            } else {
+                 // Empty else block
+            }
+
+            if (quality) {
+                var qualityBadge = $('<div class="quality-badge">' + quality + '</div>');
+                html.find('.new-interface-info__title').append(qualityBadge);
+            }
+
             // Logo URLs
-            const imdbLogoUrl = 'https://psahx.github.io/ps_plug/IMDb_3_2_Logo_GOLD.png';
             const tmdbLogoUrl = 'https://psahx.github.io/ps_plug/TMDB.svg';
+            const imdbLogoUrl = 'https://psahx.github.io/ps_plug/IMDb_3_2_Logo_GOLD.png';
+            const kpLogoUrl = 'https://psahx.github.io/ps_plug/kinopoisk-icon-main.svg';
             const rtFreshLogoUrl = 'https://psahx.github.io/ps_plug/Rotten_Tomatoes.svg';
             const rtRottenLogoUrl = 'https://psahx.github.io/ps_plug/Rotten_Tomatoes_rotten.svg';
             const rtAudienceFreshLogoUrl = 'https://psahx.github.io/ps_plug/Rotten_Tomatoes_positive_audience.svg';
@@ -447,10 +703,12 @@
             const rogerEbertLogoUrl = 'https://psahx.github.io/ps_plug/Roger_Ebert.jpeg';
 
             // Rating Toggles State
-            let imdbStored = Lampa.Storage.get('show_rating_imdb', true);
-            const showImdb = (imdbStored === true || imdbStored === 'true');
             let tmdbStored = Lampa.Storage.get('show_rating_tmdb', true);
             const showTmdb = (tmdbStored === true || tmdbStored === 'true');
+            let imdbStored = Lampa.Storage.get('show_rating_imdb', true);
+            const showImdb = (imdbStored === true || imdbStored === 'true');
+            let kpStored = Lampa.Storage.get('show_rating_kp', true);
+            const showKp = (kpStored === true || kpStored === 'true');
             let tomatoesStored = Lampa.Storage.get('show_rating_tomatoes', false);
             const showTomatoes = (tomatoesStored === true || tomatoesStored === 'true');
             let audienceStored = Lampa.Storage.get('show_rating_audience', false);
@@ -470,14 +728,19 @@
 
             // Get MDBList Rating Results
             var mdblistResult = mdblistRatingsCache[data.id];
+            var kpResult = kpRatingsCache[data.id];
 
             // Build Line 1 Details (Ratings)
+            if (showTmdb) {
+                lineOneDetails.push('<div class="full-start__rate tmdb-rating-item">' + '<div>' + vote + '</div>' + '<img src="' + tmdbLogoUrl + '" class="rating-logo tmdb-logo" alt="TMDB" draggable="false">' + '</div>');
+            }
             if (showImdb) {
                 var imdbRating = mdblistResult && mdblistResult.imdb !== null && typeof mdblistResult.imdb === 'number' ? parseFloat(mdblistResult.imdb || 0).toFixed(1) : '0.0';
                 lineOneDetails.push('<div class="full-start__rate imdb-rating-item">' + '<div>' + imdbRating + '</div>' + '<img src="' + imdbLogoUrl + '" class="rating-logo imdb-logo" alt="IMDB" draggable="false">' + '</div>');
             }
-            if (showTmdb) {
-                lineOneDetails.push('<div class="full-start__rate tmdb-rating-item">' + '<div>' + vote + '</div>' + '<img src="' + tmdbLogoUrl + '" class="rating-logo tmdb-logo" alt="TMDB" draggable="false">' + '</div>');
+            if (showKp) {
+                var kpRating = kpResult && kpResult.kp !== null && typeof kpResult.kp === 'number' ? parseFloat(kpResult.kp || 0).toFixed(1) : '0.0';
+                lineOneDetails.push('<div class="full-start__rate kp-rating-item">' + '<div>' + kpRating + '</div>' + '<img src="' + kpLogoUrl + '" class="rating-logo kp-logo" alt="Kinopoisk" draggable="false">' + '</div>');
             }
             if (showTomatoes) {
                  if (mdblistResult && typeof mdblistResult.tomatoes === 'number' && mdblistResult.tomatoes !== null) { 
@@ -603,7 +866,9 @@
             loaded = {}; 
             html = null; 
             mdblistRatingsCache = {}; 
-            mdblistRatingsPending = {}; 
+            mdblistRatingsPending = {};
+            kpRatingsCache = {};
+            kpRatingsPending = {};
         };
     }
 
