@@ -2322,7 +2322,7 @@ Lampa.Listener.follow('full', function(e) {
         
         // Проверяем, не находится ли мы в разделе
         if (window.location.href.indexOf('sisi') === -1) {
-            fetchWithTimeout(`http://cub.bylampa.online/api/reactions/get/${method}_${id}`)
+            fetchWithTimeout(`http://cub.rip/api/reactions/get/${method}_${id}`)
                 .then(response => response.json())
                 .then(data => {
                     const result = data.result;
@@ -2365,4 +2365,5 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
