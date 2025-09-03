@@ -8,7 +8,7 @@
     const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
     const KP_API_URL = 'https://kinopoiskapiunofficial.tech/';
     const KP_RATING_URL = 'https://rating.kinopoisk.ru/';
-    const LAMPA_RATING_URL = 'https://cub.rip/api/reactions/get/';
+    const LAMPA_RATING_URL = 'http://cub.rip/api/reactions/get/';
     const CACHE_KEY = 'kp_rating_cache_v10';
     const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа для успешных запросов
     const CACHE_ERROR_TIME = 1000 * 60 * 15; // 15 минут для ошибок
