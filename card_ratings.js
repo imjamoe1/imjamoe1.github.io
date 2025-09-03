@@ -5,10 +5,11 @@
     const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
     const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
     const RATING_URL = 'https://rating.kinopoisk.ru/';
-    const KP_API_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
+    const KP_API_URL = 'https://kinopoiskapiunofficial.tech/';
     const LAMPA_RATING_URL = 'http://cub.rip/api/reactions/get/';
-    const CACHE_KEY = 'kp_rating_cache_v3';
+    const CACHE_KEY = 'kp_rating_cache_v9';
     const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа
+    const CACHE_ERROR_TIME = 1000 * 60 * 15; // 15 минут
     const CONCURRENT_LIMIT = 4;
 
     // Очередь запросов
