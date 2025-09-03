@@ -3,12 +3,12 @@
 
     // Настройки плагина
     const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
-    const KP_API_URL = 'https://kinopoiskapiunofficial.tech/';
-    const KP_RATING_URL = 'https://rating.kinopoisk.ru/';
-    const LAMPA_RATING_URL = 'https://cub.rip/api/reactions/get/'; // Изменено на HTTPS
-    const CACHE_KEY = 'kp_rating_cache_v10'; // Обновлена версия кэша
-    const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа для успешных запросов
-    const CACHE_ERROR_TIME = 1000 * 60 * 15; // 15 минут для ошибок
+    const SEARCH_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword';
+    const RATING_URL = 'https://rating.kinopoisk.ru/';
+    const KP_API_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
+    const LAMPA_RATING_URL = 'http://cub.rip/api/reactions/get/';
+    const CACHE_KEY = 'kp_rating_cache_v3';
+    const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа
     const CONCURRENT_LIMIT = 4;
 
     // Очередь запросов
@@ -216,136 +216,93 @@
             return fallback;
         }
     }
-
+    
     // Получение рейтинга Lampa
     async function fetchLampaRating(data, card) {
-        // Главная причина почему рейтинг Lampa показывает 0.0:
-        // API доступно только на домене bylampa
         if (Lampa.Manifest.origin !== "bylampa") return '0.0';
-        
+
         const id = getContentId(data, card);
         if (!id) return '0.0';
-        
+
         const type = getContentType(data, card);
         const url = `${LAMPA_RATING_URL}${type}_${id}`;
-        
+
         try {
             const response = await fetchWithTimeout(url);
-            if (!response.ok) return '0.0';
-            
             const json = await response.json();
             const result = json.result;
-            
-            // Проверяем, что result является массивом
-            if (!Array.isArray(result)) return '0.0';
-            
+
             let positive = 0, negative = 0;
-            
+
             result.forEach(item => {
                 if (item.type === 'fire' || item.type === 'nice') {
-                    positive += parseInt(item.counter, 10) || 0;
+                    positive += parseInt(item.counter, 10);
                 }
                 if (item.type === "think" || item.type === "bore" || item.type === 'shit') {
-                    negative += parseInt(item.counter, 10) || 0;
+                    negative += parseInt(item.counter, 10);
                 }
             });
-            
+
             const total = positive + negative;
             return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
         } catch (e) {
-            console.log('Lampa rating error:', e);
             return '0.0';
         }
     }
 
-    // Создание элемента рейтинга Кинопоиска
-    function createKpRatingElement() {
+    // Создание элемента рейтинга
+    function createRatingElement(type) {
         const ratingEl = document.createElement('div');
-        ratingEl.className = 'card__rating card__rating--kp';
+        ratingEl.className = `card__rating card__rating--${type}`;
         ratingEl.style.cssText = `
             position: absolute;
-            top: 3px;
-            right: 4px;
             color: white;
-            font-weight: 700;
-            font-size: 8px;
-            padding: 2px 4px;
-            border-radius: 10px;
-            z-index: 2;
+            font-weight: bold;
+            padding: 0.1em 0.2em;
+            margin-left: 0;
+            border-radius: 0.5em;
+            z-index: 10;
+            pointer-events: none;
+            font-size: 1.2em;
+            user-select: none;
             display: flex;
             align-items: center;
-            gap: 2px;
-            background: rgba(0, 0, 0, 0.5);
-            min-width: 40px;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            min-width: max-content; 
         `;
 
         const iconEl = document.createElement('div');
-        iconEl.innerHTML = KP_ICON_SVG;
-        iconEl.style.cssText = `
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: translate(1px, 0);
-        `;
+        if (type === 'kp') {
+            iconEl.innerHTML = KP_ICON_SVG;
+            iconEl.style.cssText = `
+                width: 0.8em;
+                height: 0.8em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transform: translateY(0.5px);
+                margin-left: 0.1em;
+                margin-right: 0.1em;
+            `;
+            ratingEl.style.top = '0.2em';
+            ratingEl.style.right = '4px';
+        } else {
+            iconEl.innerHTML = LAMPA_ICON_SVG;
+            iconEl.style.cssText = `
+                width: 1em;
+                height: 0.9em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                transform: translateY(0.5px);
+                margin-top: 1px;
+            `;
+            ratingEl.style.bottom = '4px';
+            ratingEl.style.right = '4px';
+        }
 
         const textEl = document.createElement('span');
-        textEl.style.cssText = `
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1;
-            margin-right: 0.1px;
-        `;
-
-        ratingEl.appendChild(iconEl);
-        ratingEl.appendChild(textEl);
-
-        return { element: ratingEl, text: textEl };
-    }
-
-    // Создание элемента рейтинга Lampa
-    function createLampaRatingElement() {
-        const ratingEl = document.createElement('div');
-        ratingEl.className = 'card__rating card__rating--lampa';
-        ratingEl.style.cssText = `
-            position: absolute;
-            bottom: 3px;
-            right: 4px;
-            color: white;
-            font-weight: 700;
-            font-size: 8px;
-            padding: 2px 4px;
-            border-radius: 10px;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            background: rgba(0, 0, 0, 0.5);
-            min-width: 40px;
-            justify-content: center;
-        `;
-
-        const iconEl = document.createElement('div');
-        iconEl.innerHTML = LAMPA_ICON_SVG;
-        iconEl.style.cssText = `
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: translate(1px, 1px);
-        `;
-
-        const textEl = document.createElement('span');
-        textEl.style.cssText = `
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1;
-            margin-right: 0.1px;
-        `;
-
         ratingEl.appendChild(iconEl);
         ratingEl.appendChild(textEl);
 
@@ -356,41 +313,46 @@
     function hideTmdbRating(card) {
         const view = card.element?.querySelector('.card__view') || card.querySelector('.card__view');
         if (!view) return;
-        
+
         const voteContainer = view.querySelector('.card__vote');
         if (voteContainer) {
             voteContainer.style.display = 'none';
         }
     }
 
-    // Отрисовка рейтингов на карточке
+    // Отрисовка рейтингов на карточке (постер)
     async function renderRating(card) {
         if (processedCards.has(card)) return;
 
+        // Пропускаем категории и разделы
         const cardTitle = card.querySelector('.card__title, .card__name')?.textContent || '';
         const isCategory = 
             card.classList.contains('cub-collection-card') ||
             card.querySelector('.card__count');
-            
+
         if (isCategory) {
             processedCards.add(card);
             return;
         }
-        
+
+        // Проверяем, находится ли карточка в разделе
         const isSisiContent = card.closest('.sisi-results, .sisi-videos, .sisi-section') || 
                              card.closest('[data-component*="sisi"]') || 
                              card.closest('[data-name*="sisi"]') ||
                              window.location.href.indexOf('sisi') !== -1;
-        
+
+        // Пропускаем обработку рейтингов для раздела
         if (isSisiContent) {
             processedCards.add(card);
             hideTmdbRating(card);
             return;
         }
-        
+
+        // Стандартная обработка для других разделов
         processedCards.add(card);
         hideTmdbRating(card);
 
+        // Получаем данные карточки
         let data = card.card_data || (card.dataset?.card && JSON.parse(card.dataset.card));
         if (!data) {
             try {
@@ -423,23 +385,24 @@
 
         if (view.querySelector('.card__rating--kp') || view.querySelector('.card__rating--lampa')) return;
 
-        const { element: kpElement, text: kpText } = createKpRatingElement();
+        // Создаем элементы рейтингов (Кинопоиск + Lampa на постере)
+        const { element: kpElement, text: kpText } = createRatingElement('kp');
         kpText.textContent = '...';
         view.style.position = 'relative';
         view.appendChild(kpElement);
 
-        const { element: lampaElement, text: lampaText } = createLampaRatingElement();
+        const { element: lampaElement, text: lampaText } = createRatingElement('lampa');
         lampaText.textContent = '...';
         view.appendChild(lampaElement);
 
         try {
-            // Используем новый метод поиска
+            // Получаем рейтинг Kinopoisk
             const { kp } = await searchFilmByTMDBId(data.id, getContentType(data, card), title, year);
-            kpText.textContent = kp;
-            
+            kpText.textContent = kp; // Будет "0.0" если рейтинга нет
+
+            // Получаем рейтинг Lampa
             const lampaRating = await fetchLampaRating(data, card);
-            lampaText.textContent = lampaRating;
-            
+            lampaText.textContent = lampaRating; // Будет "0.0" если рейтинга нет
         } catch (e) {
             kpText.textContent = '0.0';
             lampaText.textContent = '0.0';
@@ -448,13 +411,12 @@
 
     // Инициализация плагина
     function init() {
-        if (!Lampa.Manifest || Lampa.Manifest.origin !== "bylampa") {
+        if (Lampa.Manifest.origin !== "bylampa") {
             console.log("Рейтинги Lampa доступны только на origin bylampa");
             return;
         }
 
-        console.log("Initializing ratings plugin...");
-
+        // Наблюдатель за видимостью карточек
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -464,11 +426,13 @@
             });
         }, { rootMargin: '100px' });
 
+        // Обработка существующих карточек
         document.querySelectorAll('.card').forEach(card => {
             observer.observe(card);
             hideTmdbRating(card);
         });
 
+        // Наблюдатель за изменениями DOM
         const mo = new MutationObserver(muts => {
             muts.forEach(mut => {
                 mut.addedNodes.forEach(node => {
@@ -488,6 +452,7 @@
 
         mo.observe(document.body, { childList: true, subtree: true });
 
+        // Подписка на события Lampa
         if (Lampa.Listener) {
             Lampa.Listener.follow('card', e => {
                 if (e.type === 'build' && e.card) {
@@ -495,21 +460,24 @@
                     hideTmdbRating(e.object || e.card);
                 }
             });
+
+            // Убираем рейтинг Lampa внутри карточки (на странице описания)
+            Lampa.Listener.follow('full', function(e) {
+                if (e.type === 'complite') {
+                    // Ничего не делаем — рейтинг Lampa не добавляется
+                }
+            });
         }
     }
 
     // Запуск плагина
     if (typeof Lampa !== 'undefined') {
-        setTimeout(() => {
-            Lampa.Platform.tv();
-            init();
-        }, 1000);
+        Lampa.Platform.tv();
+        init();
     } else {
         document.addEventListener('lampaReady', function() {
-            setTimeout(() => {
-                Lampa.Platform.tv();
-                init();
-            }, 1000);
+            Lampa.Platform.tv();
+            init();
         });
     }
 })();
