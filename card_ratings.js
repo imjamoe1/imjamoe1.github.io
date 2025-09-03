@@ -221,20 +221,20 @@
     // Получение рейтинга Lampa
     async function fetchLampaRating(data, card) {
         if (Lampa.Manifest.origin !== "bylampa") return '0.0';
-
+        
         const id = getContentId(data, card);
         if (!id) return '0.0';
-
+        
         const type = getContentType(data, card);
-        const url = `${"http://cub.rip/api/reactions/get/" + ratingKey}`;
-
+        const url = `${LAMPA_RATING_URL}${type}_${id}`;
+        
         try {
             const response = await fetchWithTimeout(url);
             const json = await response.json();
             const result = json.result;
-
+            
             let positive = 0, negative = 0;
-
+            
             result.forEach(item => {
                 if (item.type === 'fire' || item.type === 'nice') {
                     positive += parseInt(item.counter, 10);
@@ -243,7 +243,7 @@
                     negative += parseInt(item.counter, 10);
                 }
             });
-
+            
             const total = positive + negative;
             return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
         } catch (e) {
