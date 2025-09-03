@@ -188,48 +188,48 @@
             position: absolute;
             color: white;
             font-weight: bold;
-            padding: 0.1em 0.18em;
-            margin: 0;
-            border-radius: 1em;
-            z-index: 1;
+            padding: 0.1em 0.2em;
+            margin-left: 0;
+            border-radius: 0.5em;
+            z-index: 10;
             pointer-events: none;
             font-size: 1.2em;
             user-select: none;
             display: flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.5);
-            min-width: max-content;
+            background: rgba(0, 0, 0, 0.3);
+            min-width: max-content; 
         `;
 
         const iconEl = document.createElement('div');
         if (type === 'kp') {
             iconEl.innerHTML = KP_ICON_SVG;
             iconEl.style.cssText = `
-                width: 1em;
-                height: 1em;
+                width: 0.8em;
+                height: 0.8em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                position: relative;
-                margin-right: 0.1px;
-                transform: translateY(1px);
+                transform: translateY(0.5px);
+                margin-left: 0.1em;
+                margin-right: 0.1em;
             `;
-            ratingEl.style.top = '0.1em';
-            ratingEl.style.right = '0.1em';
+            ratingEl.style.top = '0.2em';
+            ratingEl.style.right = '4px';
         } else {
             iconEl.innerHTML = LAMPA_ICON_SVG;
             iconEl.style.cssText = `
                 width: 1em;
-                height: 1em;
+                height: 0.9em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                margin-right: 0.1px;
-                transform: translateX(0.5px) translateY(2.5px);
+                transform: translateY(0.5px);
+                margin-top: 1px;
             `;
-            ratingEl.style.bottom = '0.1em';
-            ratingEl.style.right = '0.1em';
+            ratingEl.style.bottom = '4px';
+            ratingEl.style.right = '4px';
         }
 
         const textEl = document.createElement('span');
