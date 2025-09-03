@@ -38,21 +38,44 @@
                (cleanB.length > 5 && cleanA.includes(cleanB));
     }
 
+    // Получение ID контента
+    function getContentId(data, card) {
+        return data.id || 
+               data.kinopoisk_id || 
+               data.kp_id || 
+               card.getAttribute('data-id') || 
+               card.getAttribute('id') ||
+               (card.card_data && card.card_data.id);
+    }
+
+    // Определение типа контента
+    function getContentType(data, card) {
+        if (data.type) return data.type;
+        if (card.classList.contains('card--movie')) return 'movie';
+        if (card.classList.contains('card--tv')) return 'tv';
+        if (card.classList.contains('card--serial')) return 'tv';
+        return 'movie';
+    }
+
     function getCache(key) {
         try {
             const cache = Lampa.Storage.get(CACHE_KEY, {});
             const entry = cache[key];
-            if (entry && Date.now() - entry.timestamp < CACHE_TIME) {
+            if (entry && Date.now() - entry.timestamp < (entry.isError ? CACHE_ERROR_TIME : CACHE_TIME)) {
                 return entry;
             }
         } catch (e) {}
         return null;
     }
 
-    function setCache(key, data) {
+    function setCache(key, data, cacheTime = CACHE_TIME) {
         try {
             const cache = Lampa.Storage.get(CACHE_KEY, {});
-            cache[key] = { ...data, timestamp: Date.now() };
+            cache[key] = { 
+                ...data, 
+                timestamp: Date.now(),
+                isError: cacheTime === CACHE_ERROR_TIME
+            };
             Lampa.Storage.set(CACHE_KEY, cache);
         } catch (e) {}
     }
@@ -76,17 +99,26 @@
 
     async function fetchWithTimeout(url, options = {}) {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
+        const timeout = setTimeout(() => controller.abort(), 5000);
         try {
-            const res = await fetch(url, { ...options, signal: controller.signal });
+            const res = await fetch(url, { 
+                ...options, 
+                signal: controller.signal,
+                headers: {
+                    'X-API-KEY': API_KEY,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
             clearTimeout(timeout);
-            if (!res.ok) throw new Error(res.status);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return res;
-        } finally {
+        } catch (e) {
             clearTimeout(timeout);
+            throw e;
         }
     }
-
+    
     // Получение рейтинга Kinopoisk
     async function getKpRatingFromXml(kpId) {
         if (!kpId) return '0.0';
