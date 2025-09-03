@@ -15,7 +15,7 @@
         kp_api_key: '2a4a0808-81a3-40ae-b0d3-e11335ede616',
         xml_timeout: 5000 // 5 seconds for faster XML endpoint
     };
-    
+
     // --- Language Strings ---
     if (window.Lampa && Lampa.Lang) {
         Lampa.Lang.add({
@@ -52,7 +52,7 @@
         Lampa.SettingsApi.addComponent({
             component: 'additional_ratings',
             name: Lampa.Lang.translate('additional_ratings_title'),
-            icon: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 29 29" xml:space="preserve" width="32" height="32" fill="currentColor"><rect x="18" y="26" width="8" height="2"/><rect x="18" y="22" width="12" height="2"/><rect x="18" y="18" width="12" height="2"/><polygon points="20.549 11.217 16 2 11.451 11.217 1.28 12.695 8.64 19.87 6.902 30 14 26.269 14 24.009 9.559 26.344 10.611 20.208 10.789 19.171 10.036 18.438 5.578 14.091 11.739 13.196 12.779 13.045 13.245 12.102 16 6.519 18.755 12.102 19.221 13.045 20.261 13.196 27.715 14.281 28 12.3 20.549 11.217"/></svg>'
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" xml:space="preserve" width="32" height="32" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg>'
         });
 
         Lampa.SettingsApi.addParam({
@@ -414,6 +414,7 @@
 
     function showRatingProviderSelection() {
         const providers = [
+
             { title: 'TMDB', id: 'show_rating_tmdb', default: true },
             { title: 'IMDb', id: 'show_rating_imdb', default: true },
             { title: 'KinoPoisk', id: 'show_rating_kp', default: true },
@@ -460,12 +461,12 @@
         const cacheKey = 'tmdb_cache_' + stringHash(url);
         const cached = Lampa.Storage.get(cacheKey);
         const cacheTime = 24 * 60 * 60 * 1000; // 24 часа кэширования
-        
+
         if (cached && cached.timestamp > Date.now() - cacheTime) {
             callback(cached.data);
             return;
         }
-        
+
         network.silent(url, (data) => {
             Lampa.Storage.set(cacheKey, {
                 timestamp: Date.now(),
@@ -515,7 +516,7 @@
         // 4. Если ничего не найдено, возвращаем первый доступный логотип
         return images.logos[0];
     }
-  
+
     // --- Modified create function with Ratings Support ---
     function create() { 
         var html; 
@@ -524,11 +525,11 @@
         var loaded = {};
         var isDestroyed = false;
         var intersectionObserver; 
-        
+
         this.create = function () { 
             html = $("<div class=\"new-interface-info\">\n            <div class=\"new-interface-info__body\">\n                <div class=\"new-interface-info__head\"></div>\n                <div class=\"new-interface-info__title\"></div>\n                <div class=\"new-interface-info__details\"></div>\n                <div class=\"new-interface-info__description\"></div>\n            </div>\n        </div>"); 
         }; 
-        
+
         this.update = function (data) { 
             var _this = this; 
             html.find('.new-interface-info__head,.new-interface-info__details').text('---'); 
@@ -557,14 +558,14 @@
                     }
                 });
             }
- 
+
             if (isDestroyed || !html) {
                 console.warn('Cannot update - component is destroyed or HTML not initialized');
                 return;
             }
 
             const logoSetting = Lampa.Storage.get('logo_glav2') || 'show_all';
-            
+
             if (logoSetting !== 'hide') {
                 const type = data.name ? 'tv' : 'movie';
                 const url = Lampa.TMDB.api(type + '/' + data.id + '/images?api_key=' + Lampa.TMDB.key());
@@ -573,7 +574,7 @@
                     if (isDestroyed || !html) return;
 
                     let bestLogo = null;
-                    
+
                     if (images.logos && images.logos.length > 0) {
                         let bestRussianLogo = null;
                         let bestEnglishLogo = null;
@@ -602,7 +603,7 @@
                             bestLogo = null;
                         }
                     }
-                    
+
                     this.applyLogo(data, bestLogo);
                 }, () => {
                     if (!isDestroyed && html) {
@@ -624,13 +625,13 @@
                 this.load(data);
             }
         };
-        
+
         this.applyLogo = function(data, logo) {
             if (isDestroyed || !html) return;
-    
+
             const titleElement = html.find('.new-interface-info__title');
             if (!titleElement.length) return;
-    
+
             if (!logo || !logo.file_path) {
                 titleElement.text(data.title);
                 return;
@@ -646,7 +647,7 @@
 
             tempImg.onload = () => {
                 if (isDestroyed || !html) return;
-                
+
                 titleElement.html(`
                     <img class="new-interface-logo logo-fade-in" 
                          src="${imageUrl}" 
@@ -661,7 +662,7 @@
                 titleElement.text(data.title);
             };
         };
-     
+
         this.draw = function (data) {
             var create_year = ((data.release_date || data.first_air_date || '0000') + '').slice(0, 4);
             var vote = parseFloat((data.vote_average || 0) + '').toFixed(1);
@@ -690,6 +691,7 @@
             }
 
             // Logo URLs
+
             const tmdbLogoUrl = 'https://psahx.github.io/ps_plug/TMDB.svg';
             const imdbLogoUrl = 'https://psahx.github.io/ps_plug/IMDb_3_2_Logo_GOLD.png';
             const kpLogoUrl = 'https://psahx.github.io/ps_plug/kinopoisk-icon-main.svg';
@@ -703,6 +705,8 @@
             const rogerEbertLogoUrl = 'https://psahx.github.io/ps_plug/Roger_Ebert.jpeg';
 
             // Rating Toggles State
+
+
             let tmdbStored = Lampa.Storage.get('show_rating_tmdb', true);
             const showTmdb = (tmdbStored === true || tmdbStored === 'true');
             let imdbStored = Lampa.Storage.get('show_rating_imdb', true);
@@ -822,18 +826,6 @@
                 genreDetails.push(data.genres.map(function (item) { return Lampa.Utils.capitalizeFirstLetter(item.name); }).join(' | '));
             }
 
-            if (data.genres && data.genres.length > 0) {
-                var genresText = data.genres.map(function (item) { 
-                    return Lampa.Utils.capitalizeFirstLetter(item.name); 
-                }).join(' | ');
-
-            if (quality) {
-                genresText += ' <span class="quality-dot">●</span> ' + quality;
-            }
-    
-            genreDetails.push(genresText);
-        }
-
             // Update HTML
             html.find('.new-interface-info__head').empty().append(head.join(', '));
 
@@ -850,7 +842,7 @@
 
             html.find('.new-interface-info__details').html(finalDetailsHtml);
         };
-                       
+
         this.load = function (data) {
             var _this = this; 
             clearTimeout(timer); 
@@ -866,13 +858,13 @@
                 }); 
             }, 300); 
         };
-        
+
         this.render = function () { 
             return html; 
         }; 
-        
+
         this.empty = function () {};
-        
+
         this.destroy = function () {
             html.remove(); 
             loaded = {}; 
@@ -898,11 +890,11 @@
         var background_img = html.find('.full-start__background'); 
         var background_last = ''; 
         var background_timer; 
-        
+
         this.create = function () {
-            
+
         }; 
-        
+
         this.empty = function () { 
             var button; 
             if (object.source == 'tmdb') { 
@@ -918,7 +910,7 @@
             this.activity.loader(false); 
             this.activity.toggle(); 
         }; 
-        
+
         this.loadNext = function () {
             var _this = this; 
             if (this.next && !this.next_wait && items.length) { 
@@ -932,9 +924,9 @@
                 }); 
             } 
         }; 
-        
+
         this.push = function () {}; 
-        
+
         this.build = function (data) {
             var _this2 = this; 
             lezydata = data; 
@@ -960,7 +952,7 @@
             this.activity.loader(false); 
             this.activity.toggle(); 
         }; 
-        
+
         this.background = function (elem) {
             if (!elem || !elem.backdrop_path) return; 
             var new_background = Lampa.Api.img(elem.backdrop_path, 'w1280'); 
@@ -980,7 +972,7 @@
                 }, 300); 
             }, 1000); 
         }; 
-        
+
         this.append = function (element) {
             if (element.ready) return; 
             var _this3 = this; 
@@ -1008,11 +1000,11 @@
             scroll.append(item.render()); 
             items.push(item); 
         }; 
-        
+
         this.back = function () { 
             Lampa.Activity.backward(); 
         }; 
-        
+
         this.down = function () { 
             active++; 
             active = Math.min(active, items.length - 1); 
@@ -1020,7 +1012,7 @@
             items[active].toggle(); 
             scroll.update(items[active].render()); 
         }; 
-        
+
         this.up = function () { 
             active--; 
             if (active < 0) { 
@@ -1029,7 +1021,7 @@
                 items[active].toggle(); scroll.update(items[active].render()); 
             } 
         }; 
-        
+
         this.start = function () {
             var _this4 = this; 
             Lampa.Controller.add('content', { 
@@ -1058,18 +1050,18 @@
             }); 
             Lampa.Controller.toggle('content'); 
         }; 
-        
+
         this.refresh = function () { 
             this.activity.loader(true); 
             this.activity.need_refresh = true; 
         }; 
-        
+
         this.pause = function () {}; 
         this.stop = function () {}; 
         this.render = function () { 
             return html; 
         }; 
-        
+
         this.destroy = function () {
             clearTimeout(background_timer); 
             network.clear(); 
@@ -1091,12 +1083,12 @@
             console.error("NewInterface Adjust Padding: Missing Lampa components"); 
             return; 
         }
-        
+
         Lampa.Lang.add({ full_notext: { en: 'No description', ru: 'Нет описания'}, });
         window.plugin_interface_ready = true; 
         var old_interface = Lampa.InteractionMain; 
         var new_interface = component;
-        
+
         Lampa.InteractionMain = function (object) { 
             var use = new_interface; 
             if (!(object.source == 'tmdb' || object.source == 'cub')) use = old_interface; 
@@ -1122,7 +1114,7 @@
                 description: "Отображает логотипы фильмов и сериалов вместо текста на странице просмотра"
             }
         });
-        
+
         window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", function(a) {
             if ("complite" == a.type && "1" != Lampa.Storage.get("logo_glav")) {
                 var e = a.data.movie;
@@ -1203,7 +1195,7 @@
                 });
             }
         }));
-        
+
         var style_id = 'new_interface_style_adjusted_padding';
         if (!$('style[data-id="' + style_id + '"]').length) {
              $('style[data-id^="new_interface_style_"]').remove();
