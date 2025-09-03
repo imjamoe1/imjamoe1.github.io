@@ -300,7 +300,7 @@
 
         try {
             // Получаем рейтинг Kinopoisk
-            const { kp } = await searchFilmByTMDBId(data.id, getContentType(data, card), title, year);
+            const { kp } = await searchFilm(title, year);
             kpText.textContent = kp;
 
             // Получаем рейтинг Lampa
