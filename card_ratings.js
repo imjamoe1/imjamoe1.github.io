@@ -188,39 +188,45 @@
             position: absolute;
             color: white;
             font-weight: bold;
-            padding: 2px 4px;
-            border-radius: 4px;
+            padding: 0.1em 0.2em;
+            margin-left: 0;
+            border-radius: 0.5em;
             z-index: 10;
             pointer-events: none;
-            font-size: 12px;
+            font-size: 1.2em;
             user-select: none;
             display: flex;
             align-items: center;
-            gap: 2px;
-            background: rgba(0, 0, 0, 0.6);
-            min-width: max-content;
+            background: rgba(0, 0, 0, 0.3);
+            min-width: max-content; 
         `;
 
         const iconEl = document.createElement('div');
         if (type === 'kp') {
             iconEl.innerHTML = KP_ICON_SVG;
             iconEl.style.cssText = `
-                width: 12px;
-                height: 12px;
+                width: 0.8em;
+                height: 0.8em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                transform: translateY(0.5px);
+                margin-left: 0.1em;
+                margin-right: 0.1em;
             `;
-            ratingEl.style.top = '4px';
+            ratingEl.style.top = '0.2em';
             ratingEl.style.right = '4px';
         } else {
             iconEl.innerHTML = LAMPA_ICON_SVG;
             iconEl.style.cssText = `
-                width: 12px;
-                height: 12px;
+                width: 1em;
+                height: 0.9em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                position: relative;
+                transform: translateY(0.5px);
+                margin-top: 1px;
             `;
             ratingEl.style.bottom = '4px';
             ratingEl.style.right = '4px';
