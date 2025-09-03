@@ -17,7 +17,7 @@
     const processedCards = new WeakSet();
 
     // Иконки для рейтингов
-    const KP_ICON_SVG = '<svg width="20" height="20" viewBox="0 0 110 110" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="40" fill="black"/><g transform="translate(10, 10) scale(0.4)"><path fill="white" d="M215 121.415l-99.297-6.644 90.943 36.334a106.416 106.416 0 0 0 8.354-29.69z"/><path fill="white" d="M194.608 171.609C174.933 197.942 143.441 215 107.948 215 48.33 215 0 166.871 0 107.5 0 48.13 48.33 0 107.948 0c35.559 0 67.102 17.122 86.77 43.539l-90.181 48.07L162.57 32.25h-32.169L90.892 86.862V32.25H64.77v150.5h26.123v-54.524l39.509 54.524h32.169l-56.526-57.493 88.564 46.352z"/><path d="M206.646 63.895l-90.308 36.076L215 93.583a106.396 106.396 0 0 0-8.354-29.688z" fill="white"/></g></svg>';      
+    const KP_ICON_SVG = '<svg width="192" height="192" viewBox="0 0 192 192" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="white" fill-rule="nonzero"><path fill-rule="evenodd" d="M20,4 H172 A16,16 0 0 1 188,20 V172 A16,16 0 0 1 172,188 H20 A16,16 0 0 1 4,172 V20 A16,16 0 0 1 20,4 Z M20,18 H172 A2,2 0 0 1 174,20 V172 A2,2 0 0 1 172,174 H20 A2,2 0 0 1 18,172 V20 A2,2 0 0 1 20,18 Z"/><g transform="translate(-10.63, 0)"><path d="M96.5 20 L66.1 75.733 V20 H40.767 v152 H66.1 v-55.733 L96.5 172 h35.467 C116.767 153.422 95.2 133.578 80 115 c28.711 16.889 63.789 35.044 92.5 51.933 v-30.4 C148.856 126.4 108.644 115.133 85 105 c23.644 3.378 63.856 7.889 87.5 11.267 v-30.4 L85 90 c27.022-11.822 60.478-22.711 87.5-34.533 v-30.4 C143.789 41.956 108.711 63.11 80 80 L131.967 20 z"/></g></g></g></svg>';      
     const LAMPA_ICON_SVG = '<svg width="20" height="20" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="55" fill="black"/><path d="M81.6744 103.11C98.5682 93.7234 110 75.6967 110 55C110 24.6243 85.3757 0 55 0C24.6243 0 0 24.6243 0 55C0 75.6967 11.4318 93.7234 28.3255 103.11C14.8869 94.3724 6 79.224 6 62C6 34.938 27.938 13 55 13C82.062 13 104 34.938 104 62C104 79.224 95.1131 94.3725 81.6744 103.11Z" fill="white"/><path d="M92.9546 80.0076C95.5485 74.5501 97 68.4446 97 62C97 38.804 78.196 20 55 20C31.804 20 13 38.804 13 62C13 68.4446 14.4515 74.5501 17.0454 80.0076C16.3618 77.1161 16 74.1003 16 71C16 49.4609 33.4609 32 55 32C76.5391 32 94 49.4609 94 71C94 74.1003 93.6382 77.1161 92.9546 80.0076Z" fill="white"/><path d="M55 89C69.3594 89 81 77.3594 81 63C81 57.9297 79.5486 53.1983 77.0387 49.1987C82.579 54.7989 86 62.5 86 71C86 88.1208 72.1208 102 55 102C37.8792 102 24 88.1208 24 71C24 62.5 27.421 54.7989 32.9613 49.1987C30.4514 53.1983 29 57.9297 29 63C29 77.3594 40.6406 89 55 89Z" fill="white"/><path d="M73 63C73 72.9411 64.9411 81 55 81C45.0589 81 37 72.9411 37 63C37 53.0589 45.0589 45 55 45C64.9411 45 73 53.0589 73 63Z" fill="white"/></svg></div>';
 
     // Вспомогательные функции
@@ -119,7 +119,7 @@
         }
     }
 
-    // Новые функции для работы с Кинопоиском (из второго плагина)
+    // Новые функции для работы с Кинопоиском
     async function getKpRatingFromXml(kpId) {
         if (!kpId) return '0.0';
         
@@ -216,40 +216,62 @@
         }
     }
 
-    // Получение рейтинга Lampa
+    // Получение рейтинга Lampa (ИСПРАВЛЕННАЯ ВЕРСИЯ)
     async function fetchLampaRating(data, card) {
         if (Lampa.Manifest.origin !== "bylampa") return '0.0';
         
-        const id = getContentId(data, card);
+        const id = data.id || data.kinopoisk_id || data.kp_id || card.getAttribute('data-id') || card.getAttribute('id');
         if (!id) return '0.0';
         
-        const type = getContentType(data, card);
+        const type = data.type || (card.classList.contains('card--tv') || card.classList.contains('card--serial') ? 'tv' : 'movie');
         const url = `${LAMPA_RATING_URL}${type}_${id}`;
         
         try {
+            console.log("Fetching Lampa rating from:", url);
             const response = await fetchWithTimeout(url);
+            
+            if (!response.ok) {
+                console.log("Lampa API response not OK:", response.status);
+                return '0.0';
+            }
+            
             const json = await response.json();
-            const result = json.result;
+            console.log("Lampa API response:", json);
+            
+            // Проверяем различные форматы ответа
+            let result = json.result || json.data || json;
+            
+            if (!Array.isArray(result)) {
+                console.log("Lampa API: result is not array", result);
+                return '0.0';
+            }
             
             let positive = 0, negative = 0;
             
             result.forEach(item => {
-                if (item.type === 'fire' || item.type === 'nice') {
-                    positive += parseInt(item.counter, 10);
+                const counter = parseInt(item.counter || item.count || 0, 10);
+                
+                if (item.type === 'fire' || item.type === 'nice' || item.reaction_type === 'positive') {
+                    positive += counter;
                 }
-                if (item.type === "think" || item.type === "bore" || item.type === 'shit') {
-                    negative += parseInt(item.counter, 10);
+                if (item.type === "think" || item.type === "bore" || item.type === 'shit' || item.reaction_type === 'negative') {
+                    negative += counter;
                 }
             });
             
             const total = positive + negative;
-            return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
+            const rating = total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
+            
+            console.log("Lampa rating calculated:", rating, "Positive:", positive, "Negative:", negative);
+            return rating;
+            
         } catch (e) {
+            console.error("Lampa API error:", e);
             return '0.0';
         }
     }
 
-    // Создание элемента рейтинга Кинопоиска (ИЗМЕНЕНА ТОЛЬКО ЭТА ЧАСТЬ)
+    // Создание элемента рейтинга Кинопоиска
     function createKpRatingElement() {
         const ratingEl = document.createElement('div');
         ratingEl.className = 'card__rating card__rating--kp';
@@ -274,8 +296,8 @@
         const iconEl = document.createElement('div');
         iconEl.innerHTML = KP_ICON_SVG;
         iconEl.style.cssText = `
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -296,7 +318,7 @@
         return { element: ratingEl, text: textEl };
     }
 
-    // Создание элемента рейтинга Lampa (оставлено без изменений)
+    // Создание элемента рейтинга Lampa
     function createLampaRatingElement() {
         const ratingEl = document.createElement('div');
         ratingEl.className = 'card__rating card__rating--lampa';
@@ -419,24 +441,24 @@
 
         if (view.querySelector('.card__rating--kp') || view.querySelector('.card__rating--lampa')) return;
 
-        // Создаем элементы рейтингов (Кинопоиск + Lampa на постере)
-        const { element: kpElement, text: kpText } = createKpRatingElement(); // ИЗМЕНЕНО
+        // Создаем элементы рейтингов
+        const { element: kpElement, text: kpText } = createKpRatingElement();
         kpText.textContent = '...';
         view.style.position = 'relative';
         view.appendChild(kpElement);
 
-        const { element: lampaElement, text: lampaText } = createLampaRatingElement(); // ИЗМЕНЕНО
+        const { element: lampaElement, text: lampaText } = createLampaRatingElement();
         lampaText.textContent = '...';
         view.appendChild(lampaElement);
 
         try {
-            // Получаем рейтинг Kinopoisk
+            // Получаем рейтинг Kinopoisk через официальное API
             const { kp } = await searchFilmByTMDBId(data.id, getContentType(data, card), title, year);
-            kpText.textContent = kp; // Будет "0.0" если рейтинга нет
+            kpText.textContent = kp;
             
             // Получаем рейтинг Lampa
             const lampaRating = await fetchLampaRating(data, card);
-            lampaText.textContent = lampaRating; // Будет "0.0" если рейтинга нет
+            lampaText.textContent = lampaRating;
         } catch (e) {
             kpText.textContent = '0.0';
             lampaText.textContent = '0.0';
@@ -494,28 +516,17 @@
                     hideTmdbRating(e.object || e.card);
                 }
             });
-
-            // Убираем рейтинг Lampa внутри карточки (на странице описания)
-            Lampa.Listener.follow('full', function(e) {
-                if (e.type === 'complite') {
-                    // Ничего не делаем — рейтинг Lampa не добавляется
-                }
-            });
         }
     }
 
     // Запуск плагина
     if (typeof Lampa !== 'undefined') {
-        setTimeout(() => {
-            Lampa.Platform.tv();
-            init();
-        }, 1000);
+        Lampa.Platform.tv();
+        init();
     } else {
         document.addEventListener('lampaReady', function() {
-            setTimeout(() => {
-                Lampa.Platform.tv();
-                init();
-            }, 1000);
+            Lampa.Platform.tv();
+            init();
         });
     }
 })();
