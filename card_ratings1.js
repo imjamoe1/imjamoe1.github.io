@@ -119,7 +119,7 @@
         }
     }
 
-    // Новые функции для работы с Кинопоиском (из второго плагина)
+    // Новые функции для работы с Кинопоиском
     async function getKpRatingFromXml(kpId) {
         if (!kpId) return '0.0';
         
@@ -431,7 +431,7 @@
 
         try {
             // Получаем рейтинг Kinopoisk
-            const { kp } = await searchFilmByTMDBId(data.id, getContentType(data, card), title, year);
+            const { kp } = await searchFilm(title, year);
             kpText.textContent = kp; // Будет "0.0" если рейтинга нет
             
             // Получаем рейтинг Lampa
@@ -514,4 +514,4 @@
             init();
         });
     }
-})();
+})()
