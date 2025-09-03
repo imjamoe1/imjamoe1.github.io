@@ -188,16 +188,16 @@
             position: absolute;
             color: white;
             font-weight: bold;
-            padding: 2px 4px;
-            border-radius: 4px;
-            z-index: 10;
+            padding: 0.1em 0.18em;
+            margin: 0;
+            border-radius: 1em;
+            z-index: 1;
             pointer-events: none;
-            font-size: 12px;
+            font-size: 1.2em;
             user-select: none;
             display: flex;
             align-items: center;
-            gap: 2px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             min-width: max-content;
         `;
 
@@ -205,25 +205,31 @@
         if (type === 'kp') {
             iconEl.innerHTML = KP_ICON_SVG;
             iconEl.style.cssText = `
-                width: 12px;
-                height: 12px;
+                width: 1em;
+                height: 1em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                position: relative;
+                margin-right: 0.1px;
+                transform: translateY(1px);
             `;
-            ratingEl.style.top = '4px';
-            ratingEl.style.right = '4px';
+            ratingEl.style.top = '0.1em';
+            ratingEl.style.right = '0.1em';
         } else {
             iconEl.innerHTML = LAMPA_ICON_SVG;
             iconEl.style.cssText = `
-                width: 12px;
-                height: 12px;
+                width: 1em;
+                height: 1em;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                position: relative;
+                margin-right: 0.1px;
+                transform: translateX(0.5px) translateY(2.5px);
             `;
-            ratingEl.style.bottom = '4px';
-            ratingEl.style.right = '4px';
+            ratingEl.style.bottom = '0.1em';
+            ratingEl.style.right = '0.1em';
         }
 
         const textEl = document.createElement('span');
@@ -232,7 +238,7 @@
 
         return { element: ratingEl, text: textEl };
     }
-
+    
     // Скрытие стандартного рейтинга TMDB
     function hideTmdbRating(card) {
         const view = card.querySelector('.card__view');
