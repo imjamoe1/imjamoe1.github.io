@@ -226,7 +226,7 @@
         if (!id) return '0.0';
 
         const type = getContentType(data, card);
-        const url = `${LAMPA_RATING_URL}${type}_${id}`;
+        const url = `${"http://cub.rip/api/reactions/get/" + ratingKey}`;
 
         try {
             const response = await fetchWithTimeout(url);
