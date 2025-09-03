@@ -5,8 +5,8 @@
     const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
     const KP_API_URL = 'https://kinopoiskapiunofficial.tech/';
     const KP_RATING_URL = 'https://rating.kinopoisk.ru/';
-    const LAMPA_RATING_URL = 'http://cub.rip/api/reactions/get/';
-    const CACHE_KEY = 'kp_rating_cache_v9';
+    const LAMPA_RATING_URL = 'https://cub.rip/api/reactions/get/'; // Изменено на HTTPS
+    const CACHE_KEY = 'kp_rating_cache_v10'; // Обновлена версия кэша
     const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа для успешных запросов
     const CACHE_ERROR_TIME = 1000 * 60 * 15; // 15 минут для ошибок
     const CONCURRENT_LIMIT = 4;
@@ -219,6 +219,8 @@
 
     // Получение рейтинга Lampa
     async function fetchLampaRating(data, card) {
+        // Главная причина почему рейтинг Lampa показывает 0.0:
+        // API доступно только на домене bylampa
         if (Lampa.Manifest.origin !== "bylampa") return '0.0';
         
         const id = getContentId(data, card);
@@ -229,23 +231,29 @@
         
         try {
             const response = await fetchWithTimeout(url);
+            if (!response.ok) return '0.0';
+            
             const json = await response.json();
             const result = json.result;
+            
+            // Проверяем, что result является массивом
+            if (!Array.isArray(result)) return '0.0';
             
             let positive = 0, negative = 0;
             
             result.forEach(item => {
                 if (item.type === 'fire' || item.type === 'nice') {
-                    positive += parseInt(item.counter, 10);
+                    positive += parseInt(item.counter, 10) || 0;
                 }
                 if (item.type === "think" || item.type === "bore" || item.type === 'shit') {
-                    negative += parseInt(item.counter, 10);
+                    negative += parseInt(item.counter, 10) || 0;
                 }
             });
             
             const total = positive + negative;
             return total > 0 ? (positive / total * 10).toFixed(1) : '0.0';
         } catch (e) {
+            console.log('Lampa rating error:', e);
             return '0.0';
         }
     }
