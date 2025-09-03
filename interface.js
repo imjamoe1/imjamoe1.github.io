@@ -822,6 +822,18 @@
                 genreDetails.push(data.genres.map(function (item) { return Lampa.Utils.capitalizeFirstLetter(item.name); }).join(' | '));
             }
 
+            if (data.genres && data.genres.length > 0) {
+                var genresText = data.genres.map(function (item) { 
+                    return Lampa.Utils.capitalizeFirstLetter(item.name); 
+                }).join(' | ');
+
+            if (quality) {
+                genresText += ' <span class="quality-dot">●</span> ' + quality;
+            }
+    
+            genreDetails.push(genresText);
+        }
+
             // Update HTML
             html.find('.new-interface-info__head').empty().append(head.join(', '));
 
@@ -1191,7 +1203,7 @@
                 });
             }
         }));
-
+        
         var style_id = 'new_interface_style_adjusted_padding';
         if (!$('style[data-id="' + style_id + '"]').length) {
              $('style[data-id^="new_interface_style_"]').remove();
