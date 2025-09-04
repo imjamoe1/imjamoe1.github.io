@@ -180,7 +180,6 @@
         }
     }
 
-
     // Создание элемента рейтинга
     function createRatingElement(type) {
         const ratingEl = document.createElement('div');
@@ -263,6 +262,18 @@
             return;
         }
 
+        // Проверяем, находится ли карточка в разделе
+        const isSisiContent = card.closest('.sisi-results, .sisi-videos, .sisi-section') || 
+                             card.closest('[data-component*="sisi"]') || 
+                             card.closest('[data-name*="sisi"]') ||
+                             window.location.href.indexOf('sisi') !== -1;
+        
+        if (isSisiContent) {
+            processedCards.add(card);
+            hideTmdbRating(card);
+            return;
+        }
+        
         processedCards.add(card);
         hideTmdbRating(card);
 
