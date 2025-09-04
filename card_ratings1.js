@@ -212,7 +212,7 @@
                 justify-content: center;
                 position: relative;
                 margin-right: 0.1px;
-                transform: translateY(1px);
+                transform: translateY(0.5px);
             `;
             ratingEl.style.top = '0.1em';
             ratingEl.style.right = '0.1em';
@@ -226,7 +226,7 @@
                 justify-content: center;
                 position: relative;
                 margin-right: 0.1px;
-                transform: translateX(0.5px) translateY(2.5px);
+                transform: translateX(0.5px) translateY(1px);
             `;
             ratingEl.style.bottom = '0.1em';
             ratingEl.style.right = '0.1em';
