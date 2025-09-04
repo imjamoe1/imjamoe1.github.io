@@ -209,7 +209,7 @@
         }
     }
 
-    // Создание элемента рейтинга Кинопоиска (ИЗМЕНЕНА ТОЛЬКО ЭТА ЧАСТЬ)
+    // Создание элемента рейтинга Кинопоиска
     function createKpRatingElement() {
         const ratingEl = document.createElement('div');
         ratingEl.className = 'card__rating card__rating--kp';
@@ -256,7 +256,7 @@
         return { element: ratingEl, text: textEl };
     }
 
-    // Создание элемента рейтинга Lampa (оставлено без изменений)
+    // Создание элемента рейтинга Lampa
     function createLampaRatingElement() {
         const ratingEl = document.createElement('div');
         ratingEl.className = 'card__rating card__rating--lampa';
