@@ -187,8 +187,6 @@
         ratingEl.className = `card__rating card__rating--${type}`;
         ratingEl.style.cssText = `
             position: absolute;
-
-
             color: white;
             font-weight: bold;
             padding: 0.1em 0.18em;
@@ -200,10 +198,8 @@
             user-select: none;
             display: flex;
             align-items: center;
-
             background: rgba(0, 0, 0, 0.5);
             min-width: max-content;
-
         `;
 
         const iconEl = document.createElement('div');
@@ -236,6 +232,13 @@
             ratingEl.style.bottom = '0.1em';
             ratingEl.style.right = '0.1em';
         }
+
+        const textEl = document.createElement('span');
+        ratingEl.appendChild(iconEl);
+        ratingEl.appendChild(textEl);
+
+        return { element: ratingEl, text: textEl };
+    }
     
     // Скрытие стандартного рейтинга TMDB
     function hideTmdbRating(card) {
