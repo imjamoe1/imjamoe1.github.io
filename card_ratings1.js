@@ -254,7 +254,6 @@
     async function renderRating(card) {
         if (processedCards.has(card)) return;
 
-        // Пропускаем категории и разделы
         const cardTitle = card.querySelector('.card__title, .card__name')?.textContent || '';
         const isCategory = card.querySelector('.card__count');
         if (isCategory) {
@@ -262,7 +261,6 @@
             return;
         }
 
-        // Проверяем, находится ли карточка в разделе
         const isSisiContent = card.closest('.sisi-results, .sisi-videos, .sisi-section') || 
                              card.closest('[data-component*="sisi"]') || 
                              card.closest('[data-name*="sisi"]') ||
