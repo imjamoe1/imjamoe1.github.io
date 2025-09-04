@@ -180,59 +180,94 @@
         }
     }
 
-    // Создание элемента рейтинга
-    function createRatingElement(type) {
+    // Создание элемента рейтинга Кинопоиска
+    function createKpRatingElement() {
         const ratingEl = document.createElement('div');
-        ratingEl.className = `card__rating card__rating--${type}`;
+        ratingEl.className = 'card__rating card__rating--kp';
         ratingEl.style.cssText = `
             position: absolute;
+            top: 3px;
+            right: 4px;
             color: white;
-            font-weight: bold;
-            padding: 0.1em 0.18em;
-            margin: 0;
-            border-radius: 1em;
-            z-index: 1;
-            pointer-events: none;
-            font-size: 1.2em;
-            user-select: none;
+            font-weight: 700;
+            font-size: 8px;
+            padding: 2px 4px;
+            border-radius: 10px;
+            z-index: 2;
             display: flex;
             align-items: center;
+            gap: 2px;
             background: rgba(0, 0, 0, 0.5);
-            min-width: max-content;
+            min-width: 40px;
+            justify-content: center;
         `;
 
         const iconEl = document.createElement('div');
-        if (type === 'kp') {
-            iconEl.innerHTML = KP_ICON_SVG;
-            iconEl.style.cssText = `
-                width: 1em;
-                height: 1em;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                margin-right: 0.1px;
-                transform: translateY(1px);
-            `;
-            ratingEl.style.top = '0.1em';
-            ratingEl.style.right = '0.1em';
-        } else {
-            iconEl.innerHTML = LAMPA_ICON_SVG;
-            iconEl.style.cssText = `
-                width: 1em;
-                height: 1em;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                margin-right: 0.1px;
-                transform: translateX(0.5px) translateY(2.5px);
-            `;
-            ratingEl.style.bottom = '0.1em';
-            ratingEl.style.right = '0.1em';
-        }
+        iconEl.innerHTML = KP_ICON_SVG;
+        iconEl.style.cssText = `
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(1px, 0);
+        `;
 
         const textEl = document.createElement('span');
+        textEl.style.cssText = `
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+            margin-right: 0.1px;
+        `;
+
+        ratingEl.appendChild(iconEl);
+        ratingEl.appendChild(textEl);
+
+        return { element: ratingEl, text: textEl };
+    }
+
+    // Создание элемента рейтинга Lampa
+    function createLampaRatingElement() {
+        const ratingEl = document.createElement('div');
+        ratingEl.className = 'card__rating card__rating--lampa';
+        ratingEl.style.cssText = `
+            position: absolute;
+            bottom: 3px;
+            right: 4px;
+            color: white;
+            font-weight: 700;
+            font-size: 8px;
+            padding: 2px 4px;
+            border-radius: 10px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.5);
+            min-width: 40px;
+            justify-content: center;
+        `;
+
+        const iconEl = document.createElement('div');
+        iconEl.innerHTML = LAMPA_ICON_SVG;
+        iconEl.style.cssText = `
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(1px, 1px);
+        `;
+
+        const textEl = document.createElement('span');
+        textEl.style.cssText = `
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+            margin-right: 0.1px;
+        `;
+
         ratingEl.appendChild(iconEl);
         ratingEl.appendChild(textEl);
 
