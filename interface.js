@@ -1239,7 +1239,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 margin-top: 0.5em;
                 font-size: 1.5em;
                 font-weight: 700;
-                word-spacing: -5px;
+                word-spacing: -3px;
                 text-shadow: 1px 1px 2px #C0C0C0;
             }
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
