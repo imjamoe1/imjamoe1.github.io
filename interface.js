@@ -1236,7 +1236,7 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 line-height: 1.5;
             }
             .genre-details-line {
-                margin-top: 1em;
+                margin-top: 0.5em;
                 font-size: 1.5em;
                 font-weight: 700; 
                 text-shadow: 5px 5px 5px #C0C0C0;
