@@ -1236,10 +1236,10 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
                 line-height: 1.5;
             }
             .genre-details-line {
-                margin-top: 0.3em;
+                margin-top: 0.5em;
                 font-size: 1.5em;
                 font-weight: 700;
-                word-spacing: -2px;
+                word-spacing: -5px;
                 text-shadow: 3px 3px 4px #C0C0C0;
             }
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
