@@ -1237,6 +1237,10 @@ document.querySelectorAll('.new-interface-info__description').forEach(el => {
             }
             .genre-details-line {
                 margin-top: 1em;
+                font-size: 1.3em;
+                font-weight: 700; 
+                font-style: italic;
+                text-shadow: 5px 5px 5px #C0C0C0;
                 line-height: 1.5;
             }
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
