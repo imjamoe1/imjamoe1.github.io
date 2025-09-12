@@ -209,7 +209,7 @@ if (!window.loaded_modss) {
 		return window.location.protocol == 'https:' ? 'https://' : 'http://';
 	}
 	var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-	var version_modss = '3.1', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = true, leftVipD = '', user_id = '', uid = 'dcbee9ef84465be64feb69380', IP = '2a09:bac1:61a0::9e:23', logged = true;
+    var version_modss = '3.1', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = 'dcbee9ef84465be64feb69380', IP, logged = false, cashe = encodeURIComponent(Lampa.Base64.encode(window.location.origin));
 	console.log('App', 'protocol:', Protocol());
 	
 	var Modss = {
