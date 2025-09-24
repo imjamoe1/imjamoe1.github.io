@@ -297,53 +297,71 @@
           });
         });
       }
-      function moveCardFavorite() {
-        setTimeout(function () {
-          if ($(".activity--active >").find(".card")) {
+function moveCardFavorite() {
+    setTimeout(function () {
+        if ($(".activity--active >").find(".card")) {
             $(".card").on("hover:long", function () {
-              var _0x368fd6 = $(".card").index(this);
-              var _0x1a048a = $(".card")[_0x368fd6].card_data.id;
-              if (_0x1a048a) {
-                window.current_card_id = _0x1a048a;
-              }
-              //var _0x31c6c5 = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">В начало списка</div></div>");
-              //var _0x280327 = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">Сдвинуть вверх</div></div>");
-              //var _0x246f4e = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">Сдвинуть вниз</div></div>");
-              //var _0x46ef5f = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">В конец списка</div></div>");
-              //var _0x37815d = [_0x46ef5f, _0x246f4e, _0x280327, _0x31c6c5];
-              _0x37815d.forEach(function (_0x1771b7) {
-                var _0x57a567 = $("body > .selectbox").find('.scroll__body');
-                _0x57a567.append(_0x1771b7);
-                _0x57a567 = jQueryToNative(_0x57a567);
-                _0x57a567.insertBefore(_0x57a567.lastChild, _0x57a567.firstChild);
-              });
-              var _0x583d88 = $("body > .selectbox").find('.scroll__body');
-              Lampa.Controller.collectionSet(_0x583d88);
-              setTimeout(function () {
-                var _0x57dd36 = jQueryToNative($("body > .selectbox").find(".selector"));
-                Lampa.Controller.focus(_0x57dd36);
-                Navigator.focus(_0x57dd36);
-              }, 0xa);
-              _0x31c6c5.on('hover:enter', function () {
-                var _0x5ccd6c = window.current_card_id;
-                bookManipulator(_0x5ccd6c, 'moveToFront');
-              });
-              _0x46ef5f.on("hover:enter", function () {
-                var _0x1a7702 = window.current_card_id;
-                bookManipulator(_0x1a7702, "moveToEnd");
-              });
-              _0x280327.on("hover:enter", function () {
-                var _0x4b698d = window.current_card_id;
-                bookManipulator(_0x4b698d, "moveForward");
-              });
-              _0x246f4e.on('hover:enter', function () {
-                var _0x2bed07 = window.current_card_id;
-                bookManipulator(_0x2bed07, 'moveBackward');
-              });
+                var _0x368fd6 = $(".card").index(this);
+                var _0x1a048a = $(".card")[_0x368fd6].card_data.id;
+                if (_0x1a048a) {
+                    window.current_card_id = _0x1a048a;
+                }
+                
+                // Создаем элементы меню, но не добавляем их
+                /*
+                var _0x31c6c5 = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">В начало списка</div></div>");
+                var _0x280327 = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">Сдвинуть вверх</div></div>");
+                var _0x246f4e = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">Сдвинуть вниз</div></div>");
+                var _0x46ef5f = $("<div class=\"selectbox-item selector\"><div class=\"selectbox-item__title\">В конец списка</div></div>");
+                var _0x37815d = [_0x46ef5f, _0x246f4e, _0x280327, _0x31c6c5];
+                */
+                
+                // Пропускаем добавление элементов в меню
+                /*
+                _0x37815d.forEach(function (_0x1771b7) {
+                    var _0x57a567 = $("body > .selectbox").find('.scroll__body');
+                    _0x57a567.append(_0x1771b7);
+                    _0x57a567 = jQueryToNative(_0x57a567);
+                    _0x57a567.insertBefore(_0x57a567.lastChild, _0x57a567.firstChild);
+                });
+                
+                var _0x583d88 = $("body > .selectbox").find('.scroll__body');
+                Lampa.Controller.collectionSet(_0x583d88);
+                
+                setTimeout(function () {
+                    var _0x57dd36 = jQueryToNative($("body > .selectbox").find(".selector"));
+                    Lampa.Controller.focus(_0x57dd36);
+                    Navigator.focus(_0x57dd36);
+                }, 0xa);
+                */
+                
+                // Закомментировал обработчики событий
+                /*
+                _0x31c6c5.on('hover:enter', function () {
+                    var _0x5ccd6c = window.current_card_id;
+                    bookManipulator(_0x5ccd6c, 'moveToFront');
+                });
+                
+                _0x46ef5f.on("hover:enter", function () {
+                    var _0x1a7702 = window.current_card_id;
+                    bookManipulator(_0x1a7702, "moveToEnd");
+                });
+                
+                _0x280327.on("hover:enter", function () {
+                    var _0x4b698d = window.current_card_id;
+                    bookManipulator(_0x4b698d, "moveForward");
+                });
+                
+                _0x246f4e.on('hover:enter', function () {
+                    var _0x2bed07 = window.current_card_id;
+                    bookManipulator(_0x2bed07, 'moveBackward');
+                });
+                */
             });
-          }
-        }, 0xc8);
-      }
+        }
+    }, 0xc8);
+}
+
       function moveButton(_0x1abf99, _0x38e23d) {
         _0x1abf99 = jQueryToNative(_0x1abf99);
         window.lastfocus = jQueryToNative(_0x1abf99);
