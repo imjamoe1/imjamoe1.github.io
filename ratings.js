@@ -287,7 +287,7 @@
         ".rate--bylampa .rate--icon {" +
         "    width: 2.3em !important;" +
         "    height: 2.3em !important;" +
-        "    transform: scale(1.2) !important;" +
+        "    transform: scale(1.1) !important;" +
         "}" +
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
@@ -2423,4 +2423,5 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
