@@ -285,8 +285,8 @@
         "padding: 0 !important;" +
         "}" +
         ".rate--bylampa .rate--icon {" +
-        "    width: 2.4em !important;" +
-        "    height: 2.4em !important;" +
+        "    width: 2.3em !important;" +
+        "    height: 2.3em !important;" +
         "    transform: scale(1.2) !important;" +
         "}" +
         ".rate--green  { color: #4caf50; }" +
@@ -2423,3 +2423,4 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
