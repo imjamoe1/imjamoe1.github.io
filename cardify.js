@@ -999,7 +999,7 @@
 
   function startPlugin() {
     if (!Lampa.Platform.screen('tv')) return console.log('Cardify', 'no tv');
-    if (!Lampa.Account.hasPremium()) return console.log('Cardify', 'no premium');
+    // if (!Lampa.Account.hasPremium()) return console.log('Cardify', 'no premium');
     Lampa.Lang.add({
       cardify_enable_sound: {
         ru: 'Включить звук',
@@ -1106,3 +1106,4 @@
   }
 
 })();
+
