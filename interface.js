@@ -121,7 +121,7 @@
 
     // --- Helper Functions for Kinopoisk ---
     function cleanTitle(str) {
-        return (str || '').replace(/[\s.,:;’'`!?]+/g, ' ').trim();
+        return (str || '').replace(/[\s.,:;'`!?]+/g, ' ').trim();
     }
 
     function kpCleanTitle(str) {
@@ -1139,52 +1139,58 @@
                             var logoPath = Lampa.TMDB.image("/t/p/w300" + logo.file_path.replace(".svg", ".png"));
                             console.log("Отображаем логотип:", logoPath);
 
-                            // Если логотип не русский, запрашиваем русское название
-                            if (!isRussianLogo) {
-                                var titleApi = Lampa.TMDB.api(apiPath + "?api_key=" + Lampa.TMDB.key() + "&language=ru");
-                                console.log("API URL для названия:", titleApi);
-                                $.get(titleApi, function(data) {
-                                    var russianTitle = isSerial ? data.name : data.title;
-                                    console.log("Русское название из TMDB:", russianTitle);
-                                    if (russianTitle) {
-                                        a.object.activity.render().find(".full-start-new__title").html(
-                                            '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.9s ease-in;">' +
-                                                '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
-                                                '<span style="margin-top: 5px; font-size: 32px; color: #fff;">' + russianTitle + '</span>' +
-                                            '</div>' +
-                                            '<style>' +
-                                                '@keyframes fadeIn {' +
-                                                    'from { opacity: 0; }' +
-                                                    'to { opacity: 1; }' +
-                                                '}' +
-                                            '</style>'
-                                        );
-                                    } else {
-                                        a.object.activity.render().find(".full-start-new__title").html(
-                                            '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.5s ease-in;">' +
-                                                '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
-                                            '</div>' +
-                                            '<style>' +
-                                                '@keyframes fadeIn {' +
-                                                    'from { opacity: 0; }' +
-                                                    'to { opacity: 1; }' +
-                                                '}' +
-                                            '</style>'
-                                        );
-                                    }
-                                });
-                            } else {
-                                a.object.activity.render().find(".full-start-new__title").html(
-                                    '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.5s ease-in;">' +
-                                        '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
-                                    '</div>' +
-                                    '<style>' +
-                                        '@keyframes fadeIn {' +
-                                            'from { opacity: 0; }' +
-                                            'to { opacity: 1; }' +
-                                        '}' +
-                                    '</style>'
-                                );
+                            // Добавляем проверки на null перед вызовом .find()
+                            var activityRender = a.object && a.object.activity ? a.object.activity.render() : null;
+                            if (activityRender && activityRender.find) {
+                                var titleElement = activityRender.find(".full-start-new__title");
+                                
+                                // Если логотип не русский, запрашиваем русское название
+                                if (!isRussianLogo) {
+                                    var titleApi = Lampa.TMDB.api(apiPath + "?api_key=" + Lampa.TMDB.key() + "&language=ru");
+                                    console.log("API URL для названия:", titleApi);
+                                    $.get(titleApi, function(data) {
+                                        var russianTitle = isSerial ? data.name : data.title;
+                                        console.log("Русское название из TMDB:", russianTitle);
+                                        if (russianTitle && titleElement.length) {
+                                            titleElement.html(
+                                                '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.9s ease-in;">' +
+                                                    '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
+                                                    '<span style="margin-top: 5px; font-size: 32px; color: #fff;">' + russianTitle + '</span>' +
+                                                '</div>' +
+                                                '<style>' +
+                                                    '@keyframes fadeIn {' +
+                                                        'from { opacity: 0; }' +
+                                                        'to { opacity: 1; }' +
+                                                    '}' +
+                                                '</style>'
+                                            );
+                                        } else if (titleElement.length) {
+                                            titleElement.html(
+                                                '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.5s ease-in;">' +
+                                                    '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
+                                                '</div>' +
+                                                '<style>' +
+                                                    '@keyframes fadeIn {' +
+                                                        'from { opacity: 0; }' +
+                                                        'to { opacity: 1; }' +
+                                                    '}' +
+                                                '</style>'
+                                            );
+                                        }
+                                    });
+                                } else if (titleElement.length) {
+                                    titleElement.html(
+                                        '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.5s ease-in;">' +
+                                            '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
+                                        '</div>' +
+                                        '<style>' +
+                                            '@keyframes fadeIn {' +
+                                                'from { opacity: 0; }' +
+                                                'to { opacity: 1; }' +
+                                            '}' +
+                                        '</style>'
+                                    );
+                                }
                             }
                         } else {
                             console.log("Логотип невалидный (нет file_path):", logo);
@@ -1208,11 +1214,9 @@
             .new-interface-info__head { color: rgba(255, 255, 255, 0.6); margin-bottom: 1em; font-size: 1.3em; min-height: 1em; }
             .new-interface-info__head span { color: #fff; }
             .new-interface-info__title { font-size: 4em; font-weight: 600; margin-bottom: 0.3em; overflow: hidden; text-overflow: "."; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; margin-left: -0.03em; line-height: 1.3; }
-document.querySelectorAll('.new-interface-info__description').forEach(el => {
-    Object.assign(el.style, {
-        fontStyle: 'italic',
-    });
-});
+            .new-interface-info__description {
+                font-style: italic;
+            }
             .new-interface-info__details {
                 margin-bottom: 1em; 
                 display: block;
