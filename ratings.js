@@ -381,7 +381,11 @@
     //var JACRED_API_KEY = 'BCqr1JX01ISh';
     var PROXY_LIST = [  // Корс прокси для запросов
 	    'https://api.allorigins.win/raw?url=',
-        'https://cors.bwa.workers.dev/'
+        'https://cors.bwa.workers.dev/',
+		'https://corsproxy.io/?',
+		'https://corsproxy.io/?https://yacdn.org/proxy/',
+		'https://thingproxy.freeboard.io/fetch/',
+		'https://jsonp.afeld.me/?url=',
     ];
     
     // Словарь возрастных рейтингов
@@ -2423,6 +2427,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
