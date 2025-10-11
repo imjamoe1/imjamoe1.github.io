@@ -377,7 +377,7 @@
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     //var JACRED_API_KEY = Lampa.Storage.get('1'); // api ключ JacRed
     var JACRED_URL = 'jacred.xyz';
-	var JACRED_API_KEY = '',
+	var JACRED_API_KEY = '';
     //var JACRED_URL = 'parser.ruzha.ru';
     //var JACRED_API_KEY = 'BCqr1JX01ISh';
     var PROXY_LIST = [  // Корс прокси для запросов 
@@ -2424,6 +2424,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
