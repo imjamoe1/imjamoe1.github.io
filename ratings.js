@@ -383,7 +383,8 @@
 	    'https://api.allorigins.win/raw?url=',
         'https://cors.bwa.workers.dev/',
 		'https://corsproxy.io/?',
-		'https://corsproxy.io/?https://yacdn.org/proxy/',
+		'https://yacdn.org/proxy/',
+		'https://api.codetabs.com/v1/proxy/?quest=',
 		'https://thingproxy.freeboard.io/fetch/',
 		'https://jsonp.afeld.me/?url=',
     ];
@@ -2427,6 +2428,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
