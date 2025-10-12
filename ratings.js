@@ -377,7 +377,7 @@
     // var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     // var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
     var JACRED_URL = 'jacred.xyz';
-    var JACRED_API_KEY = '';
+    var JACRED_API_KEY = '1';
     var PROXY_LIST = [
 		'https://proxy.scalar.com/?scalar_url=',	
         'https://cors.bwa.workers.dev/',
@@ -2421,3 +2421,4 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
