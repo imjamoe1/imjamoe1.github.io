@@ -374,10 +374,10 @@
     var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a', '5421e2f6-e0ed-4c08-aee9-492334f88937', '34abd082-4543-44a2-84fb-2169f49ce93e']; // api ключи массивом
     var PROXY_TIMEOUT = 5000; // Таймаут прокси
     var JACRED_PROTOCOL = 'https://'; // Протокол JacRed
-    var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
-    var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
-    // var JACRED_URL = 'parser.lampa.ruzha.ru';
-    // var JACRED_API_KEY = '1';
+    // var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
+    // var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
+    var JACRED_URL = 'jacred.xyz';
+    var JACRED_API_KEY = '';
     var PROXY_LIST = [
 		'https://proxy.scalar.com/?scalar_url=',	
         'https://cors.bwa.workers.dev/',
@@ -2421,7 +2421,3 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
-
-
-
-
