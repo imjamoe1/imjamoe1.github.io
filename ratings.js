@@ -379,7 +379,7 @@
     var JACRED_URL = 'jacred.xyz';
     // var JACRED_API_KEY = '1';
     var PROXY_LIST = [
-		'https://proxy.scalar.com/?scalar_url=',	
+		// 'https://proxy.scalar.com/?scalar_url=',	
         'https://cors.bwa.workers.dev/',
         'https://api.allorigins.win/raw?url='
     ];
@@ -2421,5 +2421,6 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
