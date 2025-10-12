@@ -391,8 +391,6 @@
             'https://cors.bwa.workers.dev/'
         ],
     };
-
-	var currentGlobalMovieId = null;
     
     // Словарь возрастных рейтингов
     var AGE_RATINGS = {
@@ -463,12 +461,7 @@
         return result;
     }
     
-    // Получение данных через прокси
-    var QUALITY_PRIORITY_ORDER = [
-        'resolution',
-        'source',
-    ];
-    
+    // Получение данных через прокси   
     function fetchWithProxy(url, cardId, callback) {
         var currentProxyIndex = 0;
         var callbackCalled = false;
@@ -2435,5 +2428,6 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
