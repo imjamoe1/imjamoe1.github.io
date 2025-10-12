@@ -455,32 +455,31 @@
     }
     
     // Получение данных через прокси
-    function fetchWithProxy(url, localCurrentCard, callback) {
-        var currentProxy = 0;
-        var callbackCalled = false;
-        
+    function fetchWithProxy(url, cardId, callback) {
+        var currentProxyIndex = 0; // Поточний індекс проксі в списку
+        var callbackCalled = false; // Прапорець виклику callback
+
         function tryNextProxy() {
-            if (currentProxy >= PROXY_LIST.length) {
-                if (!callbackCalled) {
+            if (currentProxyIndex >= LQE_CONFIG.PROXY_LIST.length) {
+                if (!callbackCalled) { // Якщо callback ще не викликано
                     callbackCalled = true;
-                    callback(new Error('All proxies failed'));
+                    callback(new Error('All proxies failed for ' + url));
                 }
                 return;
             }
             
-            var proxyUrl = PROXY_LIST[currentProxy] + encodeURIComponent(url);
-                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Fetch with proxy: " + proxyUrl);
-            
+            var proxyUrl = LQE_CONFIG.PROXY_LIST[currentProxyIndex] + encodeURIComponent(url);
+            if (LQE_CONFIG.LOGGING_GENERAL) console.log("LQE-LOG", "card: " + cardId + ", Fetch with proxy: " + proxyUrl);
+            // Встановлюємо таймаут для запиту
             var timeoutId = setTimeout(function() {
                 if (!callbackCalled) {
-                    currentProxy++;
+                    currentProxyIndex++;
                     tryNextProxy();
                 }
-            }, PROXY_TIMEOUT);
-            
+            }, LQE_CONFIG.PROXY_TIMEOUT_MS);
             fetch(proxyUrl)
                 .then(function(response) {
-                    clearTimeout(timeoutId);
+                    clearTimeout(timeoutId); // Очищаємо таймаут
                     if (!response.ok) throw new Error('Proxy error: ' + response.status);
                     return response.text();
                 })
@@ -491,16 +490,17 @@
                         callback(null, data);
                     }
                 })
-                .catch(function() {
+                .catch(function(error) {
+                    console.error("LQE-LOG", "card: " + cardId + ", Proxy fetch error for " + proxyUrl + ":", error);
                     clearTimeout(timeoutId);
                     if (!callbackCalled) {
-                        currentProxy++;
+                        currentProxyIndex++;
                         tryNextProxy();
                     }
                 });
         }
         
-        tryNextProxy();
+        tryNextProxy(); // Починаємо з першого проксі
     }
 //-----------------------------------------------------get---kinopoisk-------------------------------------
     function getKPRatings(normalizedCard, apiKey, localCurrentCard, callback) {
@@ -2424,27 +2424,3 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
