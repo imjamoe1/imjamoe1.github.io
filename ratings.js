@@ -373,24 +373,16 @@
     var OMDB_API_KEYS = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEYS) || ['18a1eec9', 'd3a7a896']; // api ключи массивом
     var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a', '5421e2f6-e0ed-4c08-aee9-492334f88937', '34abd082-4543-44a2-84fb-2169f49ce93e']; // api ключи массивом
     var PROXY_TIMEOUT = 5000; // Таймаут прокси
-    var LQE_CONFIG = {
-        SHOW_QUALITY_FOR_TV_SERIES: true,
-        LOGGING_GENERAL: false,
-        LOGGING_QUALITY: true,
-        LOGGING_CARDLIST: false,
-        CACHE_VERSION: 2,
-        CACHE_KEY: 'lampa_quality_cache',
-        CACHE_VALID_TIME_MS: 3 * 24 * 60 * 60 * 1000, // 1 день
-        CACHE_REFRESH_THRESHOLD_MS: 12 * 60 * 60 * 1000, // 12 часов для фонового обновления
-        JACRED_PROTOCOL: 'https://',
-        JACRED_URL: 'jacred.xyz',
-        JACRED_API_KEY: '',
-        PROXY_TIMEOUT_MS: 5000,
-        PROXY_LIST: [
-            'https://api.allorigins.win/raw?url=',
-            'https://cors.bwa.workers.dev/'
-        ],
-    };
+    var JACRED_PROTOCOL = 'https://'; // Протокол JacRed
+    var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
+    var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
+    // var JACRED_URL = 'parser.lampa.ruzha.ru';
+    // var JACRED_API_KEY = '1';
+    var PROXY_LIST = [
+		'https://proxy.scalar.com/?scalar_url=',	
+        'https://cors.bwa.workers.dev/',
+        'https://api.allorigins.win/raw?url='
+    ];
     
     // Словарь возрастных рейтингов
     var AGE_RATINGS = {
@@ -462,50 +454,51 @@
     }
     
     // Получение данных через прокси   
-    function fetchWithProxy(url, cardId, callback) {
-        var currentProxyIndex = 0;
+    function fetchWithProxy(url, localCurrentCard, callback) {
+        var currentProxy = 0;
         var callbackCalled = false;
-        
         function tryNextProxy() {
-            if (currentProxyIndex >= LQE_CONFIG.PROXY_LIST.length) {
+            if (currentProxy >= PROXY_LIST.length) {
                 if (!callbackCalled) {
                     callbackCalled = true;
-                    callback(new Error('All proxies failed for ' + url));
+                    callback(new Error('All proxies failed'));
                 }
                 return;
             }
-            var proxyUrl = LQE_CONFIG.PROXY_LIST[currentProxyIndex] + encodeURIComponent(url);
-            if (LQE_CONFIG.LOGGING_GENERAL) console.log("LQE-LOG", "card: " + cardId + ", Fetch with proxy: " + proxyUrl);
-            var timeoutId = setTimeout(function() {
+            var proxyUrl = PROXY_LIST[currentProxy] + encodeURIComponent(url);
+            if (C_LOGGING)
+                console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Fetch with proxy: " + proxyUrl);
+            var timeoutId = setTimeout(function () {
                 if (!callbackCalled) {
-                    currentProxyIndex++;
+                    currentProxy++;
                     tryNextProxy();
                 }
-            }, LQE_CONFIG.PROXY_TIMEOUT_MS);
+            }, PROXY_TIMEOUT);
             fetch(proxyUrl)
-            .then(function(response) {
+                .then(function (response) {
                 clearTimeout(timeoutId);
-                if (!response.ok) throw new Error('Proxy error: ' + response.status);
+                if (!response.ok)
+                    throw new Error('Proxy error: ' + response.status);
                 return response.text();
             })
-            .then(function(data) {
+                .then(function (data) {
                 if (!callbackCalled) {
                     callbackCalled = true;
                     clearTimeout(timeoutId);
                     callback(null, data);
                 }
             })
-            .catch(function(error) {
-                console.error("LQE-LOG", "card: " + cardId + ", Proxy fetch error for " + proxyUrl + ":", error);
+                .catch(function () {
                 clearTimeout(timeoutId);
                 if (!callbackCalled) {
-                    currentProxyIndex++;
+                    currentProxy++;
                     tryNextProxy();
                 }
             });
         }
         tryNextProxy();
     }
+	
 //-----------------------------------------------------get---kinopoisk-------------------------------------
     function getKPRatings(normalizedCard, apiKey, localCurrentCard, callback) {
         // Если есть kinopoisk_id - сразу переходим к запросу рейтингов
@@ -2428,6 +2421,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
