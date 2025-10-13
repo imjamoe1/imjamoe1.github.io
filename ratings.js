@@ -1407,9 +1407,9 @@ function forceReplacebylampaWithStar() {
         
         // Ищем всеми возможными способами
         const selectors = [
-            '.rate--bylampa_full .source--name',
-            '.rate--bylampa_full > div:last-child',
-            '.rate--bylampa_full div.source--name',
+            '.rate--bylampa .source--name',
+            '.rate--bylampa > div:last-child',
+            '.rate--bylampa div.source--name',
             '[class*="bylampa"] .source--name',
             '.full-start__rate .source--name'
         ];
@@ -1423,7 +1423,7 @@ function forceReplacebylampaWithStar() {
                 const text = element.textContent || element.innerText || '';
                 if (text.trim().toUpperCase() === 'BYLAMPA') {
                     element.innerHTML = bylampa_svg;
-                    element.classList.add('source--name');
+                    element.classList.add('rate--icon');
                     foundElements = true;
                     console.log("MAXSM-RATINGS: Replaced BYLAMPA with star using selector:", selector);
                 }
@@ -2421,3 +2421,4 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
