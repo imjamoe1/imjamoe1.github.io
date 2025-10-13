@@ -2421,11 +2421,3 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
-
-
-
-
-
-
-
-
