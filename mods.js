@@ -7,7 +7,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		return window.location.protocol == 'https:' ? 'https://' : 'http://';
 	}
 	var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-	var version_modss = '3.2', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = true, leftVipD = '', user_id = '', uid = '60efb6412cd5083cf154c58d0', IP = '46.236.175.127', logged = false;
+	var version_modss = '3.2', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '60efb6412cd5083cf154c58d0', IP = '46.236.175.127', logged = false;
 	console.log('App', 'protocol:', Protocol());
 	console.log('Modss', 'plugin', 'loaded');
 	
@@ -11375,4 +11375,5 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
  
