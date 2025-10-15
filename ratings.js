@@ -375,7 +375,7 @@
     var PROXY_TIMEOUT = 5000; // Таймаут прокси
     var JACRED_PROTOCOL = 'http://'; // Протокол JacRed
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
-    var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
+    //var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
     var JACRED_URL = '62.60.149.237:8443';
 	var JACRED_API_KEY = '777';
     //var JACRED_URL = 'parser.ruzha.ru';
@@ -2422,6 +2422,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
