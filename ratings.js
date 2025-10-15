@@ -376,7 +376,7 @@
     var JACRED_PROTOCOL = 'https://'; // Протокол JacRed
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     //var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
-    var JACRED_URL = 'jac.maxvol.pro';
+    var JACRED_URL = 'jr.maxvol.pro';
 	var JACRED_API_KEY = '';
     //var JACRED_URL = 'parser.ruzha.ru';
     //var JACRED_API_KEY = 'BCqr1JX01ISh';
@@ -2422,6 +2422,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
