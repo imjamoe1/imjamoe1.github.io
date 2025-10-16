@@ -868,7 +868,9 @@
         this.destroy = function () {
             html.remove(); 
             loaded = {}; 
-            html = null; 
+            html = null;
+            network.clear();
+            clearTimeout(timer);
             mdblistRatingsCache = {}; 
             mdblistRatingsPending = {};
             kpRatingsCache = {};
