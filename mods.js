@@ -694,7 +694,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 	}; 
 	var Filmix = {
   	network: new Lampa.Reguest(),
-  	api_url: 'http://filmixapp.vip/api/v2/',
+  	api_url: 'http://filmixapp.cyou/api/v2/',
   	token: Lampa.Storage.get('filmix_token', ''),
   	user_dev: 'app_lang=ru_RU&user_dev_apk=2.2.0&user_dev_id=' + Lampa.Utils.uid(16) + '&user_dev_name=Xiaomi&user_dev_os=11&user_dev_vendor=Xiaomi&user_dev_token=',
   	add_new: function () {
@@ -11377,4 +11377,5 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 })();
 
  
+
 
