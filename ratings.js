@@ -288,8 +288,6 @@
         "    width: 2.4em !important;" +  /* уменьшил с 2.6em */
         "    height: 2.2em !important;" + /* уменьшил с 2.4em */
         "    transform: scale(1.4) !important;" +
-        "    border: 1px solid #333 !important;" +
-        "    border-radius: 3px !important;" +
         "    box-sizing: border-box !important;" +
         "}" +
         ".rate--green  { color: #4caf50; }" +
@@ -2425,6 +2423,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
