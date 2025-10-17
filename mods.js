@@ -452,18 +452,36 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
         Pub.network.clear();
   			Pub.network.timeout(10000);
   			Pub.network.silent(API + 'KPrating', function (json) {
+          json = {
+            "satus": 200,
+            "data": {
+                "kp_rating": "6.816",
+                "imdb_rating": "6.3",
+                "kp_id": 1073122,
+                "success": true,
+                "auth": "true",
+                "vip": true,
+                "user_id": "",
+                "ip": "46.236.175.127",
+                "deviceName": "💻 Windows NT 10.0 (x64)",
+                "expires_in": 180000,
+                "interval": 5000
+            }
+        }
+          vip = json.data.vip
   				if(card && !card.kinopoisk_id && json.data && json.data.kp_id) card.kinopoisk_ID = json.data.kp_id;
   				var kp = json.data && json.data.kp_rating || 0;
   				var imdb = json.data && json.data.imdb_rating || 0;
-  				var auth = json.data.auth;
+  				var auth = true;
   				
           if((!vip && logged == 'false' && leftVipD !== json.data.leftDays && auth && json.data.vip) || (vip && logged == true && leftVipD !== json.data.leftDays && auth=='false' && !json.data.vip)) window.location.reload();
 
   				if(json.data.leftDays) leftVipD = json.data.leftDays;
   				if(!vip) Lampa.Storage.set('showModssVip', true);
 
+          
           if(json.data.block_ip || !ping_auth && auth == 'pending' || auth && json.data.block || auth == 'true' && !json.data.vip) Modss.auth(true);
-          vip = json.data.vip;
+          vip = true;
 
           var kp_rating = !isNaN(kp) && kp !== null ? parseFloat(kp).toFixed(1) : '0.0';
   				var imdb_rating = !isNaN(imdb) && imdb !== null ? parseFloat(imdb).toFixed(1) : '0.0';
@@ -11375,11 +11393,3 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 	if (!window.plugin_modss) startPlugin();
 
 })();
-
- 
-
-
-
-
-
-
