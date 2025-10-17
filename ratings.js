@@ -291,7 +291,7 @@
         "    border: 1px solid #333 !important;" +
         "    border-radius: 3px !important;" +
         "    box-sizing: border-box !important;" +
-        "}"
+        "}" +
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
         ".rate--orange { color: #ff9800; }" +
@@ -2425,6 +2425,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
