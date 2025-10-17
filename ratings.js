@@ -285,13 +285,8 @@
         "padding: 0 !important;" +
         "}" +
         ".rate--bylampa_full {" +
-        "    height: 20px !important;" +
+        "    height: 40px !important;" +
         "    width: 40px !important;" +
-        "}" +
-        ".rate--bylampa_full .source--name {" +
-        "    width: 2.3em !important;" +
-        "    height: 2.3em !important;" +
-        "    transform: scale(1.2) !important;" +
         "}" +
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
@@ -2426,6 +2421,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
