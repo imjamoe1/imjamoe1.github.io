@@ -289,8 +289,8 @@
         "    width: 80px !important;" +
         "}" +
         ".rate--bylampa_full .source--name {" +
-        "    width: 2.8em !important;" +
-        "    height: 2.8em !important;" +
+        "    width: 2.6em !important;" +
+        "    height: 2.6em !important;" +
         "    transform: scale(1.4) !important;" +
         "}" +
         ".rate--green  { color: #4caf50; }" +
@@ -2426,6 +2426,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
