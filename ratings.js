@@ -284,6 +284,10 @@
         "background: transparent !important;" +
         "padding: 0 !important;" +
         "}" +
+        ".rate--bylampa_full {" +
+        "    height: 20px !important;" +
+        "    width: 40px !important;" +
+        "}" +
         ".rate--bylampa_full .source--name {" +
         "    width: 2.3em !important;" +
         "    height: 2.3em !important;" +
@@ -2422,6 +2426,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
