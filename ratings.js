@@ -284,10 +284,6 @@
         "background: transparent !important;" +
         "padding: 0 !important;" +
         "}" +
-        ".rate--bylampa_full {" +
-        "    height: 40px !important;" +
-        "    width: 40px !important;" +
-        "}" +
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
         ".rate--orange { color: #ff9800; }" +
@@ -2421,6 +2417,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
