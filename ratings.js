@@ -289,7 +289,7 @@
         "    width: 80px !important;" +
         "}" +
         ".rate--bylampa_full .source--name {" +
-        "    width: 2.6em !important;" +
+        "    width: 2.4em !important;" +
         "    height: 2.6em !important;" +
         "    transform: scale(1.4) !important;" +
         "}" +
@@ -2426,6 +2426,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
