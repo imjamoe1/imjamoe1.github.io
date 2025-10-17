@@ -284,7 +284,7 @@
         "background: transparent !important;" +
         "padding: 0 !important;" +
         "}" +
-		".rate--bylampa_full {" +
+        ".rate--bylampa_full {" +
         "    height: 36px !important;" +
         "    width: 80px !important;" +
         "}" +
@@ -2426,5 +2426,6 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
