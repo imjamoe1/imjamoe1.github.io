@@ -285,8 +285,8 @@
         "padding: 0 !important;" +
         "}" +
         ".rate--bylampa_full .source--name {" +
-        "    width: 2.4em !important;" +  /* уменьшил с 2.6em */
-        "    height: 2.4em !important;" + /* уменьшил с 2.4em */
+        "    width: 2.2em !important;" +  /* уменьшил с 2.6em */
+        "    height: 2.2em !important;" + /* уменьшил с 2.4em */
         "    transform: scale(1.4) !important;" +
         "    box-sizing: border-box !important;" +
         "}" +
@@ -2423,6 +2423,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
