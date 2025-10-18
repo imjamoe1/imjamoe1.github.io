@@ -1,29 +1,87 @@
 (function() {
-    'use strict';
-	
-    Lampa.Listener.follow('full', function(e) {
-        if (e.type == 'complite') {
-            $(".view--trailer").each(function(){var div = $(this).parent('div');div.find('.open--menu').insertBefore($(this))});
-			$(".full-start__icons > .info__icon",Lampa.Activity.active().activity.render()).css({'background-image':'url("")', 'padding':'0.7em'});
-	
-			setTimeout(function(){
-				/*$(".view--online",Lampa.Activity.active().activity.render()).empty().append("<svg viewBox='0 0 847 847' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' shape-rendering='geometricPrecision' text-rendering='geometricPrecision' image-rendering='optimizeQuality' fill-rule='evenodd' clip-rule='evenodd'><circle cx='423' cy='423' r='398' fill='#3498db' class='fill-1fc255'></circle><path d='M642 423 467 322 292 221v404l175-101z' fill='#fff7f7' stroke='#fff7f7' stroke-width='42.33' stroke-linejoin='round' class='fill-fff7f7 stroke-fff7f7'></path></svg><span>Смотреть</span>");*/
-				$(".view--streamv1",Lampa.Activity.active().activity.render()).empty().append("<svg viewBox='0 0 847 847' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' shape-rendering='geometricPrecision' text-rendering='geometricPrecision' image-rendering='optimizeQuality' fill-rule='evenodd' clip-rule='evenodd'><circle cx='423' cy='423' r='398' fill='#3498db' class='fill-1fc255'></circle><path d='M642 423 467 322 292 221v404l175-101z' fill='#fff7f7' stroke='#fff7f7' stroke-width='42.33' stroke-linejoin='round' class='fill-fff7f7 stroke-fff7f7'></path></svg><span>Смотреть</span>");
-				$(".view--bazon",Lampa.Activity.active().activity.render()).empty().append("<svg enable-background='new 0 0 64 64' height='64px' id='Layer_1' version='1.1' viewBox='0 0 64 64' width='64px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><circle cx='32' cy='32' fill='#77B3D4' r='32'/><circle cx='32' cy='33.917' fill='#231F20' opacity='0.2' r='13.083'/><circle cx='32' cy='33.083' fill='#4F5D73' r='13.083'/><circle cx='32' cy='32' fill='#4F5D73' r='13.083'/><g opacity='0.2'><path d='M32,12c-12.15,0-22,9.85-22,22s9.85,22,22,22c12.15,0,22-9.85,22-22S44.15,12,32,12z M14.5,30.5   c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.037-2.463,5.5-5.5,5.5C16.962,36,14.5,33.537,14.5,30.5z M24.469,49.5   c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5C29.969,47.037,27.506,49.5,24.469,49.5z    M26.5,21.5c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.038-2.463,5.5-5.5,5.5C28.962,27,26.5,24.538,26.5,21.5z    M39.469,49.5c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5   C44.969,47.037,42.506,49.5,39.469,49.5z M44.042,36c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5   c3.037,0,5.5,2.462,5.5,5.5C49.542,33.537,47.079,36,44.042,36z' fill='#231F20'/></g><g><path d='M32,10c-12.15,0-22,9.85-22,22s9.85,22,22,22c12.15,0,22-9.85,22-22S44.15,10,32,10z M14.5,28.5   c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.038-2.463,5.5-5.5,5.5C16.962,34,14.5,31.538,14.5,28.5z M24.469,47.5   c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5C29.969,45.037,27.506,47.5,24.469,47.5z    M26.5,19.5c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.038-2.463,5.5-5.5,5.5C28.962,25,26.5,22.538,26.5,19.5z    M39.469,47.5c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5   C44.969,45.037,42.506,47.5,39.469,47.5z M44.042,34c-3.038,0-5.5-2.462-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5   c3.037,0,5.5,2.462,5.5,5.5C49.542,31.538,47.079,34,44.042,34z' fill='#FFFFFF'/></g></svg><span>Bazon</span>");
-				$(".view--filmixpva",Lampa.Activity.active().activity.render()).empty().append("<svg enable-background='new 0 0 64 64' height='64px' id='Layer_1' version='1.1' viewBox='0 0 64 64' width='64px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><circle cx='32' cy='32' fill='#77B3D4' r='32'/><circle cx='32' cy='33.917' fill='#231F20' opacity='0.2' r='13.083'/><circle cx='32' cy='33.083' fill='#4F5D73' r='13.083'/><circle cx='32' cy='32' fill='#4F5D73' r='13.083'/><g opacity='0.2'><path d='M32,12c-12.15,0-22,9.85-22,22s9.85,22,22,22c12.15,0,22-9.85,22-22S44.15,12,32,12z M14.5,30.5   c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.037-2.463,5.5-5.5,5.5C16.962,36,14.5,33.537,14.5,30.5z M24.469,49.5   c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5C29.969,47.037,27.506,49.5,24.469,49.5z    M26.5,21.5c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.038-2.463,5.5-5.5,5.5C28.962,27,26.5,24.538,26.5,21.5z    M39.469,49.5c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5   C44.969,47.037,42.506,49.5,39.469,49.5z M44.042,36c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5   c3.037,0,5.5,2.462,5.5,5.5C49.542,33.537,47.079,36,44.042,36z' fill='#231F20'/></g><g><path d='M32,10c-12.15,0-22,9.85-22,22s9.85,22,22,22c12.15,0,22-9.85,22-22S44.15,10,32,10z M14.5,28.5   c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.038-2.463,5.5-5.5,5.5C16.962,34,14.5,31.538,14.5,28.5z M24.469,47.5   c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5C29.969,45.037,27.506,47.5,24.469,47.5z    M26.5,19.5c0-3.038,2.462-5.5,5.5-5.5c3.037,0,5.5,2.462,5.5,5.5c0,3.038-2.463,5.5-5.5,5.5C28.962,25,26.5,22.538,26.5,19.5z    M39.469,47.5c-3.038,0-5.5-2.463-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5c3.038,0,5.5,2.462,5.5,5.5   C44.969,45.037,42.506,47.5,39.469,47.5z M44.042,34c-3.038,0-5.5-2.462-5.5-5.5c0-3.038,2.462-5.5,5.5-5.5   c3.037,0,5.5,2.462,5.5,5.5C49.542,31.538,47.079,34,44.042,34z' fill='#FFFFFF'/></g></svg><span>Filmix</span>");
-			},20); 
-						
-			$(".view--torrent",Lampa.Activity.active().activity.render()).empty().append("<svg xmlns='http://www.w3.org/2000/svg'  viewBox='2 2 42 42' width='48' height='48'><path fill='#4caf50' fill-rule='evenodd' d='M23.501,44.125c11.016,0,20-8.984,20-20 c0-11.015-8.984-20-20-20c-11.016,0-20,8.985-20,20C3.501,35.141,12.485,44.125,23.501,44.125z' clip-rule='evenodd'/><path fill='#fff' fill-rule='evenodd' d='M43.252,27.114C39.718,25.992,38.055,19.625,34,11l-7,1.077 c1.615,4.905,8.781,16.872,0.728,18.853C20.825,32.722,17.573,20.519,15,14l-8,2l10.178,27.081c1.991,0.67,4.112,1.044,6.323,1.044 c0.982,0,1.941-0.094,2.885-0.232l-4.443-8.376c6.868,1.552,12.308-0.869,12.962-6.203c1.727,2.29,4.089,3.183,6.734,3.172 C42.419,30.807,42.965,29.006,43.252,27.114z' clip-rule='evenodd'/></svg><span>Торренты</span>");
-			$(".open--menu",Lampa.Activity.active().activity.render()).empty().append("<svg viewBox='0 0 847 847' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' shape-rendering='geometricPrecision' text-rendering='geometricPrecision' image-rendering='optimizeQuality' fill-rule='evenodd' clip-rule='evenodd'><circle cx='423' cy='423' r='398' fill='#3498db' class='fill-1fc255'></circle><path d='M642 423 467 322 292 221v404l175-101z' fill='#fff7f7' stroke='#fff7f7' stroke-width='42.33' stroke-linejoin='round' class='fill-fff7f7 stroke-fff7f7'></path></svg><span>Смотреть</span>");
-                        $(".view--trailer", Lampa.Activity.active().activity.render()).empty().append("<svg height='70' viewBox='0 0 80 70' fill='#f44336' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' clip-rule='evenodd' d='M71.2555 2.08955C74.6975 3.2397 77.4083 6.62804 78.3283 10.9306C80 18.7291 80 35 80 35C80 35 80 51.2709 78.3283 59.0694C77.4083 63.372 74.6975 66.7603 71.2555 67.9104C65.0167 70 40 70 40 70C40 70 14.9833 70 8.74453 67.9104C5.3025 66.7603 2.59172 63.372 1.67172 59.0694C0 51.2709 0 35 0 35C0 35 0 18.7291 1.67172 10.9306C2.59172 6.62804 5.3025 3.2395 8.74453 2.08955C14.9833 0 40 0 40 0C40 0 65.0167 0 71.2555 2.08955Z'/><path fill='white' d='M55.5909 35.0004L29.9773 49.5714V20.4286L55.5909 35.0004Z'/></svg><span>Трейлеры</span>");
-	      
-		  
-  			setTimeout(function(){
-				$(".full-start__icons > .icon--book",Lampa.Activity.active().activity.render()).empty().append("<svg fill='none' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path d='M5 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v14l-5-2.5L5 18V4Z' fill='#0fbcf9' class='fill-4a5568'></path></svg>");
-				$(".full-start__icons > .icon--like",Lampa.Activity.active().activity.render()).empty().append("<svg viewBox='0 0 24 24' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'><path d='M22.231 12.518c2.355-2.414 2.354-6.325 0-8.738a5.942 5.942 0 0 0-4.365-1.81c-2.206.038-5.844 3.029-5.844 3.029s-3.74-3.033-6-3.03A5.933 5.933 0 0 0 1.769 3.78c-2.354 2.413-2.355 6.324 0 8.738L12 23l10.231-10.482z' fill='#f53b57' class='fill-000000'></path></svg>");
-				$(".full-start__icons > .icon--wath",Lampa.Activity.active().activity.render()).empty().append("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M23 12c0 6.075-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1s11 4.925 11 11z' fill='#3f5a75' class='fill-34495e'></path><path d='M12 1C5.373 1 0 6.373 0 13h2C2 7.477 6.477 3 12 3s10 4.477 10 10h2c0-6.627-5.373-12-12-12z' fill='#39546e' class='fill-2c3e50'></path><path d='M13 11v2h7a1 1 0 0 0 0-2h-7zM12 5c-.552 0-1 .4-1 1v5h2V6c0-.6-.448-1-1-1z' fill='#ecf0f1' class='fill-bdc3c7'></path><path fill='#f53b57' d='m6.017 17.305 4.95-4.95.707.707-4.95 4.95z' class='fill-c0392b'></path><path d='M12 10c-1.105 0-2 .9-2 2s.895 2 2 2 2-.9 2-2-.895-2-2-2zm0 1c.552 0 1 .4 1 1 0 .5-.448 1-1 1s-1-.5-1-1c0-.6.448-1 1-1z' fill='#ecf0f1' class='fill-bdc3c7'></path><path d='M12 0C5.373 0 0 5.3 0 12c0 6.6 5.373 12 12 12s12-5.4 12-12c0-6.7-5.373-12-12-12zm0 2c5.523 0 10 4.4 10 10 0 5.5-4.477 10-10 10S2 17.5 2 12C2 6.4 6.477 2 12 2z' fill='#a5cfd9' class='fill-95a5a6'></path><path d='M13 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0z' fill='#39546e' class='fill-2c3e50'></path><path d='M13.73 11c.17.3.281.6.281 1 0 .3-.111.7-.281 1h1.093c.114-.4.188-.7.188-1 0-.4-.074-.7-.188-1H13.73z' fill='#a5cfd9' class='fill-95a5a6'></path></svg>");
-			},10); 
+    setTimeout(function() {
 
-	   }
-    })
+        // Добавление CSS
+        if (!document.getElementById('style')) {
+            const css = `
+                /* Стили для кнопок */
+                .full-start__button {
+                    transition: transform 0.2s ease !important;
+                    position: relative;
+                }
+                .full-start__button:active {
+                    transform: scale(0.98) !important;
+                }
+
+                /*.full-start__button.view--online svg path {
+                    fill: #2196f3 !important;
+                }*/
+                .full-start__button.view--torrent svg path {
+                    /*fill: lime !important;*/
+                }
+                .full-start__button.view--trailer svg path {
+                    /*fill: #f44336 !important;*/
+                }
+
+                .full-start__button.loading::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 2px;
+                    background: rgba(255,255,255,0.5);
+                    animation: loading 1s linear infinite;
+                }
+                @keyframes loading {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+
+                @media (max-width: 767px) {
+                    .full-start__button {
+                        min-height: 44px !important;
+                        padding: 10px !important;
+                    }
+                }
+            `;
+            const style = document.createElement('style');
+            style.id = 'style';
+            style.textContent = css;
+            document.head.appendChild(style);
+        }
+
+        // Обновление кнопок
+        function updateButtons() {
+            $('.full-start__button.view--torrent svg').replaceWith(`
+                <svg xmlns='http://www.w3.org/2000/svg'  viewBox='2 2 42 42' width='48' height='48'><path fill='#4caf50' fill-rule='evenodd' d='M23.501,44.125c11.016,0,20-8.984,20-20 c0-11.015-8.984-20-20-20c-11.016,0-20,8.985-20,20C3.501,35.141,12.485,44.125,23.501,44.125z' clip-rule='evenodd'/><path fill='#fff' fill-rule='evenodd' d='M43.252,27.114C39.718,25.992,38.055,19.625,34,11l-7,1.077 c1.615,4.905,8.781,16.872,0.728,18.853C20.825,32.722,17.573,20.519,15,14l-8,2l10.178,27.081c1.991,0.67,4.112,1.044,6.323,1.044 c0.982,0,1.941-0.094,2.885-0.232l-4.443-8.376c6.868,1.552,12.308-0.869,12.962-6.203c1.727,2.29,4.089,3.183,6.734,3.172 C42.419,30.807,42.965,29.006,43.252,27.114z' clip-rule='evenodd'/></svg>
+            `);
+
+           /* $('.full-start__button.view--online svg').replaceWith(`
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                    <path d="M20.331 14.644l-13.794-13.831 17.55 10.075zM2.938 0c-0.813 0.425-1.356 1.2-1.356 2.206v27.581c0 1.006 0.544 1.781 1.356 2.206l16.038-16zM29.512 14.1l-3.681-2.131-4.106 4.031 4.106 4.031 3.756-2.131c1.125-0.893 1.125-2.906-0.075-3.8zM6.538 31.188l17.55-10.075-3.756-3.756z"/>
+                </svg>
+            `);*/
+
+            $('.full-start__button.view--trailer svg').replaceWith(`
+                <svg height='70' viewBox='0 0 80 70' fill='#f44336' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' clip-rule='evenodd' d='M71.2555 2.08955C74.6975 3.2397 77.4083 6.62804 78.3283 10.9306C80 18.7291 80 35 80 35C80 35 80 51.2709 78.3283 59.0694C77.4083 63.372 74.6975 66.7603 71.2555 67.9104C65.0167 70 40 70 40 70C40 70 14.9833 70 8.74453 67.9104C5.3025 66.7603 2.59172 63.372 1.67172 59.0694C0 51.2709 0 35 0 35C0 35 0 18.7291 1.67172 10.9306C2.59172 6.62804 5.3025 3.2395 8.74453 2.08955C14.9833 0 40 0 40 0C40 0 65.0167 0 71.2555 2.08955Z'/><path fill='white' d='M55.5909 35.0004L29.9773 49.5714V20.4286L55.5909 35.0004Z'/></svg>
+            `);
+        }
+
+        // Инициализация
+        updateButtons();
+        if (Lampa && Lampa.Listener) {
+            Lampa.Listener.follow('full', updateButtons);
+        }
+
+        // Регистрация плагина
+        window.plugin && window.plugin('style_plugin', {
+            type: 'component',
+            name: 'Стили для кнопок',
+            version: '2.3.1',
+            author: 'Oleksandr',
+            description: 'Стили для кнопок с анимациями'
+        });
+
+    }, 1000);
 })();
