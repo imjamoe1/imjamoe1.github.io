@@ -1282,7 +1282,7 @@
                 font-size: 1.5em;
                 font-weight: 700;
                 font-style: italic;
-                color: #fffa8a;
+                color: #c0c0c0;
                 background: none;
                 padding: 0.5em;
                 border-radius: 0.3em;
