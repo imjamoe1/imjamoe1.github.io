@@ -1282,7 +1282,7 @@
                 font-size: 1.5em;
                 font-weight: 700;
                 font-style: italic;
-                color: lime;
+                color: #fffa8a;
                 background: none;
                 padding: 0.5em;
                 border-radius: 0.3em;
@@ -1310,7 +1310,7 @@
                 font-size: 0.9em;
                 justify-content: center;
                 background-color: rgba(0, 0, 0, 0.4);
-                color: #fffa8a;
+                color: #ffffff;
                 padding: 0em 0.2em;
                 border-radius: 0.3em;
                 line-height: 1;
