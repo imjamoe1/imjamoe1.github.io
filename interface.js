@@ -1310,7 +1310,7 @@
                 font-size: 0.9em;
                 justify-content: center;
                 background-color: rgba(0, 0, 0, 0.4);
-                color: lime;
+                color: #fffa8a;
                 padding: 0em 0.2em;
                 border-radius: 0.3em;
                 line-height: 1;
