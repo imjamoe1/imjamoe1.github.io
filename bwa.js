@@ -1704,7 +1704,7 @@ else if (element.url) {
     window.bwarch_plugin = true;
     var manifst = {
       type: 'video',
-      version: '1.5.7',
+      version: '',
       name: 'BwaRC',
       description: 'Плагин для просмотра онлайн сериалов и фильмов',
       component: 'bwarch',
