@@ -41,9 +41,21 @@
             document.head.appendChild(style);
         }
 
-        // Функция для замены иконок
+        // Функция для безопасной замены иконок
         function replaceIcons() {
-            // Замена торрент
+            // Замена онлайн-иконок
+            document.querySelectorAll('.full-start__button.view--online svg').forEach(svg => {
+                if (!svg.hasAttribute('data-replaced')) {
+                    const newSvg = `
+                        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' data-replaced='true'>
+                    <path fill='#2196f3' d='M20.331 14.644l-13.794-13.831 17.55 10.075zM2.938 0c-0.813 0.425-1.356 1.2-1.356 2.206v27.581c0 1.006 0.544 1.781 1.356 2.206l16.038-16zM29.512 14.1l-3.681-2.131-4.106 4.031 4.106 4.031 3.756-2.131c1.125-0.893 1.125-2.906-0.075-3.8zM6.538 31.188l17.55-10.075-3.756-3.756z'/>
+                </svg>
+                    `;
+                    svg.outerHTML = newSvg;
+                }
+            });
+
+            // Замена торрент-иконок
             document.querySelectorAll('.full-start__button.view--torrent svg').forEach(svg => {
                 if (!svg.hasAttribute('data-replaced')) {
                     const newSvg = `
@@ -56,7 +68,7 @@
                 }
             });
 
-            // Замена трейлер
+            // Замена трейлер-иконок
             document.querySelectorAll('.full-start__button.view--trailer svg').forEach(svg => {
                 if (!svg.hasAttribute('data-replaced')) {
                     const newSvg = `
@@ -70,7 +82,7 @@
             });
         }
 
-        // Инициализация с наблюдением за DOM
+        // Улучшенная инициализация с наблюдением за DOM
         function init() {
             replaceIcons();
             
