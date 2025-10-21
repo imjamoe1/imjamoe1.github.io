@@ -1877,7 +1877,6 @@
     .card, .card__view, .full-start__button, .simple-button, .settings-folder, .settings-param, .selectbox-item, 
     .modal__content, .selectbox__content, .settings__content, .settings-input__content {
         border-radius: 15px !important;
-        animation: rainbow 8s linear infinite;
     }
     .head__action.focus, .head__action.hover {
         background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);
