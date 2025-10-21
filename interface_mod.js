@@ -1872,7 +1872,7 @@
         // Определяем стили для разных тем
         const themes = {
             neon: `
-    body { background: #0a0a0a; color: #ffffff; } .menu__item.focus, .menu__item.traverse, .menu__item.hover, .settings-folder.focus, .settings-param.focus, .selectbox-item.focus, .full-start__button.focus, .full-descr__tag.focus, .player-panel .button.focus, .custom-online-btn.focus, .custom-torrent-btn.focus, .main2-more-btn.focus, .simple-button.focus, .menu__version.focus {    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);    background-size: 700% 100%;    color: #ffffff;    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);    animation: rainbow 8s linear infinite;    border: none; }\n@keyframes rainbow {    0% { background-position: 0% 50%; }    100% { background-position: 100% 50%; } } .card.focus .card__view::after, .card.hover .card__view::after {    border: none;    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);    background-size: 700% 100%;    animation: rainbow 0s linear infinite;    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); } .settings__content, .settings-input__content, .selectbox__content, .modal__content {    background: rgba(10, 10, 10, 0.95);    border: 1px solid rgba(128, 128, 128, 0.2);
+    body { background: #0a0a0a; color: #ffffff; } .menu__item.focus, .menu__item.traverse, .menu__item.hover, .settings-folder.focus, .settings-param.focus, .selectbox-item.focus, .full-start__button.focus, .full-descr__tag.focus, .player-panel .button.focus, .custom-online-btn.focus, .custom-torrent-btn.focus, .main2-more-btn.focus, .simple-button.focus, .menu__version.focus {    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);    background-size: 700% 100%;    color: #ffffff;    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);    animation: rainbow 0s linear infinite;    border: none; }\n@keyframes rainbow {    0% { background-position: 0% 50%; }    100% { background-position: 100% 50%; } } .card.focus .card__view::after, .card.hover .card__view::after {    border: none;    background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);    background-size: 700% 100%;    animation: rainbow 8s linear infinite;    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); } .settings__content, .settings-input__content, .selectbox__content, .modal__content {    background: rgba(10, 10, 10, 0.95);    border: 1px solid rgba(128, 128, 128, 0.2);
     }
     .card, .card__view, .full-start__button, .simple-button, .settings-folder, .settings-param, .selectbox-item, 
     .modal__content, .selectbox__content, .settings__content, .settings-input__content {
@@ -1881,6 +1881,10 @@
     .head__action.focus, .head__action.hover {
         background: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee);
         background-size: 700% 100%;
+        color: #ffffff;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+        animation: rainbow 0s linear infinite;
+        border: none;
     }
             `,
             sunset: `
