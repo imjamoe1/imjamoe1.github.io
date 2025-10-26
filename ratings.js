@@ -284,6 +284,9 @@
         "background: transparent !important;" +
         "padding: 0 !important;" +
         "}" +
+        ".card__quality div {" +
+        "    font-weight: 900 !important;" +  /* или 600 для полужирного */
+        "}" +
         ".rate--bylampa_full .source--name {" +
         "    width: 2em !important;" +  /* уменьшил с 2.6em */
         "    height: 2em !important;" + /* уменьшил с 2.4em */
@@ -2423,6 +2426,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
