@@ -349,20 +349,42 @@
             width: 1.8em;
             height: 1.3em;
             border-radius: 0.2em;
-            z-index: 1;
+            z-index: 3;
             pointer-events: none;
             user-select: none;
             object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(0, 0, 0, 0.5);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2), /* Верхний свет */
+                inset 0 -1px 0 rgba(0, 0, 0, 0.5), /* Нижняя тень */
+                0 0 0 2px rgba(0, 0, 0, 0.5), /* Внутренняя тень */
+                0 4px 15px rgba(0, 0, 0, 0.5), /* Основная тень */
+                0 8px 25px rgba(0, 0, 0, 0.4); /* Размытая тень для глубины */
+            background: rgba(0, 0, 0, 0.4);
+            transform: translateY(-1px) translateZ(0); /* Легкий подъем */
+        /* Анимация вращения */
+        animation: swingFlag 3s ease-in-out infinite;
+        transform-origin: center center;
         `;
-        
-        flagEl.onerror = function() {
-            this.style.display = 'none';
-        };
+    
+    // Добавляем стили для анимации
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes swingFlag {
+            0% { transform: rotateY(0deg); }
+            33% { transform: rotateY(90deg); }
+            66% { transform: rotateY(0deg); }
+            100% { transform: rotateY(0deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    flagEl.onerror = function() {
+        this.style.display = 'none';
+    };
 
-        return flagEl;
-    }
+    return flagEl;
+}
 
     // Получение рейтинга Kinopoisk
     async function fetchKpRating(filmId) {
