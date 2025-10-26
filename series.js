@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const API_KEY = '4ef0d7355d9ffb5151e987764708ce96'; // 🔐 ВСТАВЬ СВОЙ API КЛЮЧ TMDB
+  const API_KEY = '4ef0d7355d9ffb5151e987764708ce96';
   const API_URL = id => `https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`;
   const SEASON_URL = (id, season) => `https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=${API_KEY}`;
 
@@ -75,8 +75,29 @@
     return cache[id] = null;
   }
 
+  // Функция для проверки, является ли карточка сериалом
+  function isTvSeries(card) {
+    let data = card.card_data || (card.dataset?.card && JSON.parse(card.dataset.card));
+    
+    // Проверяем различные признаки сериала
+    if (data?.type === 'tv') return true;
+    if (data?.first_air_date) return true;
+    if (data?.number_of_seasons) return true;
+    if (data?.number_of_episodes) return true;
+    if (card.classList?.contains('card--tv')) return true;
+    
+    // Проверяем по наличию TV метки в интерфейсе
+    const tvLabel = card.querySelector('.card__type');
+    if (tvLabel && tvLabel.textContent === 'TV') return true;
+    
+    return false;
+  }
+
   async function renderStatus(card) {
     if (processed.has(card)) return;
+    
+    // Проверяем, что это сериал
+    if (!isTvSeries(card)) return;
 
     let data = card.card_data || (card.dataset?.card && JSON.parse(card.dataset.card));
     if (!data?.id) return;
@@ -120,4 +141,3 @@
     document.addEventListener('lampaReady', init);
   }
 })();
-
