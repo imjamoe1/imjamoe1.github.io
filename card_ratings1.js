@@ -335,49 +335,85 @@
     }
 
     // Создание элемента флага страны
-    function createCountryFlagElement(flagUrl) {
-        if (!flagUrl) return null;
-
-        const flagEl = document.createElement('img');
-        flagEl.className = 'country-flag';
-        flagEl.src = flagUrl;
-        flagEl.alt = 'country';
-        flagEl.style.cssText = `
-            position: absolute;
-            top: 2.6em;
-            left: -0.5em;
-            width: 1.8em;
-            height: 1.3em;
-            border-radius: 0.2em;
-            z-index: 3;
-            pointer-events: none;
-            user-select: none;
-            object-fit: cover;
-            border: 2px solid rgba(0, 0, 0, 0.5);
-            box-shadow: 
-                inset 0 1px 0 rgba(255, 255, 255, 0.2), /* Верхний свет */
-                inset 0 -1px 0 rgba(0, 0, 0, 0.5), /* Нижняя тень */
-                0 0 0 2px rgba(0, 0, 0, 0.5), /* Внутренняя тень */
-                0 4px 15px rgba(0, 0, 0, 0.5), /* Основная тень */
-                0 8px 25px rgba(0, 0, 0, 0.4); /* Размытая тень для глубины */
-            background: rgba(0, 0, 0, 0.4);
-            transform: translateY(-1px) translateZ(0); /* Легкий подъем */
-        /* Анимация вращения */
-        animation: swingFlag 3s ease-in-out infinite;
-        transform-origin: center center;
-        `;
+const flagController = {
+    flags: [],
+    angle: 0,
+    animationId: null,
+    startTime: Date.now(),
     
-    // Добавляем стили для анимации
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes swingFlag {
-            0% { transform: rotateY(0deg); }
-            33% { transform: rotateY(90deg); }
-            66% { transform: rotateY(0deg); }
-            100% { transform: rotateY(0deg); }
+    init() {
+        this.animate();
+    },
+    
+    animate() {
+        const now = Date.now();
+        const elapsed = (now - this.startTime) % 5000;
+        const progress = elapsed / 5000;
+        
+        // Расчет угла для качелей
+        if (progress < 0.25) {
+            this.angle = 90 * (progress / 0.25);
+        } else if (progress < 0.5) {
+            this.angle = 90 - (90 * ((progress - 0.25) / 0.25));
+        } else if (progress < 0.75) {
+            this.angle = -90 * ((progress - 0.5) / 0.25);
+        } else {
+            this.angle = -90 + (90 * ((progress - 0.75) / 0.25));
         }
+        
+        // Обновляем все флаги
+        this.flags.forEach(flag => {
+            if (flag.isConnected) { // Проверяем что элемент еще в DOM
+                flag.style.transform = `rotateY(${this.angle}deg)`;
+            }
+        });
+        
+        this.animationId = requestAnimationFrame(() => this.animate());
+    },
+    
+    addFlag(flagElement) {
+        this.flags.push(flagElement);
+        if (!this.animationId) {
+            this.init();
+        }
+    }
+};
+
+// Запускаем контроллер
+flagController.init();
+
+function createCountryFlagElement(flagUrl) {
+    if (!flagUrl) return null;
+
+    const flagEl = document.createElement('img');
+    flagEl.className = 'country-flag';
+    flagEl.src = flagUrl;
+    flagEl.alt = 'country';
+    flagEl.style.cssText = `
+        position: absolute;
+        top: 2.6em;
+        left: -0.5em;
+        width: 1.8em;
+        height: 1.3em;
+        border-radius: 0.2em;
+        z-index: 3;
+        pointer-events: none;
+        user-select: none;
+        object-fit: cover;
+        border: 2px solid rgba(255,255,255,0.5);
+        background: rgba(0,0,0,0.5);
+        box-shadow: 
+            inset 0 1px 0 rgba(255, 255, 255, 0.2), /* Верхний свет */
+            inset 0 -1px 0 rgba(0, 0, 0, 0.5), /* Нижняя тень */
+            0 0 0 2px rgba(0, 0, 0, 0.5), /* Внутренняя тень */
+            0 4px 15px rgba(0, 0, 0, 0.5), /* Основная тень */
+            0 8px 25px rgba(0, 0, 0, 0.4); /* Размытая тень для глубины */
+        transform-origin: center center;
+        transition: transform 0.1s linear;
     `;
-    document.head.appendChild(style);
+    
+    // Регистрируем флаг в контроллере
+    flagController.addFlag(flagEl);
     
     flagEl.onerror = function() {
         this.style.display = 'none';
@@ -385,6 +421,28 @@
 
     return flagEl;
 }
+
+    // Получение рейтинга Kinopoisk
+    async function fetchKpRating(filmId) {
+        try {
+            const xmlRes = await enqueue(() => fetchWithTimeout(`${KP_RATING_URL}${filmId}.xml`));
+            const text = await xmlRes.text();
+            const kp = text.match(/<kp_rating[^>]*>([\d.]+)<\/kp_rating>/);
+            return kp ? parseFloat(kp[1]).toFixed(1) : '0.0';
+        } catch (e) {}
+
+        try {
+            const res = await enqueue(() =>
+                fetchWithTimeout(`${KP_API_URL}${filmId}`, {
+                    headers: { 'X-API-KEY': API_KEY }
+                })
+            );
+            const json = await res.json();
+            return json.ratingKinopoisk ? parseFloat(json.ratingKinopoisk).toFixed(1) : '0.0';
+        } catch (e) {
+            return '0.0';
+        }
+    }
 
     // Получение рейтинга Kinopoisk
     async function fetchKpRating(filmId) {
