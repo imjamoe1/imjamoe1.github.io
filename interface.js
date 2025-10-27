@@ -622,7 +622,7 @@ function create() {
                 return;
             }
 
-            const imageUrl = Lampa.TMDB.image("/t/p/w500" + logo.file_path);
+            const imageUrl = Lampa.TMDB.image("/t/p/w300" + logo.file_path);
 
             if (titleElement.data('current-logo') === imageUrl) return;
             titleElement.data('current-logo', imageUrl);
