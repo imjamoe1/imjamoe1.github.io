@@ -1100,23 +1100,73 @@
             return new use(object); 
         };
 
-Lampa.SettingsApi.addParam({
-    component: "interface",
-    param: {
-        name: "logo_glav",
-        type: "select",
-        values: { 
-            "1": "Скрыть", 
-            "0": "Отображать" 
-        },
-        default: "0"
-    },
-    field: {
-        name: "Логотипы вместо названий",
-        description: "Отображает логотипы фильмов и сериалов вместо текста на странице просмотра"
-    }
-});
+function getBestLogo(images, logoSetting) {
+    if (!images.logos || images.logos.length === 0) return null;
 
+    const currentLanguage = Lampa.Storage.get('language') || 'en';
+    const primaryLanguage = currentLanguage.split('-')[0]; // Получаем основной язык (например, 'ru' из 'ru-RU')
+
+    // Приоритеты для каждого языка
+    const priorityMap = {
+        'ru': ['ru', 'en', 'uk'],      // Русский → Английский → Украинский
+        'uk': ['uk', 'en', 'ru'],      // Украинский → Английский → Русский  
+        'en': ['en', 'ru', 'uk']       // Английский → Русский → Украинский
+    };
+
+    const priorities = priorityMap[primaryLanguage] || ['en', 'ru', 'uk'];
+    
+    // Ищем по приоритету
+    for (let lang of priorities) {
+        const logo = images.logos.find(l => l.iso_639_1 === lang);
+        if (logo) {
+            console.log("Найден логотип для языка:", lang);
+            return logo;
+        }
+    }
+
+    console.log("Логотип по приоритету не найден, берем первый доступный");
+    return images.logos[0];
+}
+
+// Функция применения логотипа
+function applyLogo(data, logo, html, isDestroyed) {
+    if (isDestroyed || !html) return;
+
+    const titleElement = html.find('.new-interface-info__title');
+    if (!titleElement.length) return;
+
+    if (!logo || !logo.file_path) {
+        titleElement.text(data.title);
+        return;
+    }
+
+    const imageUrl = Lampa.TMDB.image("/t/p/w500" + logo.file_path);
+
+    if (titleElement.data('current-logo') === imageUrl) return;
+    titleElement.data('current-logo', imageUrl);
+
+    const tempImg = new Image();
+    tempImg.src = imageUrl;
+
+    tempImg.onload = () => {
+        if (isDestroyed || !html) return;
+        
+        titleElement.html(`
+            <img class="new-interface-logo logo-fade-in" 
+                 src="${imageUrl}" 
+                 alt="${data.title}"
+                 loading="lazy"
+                 onerror="this.remove(); this.parentElement.textContent='${data.title.replace(/"/g, '&quot;')}'" />
+        `);
+    };
+
+    tempImg.onerror = () => {
+        if (isDestroyed || !html) return;
+        titleElement.text(data.title);
+    };
+}
+
+// Основной плагин для логотипов
 window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", function(a) {
     if ("complite" == a.type && "1" != Lampa.Storage.get("logo_glav")) {
         var e = a.data.movie;
@@ -1130,45 +1180,16 @@ window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", func
         var t = Lampa.TMDB.api(apiPath + "/images?api_key=" + Lampa.TMDB.key());
         console.log("API URL для логотипов:", t);
         
-        $.get(t, function(e) {
-            if (e.logos && e.logos.length > 0) {
-                console.log("Все логотипы:", e.logos);
+        $.get(t, function(images) {
+            if (images.logos && images.logos.length > 0) {
+                console.log("Все логотипы:", images.logos);
                 
-                // Приоритет выбора логотипов по языку
-                var logo = null;
-                var logoPriority = [];
-                
-                // В зависимости от языка приложения устанавливаем приоритет
-                if (appLanguage === 'uk') {
-                    logoPriority = ['uk', 'ru', 'en']; // Украинский -> Русский -> Английский
-                } else if (appLanguage === 'ru') {
-                    logoPriority = ['ru', 'uk', 'en']; // Русский -> Украинский -> Английский
-                } else {
-                    logoPriority = ['en', 'uk', 'ru']; // Английский -> Украинский -> Русский
-                }
-                
-                console.log("Приоритет поиска логотипов:", logoPriority);
-                
-                // Ищем логотип по приоритету
-                for (var i = 0; i < logoPriority.length; i++) {
-                    logo = e.logos.find(function(l) { 
-                        return l.iso_639_1 === logoPriority[i]; 
-                    });
-                    if (logo) {
-                        console.log("Найден логотип для языка:", logoPriority[i]);
-                        break;
-                    }
-                }
-                
-                // Если не нашли по приоритету, берем первый доступный
-                if (!logo) {
-                    logo = e.logos[0];
-                    console.log("Взят первый доступный логотип:", logo);
-                }
+                // Используем функцию getBestLogo для выбора оптимального логотипа
+                var logo = getBestLogo(images, "show_all");
                 
                 if (logo && logo.file_path) {
                     var logoPath = Lampa.TMDB.image("/t/p/w300" + logo.file_path.replace(".svg", ".png"));
-                    console.log("Отображаем логотип:", logoPath);
+                    console.log("Отображаем логотип:", logoPath, "для языка:", logo.iso_639_1);
 
                     // Добавляем проверки на null перед вызовом .find()
                     var activityRender = a.object && a.object.activity ? a.object.activity.render() : null;
@@ -1236,6 +1257,24 @@ window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", func
         });
     }
 }));
+
+// Настройка в параметрах Lampa (опционально)
+Lampa.SettingsApi.addParam({
+    component: "interface",
+    param: {
+        name: "logo_glav",
+        type: "select",
+        values: { 
+            "1": "Скрыть", 
+            "0": "Отображать" 
+        },
+        default: "0"
+    },
+    field: {
+        name: "Логотипы вместо названий",
+        description: "Отображает логотипы фильмов и сериалов вместо текста на странице просмотра"
+    }
+});
         
         var style_id = 'new_interface_style_adjusted_padding';
         if (!$('style[data-id="' + style_id + '"]').length) {
