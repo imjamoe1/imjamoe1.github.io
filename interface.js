@@ -1139,10 +1139,10 @@ window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", func
                 var logoPriority = [];
                 
                 // В зависимости от языка приложения устанавливаем приоритет
-                if (appLanguage === 'ru') {
-                    logoPriority = ['ru', 'uk', 'en']; // Русский -> Украинский -> Английский
-                } else if (appLanguage === 'uk') {
+                if (appLanguage === 'uk') {
                     logoPriority = ['uk', 'ru', 'en']; // Украинский -> Русский -> Английский
+                } else if (appLanguage === 'ru') {
+                    logoPriority = ['ru', 'uk', 'en']; // Русский -> Украинский -> Английский
                 } else {
                     logoPriority = ['en', 'uk', 'ru']; // Английский -> Украинский -> Русский
                 }
