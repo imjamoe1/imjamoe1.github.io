@@ -1100,86 +1100,104 @@
             return new use(object); 
         };
 
-        Lampa.SettingsApi.addParam({
-            component: "interface",
-            param: {
-                name: "logo_glav",
-                type: "select",
-                values: { 
-                    "1": "Скрыть", 
-                    "0": "Отображать" 
-                },
-                default: "0"
-            },
-            field: {
-                name: "Логотипы вместо названий",
-                description: "Отображает логотипы фильмов и сериалов вместо текста на странице просмотра"
-            }
-        });
+Lampa.SettingsApi.addParam({
+    component: "interface",
+    param: {
+        name: "logo_glav",
+        type: "select",
+        values: { 
+            "1": "Скрыть", 
+            "0": "Отображать" 
+        },
+        default: "0"
+    },
+    field: {
+        name: "Логотипы вместо названий",
+        description: "Отображает логотипы фильмов и сериалов вместо текста на странице просмотра"
+    }
+});
 
-        window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", function(a) {
-            if ("complite" == a.type && "1" != Lampa.Storage.get("logo_glav")) {
-                var e = a.data.movie;
-                var isSerial = e.name || e.first_air_date;
-                var apiPath = isSerial ? "tv/" + e.id : "movie/" + e.id;
-                var t = Lampa.TMDB.api(apiPath + "/images?api_key=" + Lampa.TMDB.key());
-                console.log("API URL для логотипов:", t);
-                $.get(t, function(e) {
-                    if (e.logos && e.logos.length > 0) {
-                        console.log("Все логотипы:", e.logos);
-                        var logo = e.logos.find(function(l) { return l.iso_639_1 === "ru"; });
-                        var isRussianLogo = !!logo;
-                        if (!logo) {
-                            logo = e.logos.find(function(l) { return l.iso_639_1 === "en"; });
-                            console.log("Английский логотип:", logo ? "найден" : "не найден");
-                        }
-                        if (!logo) {
-                            logo = e.logos[0];
-                            console.log("Взят первый доступный логотип:", logo);
-                        }
-                        if (logo && logo.file_path) {
-                            var logoPath = Lampa.TMDB.image("/t/p/w300" + logo.file_path.replace(".svg", ".png"));
-                            console.log("Отображаем логотип:", logoPath);
+window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", function(a) {
+    if ("complite" == a.type && "1" != Lampa.Storage.get("logo_glav")) {
+        var e = a.data.movie;
+        var isSerial = e.name || e.first_air_date;
+        var apiPath = isSerial ? "tv/" + e.id : "movie/" + e.id;
+        
+        // Определяем язык приложения
+        var appLanguage = Lampa.Storage.get('language') || 'ru';
+        console.log("Язык приложения:", appLanguage);
+        
+        var t = Lampa.TMDB.api(apiPath + "/images?api_key=" + Lampa.TMDB.key());
+        console.log("API URL для логотипов:", t);
+        
+        $.get(t, function(e) {
+            if (e.logos && e.logos.length > 0) {
+                console.log("Все логотипы:", e.logos);
+                
+                // Приоритет выбора логотипов по языку
+                var logo = null;
+                var logoPriority = [];
+                
+                // В зависимости от языка приложения устанавливаем приоритет
+                if (appLanguage === 'ru') {
+                    logoPriority = ['ru', 'uk', 'en']; // Русский -> Украинский -> Английский
+                } else if (appLanguage === 'uk') {
+                    logoPriority = ['uk', 'ru', 'en']; // Украинский -> Русский -> Английский
+                } else {
+                    logoPriority = ['en', 'uk', 'ru']; // Английский -> Украинский -> Русский
+                }
+                
+                console.log("Приоритет поиска логотипов:", logoPriority);
+                
+                // Ищем логотип по приоритету
+                for (var i = 0; i < logoPriority.length; i++) {
+                    logo = e.logos.find(function(l) { 
+                        return l.iso_639_1 === logoPriority[i]; 
+                    });
+                    if (logo) {
+                        console.log("Найден логотип для языка:", logoPriority[i]);
+                        break;
+                    }
+                }
+                
+                // Если не нашли по приоритету, берем первый доступный
+                if (!logo) {
+                    logo = e.logos[0];
+                    console.log("Взят первый доступный логотип:", logo);
+                }
+                
+                if (logo && logo.file_path) {
+                    var logoPath = Lampa.TMDB.image("/t/p/w300" + logo.file_path.replace(".svg", ".png"));
+                    console.log("Отображаем логотип:", logoPath);
 
-                            // Добавляем проверки на null перед вызовом .find()
-                            var activityRender = a.object && a.object.activity ? a.object.activity.render() : null;
-                            if (activityRender && activityRender.find) {
-                                var titleElement = activityRender.find(".full-start-new__title");
-                                
-                                // Если логотип не русский, запрашиваем русское название
-                                if (!isRussianLogo) {
-                                    var titleApi = Lampa.TMDB.api(apiPath + "?api_key=" + Lampa.TMDB.key() + "&language=ru");
-                                    console.log("API URL для названия:", titleApi);
-                                    $.get(titleApi, function(data) {
-                                        var russianTitle = isSerial ? data.name : data.title;
-                                        console.log("Русское название из TMDB:", russianTitle);
-                                        if (russianTitle && titleElement.length) {
-                                            titleElement.html(
-                                                '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.9s ease-in;">' +
-                                                    '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
-                                                    '<span style="margin-top: 5px; font-size: 32px; color: #fff;">' + russianTitle + '</span>' +
-                                                '</div>' +
-                                                '<style>' +
-                                                    '@keyframes fadeIn {' +
-                                                        'from { opacity: 0; }' +
-                                                        'to { opacity: 1; }' +
-                                                    '}' +
-                                                '</style>'
-                                            );
-                                        } else if (titleElement.length) {
-                                            titleElement.html(
-                                                '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.5s ease-in;">' +
-                                                    '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
-                                                '</div>' +
-                                                '<style>' +
-                                                    '@keyframes fadeIn {' +
-                                                        'from { opacity: 0; }' +
-                                                        'to { opacity: 1; }' +
-                                                    '}' +
-                                                '</style>'
-                                            );
-                                        }
-                                    });
+                    // Добавляем проверки на null перед вызовом .find()
+                    var activityRender = a.object && a.object.activity ? a.object.activity.render() : null;
+                    if (activityRender && activityRender.find) {
+                        var titleElement = activityRender.find(".full-start-new__title");
+                        
+                        // Определяем, является ли логотип "родным" для языка приложения
+                        var isNativeLogo = logo.iso_639_1 === appLanguage;
+                        
+                        // Если логотип не родной, запрашиваем название на языке приложения
+                        if (!isNativeLogo) {
+                            var titleApi = Lampa.TMDB.api(apiPath + "?api_key=" + Lampa.TMDB.key() + "&language=" + appLanguage);
+                            console.log("API URL для названия:", titleApi);
+                            $.get(titleApi, function(data) {
+                                var localizedTitle = isSerial ? data.name : data.title;
+                                console.log("Локализованное название из TMDB:", localizedTitle);
+                                if (localizedTitle && titleElement.length) {
+                                    titleElement.html(
+                                        '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.9s ease-in;">' +
+                                            '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
+                                            '<span style="margin-top: 5px; font-size: 32px; color: #fff;">' + localizedTitle + '</span>' +
+                                        '</div>' +
+                                        '<style>' +
+                                            '@keyframes fadeIn {' +
+                                                'from { opacity: 0; }' +
+                                                'to { opacity: 1; }' +
+                                            '}' +
+                                        '</style>'
+                                    );
                                 } else if (titleElement.length) {
                                     titleElement.html(
                                         '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.5s ease-in;">' +
@@ -1193,17 +1211,32 @@
                                         '</style>'
                                     );
                                 }
-                            }
-                        } else {
-                            console.log("Логотип невалидный (нет file_path):", logo);
+                            });
+                        } else if (titleElement.length) {
+                            // Если логотип родной, отображаем только его
+                            titleElement.html(
+                                '<div style="display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn 0.5s ease-in;">' +
+                                    '<img style="margin-top: 5px; max-height: 125px;" src="' + logoPath + '" />' +
+                                '</div>' +
+                                '<style>' +
+                                    '@keyframes fadeIn {' +
+                                        'from { opacity: 0; }' +
+                                        'to { opacity: 1; }' +
+                                    '}' +
+                                '</style>'
+                            );
                         }
-                    } else {
-                        console.log("Логотипы отсутствуют для:", e.title || e.name);
                     }
-                });
+                } else {
+                    console.log("Логотип невалидный (нет file_path):", logo);
+                }
+            } else {
+                console.log("Логотипы отсутствуют для:", e.title || e.name);
             }
-        }));
-
+        });
+    }
+}));
+        
         var style_id = 'new_interface_style_adjusted_padding';
         if (!$('style[data-id="' + style_id + '"]').length) {
              $('style[data-id^="new_interface_style_"]').remove();
