@@ -490,121 +490,106 @@
         return hash.toString();
     }
 
-    // Функция для получения лучшего логотипа с учетом текущего языка
-    function getBestLogo(images, logoSetting) {
-        if (!images.logos || images.logos.length === 0) return null;
+// Функция для получения лучшего логотипа с учетом текущего языка
+function getBestLogo(images, logoSetting) {
+    if (!images.logos || images.logos.length === 0) return null;
 
-        const currentLanguage = Lampa.Storage.get('language') || 'en';
-        const primaryLanguage = currentLanguage.split('-')[0]; // Получаем основной язык (например, 'ru' из 'ru-RU')
+    const currentLanguage = Lampa.Storage.get('language') || 'en';
+    const primaryLanguage = currentLanguage.split('-')[0]; // Получаем основной язык (например, 'ru' из 'ru-RU')
 
-        // 1. Пытаемся найти логотип для текущего языка
-        const currentLangLogo = images.logos.find(logo => logo.iso_639_1 === primaryLanguage);
-        if (currentLangLogo) return currentLangLogo;
+    // 1. Пытаемся найти логотип для текущего языка
+    const currentLangLogo = images.logos.find(logo => logo.iso_639_1 === primaryLanguage);
+    if (currentLangLogo) return currentLangLogo;
 
-        // 2. Если текущий язык русский, но нет русского логотипа, ищем английский
-        if (primaryLanguage === 'ru') {
-            const enLogo = images.logos.find(logo => logo.iso_639_1 === 'en');
-            if (enLogo) return enLogo;
-        }
-
-        // 3. Если текущий язык английский, но нет английского логотипа, ищем русский
-        if (primaryLanguage === 'en') {
-            const ruLogo = images.logos.find(logo => logo.iso_639_1 === 'ru');
-            if (ruLogo) return ruLogo;
-        }
-
-        // 4. Если ничего не найдено, возвращаем первый доступный логотип
-        return images.logos[0];
+    // 2. Если текущий язык русский, но нет русского логотипа, ищем английский
+    if (primaryLanguage === 'ru') {
+        const enLogo = images.logos.find(logo => logo.iso_639_1 === 'en');
+        if (enLogo) return enLogo;
     }
 
-    // --- Modified create function with Ratings Support ---
-    function create() { 
-        var html; 
-        var timer; 
-        var network = new Lampa.Reguest(); 
-        var loaded = {};
-        var isDestroyed = false;
-        var intersectionObserver; 
+    // 3. Если текущий язык украинский, но нет украинского логотипа, ищем английский
+    if (primaryLanguage === 'uk') { // Исправлено: 'ua' → 'uk'
+        const enLogo = images.logos.find(logo => logo.iso_639_1 === 'en');
+        if (enLogo) return enLogo;
+    }
 
-        this.create = function () { 
-            html = $("<div class=\"new-interface-info\">\n            <div class=\"new-interface-info__body\">\n                <div class=\"new-interface-info__head\"></div>\n                <div class=\"new-interface-info__title\"></div>\n                <div class=\"new-interface-info__details\"></div>\n                <div class=\"new-interface-info__description\"></div>\n            </div>\n        </div>"); 
-        }; 
+    // 4. Если текущий язык английский, но нет английского логотипа, ищем русский или украинский
+    if (primaryLanguage === 'en') {
+        const ruLogo = images.logos.find(logo => logo.iso_639_1 === 'ru');
+        if (ruLogo) return ruLogo;
+        
+        const ukLogo = images.logos.find(logo => logo.iso_639_1 === 'uk'); // Исправлено: 'ua' → 'uk'
+        if (ukLogo) return ukLogo;
+    }
 
-        this.update = function (data) { 
-            var _this = this; 
-            html.find('.new-interface-info__head,.new-interface-info__details').text('---'); 
-            html.find('.new-interface-info__title').text(data.title); 
-            html.find('.new-interface-info__description').text(data.overview || Lampa.Lang.translate('full_notext'));
-            Lampa.Background.change(Lampa.Api.img(data.backdrop_path, 'w200')); 
-            delete mdblistRatingsCache[data.id]; 
-            delete mdblistRatingsPending[data.id];  
-            if (data.id && data.method) { 
-                mdblistRatingsPending[data.id] = true; 
-                fetchRatings(data, function(mdblistResult) { 
-                    mdblistRatingsCache[data.id] = mdblistResult; 
-                    delete mdblistRatingsPending[data.id];
-                    var tmdb_url = Lampa.TMDB.api((data.name ? 'tv' : 'movie') + '/' + data.id + '?api_key=' + Lampa.TMDB.key() + '&append_to_response=content_ratings,release_dates&language=' + Lampa.Storage.get('language'));
-                    if (loaded[tmdb_url]) { _this.draw(loaded[tmdb_url]); }
-                });
+    // 5. Если ничего не найдено, возвращаем первый доступный логотип
+    return images.logos[0];
+}
 
-                // Fetch Kinopoisk ratings
-                kpRatingsPending[data.id] = true;
-                fetchKPRatings(data, function(kpResult) {
-                    kpRatingsCache[data.id] = kpResult;
-                    delete kpRatingsPending[data.id];
-                    var tmdb_url = Lampa.TMDB.api((data.name ? 'tv' : 'movie') + '/' + data.id + '?api_key=' + Lampa.TMDB.key() + '&append_to_response=content_ratings,release_dates&language=' + Lampa.Storage.get('language'));
-                    if (typeof loaded !== 'undefined' && loaded[tmdb_url]) {
-                         _this.draw(loaded[tmdb_url]);
-                    }
-                });
-            }
+// --- Modified create function with Ratings Support ---
+function create() { 
+    var html; 
+    var timer; 
+    var network = new Lampa.Reguest(); 
+    var loaded = {};
+    var isDestroyed = false;
+    var intersectionObserver; 
+    
+    this.create = function () { 
+        html = $("<div class=\"new-interface-info\">\n            <div class=\"new-interface-info__body\">\n                <div class=\"new-interface-info__head\"></div>\n                <div class=\"new-interface-info__title\"></div>\n                <div class=\"new-interface-info__details\"></div>\n                <div class=\"new-interface-info__description\"></div>\n            </div>\n        </div>"); 
+    }; 
+    
+    this.update = function (data) { 
+        var _this = this; 
+        html.find('.new-interface-info__head,.new-interface-info__details').text('---'); 
+        html.find('.new-interface-info__title').text(data.title); 
+        html.find('.new-interface-info__description').text(data.overview || Lampa.Lang.translate('full_notext'));
+        Lampa.Background.change(Lampa.Api.img(data.backdrop_path, 'w200')); 
+        delete mdblistRatingsCache[data.id]; 
+        delete mdblistRatingsPending[data.id];  
+        if (data.id && data.method) { 
+            mdblistRatingsPending[data.id] = true; 
+            fetchRatings(data, function(mdblistResult) { 
+                mdblistRatingsCache[data.id] = mdblistResult; 
+                delete mdblistRatingsPending[data.id];
+                var tmdb_url = Lampa.TMDB.api((data.name ? 'tv' : 'movie') + '/' + data.id + '?api_key=' + Lampa.TMDB.key() + '&append_to_response=content_ratings,release_dates&language=' + Lampa.Storage.get('language'));
+                if (loaded[tmdb_url]) { _this.draw(loaded[tmdb_url]); }
+            });
 
-            if (isDestroyed || !html) {
-                console.warn('Cannot update - component is destroyed or HTML not initialized');
-                return;
-            }
+            // Fetch Kinopoisk ratings
+            kpRatingsPending[data.id] = true;
+            fetchKPRatings(data, function(kpResult) {
+                kpRatingsCache[data.id] = kpResult;
+                delete kpRatingsPending[data.id];
+                var tmdb_url = Lampa.TMDB.api((data.name ? 'tv' : 'movie') + '/' + data.id + '?api_key=' + Lampa.TMDB.key() + '&append_to_response=content_ratings,release_dates&language=' + Lampa.Storage.get('language'));
+                if (typeof loaded !== 'undefined' && loaded[tmdb_url]) {
+                     _this.draw(loaded[tmdb_url]);
+                }
+            });
+        }
 
-            const logoSetting = Lampa.Storage.get('logo_glav2') || 'show_all';
+        if (isDestroyed || !html) {
+            console.warn('Cannot update - component is destroyed or HTML not initialized');
+            return;
+        }
 
-            if (logoSetting !== 'hide') {
-                const type = data.name ? 'tv' : 'movie';
-                const url = Lampa.TMDB.api(type + '/' + data.id + '/images?api_key=' + Lampa.TMDB.key());
+        const logoSetting = Lampa.Storage.get('logo_glav2') || 'show_all';
+        
+        if (logoSetting !== 'hide') {
+            const type = data.name ? 'tv' : 'movie';
+            const url = Lampa.TMDB.api(type + '/' + data.id + '/images?api_key=' + Lampa.TMDB.key());
 
-                fetchWithCache(network, url, (images) => {
-                    if (isDestroyed || !html) return;
+            fetchWithCache(network, url, (images) => {
+                if (isDestroyed || !html) return;
 
-                    let bestLogo = null;
-
-                    if (images.logos && images.logos.length > 0) {
-                        let bestRussianLogo = null;
-                        let bestEnglishLogo = null;
-                        let bestOtherLogo = null;
-
-                        for (let i = 0; i < images.logos.length; i++) {
-                            const logo = images.logos[i];
-                            if (logo.iso_639_1 === 'ru') {
-                                if (!bestRussianLogo || logo.vote_average > bestRussianLogo.vote_average) {
-                                    bestRussianLogo = logo;
-                                }
-                            }
-                            else if (logo.iso_639_1 === 'en') {
-                                if (!bestEnglishLogo || logo.vote_average > bestEnglishLogo.vote_average) {
-                                    bestEnglishLogo = logo;
-                                }
-                            }
-                            else if (!bestOtherLogo || logo.vote_average > bestOtherLogo.vote_average) {
-                                bestOtherLogo = logo;
-                            }
-                        }
-
-                        bestLogo = bestRussianLogo || bestEnglishLogo || bestOtherLogo;
-
-                        if (logoSetting === 'ru_only' && !bestRussianLogo) {
-                            bestLogo = null;
-                        }
-                    }
-
-                    this.applyLogo(data, bestLogo);
+                let bestLogo = null;
+                
+                if (images.logos && images.logos.length > 0) {
+                    // Используем нашу функцию для выбора логотипа
+                    bestLogo = getBestLogo(images, logoSetting);
+                }
+                
+                this.applyLogo(data, bestLogo);
                 }, () => {
                     if (!isDestroyed && html) {
                         const titleElement = html.find('.new-interface-info__title');
@@ -625,13 +610,13 @@
                 this.load(data);
             }
         };
-
+        
         this.applyLogo = function(data, logo) {
             if (isDestroyed || !html) return;
-
+    
             const titleElement = html.find('.new-interface-info__title');
             if (!titleElement.length) return;
-
+    
             if (!logo || !logo.file_path) {
                 titleElement.text(data.title);
                 return;
@@ -647,7 +632,7 @@
 
             tempImg.onload = () => {
                 if (isDestroyed || !html) return;
-
+                
                 titleElement.html(`
                     <img class="new-interface-logo logo-fade-in" 
                          src="${imageUrl}" 
