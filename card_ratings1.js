@@ -396,7 +396,7 @@ function createCountryFlagElement(flagUrl) {
         width: 1.6em;
         height: 1.1em;
         border-radius: 0.2em;
-        z-index: 3;
+        z-index: 12;
         pointer-events: none;
         user-select: none;
         object-fit: cover;
