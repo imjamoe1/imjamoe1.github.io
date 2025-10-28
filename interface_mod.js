@@ -779,14 +779,14 @@
                 'post': { bg: 'rgba(0, 188, 212, 0.8)', text: 'white' }
             };
             var bgColor = '', textColor = '';
-            if (statusText.includes('Заверш') || statusText.includes('Ended')) { bgColor = statusColors.completed.bg; textColor = statusColors.completed.text; }
-            else if (statusText.includes('Отмен') || statusText.includes('Canceled')) { bgColor = statusColors.canceled.bg; textColor = statusColors.canceled.text; }
-            else if (statusText.includes('Онгоинг') || statusText.includes('Выход') || statusText.includes('В процессе') || statusText.includes('Return')) { bgColor = statusColors.ongoing.bg; textColor = statusColors.ongoing.text; }
-            else if (statusText.includes('производстве') || statusText.includes('Production')) { bgColor = statusColors.production.bg; textColor = statusColors.production.text; }
-            else if (statusText.includes('Запланировано') || statusText.includes('Planned')) { bgColor = statusColors.planned.bg; textColor = statusColors.planned.text; }
-            else if (statusText.includes('Пилотный') || statusText.includes('Pilot')) { bgColor = statusColors.pilot.bg; textColor = statusColors.pilot.text; }
-            else if (statusText.includes('Выпущенный') ||  statusText.includes('Released')) { bgColor = statusColors.released.bg; textColor = statusColors.released.text; }
-            else if (statusText.includes('слухам') || statusText.includes('Rumored')) { bgColor = statusColors.rumored.bg; textColor = statusColors.rumored.text; }
+            if (statusText.includes('Завершено') || statusText.includes('Ended')) { bgColor = statusColors.completed.bg; textColor = statusColors.completed.text; }
+            else if (statusText.includes('Отмен') || statusText.includes('Відмін') || statusText.includes('Canceled')) { bgColor = statusColors.canceled.bg; textColor = statusColors.canceled.text; }
+            else if (statusText.includes('Онгоинг') || statusText.includes('Онгоїнг') || statusText.includes('Выход') || statusText.includes('Вихід') || statusText.includes('В процессе') || statusText.includes('У процесі') || statusText.includes('Return')) { bgColor = statusColors.ongoing.bg; textColor = statusColors.ongoing.text; }
+            else if (statusText.includes('производстве') || statusText.includes('виробництві') || statusText.includes('Production')) { bgColor = statusColors.production.bg; textColor = statusColors.production.text; }
+            else if (statusText.includes('Запланировано') || statusText.includes('Заплановано') || statusText.includes('Planned')) { bgColor = statusColors.planned.bg; textColor = statusColors.planned.text; }
+            else if (statusText.includes('Пилотный') || statusText.includes('Пілотний') || statusText.includes('Pilot')) { bgColor = statusColors.pilot.bg; textColor = statusColors.pilot.text; }
+            else if (statusText.includes('Выпущенный') ||  statusText.includes('Випущено') ||  statusText.includes('Released')) { bgColor = statusColors.released.bg; textColor = statusColors.released.text; }
+            else if (statusText.includes('слухам') || statusText.includes('чуткам') || statusText.includes('Rumored')) { bgColor = statusColors.rumored.bg; textColor = statusColors.rumored.text; }
             else if (statusText.includes('Скоро') || statusText.includes('Post')) { bgColor = statusColors.post.bg; textColor = statusColors.post.text; }
             if (bgColor) {
                 $(statusElement).css({
