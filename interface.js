@@ -1319,7 +1319,7 @@ Lampa.SettingsApi.addParam({
             /* --- Rating Box Styles --- */
             .new-interface .full-start__rate {
                 font-size: 1.3em;
-                margin-right: 0em;
+                margin-right: 0;
                 display: inline-flex;
                 align-items: center;
                 vertical-align: middle;
