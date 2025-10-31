@@ -284,7 +284,7 @@
         "background: transparent !important;" +
         "padding: 0 !important;" +
         "}" +
-        ".card__quality div {" +
+        ".card__quality {" +
         "    font-weight: 600 !important;" +
         "    z-index: 10;" +		
         "}" +		
@@ -2427,6 +2427,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
