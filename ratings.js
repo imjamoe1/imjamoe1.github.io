@@ -285,7 +285,7 @@
         "padding: 0 !important;" +
         "}" +
         ".card__quality {" +
-        "    position: relative;" +		
+        "    position: absolute;" +		
         "    font-weight: 600 !important;" +
         "    z-index: 15;" +		
         "}" +		
@@ -2428,6 +2428,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
