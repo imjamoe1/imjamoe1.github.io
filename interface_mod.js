@@ -1886,6 +1886,23 @@
         animation: rainbow 0s linear infinite;
         border: none;
     }
+    .extensions__item,
+    .extensions__block-add {
+        position: relative !important;
+    }
+    .extensions__item.focus::after, 
+    .extensions__block-add.focus::after {
+        content: '' !important;
+        position: absolute !important;
+        top: -3px !important;
+        left: -3px !important;
+        right: -3px !important;
+        bottom: -3px !important;
+        border: 3.2px solid #ff3d00 !important;
+        border-radius: 1.2em !important;
+        z-index: 1 !important;
+        pointer-events: none !important;
+    }
             `,
             sunset: `
                 body { background: linear-gradient(135deg, #2d1f3d 0%, #614385 50%, #516395 100%); color: #ffffff; }
