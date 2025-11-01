@@ -1898,7 +1898,7 @@
         left: -3px !important;
         right: -3px !important;
         bottom: -3px !important;
-        border: 3px solid #ff3d00 !important;
+        border: 1px solid #ff3d00 !important;
         border-radius: 1.2em !important;
         z-index: 1 !important;
         pointer-events: none !important;
