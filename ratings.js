@@ -384,8 +384,8 @@
     //var JACRED_URL = 'parser.ruzha.ru';
     //var JACRED_API_KEY = 'BCqr1JX01ISh';
     var PROXY_LIST = [  // Корс прокси для запросов
-        'http://api.allorigins.win/raw?url='	
-        'http://cors.bwa.workers.dev/',
+        'http://api.allorigins.win/raw?url=',	
+        'http://cors.bwa.workers.dev/'
     ];
     
     // Словарь возрастных рейтингов
@@ -2425,6 +2425,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
