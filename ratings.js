@@ -286,7 +286,7 @@
         "}" +
         ".card__quality {" +
         "    position: absolute;" +		
-        "    font-weight: 600 !important;" +
+        "    font-weight: bold !important;" +
         "    z-index: 5;" +		
         "}" +		
         ".rate--bylampa_full .source--name {" +
@@ -2428,3 +2428,4 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
