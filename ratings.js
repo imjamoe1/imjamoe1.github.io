@@ -371,6 +371,7 @@
     var C_LOGGING = false;  // Общий логгинг 
     var Q_LOGGING = false;  // Логгинг качества
     var Q_CACHE_TIME = 24 * 60 * 60 * 1000;  // Время, которое кеш считается валидным
+    var CACHE_TIME = 3 * 60 * 60 * 1000;
     var OMDB_CACHE = 'maxsm_ratings_omdb_cache';
     var KP_CACHE = 'maxsm_ratings_kp_cache';
     var ID_MAPPING_CACHE = 'maxsm_ratings_id_mapping_cache';
@@ -2427,6 +2428,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
