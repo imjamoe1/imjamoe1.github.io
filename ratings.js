@@ -284,10 +284,13 @@
         "background: transparent !important;" +
         "padding: 0 !important;" +
         "}" +
-        ".card__quality {" +
-        "    position: absolute;" +		
-        "    font-weight: bold !important;" +
-        "    z-index: 5;" +		
+        ".card__view {position: relative !important;}" +
+        ".card__quality { " +
+        "   position: absolute !important; " +
+        "   z-index: 10; " +
+        "}" +		
+        ".card__quality div {" +	
+        "    font-weight: bold !important;" +	
         "}" +		
         ".rate--bylampa_full .source--name {" +
         "    width: 2em !important;" +  /* уменьшил с 2.6em */
@@ -2428,6 +2431,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
