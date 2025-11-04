@@ -1305,7 +1305,7 @@ Lampa.SettingsApi.addParam({
                 word-spacing: -3px;
                 text-shadow: 1px 1px 2px #C0C0C0;
             }
-            .card__quality
+            .card__quality {
                 font-weight: bold !important;
             }    
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
