@@ -209,13 +209,13 @@ if (!window.loaded_modss) {
             return window.location.protocol == 'https:' ? 'https://' : 'http://';
         }
         var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-        var version_modss = '3.2', API = Protocol() + 'api.modss.tv/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '766bd1c4d31f3db19e021dad3', IP, logged = false, cashe = encodeURIComponent(Lampa.Base64.encode(window.location.origin));
+        var version_modss = '3.2', API = Protocol() + 'api.modss.tv/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = 'dcbee9ef84465be64feb69380', IP, logged = false, cashe = encodeURIComponent(Lampa.Base64.encode(window.location.origin));
 
         var urls = [Protocol() + 'modss.tv', Protocol() + 'lampa.stream/modss', Protocol() + 'n.modss.tv'];
 
         console.log('Modss', 'protocol:', Protocol());
         console.log('Modss', 'origin', window.location.origin);
-        console.log('Modss', 'init', 'LOADED - [GET] ' + url);
+        console.log('Modss', 'init', 'LOADED - UA [2a09:bac5:592a:52d::84:63] - [GET] ' + urls[0]);
         window.loaded_modss = true;
 
         var network = new Lampa.Reguest();
@@ -223,18 +223,18 @@ if (!window.loaded_modss) {
         var requestData = {
             user_id: user_id,
             uid: uid,
-            ips: '172.166.156.167',
+            ips: '2a09:bac5:592a:52d::84:63',
             cas: cashe,
             cache: false,
             id: '',
-            or: 'dW5kZWZpbmVk',
+            or: 'bGFtcGEubXg=',
             auth: logged
         };
 
         function tryNextUrl() {
             if (currentUrlIndex >= urls.length) {
-                console.log('Modss', 'init', 'ERROR - ' + url, error.message);
-                Lampa.Noty.show('MODSs ОШИБКА ЗАГРУЗКИ -> ' + error.message);
+                console.log('Modss', 'init', 'UA [2a09:bac5:592a:52d::84:63] - все URL недоступны');
+                Lampa.Noty.show('UA [2a09:bac5:592a:52d::84:63] - MODSs ОШИБКА ЗАГРУЗКИ ПЛАГИНА -> все серверы недоступны');
                 window.loaded_modss = false;
                 return;
             }
@@ -261,7 +261,7 @@ if (!window.loaded_modss) {
                     tryNextUrl();
                 }
             }, function(a, c) {
-                console.log('Modss', 'init', 'load get plugin error - [POST] ' + url, network.errorDecode(a, c));
+                console.log('Modss', 'init', 'UA [2a09:bac5:592a:52d::84:63] - load get plugin error - [POST] ' + currentUrl, network.errorDecode(a, c));
                 currentUrlIndex++;
                 tryNextUrl();
             }, requestData, {
