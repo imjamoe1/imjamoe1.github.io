@@ -53,7 +53,7 @@
     .card__series-ongoing-svg {
       width: 7px;
       height: 9px;
-      bottom: 3px;
+      top: 3px;
       display: inline-block;
       margin-left: 0.2em;
       //filter: brightness(0) invert(1);
@@ -226,6 +226,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
