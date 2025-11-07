@@ -45,6 +45,11 @@
       border-radius: 1em;
       gap: 0.3em;
     }
+    .card__series-ongoing span {
+      display: inline-block;
+      transform: translateY(-1.8px);
+      vertical-align: middle;
+    }
     .card__series-ongoing-svg {
       width: 7px;
       height: 9px;
@@ -219,6 +224,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
