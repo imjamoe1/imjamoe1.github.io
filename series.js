@@ -14,7 +14,7 @@
       color: #fff;
       font-size: 0.9em;
       font-weight: bold;
-      padding: 0.1em 0.3em;
+      padding: 0.2em 0.3em;
       border-radius: 0.5em;
       z-index: 2;
       pointer-events: none;
@@ -22,7 +22,7 @@
     }
     .card__series-completed {
       background: rgba(0,0,0,0.5) !important;
-      padding: 0.2em 0.3em !important;
+      padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
       width: 14px;
@@ -209,6 +209,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
