@@ -25,8 +25,8 @@
       padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       display: inline-block;
       //margin-left: 0.1em;
     }
@@ -209,6 +209,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
