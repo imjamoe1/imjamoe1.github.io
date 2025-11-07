@@ -30,7 +30,7 @@
       height: 10px;
       display: inline-block;
       margin: 0 auto !important;
-      vertical-align: middle !important;
+      //vertical-align: middle !important;
       //margin-left: 0.1em;
     }
     .card__series-ongoing {
@@ -212,6 +212,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
