@@ -47,14 +47,14 @@
     }
     .card__series-ongoing span {
       display: inline-block;
-      transform: translateY(-1.8px);
+      transform: translateY(-1.5px);
       vertical-align: middle;
     }
     .card__series-ongoing-svg {
       width: 7px;
       height: 9px;
       display: inline-block;
-      margin: 0 auto !important;
+      margin-left: 0.2em;
       //filter: brightness(0) invert(1);
     }
   `;
@@ -225,6 +225,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
