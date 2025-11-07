@@ -15,7 +15,7 @@
       font-size: 0.9em;
       font-weight: bold;
       padding: 0.2em 0.3em;
-      border-radius: 0.5em;
+      border-radius: 1em;
       z-index: 2;
       pointer-events: none;
       transform: translateY(0.5px);  
@@ -23,21 +23,21 @@
     .card__series-completed {
       //bottom: 3px;
       background: rgba(0,0,0,0.5) !important;
-      border-radius: 0.5em;
+      border-radius: 1em;
       padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
-      width: 10px;
-      height: 10px;
+      width: 11px;
+      height: 11px;
       display: inline-block;
       margin: 0 auto !important;
       //vertical-align: middle !important;
-      //margin-left: 0.1em;
+      //margin-left: 0.2em;
     }
     .card__series-ongoing {
       display: flex;
       align-items: center;
-      border-radius: 0.5em;
+      border-radius: 1em;
       gap: 0.3em;
     }
     .card__series-ongoing-svg {
@@ -214,6 +214,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
