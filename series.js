@@ -24,7 +24,7 @@
       //bottom: 3px;
       background: rgba(0,0,0,0.5) !important;
       border-radius: 0.5em;
-      padding: 0.2em 0.3em !important;
+      padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
       width: 10px;
@@ -214,6 +214,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
