@@ -21,9 +21,9 @@
       transform: translateY(0.5px);  
     }
     .card__series-completed {
-      bottom: 6px;
+      //bottom: 3px;
       background: rgba(0,0,0,0.5) !important;
-      //padding: 0.1em 0.3em !important;
+      padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
       width: 10px;
@@ -211,6 +211,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
