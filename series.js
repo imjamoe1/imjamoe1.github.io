@@ -23,6 +23,7 @@
     .card__series-completed {
       //bottom: 3px;
       background: rgba(0,0,0,0.5) !important;
+      border-radius: 0.5em;
       padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
@@ -36,6 +37,7 @@
     .card__series-ongoing {
       display: flex;
       align-items: center;
+      border-radius: 0.5em;
       gap: 0.3em;
     }
     .card__series-ongoing-svg {
@@ -212,6 +214,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
