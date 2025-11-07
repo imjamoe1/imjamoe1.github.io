@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  Lampa.Platform.tv();
+
   const API_KEY = '4ef0d7355d9ffb5151e987764708ce96'; // 🔐 API КЛЮЧ TMDB
   const API_URL = id => `https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`;
   const SEASON_URL = (id, season) => `https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=${API_KEY}`;
@@ -208,4 +210,5 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
