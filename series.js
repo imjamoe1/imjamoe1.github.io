@@ -40,10 +40,10 @@
       //margin-left: 0.2em;
     }
     .card__series-ongoing {
-      display: flex;
-      align-items: center;
+      //bottom: 3px;
+      background: rgba(0,0,0,0.5) !important;
       border-radius: 1em;
-      gap: 0.3em;
+      padding: 0.1em 0.3em !important;
     }
     .card__series-ongoing span {
       display: inline-block;
@@ -225,6 +225,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
