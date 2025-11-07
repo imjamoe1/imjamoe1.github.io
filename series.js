@@ -14,7 +14,7 @@
       color: #fff;
       font-size: 0.9em;
       font-weight: bold;
-      padding: 0.2em 0.3em;
+      padding: 0.1em 0.3em;
       border-radius: 0.5em;
       z-index: 2;
       pointer-events: none;
@@ -209,6 +209,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
