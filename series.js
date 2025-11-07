@@ -54,6 +54,7 @@
       width: 7px;
       height: 9px;
       display: inline-block;
+      margin: 0 auto !important;
       //filter: brightness(0) invert(1);
     }
   `;
@@ -224,6 +225,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
