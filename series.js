@@ -21,6 +21,8 @@
       transform: translateY(0.5px);  
     }
     .card__series-completed {
+      position: relative;
+      bottom: 3px;
       background: rgba(0,0,0,0.5) !important;
       //padding: 0.1em 0.3em !important;
     }
@@ -210,6 +212,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
