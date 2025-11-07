@@ -22,7 +22,7 @@
     }
     .card__series-completed {
       background: rgba(0,0,0,0.5) !important;
-      padding: 0.1em 0.3em !important;
+      //padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
       width: 12px;
@@ -210,6 +210,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
