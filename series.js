@@ -29,6 +29,7 @@
       width: 10px;
       height: 10px;
       display: inline-block;
+      margin: 0 auto !important;
       vertical-align: middle !important;
       //margin-left: 0.1em;
     }
@@ -211,6 +212,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
