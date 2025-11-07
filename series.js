@@ -25,9 +25,10 @@
       //padding: 0.1em 0.3em !important;
     }
     .card__series-completed-svg {
-      width: 8px;
+      width: 10px;
       height: 10px;
       display: inline-block;
+      vertical-align: middle !important;
       //margin-left: 0.1em;
     }
     .card__series-ongoing {
@@ -36,8 +37,8 @@
       gap: 0.3em;
     }
     .card__series-ongoing-svg {
-      width: 8px;
-      height: 10px;
+      width: 7px;
+      height: 9px;
       display: inline-block;
       //filter: brightness(0) invert(1);
     }
@@ -209,6 +210,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
