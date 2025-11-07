@@ -12,10 +12,10 @@
       left: 0.3em;
       background: rgba(0,0,0,0.5);
       color: #fff;
-      font-size: 1em;
+      font-size: 1em !important;
       font-weight: bold;
-      padding: 0.2em 0.3em;
-      border-radius: 1em;
+      padding: 0.2em 0.3em !important;
+      border-radius: 1em !important;
       z-index: 2;
       pointer-events: none;
       transform: translateY(0.5px);  
@@ -32,8 +32,8 @@
       vertical-align: middle;
     }
     .card__series-completed-svg {
-      width: 11px;
-      height: 11px;
+      width: 11px !important;
+      height: 11px !important;
       display: inline-block;
       margin: 0 auto !important;
       //vertical-align: middle !important;
@@ -51,8 +51,8 @@
       vertical-align: middle;
     }
     .card__series-ongoing-svg {
-      width: 7px;
-      height: 9px;
+      width: 7px !important;
+      height: 9px !important;
       display: inline-block;
       margin: 0 auto !important;
       //filter: brightness(0) invert(1);
@@ -225,3 +225,4 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
