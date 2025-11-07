@@ -26,6 +26,11 @@
       border-radius: 1em;
       padding: 0.1em 0.3em !important;
     }
+    .card__series-completed span {
+      display: inline-block;
+      transform: translateY(-1px);
+      vertical-align: middle;
+    }
     .card__series-completed-svg {
       width: 11px;
       height: 11px;
@@ -214,6 +219,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
