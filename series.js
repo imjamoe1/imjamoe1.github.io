@@ -40,7 +40,7 @@
       //margin-left: 0.2em;
     }
     .card__series-ongoing {
-      //bottom: 3px;
+      bottom: 3px;
       background: rgba(0,0,0,0.5) !important;
       border-radius: 1em;
       padding: 0.1em 0.3em !important;
@@ -53,9 +53,8 @@
     .card__series-ongoing-svg {
       width: 7px;
       height: 9px;
-      top: 3px;
       display: inline-block;
-      margin-left: 0.2em;
+      margin: 0 auto !important;
       //filter: brightness(0) invert(1);
     }
   `;
@@ -226,6 +225,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
