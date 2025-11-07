@@ -9,7 +9,7 @@
     .card__series-label {
       position: absolute;
       bottom: 0.3em;
-      left: 0.5em;
+      left: 0.3em;
       background: rgba(0,0,0,0.5);
       color: #fff;
       font-size: 1em;
@@ -214,6 +214,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
