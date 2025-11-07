@@ -21,7 +21,7 @@
       transform: translateY(0.5px);  
     }
     .card__series-completed {
-      bottom: 3px;
+      bottom: 6px;
       background: rgba(0,0,0,0.5) !important;
       //padding: 0.1em 0.3em !important;
     }
@@ -211,6 +211,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
