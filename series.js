@@ -28,7 +28,7 @@
       width: 12px;
       height: 12px;
       display: inline-block;
-      vertical-align: middle !important;
+      margin: 0 auto !important;
       //margin-left: 0.1em;
     }
     .card__series-ongoing {
@@ -210,6 +210,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
