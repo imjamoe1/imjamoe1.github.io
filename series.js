@@ -26,7 +26,8 @@
       align-items: center;
       //background: rgba(0,0,0,0.5) !important;
       border-radius: 1em;
-      padding: 0.1em 0.3em !important;
+      padding: 0.2em 0.3em !important;
+      gap: 0.2em;
     }
     .card__series-completed span {
       display: inline-block;
@@ -228,6 +229,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
