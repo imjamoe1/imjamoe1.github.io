@@ -48,7 +48,7 @@
     }
     .card__series-ongoing span {
       display: inline-block;
-      transform: translateY(-1.4px);
+      transform: translateY(-1.6px);
       vertical-align: middle;
     }
     .card__series-ongoing-svg {
@@ -226,6 +226,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
