@@ -28,7 +28,7 @@
     }
     .card__series-completed span {
       display: inline-block;
-      transform: translateY(-1.8px);
+      transform: translateY(-1.7px);
       vertical-align: middle;
     }
     .card__series-completed-svg {
@@ -225,4 +225,5 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
