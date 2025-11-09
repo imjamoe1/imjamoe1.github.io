@@ -43,12 +43,12 @@
       display: flex;
       align-items: center;
       border-radius: 1em;
-      padding: 0.1em 0.3em !important;
+      padding: 0.2em 0.3em !important;
       gap: 0.2em;
     }
     .card__series-ongoing span {
       display: inline-block;
-      transform: translateY(-1.6px);
+      //transform: translateY(-1.6px);
       vertical-align: middle;
     }
     .card__series-ongoing-svg {
@@ -226,6 +226,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
