@@ -23,6 +23,7 @@
     .card__series-completed {
       //bottom: 3px;
       display: flex;
+      align-items: center;
       //background: rgba(0,0,0,0.5) !important;
       border-radius: 1em;
       padding: 0.1em 0.3em !important;
@@ -227,6 +228,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
