@@ -43,6 +43,7 @@
       display: flex;
       align-items: center;
       border-radius: 1em;
+      padding: 0.1em 0.3em !important;
       gap: 0.2em;
     }
     .card__series-ongoing span {
@@ -225,6 +226,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
