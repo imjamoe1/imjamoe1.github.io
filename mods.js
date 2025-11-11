@@ -446,44 +446,37 @@ rating_kp_imdb: function (card) {
             return;
         }
 
-        var relise = (card.number_of_seasons ? card.first_air_date : card.release_date) || '0000';
-        var year = parseInt((relise + '').slice(0, 4));
-        
-        // Используем логику из плагина вместо сложных проверок MODSs
+        // Просто активируем плагин и все
         if (['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
+            console.log('MODSs: Активируем рейтинги для карточки', card.title);
+            
+            // Добавляем индикатор загрузки
             $('.info__rate', Lampa.Activity.active().activity.render()).after('<div style="width:2em;margin-top:1em;margin-right:1em" class="wait_rating"><div class="broadcast__scan"><div></div></div><div>');
             
-            // ВАЖНО: Проверяем глобальную функцию плагина, а не текущий метод
-            if (window.rating_plugin && window.rating_kp_imdb_plugin) {
-                // Вызываем функцию из плагина
-                window.rating_kp_imdb_plugin(card);
-                resolve();
-                return;
+            // Убедимся что плагин активен
+            if (!window.rating_plugin && typeof startPlugin === 'function') {
+                console.log('MODSs: Запускаем плагин рейтингов');
+                startPlugin();
             }
-            // Альтернативная проверка - ищем глобальную функцию
-            else if (typeof window.rating_kp_imdb === 'function' && window.rating_plugin) {
-                window.rating_kp_imdb(card);
-                resolve();
-                return;
-            }
-        }
-
-        // Если плагин не доступен, используем резервную логику MODSs
-        // Но лучше просто показать заглушки, чтобы избежать ошибок сети
-        console.log('MODSs: Плагин рейтингов недоступен, используем заглушки');
-        
-        // Убираем индикатор загрузки
-        $('.wait_rating', Lampa.Activity.active().activity.render()).remove();
-        
-        // Показываем базовые рейтинги
-        if (card && ['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
-            $('.rate--imdb', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text('0.0');
-            $('.rate--kp', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text('0.0');
+            
+            // Плагин сам через Lampa.Listener обработает карточку
+            // Просто ждем немного и убираем индикатор если плагин не сработал
+            setTimeout(function() {
+                var render = Lampa.Activity.active().activity.render();
+                // Если индикатор еще есть, а рейтинги не появились - убираем индикатор
+                if ($('.wait_rating', render).length && 
+                    ($('.rate--kp', render).hasClass('hide') || $('.rate--kp', render).find('> div').eq(0).text() === '0.0')) {
+                    $('.wait_rating', render).remove();
+                    console.log('MODSs: Плагин не сработал, показываем заглушки');
+                    $('.rate--imdb', render).removeClass('hide').find('> div').eq(0).text('0.0');
+                    $('.rate--kp', render).removeClass('hide').find('> div').eq(0).text('0.0');
+                }
+            }, 5000);
         }
         
         resolve();
     });
-},   
+},
     balansers: function() {
 		  var balansers = {"lumex":"Lumex  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","collaps":"Collaps","filmix":"Filmix","hdr":"MODS's [4K, HDR]  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","videx":"ViDEX  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","fxpro":"FXpro 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","kinopub":"KinoPub 4K","alloha":"Alloha 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","videodb":"VideoDB  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","iremux":"IRemux 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","hdrezka":"HDRezka 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","zetflix":"Zetflix  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","uakino":"UAKino <img style=\"width:1.3em!important;height:1em!important\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAd0lEQVR4nO3VsQ3AMAhEUVZhiKzKbOyRGpHW8gKni/6T6A0+7AgAAP4g612nChoobmCJ0EkdiWSJSz/V5Bkt/WSTj6w8Km7qAyUNlHmEpp91qqCB5gaWCJ3UkRiWuPVTHZ7R1k92+Mjao+KmPtDQQJtHCACAMPQBoXuvu3x1za4AAAAASUVORK5CYII=\"> 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","eneida":"Eneida <img style=\"width:1.3em!important;height:1em!important\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAd0lEQVR4nO3VsQ3AMAhEUVZhiKzKbOyRGpHW8gKni/6T6A0+7AgAAP4g612nChoobmCJ0EkdiWSJSz/V5Bkt/WSTj6w8Km7qAyUNlHmEpp91qqCB5gaWCJ3UkRiWuPVTHZ7R1k92+Mjao+KmPtDQQJtHCACAMPQBoXuvu3x1za4AAAAASUVORK5CYII=\">  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","kodik":"Kodik  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","anilibria":"Anilibria  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","hdvb":"HDVB  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","kinotochka":"KinoTochka  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","mango":"ManGo 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>"};
       if (Lampa.Storage.get('pro_pub', false)) balansers = Object.assign({"pub":"Pub"}, balansers);
@@ -11273,6 +11266,7 @@ rating_kp_imdb: function (card) {
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
 
 
 
