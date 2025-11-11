@@ -2,7 +2,7 @@
     'use strict';
 
     function replaceLoader() {
-        $('#aniload-id').remove();
+        $('#loader').remove();
         
         const newStyle_activity_loader = `
             .activity__loader {
@@ -11,7 +11,7 @@
             }
         `;
         
-        $('<style id="aniload-id">' + newStyle_activity_loader + '</style>').appendTo('head');
+        $('<style id="loader">' + newStyle_activity_loader + '</style>').appendTo('head');
     }
 
     if (window.Lampa && Lampa.Storage && Lampa.Listener) {
