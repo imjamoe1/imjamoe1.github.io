@@ -439,63 +439,84 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
   		  }
 			}
 		}, 
-rating_kp_imdb:function (card) {
+rating_kp_imdb: function (card) {
     return new Promise(function (resolve, reject) {
-        // Проверка всех необходимых переменных
-        if(!window.API) {
-            Lampa.Noty.show('MODSs: API адрес не задан');
-            resolve();
-            return;
-        }
-        
-        if(!Lampa.Storage.get('user_id') && !window.user_id) {
-            Lampa.Noty.show('MODSs: User ID не задан');
-            resolve();
-            return;
-        }
-        
-        if(!window.uid) {
-            Lampa.Noty.show('MODSs: UID не задан');
-            resolve();
-            return;
-        }
-
-        if(card) {
+        if (card) {
             var relise = (card.number_of_seasons ? card.first_air_date : card.release_date) || '0000';
             var year = parseInt((relise + '').slice(0, 4));
             
+            // Используем логику из плагина вместо сложных проверок MODSs
             if (['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
                 $('.info__rate', Lampa.Activity.active().activity.render()).after('<div style="width:2em;margin-top:1em;margin-right:1em" class="wait_rating"><div class="broadcast__scan"><div></div></div><div>');
+                
+                // Вызываем функцию из плагина
+                if (window.rating_plugin && typeof rating_kp_imdb === 'function') {
+                    rating_kp_imdb(card);
+                    resolve();
+                    return;
+                }
             }
         }
-        
-        // Остальной код без изменений
+
+        // Если плагин не доступен, используем резервную логику MODSs
         Pub.network.clear();
         Pub.network.timeout(10000);
         Pub.network.silent(API + 'KPrating', function (json) {
-            // УБРАТЬ тестовые данные!
+            // УБРАТЬ тестовые данные - использовать реальный ответ
             // json = { ... }; // ← Закомментировать или удалить эту строку!
-            
-            // Использовать реальный ответ
-            if(json && json.data) {
+
+            if (json && json.data) {
                 vip = json.data.vip;
-                // ... остальная логика
+                
+                if (card && !card.kinopoisk_id && json.data && json.data.kp_id) {
+                    card.kinopoisk_ID = json.data.kp_id;
+                }
+                
+                var kp = json.data && json.data.kp_rating || 0;
+                var imdb = json.data && json.data.imdb_rating || 0;
+                var auth = true;
+
+                // Упрощенная логика авторизации
+                if ((!vip && logged == 'false' && leftVipD !== json.data.leftDays && auth && json.data.vip) || 
+                    (vip && logged == true && leftVipD !== json.data.leftDays && auth == 'false' && !json.data.vip)) {
+                    window.location.reload();
+                }
+
+                if (json.data.leftDays) leftVipD = json.data.leftDays;
+                if (!vip) Lampa.Storage.set('showModssVip', true);
+
+                if (json.data.block_ip || !ping_auth && auth == 'pending' || auth && json.data.block || auth == 'true' && !json.data.vip) {
+                    Modss.auth(true);
+                }
+                vip = true;
+
+                var kp_rating = !isNaN(kp) && kp !== null ? parseFloat(kp).toFixed(1) : '0.0';
+                var imdb_rating = !isNaN(imdb) && imdb !== null ? parseFloat(imdb).toFixed(1) : '0.0';
+                
+                if (card && ['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
+                    $('.wait_rating', Lampa.Activity.active().activity.render()).remove();
+                    $('.rate--imdb', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text(imdb_rating);
+                    $('.rate--kp', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text(kp_rating);
+                }
             }
             resolve();
         }, function (a, c) {
             resolve();
-            Lampa.Noty.show('MODSs ОШИБКА Рейтинг KP: ' + Pub.network.errorDecode(a, c));
+            // Показываем ошибку только если это не таймаут
+            if (a !== 0) {
+                Lampa.Noty.show('MODSs ОШИБКА Рейтинг KP: ' + Pub.network.errorDecode(a, c));
+            }
         }, {
-            title: card && card.title || '', 
-            year: card && year || '', 
-            card_id: card && card.id || '', 
-            imdb: card && card.imdb_id || '',
-            source: card && card.source || '',
-            user_id: user_id || Lampa.Storage.get('user_id'),
+            title: card && card.title || logged,
+            year: card && year || logged,
+            card_id: card && card.id || logged,
+            imdb: card && card.imdb_id || logged,
+            source: card && card.source || logged,
+            user_id: user_id,
             uid: uid,
             ips: '',
             id: '',
-            auth: logged || 'false'
+            auth: logged
         });
     });
 },
@@ -11384,6 +11405,7 @@ rating_kp_imdb:function (card) {
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
 
 
 
