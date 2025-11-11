@@ -35,8 +35,8 @@
       vertical-align: middle;
     }
     .card__series-completed-svg {
-      width: 9px !important;
-      height: 9px !important;
+      width: 7px !important;
+      height: 7px !important;
       display: inline-block;
       margin: 0 auto !important;
       //vertical-align: middle !important;
@@ -229,6 +229,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
