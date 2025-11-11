@@ -7,7 +7,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		return window.location.protocol == 'https:' ? 'https://' : 'http://';
 	}
 	var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-	var version_modss = '3.2', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '60efb6412cd5083cf154c58d0', IP = '46.236.175.127', logged = false;
+	var version_modss = '3.2', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '', IP = '', logged = false;
 	console.log('App', 'protocol:', Protocol());
 	console.log('Modss', 'plugin', 'loaded');
 	
@@ -462,7 +462,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
                 "auth": "true",
                 "vip": true,
                 "user_id": "",
-                "ip": "46.236.175.127",
+                "ip": "",
                 "deviceName": "💻 Windows NT 10.0 (x64)",
                 "expires_in": 180000,
                 "interval": 5000
@@ -502,7 +502,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
   			  source: card && card.source || logged,
   			  user_id: user_id,
   			  uid: uid,
-  			  ips: '46.236.175.127',
+  			  ips: '',
           id: '',
           auth: logged
   			});
@@ -577,7 +577,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
             user_id: user_id,
             uid: uid,
             id: '',
-            ips: '46.236.175.127',
+            ips: '',
             auth: logged,
             kp: kp
           });
@@ -11393,3 +11393,4 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
