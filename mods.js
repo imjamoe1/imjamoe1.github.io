@@ -439,75 +439,54 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
   		  }
 			}
 		}, 
-	  rating_kp_imdb:function (card) {
-			return new Promise(function (resolve, reject) {
-  			if(card) {
-          var relise = (card.number_of_seasons ? card.first_air_date : card.release_date) || '0000';
-          var year = parseInt((relise + '').slice(0, 4));
-          //if (Lampa.Storage.field('mods_rating') && $('.rate--kp', Lampa.Activity.active().activity.render()).hasClass('hide') && !$('.wait_rating', Lampa.Activity.active().activity.render()).length) 
-          if (['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating'))
-          eval(function(a,b,c){if(a||c){while(a--)b=b.replace(new RegExp(a,'g'),c[a]);}return b;}(6,'1(!0 || !0.2) 5.3.4();','API,if,length,location,reload,window'.split(',')));
-          $('.info__rate', Lampa.Activity.active().activity.render()).after('<div style="width:2em;margin-top:1em;margin-right:1em" class="wait_rating"><div class="broadcast__scan"><div></div></div><div>');
-  		  }
-        Pub.network.clear();
-  			Pub.network.timeout(10000);
-  			Pub.network.silent(API + 'KPrating', function (json) {
-          json = {
-            "satus": 200,
-            "data": {
-                "kp_rating": "6.816",
-                "imdb_rating": "6.3",
-                "kp_id": 1073122,
-                "success": true,
-                "auth": "true",
-                "vip": true,
-                "user_id": "",
-                "ip": "",
-                "deviceName": "💻 Windows NT 10.0 (x64)",
-                "expires_in": 180000,
-                "interval": 5000
+rating_kp_imdb:function (card) {
+    return new Promise(function (resolve, reject) {
+        if(card) {
+            var relise = (card.number_of_seasons ? card.first_air_date : card.release_date) || '0000';
+            var year = parseInt((relise + '').slice(0, 4));
+            
+            if (['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
+                // Упрощенная проверка
+                if(!window.API || !Lampa.Storage.get('user_id')) {
+                    Lampa.Noty.show('MODSs: Настройки не заданы');
+                    resolve();
+                    return;
+                }
+                $('.info__rate', Lampa.Activity.active().activity.render()).after('<div style="width:2em;margin-top:1em;margin-right:1em" class="wait_rating"><div class="broadcast__scan"><div></div></div><div>');
             }
         }
-          vip = json.data.vip
-  				if(card && !card.kinopoisk_id && json.data && json.data.kp_id) card.kinopoisk_ID = json.data.kp_id;
-  				var kp = json.data && json.data.kp_rating || 0;
-  				var imdb = json.data && json.data.imdb_rating || 0;
-  				var auth = true;
-  				
-          if((!vip && logged == 'false' && leftVipD !== json.data.leftDays && auth && json.data.vip) || (vip && logged == true && leftVipD !== json.data.leftDays && auth=='false' && !json.data.vip)) window.location.reload();
-
-  				if(json.data.leftDays) leftVipD = json.data.leftDays;
-  				if(!vip) Lampa.Storage.set('showModssVip', true);
-
-          
-          if(json.data.block_ip || !ping_auth && auth == 'pending' || auth && json.data.block || auth == 'true' && !json.data.vip) Modss.auth(true);
-          vip = true;
-
-          var kp_rating = !isNaN(kp) && kp !== null ? parseFloat(kp).toFixed(1) : '0.0';
-  				var imdb_rating = !isNaN(imdb) && imdb !== null ? parseFloat(imdb).toFixed(1) : '0.0';
-  				if (card && ['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')){
-  					$('.wait_rating',Lampa.Activity.active().activity.render()).remove();
-  					$('.rate--imdb', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text(imdb_rating);
-  					$('.rate--kp', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text(kp_rating);
-  				} 
-  				resolve();
-  			}, function (a, c) {
-  				resolve();
-  				Lampa.Noty.show('MODSs ОШИБКА Рейтинг KP   ' + Pub.network.errorDecode(a, c));
-  			}, {
-  			  title: card && card.title || logged, 
-  			  year: card && year || logged, 
-  			  card_id: card && card.id || logged, 
-  			  imdb: card && card.imdb_id || logged,
-  			  source: card && card.source || logged,
-  			  user_id: user_id,
-  			  uid: uid,
-  			  ips: '',
-          id: '',
-          auth: logged
-  			});
-			});
-		}, 
+        
+        Pub.network.clear();
+        Pub.network.timeout(10000);
+        Pub.network.silent(API + 'KPrating', function (json) {
+            // УБРАТЬ жесткие данные - использовать реальный response
+            console.log('Rating response:', json);
+            
+            if(!json || !json.data) {
+                Lampa.Noty.show('MODSs: Некорректный ответ сервера');
+                resolve();
+                return;
+            }
+            
+            // Остальная логика обработки...
+            
+        }, function (a, c) {
+            resolve();
+            Lampa.Noty.show('MODSs ОШИБКА Рейтинг KP: ' + Pub.network.errorDecode(a, c));
+        }, {
+            title: card && card.title || '', 
+            year: card && year || '', 
+            card_id: card && card.id || '', 
+            imdb: card && card.imdb_id || '',
+            source: card && card.source || '',
+            user_id: user_id,
+            uid: uid,
+            ips: '',
+            id: '',
+            auth: logged
+        });
+    });
+}, 
 		Notice: function (data) {
 		  var id = data.id;
       var card = JSON.parse(data.data).card;
@@ -11393,5 +11372,6 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
 
 
