@@ -441,181 +441,49 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		}, 
 rating_kp_imdb: function (card) {
     return new Promise(function (resolve, reject) {
-        if (card) {
-            var relise = (card.number_of_seasons ? card.first_air_date : card.release_date) || '0000';
-            var year = parseInt((relise + '').slice(0, 4));
+        if (!card) {
+            resolve();
+            return;
+        }
+
+        var relise = (card.number_of_seasons ? card.first_air_date : card.release_date) || '0000';
+        var year = parseInt((relise + '').slice(0, 4));
+        
+        // Используем логику из плагина вместо сложных проверок MODSs
+        if (['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
+            $('.info__rate', Lampa.Activity.active().activity.render()).after('<div style="width:2em;margin-top:1em;margin-right:1em" class="wait_rating"><div class="broadcast__scan"><div></div></div><div>');
             
-            // Используем логику из плагина вместо сложных проверок MODSs
-            if (['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
-                $('.info__rate', Lampa.Activity.active().activity.render()).after('<div style="width:2em;margin-top:1em;margin-right:1em" class="wait_rating"><div class="broadcast__scan"><div></div></div><div>');
-                
+            // ВАЖНО: Проверяем глобальную функцию плагина, а не текущий метод
+            if (window.rating_plugin && window.rating_kp_imdb_plugin) {
                 // Вызываем функцию из плагина
-                if (window.rating_plugin && typeof rating_kp_imdb === 'function') {
-                    rating_kp_imdb(card);
-                    resolve();
-                    return;
-                }
+                window.rating_kp_imdb_plugin(card);
+                resolve();
+                return;
+            }
+            // Альтернативная проверка - ищем глобальную функцию
+            else if (typeof window.rating_kp_imdb === 'function' && window.rating_plugin) {
+                window.rating_kp_imdb(card);
+                resolve();
+                return;
             }
         }
 
         // Если плагин не доступен, используем резервную логику MODSs
-        Pub.network.clear();
-        Pub.network.timeout(10000);
-        Pub.network.silent(API + 'KPrating', function (json) {
-            // УБРАТЬ тестовые данные - использовать реальный ответ
-            // json = { ... }; // ← Закомментировать или удалить эту строку!
-
-            if (json && json.data) {
-                vip = json.data.vip;
-                
-                if (card && !card.kinopoisk_id && json.data && json.data.kp_id) {
-                    card.kinopoisk_ID = json.data.kp_id;
-                }
-                
-                var kp = json.data && json.data.kp_rating || 0;
-                var imdb = json.data && json.data.imdb_rating || 0;
-                var auth = true;
-
-                // Упрощенная логика авторизации
-                if ((!vip && logged == 'false' && leftVipD !== json.data.leftDays && auth && json.data.vip) || 
-                    (vip && logged == true && leftVipD !== json.data.leftDays && auth == 'false' && !json.data.vip)) {
-                    window.location.reload();
-                }
-
-                if (json.data.leftDays) leftVipD = json.data.leftDays;
-                if (!vip) Lampa.Storage.set('showModssVip', true);
-
-                if (json.data.block_ip || !ping_auth && auth == 'pending' || auth && json.data.block || auth == 'true' && !json.data.vip) {
-                    Modss.auth(true);
-                }
-                vip = true;
-
-                var kp_rating = !isNaN(kp) && kp !== null ? parseFloat(kp).toFixed(1) : '0.0';
-                var imdb_rating = !isNaN(imdb) && imdb !== null ? parseFloat(imdb).toFixed(1) : '0.0';
-                
-                if (card && ['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
-                    $('.wait_rating', Lampa.Activity.active().activity.render()).remove();
-                    $('.rate--imdb', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text(imdb_rating);
-                    $('.rate--kp', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text(kp_rating);
-                }
-            }
-            resolve();
-        }, function (a, c) {
-            resolve();
-            // Показываем ошибку только если это не таймаут
-            if (a !== 0) {
-                Lampa.Noty.show('MODSs ОШИБКА Рейтинг KP: ' + Pub.network.errorDecode(a, c));
-            }
-        }, {
-            title: card && card.title || logged,
-            year: card && year || logged,
-            card_id: card && card.id || logged,
-            imdb: card && card.imdb_id || logged,
-            source: card && card.source || logged,
-            user_id: user_id,
-            uid: uid,
-            ips: '',
-            id: '',
-            auth: logged
-        });
-    });
-},
-		Notice: function (data) {
-		  var id = data.id;
-      var card = JSON.parse(data.data).card;
-      setTimeout(function() {
-        if(Lampa.Notice.classes.modss.notices.find(function (n) {
-          return n.id == id;
-        })) return;
+        // Но лучше просто показать заглушки, чтобы избежать ошибок сети
+        console.log('MODSs: Плагин рейтингов недоступен, используем заглушки');
         
-        var bals = [];
-        for (var b in data.find){
-          bals.push('<b>'+b+'</b> - '+data.find[b].join(', '));
+        // Убираем индикатор загрузки
+        $('.wait_rating', Lampa.Activity.active().activity.render()).remove();
+        
+        // Показываем базовые рейтинги
+        if (card && ['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
+            $('.rate--imdb', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text('0.0');
+            $('.rate--kp', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text('0.0');
         }
-        Lampa.Notice.pushNotice('modss',{
-          id: id,
-          from: 'modss',
-          title: card.name,
-          text: 'Переводы на балансерах где есть '+data.episode+' серия',
-          time: Date.now(), 
-          poster: card.poster_path,
-          card: card,
-          labels: bals
-        },function(){
-          console.log('Успешно');
-        },function(e){
-          console.log('Чет пошло не так',e);
-        });
-      }, 1000);
-      
-      Lampa.Notice.listener.follow('select',function (e) {
-        if(e.element.from == 'modss'){
-          Lampa.Notice.close();
-        }
-      });
-		},
-    auth: function(kp) {
-      function authFn(kp) {
-        eval(function(a,b,c){if(a||c){while(a--)b=b.replace(new RegExp(a,'g'),c[a]);}return b;}(6,'1(!0 || !0.2) 5.3.4();','API,if,length,location,reload,window'.split(',')));
-        return new Promise(function(resolve, reject) {
-          Pub.network.clear();
-          Pub.network.timeout(15000);
-          Pub.network.silent(API + 'device/auth', function(json) {
-            if (!json.success) window.location.reload();
-            var auth = json.auth;
-            logged = auth;
-
-            console.log('Modss', 'auth', auth);
-    
-            if (auth === true || auth === 'true' && json.stop_auth === true) {
-              if (json.block && json.stop_auth) {
-                logged = false;
-                Lampa.Account.logoff({email:Lampa.Storage.get('account_email')})
-              }
-              stopAuthInterval();
-              window.location.reload();
-            } else if (json.stop_auth === true) {
-              if (json.block) {
-                logged = false;
-                Lampa.Account.logoff({email:Lampa.Storage.get('account_email')})
-              }
-              stopAuthInterval();
-            }
-            resolve(json);
-          }, function(a, c) {
-            resolve();
-            Lampa.Noty.show('MODSs ОШИБКА Авторизации   ' + Pub.network.errorDecode(a, c));
-          }, {
-            user_id: user_id,
-            uid: uid,
-            id: '',
-            ips: '',
-            auth: logged,
-            kp: kp
-          });
-        });
-      }
-      
-      authFn(kp)
-      .then(function(start) {
-        setTimeout(function() {
-          stopAuthInterval();
-        }, start.expires_in);
-        if(!start.block_ip) ping_auth = setInterval(authFn, start.interval);
-      })
-      .catch(function(error) {
-        console.error(error);
-      });
-
-      function stopAuthInterval() {
-        clearInterval(ping_auth);
-        ping_auth = null;
-      }
-    
-      return {
-        stop: stopAuthInterval // Возвращаем функцию остановки интервала
-      };
-    },    
+        
+        resolve();
+    });
+},   
     balansers: function() {
 		  var balansers = {"lumex":"Lumex  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","collaps":"Collaps","filmix":"Filmix","hdr":"MODS's [4K, HDR]  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","videx":"ViDEX  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","fxpro":"FXpro 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","kinopub":"KinoPub 4K","alloha":"Alloha 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","videodb":"VideoDB  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","iremux":"IRemux 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","hdrezka":"HDRezka 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","zetflix":"Zetflix  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","uakino":"UAKino <img style=\"width:1.3em!important;height:1em!important\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAd0lEQVR4nO3VsQ3AMAhEUVZhiKzKbOyRGpHW8gKni/6T6A0+7AgAAP4g612nChoobmCJ0EkdiWSJSz/V5Bkt/WSTj6w8Km7qAyUNlHmEpp91qqCB5gaWCJ3UkRiWuPVTHZ7R1k92+Mjao+KmPtDQQJtHCACAMPQBoXuvu3x1za4AAAAASUVORK5CYII=\"> 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","eneida":"Eneida <img style=\"width:1.3em!important;height:1em!important\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAd0lEQVR4nO3VsQ3AMAhEUVZhiKzKbOyRGpHW8gKni/6T6A0+7AgAAP4g612nChoobmCJ0EkdiWSJSz/V5Bkt/WSTj6w8Km7qAyUNlHmEpp91qqCB5gaWCJ3UkRiWuPVTHZ7R1k92+Mjao+KmPtDQQJtHCACAMPQBoXuvu3x1za4AAAAASUVORK5CYII=\">  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","kodik":"Kodik  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","anilibria":"Anilibria  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","hdvb":"HDVB  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","kinotochka":"KinoTochka  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>","mango":"ManGo 4K  <span style=\"font-weight: 700;color:rgb(236,151,31)\">VIP</span>"};
       if (Lampa.Storage.get('pro_pub', false)) balansers = Object.assign({"pub":"Pub"}, balansers);
@@ -11405,6 +11273,7 @@ rating_kp_imdb: function (card) {
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
 
 
 
