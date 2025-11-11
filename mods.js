@@ -11324,14 +11324,14 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		include('https://cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js');
 		include('https://cdn.jsdelivr.net/npm/gaugeJS/dist/gauge.min.js');
 		
-		/*include('https://www.googletagmanager.com/gtag/js?id=G-8LVPC3VETR');
+		/*include('https://www.googletagmanager.com/gtag/js?id=');
 		window.dataLayer = window.dataLayer || [];
 		function gtag() {
-			var idl = '46.236.175.127';
+			var idl = '';
 			dataLayer.push(arguments);
 		}
 		gtag('js', new Date());
-		gtag('config', 'G-8LVPC3VETR');
+		gtag('config', '');
 		*/
 		
 		function guide() {
@@ -11393,4 +11393,5 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
 
