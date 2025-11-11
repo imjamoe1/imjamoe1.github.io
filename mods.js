@@ -441,35 +441,47 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		}, 
 rating_kp_imdb:function (card) {
     return new Promise(function (resolve, reject) {
+        // Проверка всех необходимых переменных
+        if(!window.API) {
+            Lampa.Noty.show('MODSs: API адрес не задан');
+            resolve();
+            return;
+        }
+        
+        if(!Lampa.Storage.get('user_id') && !window.user_id) {
+            Lampa.Noty.show('MODSs: User ID не задан');
+            resolve();
+            return;
+        }
+        
+        if(!window.uid) {
+            Lampa.Noty.show('MODSs: UID не задан');
+            resolve();
+            return;
+        }
+
         if(card) {
             var relise = (card.number_of_seasons ? card.first_air_date : card.release_date) || '0000';
             var year = parseInt((relise + '').slice(0, 4));
             
             if (['filmix', 'pub'].indexOf(card.source) == -1 && Lampa.Storage.field('mods_rating')) {
-                // Упрощенная проверка
-                if(!window.API || !Lampa.Storage.get('user_id')) {
-                    Lampa.Noty.show('MODSs: Настройки не заданы');
-                    resolve();
-                    return;
-                }
                 $('.info__rate', Lampa.Activity.active().activity.render()).after('<div style="width:2em;margin-top:1em;margin-right:1em" class="wait_rating"><div class="broadcast__scan"><div></div></div><div>');
             }
         }
         
+        // Остальной код без изменений
         Pub.network.clear();
         Pub.network.timeout(10000);
         Pub.network.silent(API + 'KPrating', function (json) {
-            // УБРАТЬ жесткие данные - использовать реальный response
-            console.log('Rating response:', json);
+            // УБРАТЬ тестовые данные!
+            // json = { ... }; // ← Закомментировать или удалить эту строку!
             
-            if(!json || !json.data) {
-                Lampa.Noty.show('MODSs: Некорректный ответ сервера');
-                resolve();
-                return;
+            // Использовать реальный ответ
+            if(json && json.data) {
+                vip = json.data.vip;
+                // ... остальная логика
             }
-            
-            // Остальная логика обработки...
-            
+            resolve();
         }, function (a, c) {
             resolve();
             Lampa.Noty.show('MODSs ОШИБКА Рейтинг KP: ' + Pub.network.errorDecode(a, c));
@@ -479,14 +491,14 @@ rating_kp_imdb:function (card) {
             card_id: card && card.id || '', 
             imdb: card && card.imdb_id || '',
             source: card && card.source || '',
-            user_id: user_id,
+            user_id: user_id || Lampa.Storage.get('user_id'),
             uid: uid,
             ips: '',
             id: '',
-            auth: logged
+            auth: logged || 'false'
         });
     });
-}, 
+},
 		Notice: function (data) {
 		  var id = data.id;
       var card = JSON.parse(data.data).card;
@@ -11372,6 +11384,7 @@ rating_kp_imdb:function (card) {
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
 
 
 
