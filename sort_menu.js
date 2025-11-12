@@ -350,7 +350,7 @@
                     let settings = $('.settings')      
                           
                     if(!settings.length || !settings.find('.settings-folder').length){      
-                        Lampa.Noty.show('Меню налаштувань ще не завантажене')      
+                        Lampa.Noty.show('Меню настроек еще не загружено')      
                         return      
                     }      
                           
@@ -582,3 +582,4 @@
         
     if(!window.plugin_menu_editor_ready) startPlugin()        
 })();
+
