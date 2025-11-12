@@ -19,6 +19,7 @@
         '    top: 0 !important;',
         '    right: 0 !important;',
         '    bottom: 0 !important;',
+        '    background: #ff4242',
         '    border: 3px solid rgba(0, 0, 0, 0.8) !important;', // Более толстая и темная рамка
         '    border-radius: inherit !important;',
         '    z-index: 1 !important;',
