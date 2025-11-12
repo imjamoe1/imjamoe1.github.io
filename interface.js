@@ -798,17 +798,28 @@ function create() {
                  }
             }
 
-            // Build Line 1 Details (Runtime, PG)
-            if (data.runtime) {
-                lineOneDetails.push(Lampa.Utils.secondsToTime(data.runtime * 60, true));
-            }
-            if (pg) {
-                lineOneDetails.push('<span class="full-start__pg" style="font-size: 0.9em;">' + pg + '</span>');
-            }
-
-            // Build Genre Details
             if (data.genres && data.genres.length > 0) {
-                genreDetails.push(data.genres.map(function (item) { return Lampa.Utils.capitalizeFirstLetter(item.name); }).join(' | '));
+                var genresText = data.genres.map(function (item) { 
+                    return Lampa.Utils.capitalizeFirstLetter(item.name); 
+                }).join(' | ');
+
+                // Создаем массив для дополнительной информации (время и рейтинг)
+                var additionalInfo = [];
+    
+                if (data.runtime) {
+                    additionalInfo.push(Lampa.Utils.secondsToTime(data.runtime * 60, true));
+                }
+                if (pg) {
+                    additionalInfo.push('<span class="full-start__pg" style="font-size: 0.9em;">' + pg + '</span>');
+                }
+    
+                // Объединяем жанры с дополнительной информацией в одну строку
+                if (additionalInfo.length > 0) {
+                    genresText += ' <span class="new-interface-info__split">●</span> ' + additionalInfo.join(' <span class="new-interface-info__split">&#9679;</span> ');
+                }
+    
+                // Добавляем объединенную строку в genreDetails
+                genreDetails.push(genresText);
             }
 
             // Update HTML
@@ -818,12 +829,12 @@ function create() {
             let genresHtml = genreDetails.length > 0 ? genreDetails[0] : '';
 
             let finalDetailsHtml = '';
-            if (lineOneDetails.length > 0) {
-                 finalDetailsHtml += `<div class="line-one-details">${lineOneHtml}</div>`;
+            if (genresHtml) {
+                finalDetailsHtml += `<div class="genre-details-line">${genresHtml}</div>`;
             }
-             if (genresHtml) {
-                 finalDetailsHtml += `<div class="genre-details-line">${genresHtml}</div>`;
-             }
+            if (lineOneDetails.length > 0) {
+                finalDetailsHtml += `<div class="line-one-details">${lineOneHtml}</div>`;
+            }
 
             html.find('.new-interface-info__details').html(finalDetailsHtml);
         };
@@ -1295,11 +1306,12 @@ Lampa.SettingsApi.addParam({
                 will-change: opacity;
             }
             .line-one-details {
-                margin-bottom: 0.6em;
+                margin-top: 0.5em;
+                margin-left: -0.5em;
                 line-height: 1.5;
             }
             .genre-details-line {
-                margin-top: 0.5em;
+                margin-bottom: 0.6em;
                 font-size: 1.5em;
                 font-weight: 700;
                 word-spacing: -3px;
@@ -1320,8 +1332,11 @@ Lampa.SettingsApi.addParam({
             body.advanced--animation:not(.no--animation) .new-interface .card--small.card--wide.animate-trigger-enter .card__view { animation: animation-trigger-enter 0.2s forwards; }
 
             /* --- Rating Box Styles --- */
+            .new-interface .full-start__pg {
+                font-size: 0.7em !important;
+            }
             .new-interface .full-start__rate {
-                font-size: 1.3em;
+                font-size: 1.5em;
                 margin-right: 0;
                 display: inline-flex;
                 align-items: center;
@@ -1366,7 +1381,7 @@ Lampa.SettingsApi.addParam({
                 }
             }
             .new-interface .full-start__rate > div {
-                font-weight: normal;
+                font-weight: bold;
                 font-size: 0.9em;
                 justify-content: center;
                 background-color: rgba(0, 0, 0, 0.4);
