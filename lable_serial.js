@@ -40,8 +40,8 @@
                 "    padding: 0.4em 0.4em;",
                 "    border-radius: 0.5em;",
                 "    font-weight: 600;",
-                "    border: 1px solid #fff !important;",
-                "    background-color: rgba(0, 0, 0, 0.5);",
+                "    border: 1px solid #fff;",
+                "    background-color: rgba(0, 0, 0, 0.7);",
                 "    font-size: 0.95em;",
                 "}",
                 "</style>"
