@@ -13,17 +13,17 @@
         '}',
         '.card[data-type="tv"] .card__poster:after,',
         '.card--tv .card__poster:after {',
-        '    content: "";',
         '    position: absolute;',
-        '    left: 0;',
-        '    top: 0;',
-        '    right: 0;',
-        '    bottom: 0;',
-        '    border: 2px solid rgba(0, 0, 0, 0.7);', // Темная полупрозрачная рамка
-        '    border-radius: inherit;', // Сохраняем скругленность
-        '    z-index: 1;',
-        '    pointer-events: none;',
-        '    box-sizing: border-box;',
+        '    left: 0.5em;',
+        '    top: 0.25em;',
+        '    padding: 0.2em 0.3em;',
+        '    font-size: 0.9em;',
+        '    border-radius: 0.5em;',
+        '    font-weight: bold;',
+        '    z-index: 2;',
+        '    box-shadow: 0 2px 8px rgba(0,0,0,0.15);',
+        '    letter-spacing: 0.04em;',
+        '    line-height: 1;',
         '}'
     ].join('\n');
     document.head.appendChild(style);
