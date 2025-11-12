@@ -9,21 +9,21 @@
         /* Добавляем темную полупрозрачную рамку для сериалов */
         '.card[data-type="tv"] .card__poster,',
         '.card--tv .card__poster {',
-        '    position: relative;',
+        '    position: relative !important;',
         '}',
         '.card[data-type="tv"] .card__poster:after,',
         '.card--tv .card__poster:after {',
-        '    position: absolute;',
-        '    left: 0.5em;',
-        '    top: 0.25em;',
-        '    padding: 0.2em 0.3em;',
-        '    font-size: 0.9em;',
-        '    border-radius: 0.5em;',
-        '    font-weight: bold;',
-        '    z-index: 2;',
-        '    box-shadow: 0 2px 8px rgba(0,0,0,0.15);',
-        '    letter-spacing: 0.04em;',
-        '    line-height: 1;',
+        '    content: "" !important;',
+        '    position: absolute !important;',
+        '    left: 0 !important;',
+        '    top: 0 !important;',
+        '    right: 0 !important;',
+        '    bottom: 0 !important;',
+        '    border: 3px solid rgba(0, 0, 0, 0.8) !important;', // Более толстая и темная рамка
+        '    border-radius: inherit !important;',
+        '    z-index: 1 !important;',
+        '    pointer-events: none !important;',
+        '    box-sizing: border-box !important;',
         '}'
     ].join('\n');
     document.head.appendChild(style);
