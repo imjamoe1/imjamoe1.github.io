@@ -1307,7 +1307,7 @@ Lampa.SettingsApi.addParam({
             }
             .line-one-details {
                 margin-top: 0.5em;
-                margin-left: -0.5em;
+                //margin-left: -0.5em;
                 line-height: 1.5;
             }
             .genre-details-line {
