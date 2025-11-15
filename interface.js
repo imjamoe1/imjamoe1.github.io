@@ -1394,6 +1394,18 @@ Lampa.SettingsApi.addParam({
                 align-items: center;
                 flex-shrink: 0;
             }
+             .card__vote {
+                position: absolute;
+                bottom: 0 !important;
+                right: 0 !important;
+                width: 2.2em;
+                height: 1.1em;
+                padding: 0.1em 0.4em;
+                font-size: 1em !important;
+                font-weight: bold;
+                background-color: rgba(0, 0, 0, 0.5) !important;
+                border-radius:  0.5em 0 0.9em 0 !important;
+            }
             .rating-logo {
                 height: 1.1em;
                 width: auto;
