@@ -1400,7 +1400,7 @@ Lampa.SettingsApi.addParam({
                 right: 0 !important;
                 width: 2.2em;
                 height: 1.1em;
-                padding: 0.08em 0.4em;
+                padding: 0.07em 0.4em;
                 font-size: 1em !important;
                 font-weight: bold;
                 background-color: rgba(0, 0, 0, 0.5) !important;
