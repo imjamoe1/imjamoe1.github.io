@@ -39,8 +39,8 @@
                             .menu-edit-list__icon > img {        
                                 width: 1.4em !important;        
                                 height: 1.4em !important;        
-                            }        
-                                    
+                            }
+        
                             .menu-edit-list__title {        
                                 font-size: 1.3em !important;        
                                 font-weight: 300 !important;        
@@ -112,18 +112,42 @@
                     uk: 'Приховує нижню панель навігації',
                     en: 'Hides the bottom navigation bar'
                 },    
-                // Переводы для верхнего меню    
+                // Переводы для верхнего меню
+                head_action_sources: {    
+                    ru: 'Источники',    
+                    en: 'Sources',    
+                    uk: 'Джерела',    
+                    zh: '来源'    
+                },    
                 head_action_search: {    
                     ru: 'Поиск',    
                     en: 'Search',    
                     uk: 'Пошук',    
                     zh: '搜索'    
+                },
+                head_action_ai_search: {    
+                    ru: 'AI Поиск',    
+                    en: 'AI Search',    
+                    uk: 'AI Пошук',    
+                    zh: 'AI 搜索'    
                 },    
                 head_action_feed: {    
                     ru: 'Лента',    
                     en: 'Feed',    
                     uk: 'Стрічка',    
                     zh: '动态'    
+                },
+                head_action_premium: {    
+                    ru: 'Премиум',    
+                    en: 'Premium',    
+                    uk: 'Преміум',    
+                    zh: '优质的'    
+                },
+                head_action_noticescreen: {    
+                    ru: 'Уведомления Uncensored',    
+                    en: 'Notifications Uncensored',    
+                    uk: 'Сповіщення Uncensored',    
+                    zh: '未审查的通知'    
                 },    
                 head_action_notice: {    
                     ru: 'Уведомления',    
@@ -154,6 +178,24 @@
                     en: 'Broadcast',    
                     uk: 'Трансляції',    
                     zh: '直播'    
+                },
+                head_action_console: {    
+                    ru: 'Консоль',    
+                    en: 'Console',    
+                    uk: 'Консоль',    
+                    zh: '控制台'    
+                },
+                head_action_reload: {    
+                    ru: 'Перезагрузка',    
+                    en: 'Reload',    
+                    uk: 'Перезавантаження',    
+                    zh: '重新加载'    
+                },
+                head_action_exit: {    
+                    ru: 'Выход',    
+                    en: 'Exit',    
+                    uk: 'Вихід',    
+                    zh: '退出'    
                 },    
                 no_name: {    
                     ru: 'Элемент без названия',    
@@ -163,7 +205,7 @@
                 }    
             })  
   
-            // ИСПРАВЛЕНО: Применение настроек левого меню с улучшенной поддержкой версий  
+            // ИСПРАВЛЕНО: Применение настроек левого меню с улучшенной поддержкой версий 
             function applyLeftMenu() {      
                 let sort = Lampa.Storage.get('menu_sort', [])      
                 let hide = Lampa.Storage.get('menu_hide', [])      
@@ -181,7 +223,7 @@
                 }      
                     
                 // ИСПРАВЛЕНИЕ: Применяем скрытие ко всем пунктам меню из обеих секций  
-                // Сначала снимаем все скрытия 
+                // Сначала снимаем все скрытия  
                 $('.menu .menu__item').removeClass('hidden')      
                   
                 if(hide.length) {      
@@ -267,23 +309,37 @@
     
             // Функция для получения названия верхнего меню    
             function getHeadActionName(mainClass) {    
-                let titleKey = '';    
-                    
-                if (mainClass.includes('open--search')) {    
-                    titleKey = 'head_action_search';    
+                let titleKey = '';
+    
+                if (mainClass.includes('sources')) {    
+                    titleKey = 'head_action_sources';  
+                } else if (mainClass.includes('open--search')) {    
+                    titleKey = 'head_action_search';
+                } else if (mainClass.includes('ai-search')) {    
+                    titleKey = 'head_action_ai_search';    
                 } else if (mainClass.includes('open--feed')) {    
-                    titleKey = 'head_action_feed';    
-                } else if (mainClass.includes('notice--')) {    
+                    titleKey = 'head_action_feed';
+                } else if (mainClass.includes('open--premium')) {    
+                    titleKey = 'head_action_premium';
+                } else if (mainClass.includes('notice-screen')) {    
+                    titleKey = 'head_action_noticescreen';     
+                } else if (mainClass.includes('open--notice')) {    
                     titleKey = 'head_action_notice';    
                 } else if (mainClass.includes('open--settings')) {    
                     titleKey = 'head_action_settings';    
                 } else if (mainClass.includes('open--profile')) {    
                     titleKey = 'head_action_profile';    
-                } else if (mainClass.includes('full--screen')) {    
+                } else if (mainClass.includes('full-screen')) {    
                     titleKey = 'head_action_fullscreen';    
                 } else if (mainClass.includes('open--broadcast')) {    
                     titleKey = 'head_action_broadcast';    
-                }    
+                } else if (mainClass.includes('console-screen')) {    
+                    titleKey = 'head_action_console';
+                } else if (mainClass.includes('reload')) {    
+                    titleKey = 'head_action_reload';
+                } else if (mainClass.includes('exit')) {    
+                    titleKey = 'head_action_exit';    
+                }     
                     
                 return titleKey ? Lampa.Lang.translate(titleKey) : Lampa.Lang.translate('no_name');    
             }
@@ -333,7 +389,7 @@
                     if(isFirstSection) {    
                         item_sort.find('.move-up').on('hover:enter', ()=>{          
                             let prev = item_sort.prev()          
-                            // Ищем предыдущий элемент из первой секции    
+                            // Ищем предыдущий элемент из первой секции     
                             while(prev.length && prev.data('isSecondSection')) {    
                                 prev = prev.prev()    
                             }    
@@ -388,16 +444,21 @@
                 
                 head.find('.head__action').each(function(){            
                     let item_orig = $(this)          
-                    let item_clone = $(this).clone()          
+                    let item_clone = $(this).clone()           
                               
                     let allClasses = item_clone.attr('class').split(' ')          
                     let mainClass = allClasses.find(c =>           
                         c.startsWith('open--') ||           
-                        c.startsWith('notice--') ||           
-                        c.startsWith('full--')          
+                        c.startsWith('notice-') ||           
+                        c.startsWith('full-') ||
+                        c.includes('ai-search') ||
+                        c.includes('sources') ||
+                        c.includes('console') ||
+                        c.includes('reload') ||
+                        c.includes('exit')        
                     ) || ''          
                         
-                    let displayName = getHeadActionName(mainClass)    
+                    let displayName = getHeadActionName(mainClass)   
                               
                     let item_sort = $(`<div class="menu-edit-list__item">            
                         <div class="menu-edit-list__icon"></div>            
@@ -423,8 +484,14 @@
                     let svg = item_clone.find('svg')            
                     if(svg.length) {            
                         item_sort.find('.menu-edit-list__icon').append(svg.clone())            
-                    }            
-                
+                    } else if (mainClass.includes('open--profile')) {
+            // SVG для профиля
+            item_sort.find('.menu-edit-list__icon').html(`<svg style="width: 1.6em; height: 1.6em;" width="48" height="49" viewBox="0 0 48 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24.1445" cy="24.2546" r="23.8115" fill="white" fill-opacity="0.2"></circle>
+                <path d="M24.1464 9.39355C19.9003 9.39355 16.4294 12.8645 16.4294 17.1106C16.4294 21.3567 19.9003 24.8277 24.1464 24.8277C28.3925 24.8277 31.8635 21.3567 31.8635 17.1106C31.8635 12.8645 28.3925 9.39355 24.1464 9.39355ZM37.3901 30.9946C37.1879 30.4891 36.9184 30.0173 36.6151 29.5792C35.0649 27.2877 32.6723 25.7712 29.9764 25.4005C29.6395 25.3669 29.2688 25.4342 28.9991 25.6364C27.5838 26.6811 25.8989 27.2203 24.1465 27.2203C22.3941 27.2203 20.7092 26.6811 19.2938 25.6364C19.0242 25.4342 18.6535 25.3331 18.3165 25.4005C15.6206 25.7712 13.1943 27.2877 11.6779 29.5792C11.3746 30.0173 11.105 30.5228 10.9028 30.9946C10.8018 31.1968 10.8354 31.4327 10.9365 31.6349C11.2061 32.1067 11.5431 32.5785 11.8464 32.9828C12.3181 33.6232 12.8236 34.196 13.3965 34.7352C13.8683 35.2069 14.4075 35.645 14.9467 36.0831C17.6089 38.0714 20.8103 39.116 24.1128 39.116C27.4153 39.116 30.6167 38.0713 33.2789 36.0831C33.8181 35.6788 34.3573 35.2069 34.8291 34.7352C35.3683 34.196 35.9074 33.6231 36.3793 32.9828C36.7162 32.5447 37.0196 32.1067 37.2891 31.6349C37.4575 31.4327 37.4912 31.1967 37.3901 30.9946Z" fill="white"></path>
+            </svg>`);
+        }
+                                   
                     item_sort.find('.move-up').on('hover:enter', ()=>{            
                         let prev = item_sort.prev()          
                         if(prev.length){          
@@ -578,11 +645,16 @@
                 $('.head__action').each(function(){      
                     let classes = $(this).attr('class').split(' ')      
                     let uniqueClass = classes.find(c =>       
-                        c.startsWith('open--') ||       
-                        c.startsWith('notice--') ||       
-                        c.startsWith('full--')      
+                        c.startsWith('open--') ||           
+                        c.startsWith('notice-') ||           
+                        c.startsWith('full-') ||
+                        c.includes('ai-search') || 
+                        c.includes('sources') ||
+                        c.includes('console') ||
+                        c.includes('reload') ||
+                        c.includes('exit')
                     )      
-                          
+              
                     if(uniqueClass) {      
                         sort.push(uniqueClass)      
                         if($(this).hasClass('hide')){      
@@ -688,7 +760,7 @@
                     
             addSettings()      
               
-            // ИСПРАВЛЕНО: Увеличен таймау и добавлен слушатель меню  
+            // ИСПРАВЛЕНО: Увеличен таймаут и добавлен слушатель события меню  
             setTimeout(() => {      
                 applyLeftMenu()      
                 setTimeout(applyTopMenu, 300)      
