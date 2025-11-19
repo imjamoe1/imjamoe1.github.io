@@ -318,8 +318,8 @@
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
         "    gap: 6px !important;" +
-        "    height: 20px !important;" +
-        "    margin-right: 25px !important;" +
+        "    height: 22px !important;" +
+        "    margin-right: 20px !important;" +
         "    top: 1px !important;" +
         "}" +
         ".info__rate div {" +
@@ -334,8 +334,8 @@
         "    transform: translateX(-8px) !important;" +
         "}" +
         ".info__rate .rate--icon {" +
-        "    width: 67px !important;" +
-        "    height: 54px !important;" +
+        "    width: 47px !important;" +
+        "    height: 34px !important;" +
         "    display: flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
@@ -2484,5 +2484,6 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
