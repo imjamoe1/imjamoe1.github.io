@@ -333,7 +333,7 @@
         "    font-weight: bold !important;" +
         "}" +
         ".info__rate .rate--icon {" +
-        "    height: 34px !important;" +
+        "    height: 36px !important;" +
         "    width: 42px !important;" +
         "    display: flex !important;" +
         "    align-items: center !important;" +
@@ -2484,6 +2484,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
