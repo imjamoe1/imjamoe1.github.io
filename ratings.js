@@ -329,9 +329,8 @@
         "}" +
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
-        "    margin-right: 2.2em !important;" +
+        "    margin-right: 2.5em !important;" +
         "    font-weight: bold !important;" +
-        //"    transform: translateX(-8px) !important;" +
         "}" +
         ".info__rate .rate--icon {" +
         "    height: 32px !important;" +
@@ -2484,6 +2483,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
