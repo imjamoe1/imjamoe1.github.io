@@ -343,6 +343,7 @@
         "    width: 100% !important;" +
         "    height: 100% !important;" +
         "    transform: translateY(-1px) translateX(-2px) !important;" +
+        "    transform-origin: center bottom !important;" +
         "}" +
         "</style>";
     
@@ -2483,6 +2484,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
