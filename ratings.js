@@ -319,7 +319,7 @@
         "    justify-content: center !important;" +
         "    gap: 6px !important;" +
         "    height: 25px !important;" +
-        "    margin-right: 18px !important;" +
+        "    margin-right: 16px !important;" +
         "    top: 1px !important;" +
         "}" +
         ".info__rate div {" +
@@ -2483,6 +2483,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
