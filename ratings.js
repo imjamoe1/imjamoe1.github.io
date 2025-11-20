@@ -334,8 +334,8 @@
         "    transform: translateX(-8px) !important;" +
         "}" +
         ".info__rate .rate--icon {" +
-        "    width: 47px !important;" +
-        "    height: 34px !important;" +
+        "    height: 30px !important;" +
+        "    width: 40px !important;" +
         "    display: flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
@@ -2484,6 +2484,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
