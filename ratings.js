@@ -329,7 +329,7 @@
         "}" +
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
-        "    margin-right: 3em !important;" +
+        "    margin-right: 2.8em !important;" +
         "    font-weight: bold !important;" +
         "}" +
         ".info__rate .rate--icon {" +
@@ -2483,6 +2483,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
