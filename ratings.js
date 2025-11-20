@@ -334,8 +334,8 @@
         "    transform: translateX(-8px) !important;" +
         "}" +
         ".info__rate .rate--icon {" +
-        "    height: 30px !important;" +
-        "    width: 40px !important;" +
+        "    height: 32px !important;" +
+        "    width: 44px !important;" +
         "    display: flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
@@ -343,7 +343,7 @@
         ".info__rate .rate--icon svg {" +
         "    width: 100% !important;" +
         "    height: 100% !important;" +
-        "    transform: translateY(0.5px) translateX(-2px) !important;" +
+        "    transform: translateY(-1px) translateX(-2px) !important;" +
         "}" +
         "</style>";
     
@@ -2484,6 +2484,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
