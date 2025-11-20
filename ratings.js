@@ -313,7 +313,7 @@
         ".info__rate {" +
         "    background: rgba(0, 0, 0, 0.25) !important;" +
         "    border-radius: 15px !important;" +
-        "    padding: 1px 12px !important;" +
+        "    padding: 1px 10px !important;" +
         "    display: inline-flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
@@ -2484,6 +2484,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
