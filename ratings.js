@@ -318,7 +318,7 @@
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
         "    gap: 6px !important;" +
-        "    height: 25px !important;" +
+        "    height: 23px !important;" +
         "    margin-right: 16px !important;" +
         "    top: 1px !important;" +
         "}" +
@@ -2483,6 +2483,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
