@@ -787,7 +787,7 @@
             else if (statusText.includes('Пилотный') || statusText.includes('Пілотний') || statusText.includes('Pilot')) { bgColor = statusColors.pilot.bg; textColor = statusColors.pilot.text; }
             else if (statusText.includes('Выпущенный') ||  statusText.includes('Випущено') ||  statusText.includes('Released')) { bgColor = statusColors.released.bg; textColor = statusColors.released.text; }
             else if (statusText.includes('слухам') || statusText.includes('чуткам') || statusText.includes('Rumored')) { bgColor = statusColors.rumored.bg; textColor = statusColors.rumored.text; }
-            else if (statusText.includes('Скоро') || statusText.includes('Post')) { bgColor = statusColors.post.bg; textColor = statusColors.post.text; }
+            else if (statusText.includes('Скоро') || statusText.includes('Незабаром') || statusText.includes('Post')) { bgColor = statusColors.post.bg; textColor = statusColors.post.text; }
             if (bgColor) {
                 $(statusElement).css({
                     'background-color': bgColor,
