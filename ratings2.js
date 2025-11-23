@@ -310,7 +310,7 @@
         ".jr { min-width: 5.0em; }" +
         ".rutor { min-width: 7.0em; }" +
         ".maxsm-quality { min-width: 2.8em; text-align: center; }" +
-    ".full-start .info__rate {" +
+    ".card .info__rate {" +
     "    background: rgba(0, 0, 0, 0.25) !important;" +
     "    border-radius: 15px !important;" +
     "    padding: 1px 6px !important;" +
@@ -329,20 +329,20 @@
     "    -webkit-flex-shrink: 0 !important;" +
     "    box-sizing: border-box !important;" +
     "}" +
-    ".full-start .info__rate div {" +
+    ".card .info__rate div {" +
     "    background: transparent !important;" +
     "    border: none !important;" +
     "    box-shadow: none !important;" +
     "    padding: 0 !important;" +
     "    margin: 0 !important;" +
     "}" +
-    ".full-start .info__rate span {" +
+    ".card .info__rate span {" +
     "    font-size: 26px !important;" +
     "    font-weight: bold !important;" +
     "    line-height: 1 !important;" +
     "    margin-right: 70px !important;" +
     "}" +
-    ".full-start .info__rate .rate--icon {" +
+    ".card .info__rate .rate--icon {" +
     "    height: 70px !important;" +
     "    width: 54px !important;" +
     "    display: flex !important;" +
@@ -357,7 +357,7 @@
     "    transform: translateY(-50%) !important;" +
     "    -webkit-transform: translateY(-50%) !important;" +
     "}" +
-    ".full-start .info__rate .rate--icon svg {" +
+    ".card .info__rate .rate--icon svg {" +
     "    width: 100% !important;" +
     "    height: 100% !important;" +
     "    transform: scale(1.1) !important;" +
