@@ -320,7 +320,7 @@
         "    gap: 6px !important;" +
         "    height: 23px !important;" +
         "    margin-right: 15px !important;" +
-        "    top: 0.5px !important;" +
+        "    top: 0.3px !important;" +
         "}" +
         ".info__rate div {" +
         "    background: transparent !important;" +
@@ -2483,6 +2483,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
