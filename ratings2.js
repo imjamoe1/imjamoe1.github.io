@@ -310,10 +310,23 @@
         ".jr { min-width: 5.0em; }" +
         ".rutor { min-width: 7.0em; }" +
         ".maxsm-quality { min-width: 2.8em; text-align: center; }" +
-    ".info__rate {" +
+    /* Стили для контейнера */
+    ".full-start__deta {" +
+    "    display: flex !important;" +
+    "    display: -webkit-flex !important;" +
+    "    align-items: center !important;" +
+    "    -webkit-align-items: center !important;" +
+    "    flex-wrap: wrap !important;" +
+    "    -webkit-flex-wrap: wrap !important;" +
+    "    gap: 10px !important;" +
+    "    width: 100% !important;" +
+    "}" +
+    
+    /* Универсальные стили для info__rate */
+    ".full-start__deta .info__rate {" +
     "    background: rgba(0, 0, 0, 0.25) !important;" +
     "    border-radius: 15px !important;" +
-    "    padding: 1px 6px !important;" +
+    "    padding: 2px 8px !important;" +
     "    display: inline-flex !important;" +
     "    display: -webkit-inline-flex !important;" +
     "    align-items: center !important;" +
@@ -321,30 +334,47 @@
     "    justify-content: center !important;" +
     "    -webkit-justify-content: center !important;" +
     "    gap: 6px !important;" +
-    "    height: 38px !important;" +
+    "    height: 28px !important;" +
     "    min-height: 28px !important;" +
-    "    margin-right: 25px !important;" +
+    "    min-width: 80px !important;" + /* Фиксированная минимальная ширина */
     "    position: relative !important;" +
     "    flex-shrink: 0 !important;" +
     "    -webkit-flex-shrink: 0 !important;" +
     "    box-sizing: border-box !important;" +
+    "    vertical-align: middle !important;" +
+    "    line-height: 1 !important;" +
+    "    margin: 2px !important;" + /* Вместо margin-right */
     "}" +
-    ".info__rate div {" +
+    
+    /* Сброс стилей для дочерних div */
+    ".full-start__deta .info__rate div {" +
     "    background: transparent !important;" +
     "    border: none !important;" +
     "    box-shadow: none !important;" +
     "    padding: 0 !important;" +
     "    margin: 0 !important;" +
+    "    flex-shrink: 0 !important;" +
+    "    -webkit-flex-shrink: 0 !important;" +
     "}" +
-    ".info__rate span {" +
-    "    font-size: 26px !important;" +
+    
+    /* Стили для текста рейтинга */
+    ".full-start__deta .info__rate span {" +
+    "    font-size: 15px !important;" +
     "    font-weight: bold !important;" +
     "    line-height: 1 !important;" +
-    "    margin-right: 70px !important;" +
+    "    margin-right: 28px !important;" +
+    "    color: #ffffff !important;" +
+    "    text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important;" +
+    "    flex-shrink: 0 !important;" +
+    "    -webkit-flex-shrink: 0 !important;" +
+    "    white-space: nowrap !important;" +
     "}" +
-    ".info__rate .rate--icon {" +
-    "    height: 70px !important;" +
-    "    width: 54px !important;" +
+    
+    /* Стили для иконки */
+    ".full-start__deta .info__rate .rate--icon {" +
+    "    height: 18px !important;" +
+    "    width: 22px !important;" +
+    "    min-width: 22px !important;" +
     "    display: flex !important;" +
     "    display: -webkit-flex !important;" +
     "    align-items: center !important;" +
@@ -352,16 +382,64 @@
     "    justify-content: center !important;" +
     "    -webkit-justify-content: center !important;" +
     "    position: absolute !important;" +
-    "    right: 10px !important;" +
+    "    right: 6px !important;" +
     "    top: 50% !important;" +
     "    transform: translateY(-50%) !important;" +
     "    -webkit-transform: translateY(-50%) !important;" +
+    "    flex-shrink: 0 !important;" +
+    "    -webkit-flex-shrink: 0 !important;" +
     "}" +
-    ".info__rate .rate--icon svg {" +
+    
+    ".full-start__deta .info__rate .rate--icon svg {" +
     "    width: 100% !important;" +
     "    height: 100% !important;" +
     "    transform: scale(1.1) !important;" +
     "    -webkit-transform: scale(1.1) !important;" +
+    "    fill: currentColor !important;" +
+    "}" +
+    
+    /* Гарантия одинакового отображения на TV */
+    "@media screen and (max-width: 1920px) {" +
+    "    .full-start__deta {" +
+    "        gap: 8px !important;" +
+    "    }" +
+    "    .full-start__deta .info__rate {" +
+    "        height: 26px !important;" +
+    "        min-height: 26px !important;" +
+    "        min-width: 75px !important;" +
+    "    }" +
+    "    .full-start__deta .info__rate span {" +
+    "        font-size: 14px !important;" +
+    "        margin-right: 26px !important;" +
+    "    }" +
+    "}" +
+    
+    "@media screen and (max-width: 768px) {" +
+    "    .full-start__deta {" +
+    "        gap: 6px !important;" +
+    "    }" +
+    "    .full-start__deta .info__rate {" +
+    "        height: 24px !important;" +
+    "        min-height: 24px !important;" +
+    "        min-width: 70px !important;" +
+    "        padding: 1px 6px !important;" +
+    "    }" +
+    "    .full-start__deta .info__rate span {" +
+    "        font-size: 13px !important;" +
+    "        margin-right: 24px !important;" +
+    "    }" +
+    "    .full-start__deta .info__rate .rate--icon {" +
+    "        height: 16px !important;" +
+    "        width: 20px !important;" +
+    "        min-width: 20px !important;" +
+    "        right: 5px !important;" +
+    "    }" +
+    "}" +
+    
+    /* Исправление для других элементов в контейнере */
+    ".full-start__deta > *:not(.info__rate) {" +
+    "    flex-shrink: 0 !important;" +
+    "    -webkit-flex-shrink: 0 !important;" +
     "}" +
         "</style>";
     
