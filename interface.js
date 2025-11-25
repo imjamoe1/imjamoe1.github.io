@@ -1334,6 +1334,7 @@ Lampa.SettingsApi.addParam({
             /* --- Rating Box Styles --- */
             .new-interface .full-start__pg {
                 font-size: 0.7em !important;
+                font-weight: bold !important;
             }
             .new-interface .full-start__rate {
                 font-size: 1.5em;
