@@ -1348,6 +1348,9 @@ Lampa.SettingsApi.addParam({
                 overflow: hidden;
                 height: auto;
             }
+            .full-start__rate {
+                font-weight: bold;
+            }
             .new-interface-info__description {
                 position: absolute;
                 top: 1em;
@@ -1399,7 +1402,7 @@ Lampa.SettingsApi.addParam({
                 bottom: 0 !important;
                 right: 0 !important;
                 width: 2.2em;
-                height: 1.1em;
+                height: 1.2em;
                 padding: 0.05em 0.4em;
                 font-size: 1em !important;
                 font-weight: bold;
