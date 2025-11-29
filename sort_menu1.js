@@ -80,6 +80,41 @@
             } catch(e) {        
                 console.log('Menu Editor', 'Version check failed:', e)        
             }
+
+            // Добавляем кнопку Расширения
+            function addExtensionsButton() {
+                // Проверяем, не существует ли уже кнопка
+                if ($('#EXTENSIONS').length) return;
+                
+                var icon_server_extensions = '<svg height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="21" rx="2" fill="white"></rect><mask id="path-2-inside-1_154:24" fill="white"><rect x="2" y="27" width="17" height="17" rx="2"></rect></mask><rect x="2" y="27" width="17" height="17" rx="2" stroke="white" stroke-width="6" mask="url(#path-2-inside-1_154:24)"></rect><rect x="27" y="2" width="17" height="17" rx="2" fill="white"></rect><rect x="27" y="34" width="17" height="3" fill="white"></rect><rect x="34" y="44" width="17" height="3" transform="rotate(-90 34 44)" fill="white"></rect></svg>';
+                
+                var extensionsBUTT = '<div id="EXTENSIONS" class="head__action selector">' + icon_server_extensions + '</div>';
+                
+                // Добавляем кнопку в контейнер действий
+                $('div.head__action.selector.open--settings').before(extensionsBUTT);
+                
+                // Добавляем обработчики событий
+                $('#EXTENSIONS').on('hover:enter hover:click hover:touch', function() {
+                    Lampa.Extensions.show({
+                        with_installed: true
+                    });
+                });
+                
+                // Добавляем CSS для анимации при наведении
+                $('<style>')
+                    .prop('type', 'text/css')
+                    .html(`
+                        #EXTENSIONS:hover svg {
+                            transform: scale(1.1);
+                            transition: transform 0.3s ease;
+                        }
+                        #EXTENSIONS svg {
+                            transition: transform 0.3s ease;
+                        }
+                    `)
+                    .appendTo('head');
+            }
+            
             // Добавляем переводы (включая переводы для верхнего меню)    
             Lampa.Lang.add({            
                 menu_editor_title: {            
@@ -144,10 +179,10 @@
                     zh: '优质的'    
                 },
                 head_action_noticescreen: {    
-                    ru: 'Уведомления Uncensored',    
-                    en: 'Notifications Uncensored',    
-                    uk: 'Сповіщення Uncensored',    
-                    zh: '未审查的通知'    
+                    ru: 'Уведомления Un',    
+                    en: 'Notifications Un',    
+                    uk: 'Сповіщення Un',    
+                    zh: '通知联合国'    
                 },    
                 head_action_notice: {    
                     ru: 'Уведомления',    
@@ -160,6 +195,12 @@
                     en: 'Settings',    
                     uk: 'Налаштування',    
                     zh: '设置'    
+                },
+                head_action_extensions: {    
+                    ru: 'Расширения',    
+                    en: 'Extensions',    
+                    uk: 'Розширення',    
+                    zh: '擴充'    
                 },    
                 head_action_profile: {    
                     ru: 'Профиль',    
@@ -196,6 +237,12 @@
                     en: 'Exit',    
                     uk: 'Вихід',    
                     zh: '退出'    
+                },
+                head_action_additional_menu: {    
+                    ru: 'Дополнительное меню',    
+                    en: 'Additional Menu',    
+                    uk: 'Додаткове меню',    
+                    zh: '附加菜单'    
                 },    
                 no_name: {    
                     ru: 'Элемент без названия',    
@@ -265,15 +312,27 @@
                       
                 if(sort.length) {      
                     sort.forEach((uniqueClass) => {      
-                        let item = $('.head__action.' + uniqueClass)      
+                        let item = '';
+                        if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
+                            // Ищем по ID
+                            item = $('#' + uniqueClass);
+                        } else {
+                            // Ищем по классу
+                            item = $('.head__action.' + uniqueClass);
+                        }
                         if(item.length) item.appendTo(actionsContainer)      
                     })      
                 }      
-                      
+          
                 $('.head__action').removeClass('hide')      
                 if(hide.length) {      
                     hide.forEach((uniqueClass) => {      
-                        let item = $('.head__action.' + uniqueClass)      
+                        let item = '';
+                        if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
+                            item = $('#' + uniqueClass);
+                        } else {
+                            item = $('.head__action.' + uniqueClass);
+                        }
                         if(item.length) item.addClass('hide')      
                     })      
                 }      
@@ -308,10 +367,18 @@
             }    
     
             // Функция для получения названия верхнего меню    
-            function getHeadActionName(mainClass) {    
+            function getHeadActionName(mainClass, element) {    
                 let titleKey = '';
-    
-                if (mainClass.includes('sources')) {    
+
+                // Сначала проверяем ID элемента
+                let elementId = element.attr('id');
+                if (elementId === 'MRELOAD' || elementId === 'RELOAD') {
+                    titleKey = 'head_action_reload';
+                } else if (elementId === 'EXTENSIONS') {
+                    titleKey = 'head_action_extensions';
+                }
+                // Затем проверяем классы - в порядке специфичности
+                else if (mainClass.includes('sources')) {    
                     titleKey = 'head_action_sources';  
                 } else if (mainClass.includes('open--search')) {    
                     titleKey = 'head_action_search';
@@ -338,11 +405,16 @@
                 } else if (mainClass.includes('reload')) {    
                     titleKey = 'head_action_reload';
                 } else if (mainClass.includes('exit')) {    
-                    titleKey = 'head_action_exit';    
-                }     
-                    
+                    titleKey = 'head_action_exit';
+                } else if (mainClass.includes('extensions')) {    
+                    titleKey = 'head_action_extensions';    
+                } else if (mainClass === 'head__settings') {    
+                    titleKey = 'head_action_additional_menu';     
+                }      
+        
                 return titleKey ? Lampa.Lang.translate(titleKey) : Lampa.Lang.translate('no_name');    
             }
+
             // Функция для редактирования левого меню (Исправлено: удалены стрелочки для второй секции)    
             function editLeftMenu() {          
                 let list = $('<div class="menu-edit-list"></div>')          
@@ -447,18 +519,25 @@
                     let item_clone = $(this).clone()           
                               
                     let allClasses = item_clone.attr('class').split(' ')          
-                    let mainClass = allClasses.find(c =>           
+                    let mainClass = allClasses.find(c =>       
                         c.startsWith('open--') ||           
                         c.startsWith('notice-') ||           
                         c.startsWith('full-') ||
-                        c.includes('ai-search') ||
+                        c.startsWith('console-') ||
                         c.includes('sources') ||
-                        c.includes('console') ||
+                        c.includes('ai-search') ||
+                        c.includes('m-reload-screen') ||
                         c.includes('reload') ||
-                        c.includes('exit')        
-                    ) || ''          
+                        c.includes('extensions') ||
+                        c.includes('exit')       
+                    ) || '';
+
+                    // Если не нашли специфичный класс, тогда ищем head__settings
+                    if (!mainClass) {
+                        mainClass = allClasses.find(c => c.includes('head__settings')) || '';
+                    }          
                         
-                    let displayName = getHeadActionName(mainClass)   
+                    let displayName = getHeadActionName(mainClass, item_orig)   
                               
                     let item_sort = $(`<div class="menu-edit-list__item">            
                         <div class="menu-edit-list__icon"></div>            
@@ -485,12 +564,17 @@
                     if(svg.length) {            
                         item_sort.find('.menu-edit-list__icon').append(svg.clone())            
                     } else if (mainClass.includes('open--profile')) {
-            // SVG для профиля
-            item_sort.find('.menu-edit-list__icon').html(`<svg style="width: 1.6em; height: 1.6em;" width="48" height="49" viewBox="0 0 48 49" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="24.1445" cy="24.2546" r="23.8115" fill="white" fill-opacity="0.2"></circle>
-                <path d="M24.1464 9.39355C19.9003 9.39355 16.4294 12.8645 16.4294 17.1106C16.4294 21.3567 19.9003 24.8277 24.1464 24.8277C28.3925 24.8277 31.8635 21.3567 31.8635 17.1106C31.8635 12.8645 28.3925 9.39355 24.1464 9.39355ZM37.3901 30.9946C37.1879 30.4891 36.9184 30.0173 36.6151 29.5792C35.0649 27.2877 32.6723 25.7712 29.9764 25.4005C29.6395 25.3669 29.2688 25.4342 28.9991 25.6364C27.5838 26.6811 25.8989 27.2203 24.1465 27.2203C22.3941 27.2203 20.7092 26.6811 19.2938 25.6364C19.0242 25.4342 18.6535 25.3331 18.3165 25.4005C15.6206 25.7712 13.1943 27.2877 11.6779 29.5792C11.3746 30.0173 11.105 30.5228 10.9028 30.9946C10.8018 31.1968 10.8354 31.4327 10.9365 31.6349C11.2061 32.1067 11.5431 32.5785 11.8464 32.9828C12.3181 33.6232 12.8236 34.196 13.3965 34.7352C13.8683 35.2069 14.4075 35.645 14.9467 36.0831C17.6089 38.0714 20.8103 39.116 24.1128 39.116C27.4153 39.116 30.6167 38.0713 33.2789 36.0831C33.8181 35.6788 34.3573 35.2069 34.8291 34.7352C35.3683 34.196 35.9074 33.6231 36.3793 32.9828C36.7162 32.5447 37.0196 32.1067 37.2891 31.6349C37.4575 31.4327 37.4912 31.1967 37.3901 30.9946Z" fill="white"></path>
-            </svg>`);
-        }
+                        // SVG для профиля
+                        item_sort.find('.menu-edit-list__icon').html(`<svg style="width: 1.6em; height: 1.6em;" width="48" height="49" viewBox="0 0 48 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24.1445" cy="24.2546" r="23.8115" fill="white" fill-opacity="0.2"></circle>
+                            <path d="M24.1464 9.39355C19.9003 9.39355 16.4294 12.8645 16.4294 17.1106C16.4294 21.3567 19.9003 24.8277 24.1464 24.8277C28.3925 24.8277 31.8635 21.3567 31.8635 17.1106C31.8635 12.8645 28.3925 9.39355 24.1464 9.39355ZM37.3901 30.9946C37.1879 30.4891 36.9184 30.0173 36.6151 29.5792C35.0649 27.2877 32.6723 25.7712 29.9764 25.4005C29.6395 25.3669 29.2688 25.4342 28.9991 25.6364C27.5838 26.6811 25.8989 27.2203 24.1465 27.2203C22.3941 27.2203 20.7092 26.6811 19.2938 25.6364C19.0242 25.4342 18.6535 25.3331 18.3165 25.4005C15.6206 25.7712 13.1943 27.2877 11.6779 29.5792C11.3746 30.0173 11.105 30.5228 10.9028 30.9946C10.8018 31.1968 10.8354 31.4327 10.9365 31.6349C11.2061 32.1067 11.5431 32.5785 11.8464 32.9828C12.3181 33.6232 12.8236 34.196 13.3965 34.7352C13.8683 35.2069 14.4075 35.645 14.9467 36.0831C17.6089 38.0714 20.8103 39.116 24.1128 39.116C27.4153 39.116 30.6167 38.0713 33.2789 36.0831C33.8181 35.6788 34.3573 35.2069 34.8291 34.7352C35.3683 34.196 35.9074 33.6231 36.3793 32.9828C36.7162 32.5447 37.0196 32.1067 37.2891 31.6349C37.4575 31.4327 37.4912 31.1967 37.3901 30.9946Z" fill="white"></path>
+                        </svg>`);
+                    } else if (elementId === 'EXTENSIONS') {
+                        // SVG для расширений
+                        item_sort.find('.menu-edit-list__icon').html(`<svg style="width: 1.6em; height: 1.6em;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.5 11H19V7C19 5.89 18.1 5 17 5H13V3.5C13 2.12 11.88 1 10.5 1C9.12 1 8 2.12 8 3.5V5H4C2.9 5 2 5.9 2 7V10.8H3.5C4.99 10.8 6.2 12.01 6.2 13.5C6.2 14.99 4.99 16.2 3.5 16.2H2V20C2 21.1 2.9 22 4 22H7.8V20.5C7.8 19.01 9.01 17.8 10.5 17.8C11.99 17.8 13.2 19.01 13.2 20.5V22H17C18.1 22 19 21.1 19 20V16H20.5C21.88 16 23 14.88 23 13.5C23 12.12 21.88 11 20.5 11Z" fill="white"/>
+                        </svg>`);
+                    }
                                    
                     item_sort.find('.move-up').on('hover:enter', ()=>{            
                         let prev = item_sort.prev()          
@@ -643,17 +727,33 @@
                 let hide = []            
                 
                 $('.head__action').each(function(){      
-                    let classes = $(this).attr('class').split(' ')      
-                    let uniqueClass = classes.find(c =>       
+                    let item = $(this);
+                    let uniqueClass = '';
+        
+                    // Сначала проверяем ID
+                    let elementId = item.attr('id');
+                    if (elementId === 'MRELOAD' || elementId === 'RELOAD' || elementId === 'EXTENSIONS') {
+                        uniqueClass = elementId;
+                    } else {
+                    // Если ID нет, ищем по классам     
+                    let classes = item.attr('class').split(' ')      
+                    uniqueClass = classes.find(c =>       
                         c.startsWith('open--') ||           
                         c.startsWith('notice-') ||           
                         c.startsWith('full-') ||
-                        c.includes('ai-search') || 
+                        c.startsWith('console-') ||
                         c.includes('sources') ||
-                        c.includes('console') ||
+                        c.includes('ai-search') ||
+                        c.includes('m-reload-screen') ||
                         c.includes('reload') ||
+                        c.includes('extensions') ||
                         c.includes('exit')
-                    )      
+                    );
+
+                    if (!uniqueClass) {
+                        uniqueClass = classes.find(c => c.includes('head__settings'));
+                    }
+                }      
               
                     if(uniqueClass) {      
                         sort.push(uniqueClass)      
@@ -662,6 +762,9 @@
                         }      
                     }      
                 })            
+                
+                console.log('Menu Editor: Saved top menu sort order:', sort);
+                console.log('Menu Editor: Saved top menu hidden items:', hide);
                 
                 Lampa.Storage.set('head_menu_sort', sort)            
                 Lampa.Storage.set('head_menu_hide', hide)            
@@ -758,7 +861,9 @@
                 }            
             }        
                     
-            addSettings()      
+            // Инициализация функций
+            addExtensionsButton();
+            addSettings();      
               
             // ИСПРАВЛЕНО: Увеличен таймаут и добавлен слушатель события меню  
             setTimeout(() => {      
