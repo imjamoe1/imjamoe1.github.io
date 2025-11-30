@@ -336,7 +336,35 @@
                         if(item.length) item.addClass('hide')      
                     })      
                 }      
-            }      
+            }
+
+            // Добавляем функцию для принудительной установки фокуса на первый элемент
+            function focusFirstSettingsItem() {
+                setTimeout(function() {
+                    // Сначала снимаем фокус со всех элементов
+                    $('.settings .settings-folder').removeClass('focus');
+        
+                    // Ищем первый видимый элемент в настройках (исключая синхронизацию)
+                    let firstItem = $('.settings .settings-folder:not(.hide)').not('[data-component="account"]').first();
+        
+                    // Если не нашли других элементов, берем просто первый видимый
+                    if (!firstItem.length) {
+                        firstItem = $('.settings .settings-folder:not(.hide)').first();
+                    }
+        
+                    if (firstItem.length) {
+                        // Устанавливаем фокус на первый элемент
+                        firstItem.addClass('focus');
+            
+                        // Прокручиваем к первому элементу
+                        if (firstItem.offset()) {
+                            $('.settings .scroll__body').scrollTop(firstItem.offset().top - 100);
+                        }
+            
+                        console.log('Menu Editor: Focus set to first item:', firstItem.find('.settings-folder__name').text());
+                    }
+                }, 200);
+            }
       
             // Применение настроек к меню настроек      
             function applySettingsMenu() {      
@@ -363,7 +391,8 @@
                         })      
                         if(item.length) item.addClass('hide')      
                     })      
-                }      
+                }
+                focusFirstSettingsItem(); 
             }    
     
             // Функция для получения названия верхнего меню    
