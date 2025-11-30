@@ -358,12 +358,10 @@
             
                         // Прокручиваем к первому элементу
                         if (firstItem.offset()) {
-                            $('.settings .scroll__body').scrollTop(firstItem.offset().top - 100);
+                            $('.settings .scroll__body').scrollTop(0);
                         }
-            
-                        console.log('Menu Editor: Focus set to first item:', firstItem.find('.settings-folder__name').text());
                     }
-                }, 200);
+                });
             }
       
             // Применение настроек к меню настроек      
