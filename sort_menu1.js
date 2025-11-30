@@ -9,19 +9,6 @@
             try {        
                 const lampaVersion = Lampa.Manifest ? Lampa.Manifest.app_digital : 0        
                 const needsIconFix = lampaVersion < 300
-
-                // Добавляем CSS для мгновенного скрытия фокуса синхронизации
-                $('<style>')
-                    .prop('type', 'text/css')
-                    .html(`
-                        .settings .settings-folder[data-component="account"].focus {
-                            background: transparent !important;
-                            transform: scale(1) !important;
-                        }
-                    `)
-                    .appendTo('head');
-
-                overrideSettingsFocus(); 
                         
                 if (needsIconFix) {        
                     const iconStyles = `        
