@@ -338,40 +338,104 @@
                 }      
             }
 
-            // Добавляем функцию для принудительной установки фокуса на первый элемент
-            function focusFirstSettingsItem() {
-                setTimeout(function() {
-                    // Сначала снимаем фокус со всех элементов
-                    $('.settings .settings-folder').removeClass('focus');
-        
-                    // Ищем первый видимый элемент в настройках (исключая синхронизацию)
-                    let firstItem = $('.settings .settings-folder:not(.hide)').not('[data-component="account"]').first();
-        
-                    // Если не нашли других элементов, берем просто первый видимый
-                    if (!firstItem.length) {
-                        firstItem = $('.settings .settings-folder:not(.hide)').first();
-                    }
-        
-                    if (firstItem.length) {
-                        // Устанавливаем фокус на первый элемент
-                        firstItem.addClass('focus');
+            // =============================================
+            // СИСТЕМА СОХРАНЕНИЯ И ВОССТАНОВЛЕНИЯ ФОКУСА
+            // =============================================
             
-                        // Прокручиваем к первому элементу
-                        if (firstItem.offset()) {
-                            $('.settings .scroll__body').scrollTop(0);
-                        }
+            // Сохраняем фокус при закрытии настроек
+            function saveCurrentFocus() {
+                setTimeout(function() {
+                    const focusedItem = $('.settings .settings-folder.focus');
+                    if (focusedItem.length) {
+                        const itemName = focusedItem.find('.settings-folder__name').text().trim();
+                        Lampa.Storage.set('menu_editor_last_focused_item', itemName);
+                        console.log('Menu Editor: Saved focus to:', itemName);
                     }
-                });
+                }, 50);
+            }
+            
+            // Восстанавливаем фокус при открытии настроек
+            function restoreFocus() {
+                setTimeout(function() {
+                    // Получаем сохраненный элемент
+                    const savedItemName = Lampa.Storage.get('menu_editor_last_focused_item', '');
+                    
+                    // Если нет сохраненного элемента, фокусируемся на первом видимом
+                    if (!savedItemName) {
+                        focusFirstItem();
+                        return;
+                    }
+                    
+                    // Ищем сохраненный элемент
+                    let savedItem = null;
+                    $('.settings-folder').each(function() {
+                        if ($(this).find('.settings-folder__name').text().trim() === savedItemName && !$(this).hasClass('hide')) {
+                            savedItem = $(this);
+                            return false; // break loop
+                        }
+                    });
+                    
+                    if (savedItem && savedItem.length) {
+                        // Снимаем фокус со всех элементов
+                        $('.settings .settings-folder').removeClass('focus');
+                        
+                        // Устанавливаем фокус на сохраненный элемент
+                        savedItem.addClass('focus');
+                        
+                        // Прокручиваем к элементу
+                        const scrollBody = $('.settings .scroll__body');
+                        if (scrollBody.length && savedItem.offset()) {
+                            const itemTop = savedItem.position().top;
+                            const containerHeight = scrollBody.height();
+                            
+                            if (itemTop < 0 || itemTop > containerHeight - 100) {
+                                scrollBody.scrollTop(itemTop - 50);
+                            }
+                        }
+                        
+                        console.log('Menu Editor: Restored focus to:', savedItemName);
+                    } else {
+                        // Если сохраненный элемент не найден или скрыт, фокусируемся на первом
+                        focusFirstItem();
+                    }
+                }, 100);
+            }
+            
+            // Фокусировка на первом элементе (при первом открытии или если сохраненный не найден)
+            function focusFirstItem() {
+                // Ищем первый видимый элемент (исключая синхронизацию)
+                let firstItem = $('.settings .settings-folder:not(.hide)').not('[data-component="account"]').first();
+                
+                // Если не нашли, берем просто первый видимый
+                if (!firstItem.length) {
+                    firstItem = $('.settings .settings-folder:not(.hide)').first();
+                }
+                
+                if (firstItem.length) {
+                    // Снимаем фокус со всех элементов
+                    $('.settings .settings-folder').removeClass('focus');
+                    
+                    // Устанавливаем фокус на первый элемент
+                    firstItem.addClass('focus');
+                    
+                    // Прокручиваем к началу
+                    const scrollBody = $('.settings .scroll__body');
+                    if (scrollBody.length) {
+                        scrollBody.scrollTop(0);
+                    }
+                    
+                    console.log('Menu Editor: Focused on first item:', firstItem.find('.settings-folder__name').text().trim());
+                }
             }
       
             // Применение настроек к меню настроек      
             function applySettingsMenu() {      
                 let sort = Lampa.Storage.get('settings_menu_sort', [])      
                 let hide = Lampa.Storage.get('settings_menu_hide', [])      
-                      
+          
                 let settingsContainer = $('.settings .scroll__body > div')      
                 if(!settingsContainer.length) return      
-                      
+          
                 if(sort.length) {      
                     sort.forEach((name) => {      
                         let item = $('.settings-folder').filter(function() {      
@@ -380,7 +444,7 @@
                         if(item.length) item.appendTo(settingsContainer)      
                     })      
                 }      
-                      
+          
                 $('.settings-folder').removeClass('hide')      
                 if(hide.length) {      
                     hide.forEach((name) => {      
@@ -390,7 +454,9 @@
                         if(item.length) item.addClass('hide')      
                     })      
                 }
-                focusFirstSettingsItem(); 
+                
+                // Восстанавливаем фокус после применения настроек
+                setTimeout(restoreFocus, 150);
             }    
     
             // Функция для получения названия верхнего меню    
@@ -641,7 +707,10 @@
             }    
                 
             // Функция редактирования меню настроек    
-            function editSettingsMenu() {          
+            function editSettingsMenu() {
+                // Сохраняем текущий фокус перед редактированием
+                saveCurrentFocus();
+                
                 Lampa.Controller.toggle('settings')          
                           
                 setTimeout(()=>{          
@@ -811,7 +880,11 @@
                 })            
                 
                 Lampa.Storage.set('settings_menu_sort', sort)            
-                Lampa.Storage.set('settings_menu_hide', hide)            
+                Lampa.Storage.set('settings_menu_hide', hide)  
+                
+                // Очищаем сохраненный фокус при изменении меню
+                Lampa.Storage.set('menu_editor_last_focused_item', '');
+                console.log('Menu Editor: Cleared saved focus due to menu changes');
             }            
                 
             // Добавляем отдельный раздел в настройки            
@@ -905,18 +978,26 @@
                 }  
             })  
                   
-            Lampa.Listener.follow('activity', (e) => {      
-                if(e.type === 'start' && e.component === 'settings') {      
-                    setTimeout(applySettingsMenu, 500)      
+            // Сохраняем фокус при закрытии настроек
+            Lampa.Listener.follow('activity', function(e) {      
+                if(e.type === 'end' && e.component === 'settings') {      
+                    saveCurrentFocus();
                 }      
-            })      
+                else if(e.type === 'start' && e.component === 'settings') {      
+                    setTimeout(function() {
+                        applySettingsMenu();
+                    }, 500)      
+                }      
+            })     
                   
             if(Lampa.Settings && Lampa.Settings.listener) {      
-                Lampa.Settings.listener.follow('open', (e) => {      
-                    setTimeout(applySettingsMenu, 300)      
-                })      
+                Lampa.Settings.listener.follow('open', function(e) {      
+                    setTimeout(function() {
+                        applySettingsMenu();
+                    }, 300);      
+                });      
             }      
-        }        
+        }       
                 
         if(window.appready) initialize()            
         else {            
