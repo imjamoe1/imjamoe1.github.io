@@ -338,25 +338,35 @@
                 }      
             }
 
-            // Простая функция для первого открытия - фокус на "Расширения и плагины"
+            // Функция для первого открытия - фокус на первом элементе (исключая синхронизацию)
             function focusOnFirstOpen() {
                 // Проверяем, первый ли раз открываем настройки
                 const isFirstOpen = Lampa.Storage.get('menu_editor_first_open', true);
                 
                 if (isFirstOpen) {
                     setTimeout(() => {
-                        // Ищем "Расширения и плагины"
-                        const extensionsItem = $('.settings-folder').filter(function() {
-                            const name = $(this).find('.settings-folder__name').text().trim();
-                            return name === 'Расширения и плагины' || name === 'Extensions and plugins';
-                        });
+                        // Ищем первый видимый элемент (исключая синхронизацию)
+                        let firstItem = $('.settings .settings-folder:not(.hide)').not('[data-component="account"]').first();
                         
-                        if (extensionsItem.length && !extensionsItem.hasClass('hide')) {
-                            // Снимаем фокус со всех
+                        // Если не нашли, берем просто первый видимый
+                        if (!firstItem.length) {
+                            firstItem = $('.settings .settings-folder:not(.hide)').first();
+                        }
+                        
+                        if (firstItem.length) {
+                            // Снимаем фокус со всех элементов
                             $('.settings .settings-folder').removeClass('focus');
-                            // Ставим фокус на "Расширения и плагины"
-                            extensionsItem.addClass('focus');
-                            console.log('Menu Editor: First open - focused on Extensions');
+                            
+                            // Ставим фокус на первый элемент
+                            firstItem.addClass('focus');
+                            
+                            // Прокручиваем к началу
+                            const scrollBody = $('.settings .scroll__body');
+                            if (scrollBody.length) {
+                                scrollBody.scrollTop(0);
+                            }
+                            
+                            console.log('Menu Editor: First open - focused on first item:', firstItem.find('.settings-folder__name').text().trim());
                         }
                         
                         // Помечаем что уже открывали
@@ -392,7 +402,7 @@
                     })      
                 }
                 
-                // Только для первого открытия - фокус на "Расширения и плагины"
+                // Только для первого открытия - фокус на первом элементе
                 focusOnFirstOpen();
             }    
     
