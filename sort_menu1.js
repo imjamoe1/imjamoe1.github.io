@@ -338,42 +338,65 @@
                 }      
             }
 
-            // Функция для первого открытия - фокус на первом элементе (исключая синхронизацию)
-            function focusOnFirstOpen() {
-                // Проверяем, первый ли раз открываем настройки
-                const isFirstOpen = Lampa.Storage.get('menu_editor_first_open', true);
-                
-                if (isFirstOpen) {
-                    setTimeout(() => {
-                        // Ищем первый видимый элемент (исключая синхронизацию)
-                        let firstItem = $('.settings .settings-folder:not(.hide)').not('[data-component="account"]').first();
-                        
-                        // Если не нашли, берем просто первый видимый
-                        if (!firstItem.length) {
-                            firstItem = $('.settings .settings-folder:not(.hide)').first();
-                        }
-                        
-                        if (firstItem.length) {
-                            // Снимаем фокус со всех элементов
-                            $('.settings .settings-folder').removeClass('focus');
-                            
-                            // Ставим фокус на первый элемент
-                            firstItem.addClass('focus');
-                            
-                            // Прокручиваем к началу
-                            const scrollBody = $('.settings .scroll__body');
-                            if (scrollBody.length) {
-                                scrollBody.scrollTop(0);
-                            }
-                            
-                            console.log('Menu Editor: First open - focused on first item:', firstItem.find('.settings-folder__name').text().trim());
-                        }
-                        
-                        // Помечаем что уже открывали
-                        Lampa.Storage.set('menu_editor_first_open', false);
-                    }, 300);
-                }
+// Функция для первого открытия - фокус на первом элементе (исключая синхронизацию)
+function focusOnFirstOpen() {
+    // Проверяем, первый ли раз открываем настройки
+    const isFirstOpen = Lampa.Storage.get('menu_editor_first_open', true);
+    
+    if (isFirstOpen) {
+        // Увеличиваем задержку и делаем несколько попыток
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        function tryFocus() {
+            attempts++;
+            
+            // Ищем первый видимый элемент (исключая синхронизацию)
+            let firstItem = $('.settings .settings-folder:not(.hide)').not('[data-component="account"]').first();
+            
+            // Если не нашли, берем просто первый видимый
+            if (!firstItem.length) {
+                firstItem = $('.settings .settings-folder:not(.hide)').first();
             }
+            
+            // Проверяем, не стоит ли фокус на синхронизации
+            const syncFocused = $('.settings-folder[data-component="account"]').hasClass('focus');
+            const anyFocused = $('.settings .settings-folder.focus').length > 0;
+            
+            if (firstItem.length && (syncFocused || !anyFocused)) {
+                // Снимаем фокус со всех элементов
+                $('.settings .settings-folder').removeClass('focus');
+                
+                // Ставим фокус на первый элемент
+                firstItem.addClass('focus');
+                
+                // Прокручиваем к началу
+                const scrollBody = $('.settings .scroll__body');
+                if (scrollBody.length) {
+                    scrollBody.scrollTop(0);
+                }
+                
+                console.log('Menu Editor: First open - focused on first item:', firstItem.find('.settings-folder__name').text().trim());
+                
+                // Помечаем что уже открывали
+                Lampa.Storage.set('menu_editor_first_open', false);
+                return true;
+            } else if (attempts < maxAttempts) {
+                // Пробуем еще раз через 200мс
+                setTimeout(tryFocus, 200);
+            } else {
+                // Не удалось установить фокус
+                console.log('Menu Editor: Could not set focus on first item');
+                Lampa.Storage.set('menu_editor_first_open', false);
+            }
+            
+            return false;
+        }
+        
+        // Первая попытка с увеличенной задержкой
+        setTimeout(tryFocus, 400);
+    }
+}
       
             // Применение настроек к меню настроек      
             function applySettingsMenu() {      
@@ -401,10 +424,12 @@
                         if(item.length) item.addClass('hide')      
                     })      
                 }
-                
-                // Только для первого открытия - фокус на первом элементе
-                focusOnFirstOpen();
-            }    
+    
+                // Увеличиваем задержку перед попыткой установить фокус
+                setTimeout(function() {
+                    focusOnFirstOpen();
+                }, 500);
+            }   
     
             // Функция для получения названия верхнего меню    
             function getHeadActionName(mainClass, element) {    
