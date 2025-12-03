@@ -500,7 +500,7 @@ function createCountryFlagElement(flagUrl) {
 
     // Получение рейтинга Lampa
     async function fetchLampaRating(data, card) {
-        if (Lampa.Manifest.origin !== "bylampa") return '0.0';
+        //if (Lampa.Manifest.origin !== "bylampa") return '0.0';
 
         const id = data.id || card.getAttribute('data-id') || card.getAttribute('id');
         if (!id) return '0.0';
