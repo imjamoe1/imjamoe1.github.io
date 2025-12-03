@@ -979,20 +979,16 @@ function focusOnFirstOpen() {
             // Просто применяем настройки при открытии настроек
             Lampa.Listener.follow('activity', function(e) {      
                 if(e.type === 'start' && e.component === 'settings') {      
-                    setTimeout(function() {
-                        applySettingsMenu();
-                    }, 500)      
+                  setTimeout(applySettingsMenu, 500)      
                 }      
-            })     
+            })         
                   
             if(Lampa.Settings && Lampa.Settings.listener) {      
                 Lampa.Settings.listener.follow('open', function(e) {      
-                    setTimeout(function() {
-                        applySettingsMenu();
-                    }, 300);      
-                });      
+                  setTimeout(applySettingsMenu, 300)      
+                })      
             }      
-        }       
+        }             
                 
         if(window.appready) initialize()            
         else {            
