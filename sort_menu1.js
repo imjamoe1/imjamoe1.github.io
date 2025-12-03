@@ -337,99 +337,6 @@
                     })      
                 }      
             }
-
-// Функция для первого открытия - фокус на первом элементе (исключая синхронизацию)
-function focusOnFirstOpen() {
-    // Проверяем, первый ли раз открываем настройки
-    const isFirstOpen = Lampa.Storage.get('menu_editor_first_open', true);
-    
-    if (isFirstOpen) {
-        console.log('Menu Editor: First open detected, attempting to focus on first item');
-        
-        // Сразу блокируем фокус на синхронизации
-        $('.settings-folder[data-component="account"]').off('focusin.menu_editor').on('focusin.menu_editor', function(e) {
-            console.log('Menu Editor: Blocked focus on sync');
-            e.stopImmediatePropagation();
-            $(this).removeClass('focus');
-            return false;
-        });
-        
-        // Несколько попыток с разными задержками
-        setTimeout(tryFocusImmediate, 100);
-        setTimeout(tryFocusDelayed, 300);
-        setTimeout(tryFocusFinal, 600);
-        
-        function tryFocusImmediate() {
-            console.log('Menu Editor: Attempt 1 - immediate');
-            setFocusOnFirstItem();
-        }
-        
-        function tryFocusDelayed() {
-            console.log('Menu Editor: Attempt 2 - delayed');
-            setFocusOnFirstItem();
-        }
-        
-        function tryFocusFinal() {
-            console.log('Menu Editor: Attempt 3 - final');
-            if (setFocusOnFirstItem()) {
-                Lampa.Storage.set('menu_editor_first_open', false);
-            }
-        }
-        
-        function setFocusOnFirstItem() {
-            // Проверяем, не стоит ли фокус на синхронизации
-            const syncItem = $('.settings-folder[data-component="account"]');
-            const isSyncFocused = syncItem.hasClass('focus');
-            
-            // Ищем первый видимый элемент (исключая синхронизацию)
-            let firstItem = $('.settings .settings-folder:not(.hide)').not('[data-component="account"]').first();
-            
-            // Если не нашли, берем просто первый видимый
-            if (!firstItem.length) {
-                firstItem = $('.settings .settings-folder:not(.hide)').first();
-            }
-            
-            if (firstItem.length) {
-                // Снимаем фокус с синхронизации если он там
-                if (isSyncFocused) {
-                    syncItem.removeClass('focus');
-                    console.log('Menu Editor: Removed focus from sync');
-                }
-                
-                // Снимаем фокус со всех элементов
-                $('.settings .settings-folder').removeClass('focus');
-                $('.settings .selector').removeClass('focus');
-                
-                // Даем небольшую паузу
-                setTimeout(() => {
-                    // Ставим фокус на первый элемент
-                    firstItem.addClass('focus');
-                    
-                    // Прокручиваем к началу
-                    const scrollBody = $('.settings .scroll__body');
-                    if (scrollBody.length) {
-                        scrollBody.scrollTop(0);
-                    }
-                    
-                    console.log('Menu Editor: Successfully focused on:', firstItem.find('.settings-folder__name').text().trim());
-                }, 50);
-                
-                return true;
-            }
-            
-            return false;
-        }
-        
-        // Помечаем что уже открывали через 2 секунды в любом случае
-        setTimeout(() => {
-            Lampa.Storage.set('menu_editor_first_open', false);
-            console.log('Menu Editor: Marked as opened');
-            
-            // Убираем обработчик блокировки
-            $('.settings-folder[data-component="account"]').off('focusin.menu_editor');
-        }, 2000);
-    }
-}
       
             // Применение настроек к меню настроек      
             function applySettingsMenu() {      
@@ -457,7 +364,6 @@ function focusOnFirstOpen() {
                         if(item.length) item.addClass('hide')      
                     })      
                 }
-                focusOnFirstOpen();
             }   
     
             // Функция для получения названия верхнего меню    
