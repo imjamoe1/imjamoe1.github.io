@@ -67,13 +67,13 @@
         font-size: 1em !important;
       }
       .card__series-completed-svg {
-        width: 12px !important;
-        height: 12px !important;
+        width: 16px !important;
+        height: 16px !important;
         top: 1px;
       }
       .card__series-ongoing-svg {
-        width: 11px !important;
-        height: 13px !important;
+        width: 15px !important;
+        height: 17px !important;
       }
     }
   `;
@@ -244,6 +244,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
