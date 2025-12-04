@@ -39,8 +39,8 @@ const STYLE = `
     
     /* Универсальные размеры SVG через em */
     .card__series-completed-svg {
-      width: 1em !important;
-      height: 1em !important;
+      width: 0.8em !important;
+      height: 0.8em !important;
       display: inline-block;
       vertical-align: middle;
       position: relative;
@@ -48,8 +48,8 @@ const STYLE = `
     }
     
     .card__series-ongoing-svg {
-      width: 0.8em !important;
-      height: 1em !important;
+      width: 0.6em !important;
+      height: 0.8em !important;
       display: inline-block;
       vertical-align: middle;
       position: relative;
@@ -248,6 +248,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
