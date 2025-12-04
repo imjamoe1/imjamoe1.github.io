@@ -60,23 +60,7 @@
       display: inline-block;
       margin: 0 auto !important;
       //filter: brightness(0) invert(1);
-    }
-  /* Увеличиваем для PC с большими экранами */
-    @media (min-width: 1024px) {
-      .card__series-completed-svg {
-        width: 12px !important;
-        height: 12px !important;
-      }
-      .card__series-ongoing-svg {
-        width: 12px !important;
-        height: 15px !important;
-      }
-      .card__series-label {
-        font-size: 1.1em !important;
-        padding: 0.2em 0.3em !important;
-      }
-    }
-    
+    }   
     /* Особенно большие для 4K и больших мониторов */
     @media (min-width: 1920px) {
       .card__series-completed-svg {
@@ -84,27 +68,12 @@
         height: 14px !important;
       }
       .card__series-ongoing-svg {
-        width: 15px !important;
-        height: 18px !important;
+        width: 20px !important;
+        height: 23px !important;
       }
       .card__series-label {
-        font-size: 1.2em !important;
+        font-size: 1.1em !important;
         padding: 0.2em 0.3em !important;
-      }
-    }
-    
-    /* Для WebOS телевизоров */
-    @media (min-width: 1280px) and (max-width: 1919px) {
-      .card__series-completed-svg {
-        width: 10px !important;
-        height: 10px !important;
-      }
-      .card__series-ongoing-svg {
-        width: 9px !important;
-        height: 11px !important;
-      }
-      .card__series-label {
-        font-size: 1.15em !important;
       }
     }
   `;
@@ -275,6 +244,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
