@@ -61,18 +61,18 @@
       margin: 0 auto !important;
       //filter: brightness(0) invert(1);
     }   
-  /* Для WebOS телевизоров */
+  /* Для PC и WebOS телевизоров */
     @media (min-width: 1280px) and (max-width: 1919px) {
-      .card__series-completed-svg {
-        width: 10px !important;
-        height: 10px !important;
-      }
-      .card__series-ongoing-svg {
-        width: 12px !important;
-        height: 14px !important;
-      }
       .card__series-label {
         font-size: 1em !important;
+      }
+      .card__series-completed-svg {
+        width: 12px !important;
+        height: 12px !important;
+      }
+      .card__series-ongoing-svg {
+        width: 11px !important;
+        height: 13px !important;
       }
     }
   `;
@@ -243,6 +243,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
