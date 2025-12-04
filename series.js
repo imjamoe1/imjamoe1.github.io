@@ -68,12 +68,12 @@
         height: 12px !important;
       }
       .card__series-ongoing-svg {
-        width: 10px !important;
-        height: 13px !important;
+        width: 12px !important;
+        height: 15px !important;
       }
       .card__series-label {
         font-size: 1.1em !important;
-        padding: 0.25em 0.4em !important;
+        padding: 0.2em 0.3em !important;
       }
     }
     
@@ -89,7 +89,7 @@
       }
       .card__series-label {
         font-size: 1.2em !important;
-        padding: 0.3em 0.5em !important;
+        padding: 0.2em 0.3em !important;
       }
     }
     
@@ -275,6 +275,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
