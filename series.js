@@ -68,11 +68,11 @@
         height: 10px !important;
       }
       .card__series-ongoing-svg {
-        width: 9px !important;
-        height: 11px !important;
+        width: 14px !important;
+        height: 16px !important;
       }
       .card__series-label {
-        font-size: 1.1em !important;
+        font-size: 0.9em !important;
       }
     }
   `;
@@ -243,6 +243,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
