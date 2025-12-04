@@ -62,7 +62,7 @@
       //filter: brightness(0) invert(1);
     }   
   /* Для PC и WebOS телевизоров */
-    @media (min-width: 1280px) and (max-width: 1919px) {
+    @media (min-width: 1920px) {
       .card__series-label {
         font-size: 1em !important;
       }
@@ -244,6 +244,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
