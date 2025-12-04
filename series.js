@@ -12,8 +12,8 @@
       left: 0.3em;
       background: rgba(0,0,0,0.5);
       color: #fff;
-      font-size: 1em !important;
-      font-weight: bold;
+      font-size: clamp(0.9em, 1.2vw, 1.3em) !important;
+      font-weight: bold !important;
       padding: 0.2em 0.3em !important;
       border-radius: 1em !important;
       z-index: 2;
@@ -229,6 +229,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
