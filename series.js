@@ -84,8 +84,8 @@
         height: 14px !important;
       }
       .card__series-ongoing-svg {
-        width: 12px !important;
-        height: 15px !important;
+        width: 15px !important;
+        height: 18px !important;
       }
       .card__series-label {
         font-size: 1.2em !important;
@@ -275,6 +275,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
