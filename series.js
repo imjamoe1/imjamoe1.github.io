@@ -20,9 +20,6 @@ const STYLE = `
       pointer-events: none;
       display: flex;
       align-items: center;
-      gap: 0.4em;
-      min-height: 1.6em;
-      box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.7);
     }
     
     .card__series-completed,
@@ -251,6 +248,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
