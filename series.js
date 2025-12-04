@@ -5,75 +5,82 @@
   const API_URL = id => `https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`;
   const SEASON_URL = (id, season) => `https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=${API_KEY}`;
 
-  const STYLE = `
+const STYLE = `
     .card__series-label {
       position: absolute;
       bottom: 0.3em;
       left: 0.3em;
       background: rgba(0,0,0,0.5);
       color: #fff;
-      font-size: 1em !important;
-      font-weight: bold !important;
-      padding: 0.2em 0.3em !important;
+      font-size: 0.9em !important;
+      font-weight: bold;
+      padding: 0.3em 0.5em !important;
       border-radius: 1em !important;
       z-index: 2;
       pointer-events: none;
-      transform: translateY(0.5px);  
-    }
-    .card__series-completed {
-      //bottom: 3px;
       display: flex;
       align-items: center;
-      //background: rgba(0,0,0,0.5) !important;
-      border-radius: 1em;
-      padding: 0.2em 0.3em !important;
-      gap: 0.2em;
+      gap: 0.4em;
+      min-height: 1.6em;
+      box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.7);
     }
-    .card__series-completed span {
-      display: inline-block;
-      //transform: translateY(-1.5px);
-      vertical-align: middle;
-    }
-    .card__series-completed-svg {
-      width: 8px !important;
-      height: 8px !important;
-      display: inline-block;
-      margin: 0 auto !important;
-      //vertical-align: middle !important;
-      //margin-left: 0.2em;
-    }
+    
+    .card__series-completed,
     .card__series-ongoing {
       display: flex;
       align-items: center;
-      border-radius: 1em;
-      padding: 0.2em 0.3em !important;
-      gap: 0.2em;
+      gap: 0.3em;
     }
+    
+    .card__series-completed span,
     .card__series-ongoing span {
       display: inline-block;
-      //transform: translateY(-1.6px);
-      vertical-align: middle;
+      line-height: 1;
+      vertical-align: baseline;
+      font-size: 0.95em;
     }
-    .card__series-ongoing-svg {
-      width: 7px !important;
-      height: 9px !important;
+    
+    /* Универсальные размеры SVG через em */
+    .card__series-completed-svg {
+      width: 1.2em !important;
+      height: 1.2em !important;
       display: inline-block;
-      margin: 0 auto !important;
-      //filter: brightness(0) invert(1);
-    }   
-  /* Для PC и WebOS телевизоров */
+      vertical-align: middle;
+      position: relative;
+      top: 0.05em;
+    }
+    
+    .card__series-ongoing-svg {
+      width: 1.1em !important;
+      height: 1.4em !important;
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: 0.05em;
+    }
+    
+    /* Адаптация для разных размеров экрана */
+    @media (max-width: 768px) {
+      .card__series-label {
+        font-size: 0.85em !important;
+        padding: 0.25em 0.4em !important;
+        gap: 0.3em;
+      }
+      .card__series-completed-svg {
+        width: 1em !important;
+        height: 1em !important;
+      }
+      .card__series-ongoing-svg {
+        width: 0.9em !important;
+        height: 1.2em !important;
+      }
+    }
+    
     @media (min-width: 1920px) {
       .card__series-label {
         font-size: 1em !important;
-      }
-      .card__series-completed-svg {
-        width: 16px !important;
-        height: 16px !important;
-        top: 1px;
-      }
-      .card__series-ongoing-svg {
-        width: 15px !important;
-        height: 17px !important;
+        padding: 0.35em 0.6em !important;
+        gap: 0.5em;
       }
     }
   `;
@@ -244,6 +251,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
