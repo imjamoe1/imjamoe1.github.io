@@ -69,6 +69,7 @@
       .card__series-completed-svg {
         width: 12px !important;
         height: 12px !important;
+        top: 1px;
       }
       .card__series-ongoing-svg {
         width: 11px !important;
@@ -243,6 +244,7 @@
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
