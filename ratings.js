@@ -352,7 +352,7 @@
         ".info__rate .rate--icon svg {" +
         "    width: 100% !important;" +
         "    height: 100% !important;" +
-        "    transform: translateY(0.01em) translateX(-0.2em) scaleY(1.2) !important;" +
+        "    transform: translateY(0.05em) translateX(-0.2em) scaleY(1.2) !important;" +
         "}" +
         "</style>";
     
@@ -2493,6 +2493,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
