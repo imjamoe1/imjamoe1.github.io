@@ -342,7 +342,7 @@
         "    vertical-align: baseline !important;" +
         "}" +
         ".info__rate .rate--icon {" +
-        "    height: 3.8em !important;" +
+        "    height: 4.2em !important;" +
         "    width: 4.8em !important;" +
         "    display: flex !important;" +
         "    align-items: center !important;" +
@@ -2493,6 +2493,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
