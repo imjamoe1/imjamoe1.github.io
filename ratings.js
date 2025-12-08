@@ -321,6 +321,7 @@
         "    height: 1.44em !important;" +
        // "    min-width: 4em !important;" +
         "    margin-right: 0.94em !important;" +
+        "    top: 0.02em !important;" +
         "    position: relative !important;" +
         "    box-sizing: border-box !important;" +
         "}" +
@@ -331,7 +332,7 @@
         "}" +
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
-        "    margin-right: 2.8em !important;" +
+        "    margin-right: 1.5em !important;" +
         "    font-weight: bold !important;" +
         "    line-height: 1 !important;" +
         "    text-align: center !important;" +
@@ -2489,6 +2490,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
