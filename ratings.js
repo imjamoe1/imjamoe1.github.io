@@ -320,7 +320,7 @@
         "    gap: 0.37em !important;" +
         "    height: 3em !important;" +
        // "    min-width: 4em !important;" +
-        "    margin-right: 0.94em !important;" +
+        "    margin-right: 1.5em !important;" +
         "    top: 0.02em !important;" +
         "    position: relative !important;" +
         "    box-sizing: border-box !important;" +
@@ -2490,6 +2490,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
