@@ -332,7 +332,7 @@
         "}" +
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
-        "    margin-right: 2em !important;" +
+        "    margin-right: 2.4em !important;" +
         //"    top: -0.1em !important;" +
         "    font-weight: bold !important;" +
         "    line-height: 1 !important;" +
@@ -2493,6 +2493,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
