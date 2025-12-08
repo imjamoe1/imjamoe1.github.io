@@ -334,9 +334,6 @@
         "    font-size: 1.9em !important;" +
         "    margin-right: 2.8em !important;" +
         "    font-weight: bold !important;" +
-        "    line-height: 1 !important;" +
-        "    text-align: center !important;" +
-        "    flex-shrink: 0 !important;" +
         "}" +
         ".info__rate .rate--icon {" +
         "    height: 4em !important;" +
@@ -2490,6 +2487,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
