@@ -339,8 +339,8 @@
         "    flex-shrink: 0 !important;" +
         "}" +
         ".info__rate .rate--icon {" +
-        "    height: 2em !important;" +
-        "    width: 2.5em !important;" +
+        "    height: 4em !important;" +
+        "    width: 5em !important;" +
         "    display: flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
@@ -2490,6 +2490,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
