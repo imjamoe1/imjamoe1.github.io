@@ -318,7 +318,7 @@
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
         "    gap: 0.1em !important;" +
-        "    height: 2.8em !important;" +
+        "    height: 2.9em !important;" +
        // "    min-width: 4em !important;" +
         "    margin-right: 1.8em !important;" +
         "    top: 0.02em !important;" +
@@ -332,7 +332,7 @@
         "}" +
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
-        "    margin-right: 2.4em !important;" +
+        "    margin-right: 2.5em !important;" +
         //"    top: -0.1em !important;" +
         "    font-weight: bold !important;" +
         "    line-height: 1 !important;" +
@@ -2493,6 +2493,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
