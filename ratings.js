@@ -313,14 +313,14 @@
         ".info__rate {" +
         "    background: rgba(0, 0, 0, 0.25) !important;" +
         "    border-radius: 0.9em !important;" +
-        "    padding: 0.1em 0.4em !important;" +
+        "    padding: 0.06em 0.3em !important;" +
         "    display: inline-flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
-        "    gap: 0.3em !important;" +
-        "    height: 1.8em !important;" +
-        "    min-width: 4em !important;" +
-        "    margin-right: 0.5em !important;" +
+        "    gap: 0.37em !important;" +
+        "    height: 1.44em !important;" +
+       // "    min-width: 4em !important;" +
+        "    margin-right: 0.94em !important;" +
         "    position: relative !important;" +
         "    box-sizing: border-box !important;" +
         "}" +
@@ -331,6 +331,7 @@
         "}" +
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
+        "    margin-right: 2.8em !important;" +
         "    font-weight: bold !important;" +
         "    line-height: 1 !important;" +
         "    text-align: center !important;" +
@@ -347,7 +348,7 @@
         ".info__rate .rate--icon svg {" +
         "    width: 100% !important;" +
         "    height: 100% !important;" +
-        "    transform: translateY(0.05em) !important;" +
+        "    transform: translateY(-0.03em) translateX(-0.16em) scaleY(1.2) !important;" +
         "}" +
         "</style>";
     
@@ -2488,6 +2489,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
