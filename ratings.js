@@ -312,7 +312,7 @@
         ".maxsm-quality { min-width: 2.8em; text-align: center; }" +
         ".info__rate {" +
         "    background: rgba(0, 0, 0, 0.25) !important;" +
-        "    border-radius: 0.9em !important;" +
+        "    border-radius: 1.2em !important;" +
         "    padding: 0.06em 0.3em !important;" +
         "    display: inline-flex !important;" +
         "    align-items: center !important;" +
@@ -349,7 +349,7 @@
         ".info__rate .rate--icon svg {" +
         "    width: 100% !important;" +
         "    height: 100% !important;" +
-        "    transform: translateY(-0.04em) translateX(-0.16em) scaleY(1.2) !important;" +
+        "    transform: translateY(-0.05em) translateX(-0.16em) scaleY(1.2) !important;" +
         "}" +
         "</style>";
     
@@ -2490,6 +2490,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
