@@ -318,7 +318,7 @@
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
         "    gap: 0.37em !important;" +
-        "    height: 4em !important;" +
+        "    height: 3em !important;" +
        // "    min-width: 4em !important;" +
         "    margin-right: 0.94em !important;" +
         "    top: 0.02em !important;" +
@@ -349,7 +349,7 @@
         ".info__rate .rate--icon svg {" +
         "    width: 100% !important;" +
         "    height: 100% !important;" +
-        "    transform: translateY(0.01em) translateX(-0.16em) scaleY(1.2) !important;" +
+        "    transform: translateY(-0.01em) translateX(-0.16em) scaleY(1.2) !important;" +
         "}" +
         "</style>";
     
@@ -2490,6 +2490,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
