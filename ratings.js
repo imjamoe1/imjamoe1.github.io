@@ -344,18 +344,18 @@
         "    height: 100% !important;" +
         "    transform: translateY(-0.5px) translateX(-2.5px) scaleY(1.2) !important;" +
         "}" +
-        "@media (min-width: 1024px) {" +
+        "@media (min-width: 1280px) and (max-width: 1919px) {" +
         ".info__rate {" +
         "    background: rgba(0, 0, 0, 0.25) !important;" +
-        "    border-radius: 0.9em !important;" +
-        "    padding: 0.06em 0.3em !important;" +
+        "    border-radius: 15px !important;" +
+        "    padding: 1px 5px !important;" +
         "    display: inline-flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
-        "    gap: 0.37em !important;" +
-        "    height: 1.44em !important;" +
-        "    margin-right: 0.94em !important;" +
-        "    top: 0.02em !important;" +
+        "    gap: 6px !important;" +
+        "    height: 23px !important;" +
+        "    margin-right: 15px !important;" +
+        "    top: 0.3px !important;" +
         "}" +
         ".info__rate div {" +
         "    background: transparent !important;" +
@@ -368,8 +368,8 @@
         "    font-weight: bold !important;" +
         "}" +
         ".info__rate .rate--icon {" +
-        "    height: 2em !important;" +
-        "    width: 2.5em !important;" +
+        "    height: 32px !important;" +
+        "    width: 40px !important;" +
         "    display: flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
@@ -377,7 +377,7 @@
         ".info__rate .rate--icon svg {" +
         "    width: 100% !important;" +
         "    height: 100% !important;" +
-        "    transform: translateY(-0.03em) translateX(-0.16em) scaleY(1.2) !important;" +
+        "    transform: translateY(-0.5px) translateX(-2.5px) scaleY(1.2) !important;" +
         "}" +
         "}" +
         "</style>";
@@ -2519,6 +2519,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
