@@ -317,7 +317,7 @@
         "    display: inline-flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
-        "    gap: 0.2em !important;" +
+        "    gap: 0.1em !important;" +
         "    height: 2.8em !important;" +
        // "    min-width: 4em !important;" +
         "    margin-right: 1.8em !important;" +
@@ -2493,6 +2493,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
