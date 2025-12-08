@@ -330,7 +330,7 @@
         "    box-shadow: none !important;" +
         "}" +
         ".info__rate span {" +
-        "    font-size: 1em !important;" +
+        "    font-size: 1.9em !important;" +
         "    font-weight: bold !important;" +
         "    line-height: 1 !important;" +
         "    text-align: center !important;" +
@@ -2488,6 +2488,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
