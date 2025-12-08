@@ -344,7 +344,7 @@
         "    height: 100% !important;" +
         "    transform: translateY(-0.5px) translateX(-2.5px) scaleY(1.2) !important;" +
         "}" +
-        "@media (min-width: 1920px) {" +
+        "@media (min-width: 1024px) {" +
         ".info__rate {" +
         "    background: rgba(0, 0, 0, 0.25) !important;" +
         "    border-radius: 0.9em !important;" +
@@ -2519,6 +2519,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
