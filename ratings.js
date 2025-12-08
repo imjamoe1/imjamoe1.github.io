@@ -379,6 +379,7 @@
         "    height: 100% !important;" +
         "    transform: translateY(-0.03em) translateX(-0.16em) scaleY(1.2) !important;" +
         "}" +
+        "}" +
         "</style>";
     
     Lampa.Template.add('maxsm_ratings_css', style);
@@ -2518,6 +2519,7 @@ Lampa.Listener.follow('full', function(e) {
 
     if (!window.maxsmRatingsPlugin) startPlugin();
 })();
+
 
 
 
