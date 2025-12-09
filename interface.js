@@ -1411,6 +1411,11 @@ Lampa.SettingsApi.addParam({
                 border-radius:  0.5em 0 0.9em 0 !important;
             }
              .card--quality {
+                display: inline-flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                flex-shrink: 0 !important; /* Не позволяет сжиматься */
+                white-space: nowrap !important; /* Запрещает перенос текста */
                 border-radius: 2px !important;
                 padding: 1px 0 !important; /* Убрали горизонтальные отступы */
                 background-color: rgba(255, 215, 0, 1) !important;
