@@ -1415,7 +1415,7 @@ Lampa.SettingsApi.addParam({
                 color: #000000 !important;
                 border: 2px solid #FF8C00 !important;
                 font-weight: bold !important;
-                padding: 4px 8px !important;
+                padding: 4px 6px !important;
                 border-radius: 6px !important;
                 display: inline-block !important;
                 position: relative !important;
