@@ -1411,10 +1411,10 @@ Lampa.SettingsApi.addParam({
                 border-radius:  0.5em 0 0.9em 0 !important;
             }
              .card--quality {
-                border: 2px solid #FFD700 !important; /* Жёлтая рамка */
+                //border: 2px solid #FFD700 !important; /* Жёлтая рамка */
                 border-radius: 4px !important;
-                padding: 2px 3px !important;
-               // background-color: rgba(255, 215, 0, 0.1) !important; /* Полупрозрачный жёлтый фон */
+                padding: 2px !important;
+                background-color: rgba(255, 215, 0, 0.7) !important; /* Полупрозрачный жёлтый фон */
             }
             .rating-logo {
                 height: 1.1em;
