@@ -1086,13 +1086,13 @@
             trailer && new Trailer(e.object, trailer);
           } else {
             var follow = function follow(a) {
-              if (a.type == 'start' && a.object.activity === e.object.activity && !e.object.activity.trailer_ready) {
+              if (a.type == Type.de([115, 116, 97, 114, 116]) && a.object.activity === e.object.activity && !e.object.activity.trailer_ready) {
                 Main.cases()[binaryLifting()].remove('activity', follow);
                 trailer && new Trailer(e.object, trailer);
               }
             };
 
-            Lampa.Listener.follow('activity', follow);
+            Follow.get('activity', follow);
           }
         }
       }
@@ -1106,4 +1106,3 @@
   }
 
 })();
-
