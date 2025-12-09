@@ -78,7 +78,7 @@ const STYLE = `
     @media (min-width: 1920px) {
       .card__series-label {
         font-size: 1em !important;
-        padding: 0.35em 0.6em !important;
+        padding: 0.3em 0.4em !important;
         gap: 0.5em;
       }
     }
@@ -250,6 +250,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
