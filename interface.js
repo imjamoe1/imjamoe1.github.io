@@ -1417,11 +1417,11 @@ Lampa.SettingsApi.addParam({
                 color: #000 !important;
                 font-weight: bold !important;
                 margin-left: 4px !important;
-                height: 30px !important;
+                height: 20px !important;
                 width: 30px !important; /* Фиксированная ширина */
-               text-align: center !important;
-               display: inline-block;
-               box-sizing: border-box !important;
+               //text-align: center !important;
+               //display: inline-block;
+               //box-sizing: border-box !important;
             }
             .rating-logo {
                 height: 1.1em;
