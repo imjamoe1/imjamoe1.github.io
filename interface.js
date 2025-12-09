@@ -1410,6 +1410,78 @@ Lampa.SettingsApi.addParam({
                 background-color: rgba(0, 0, 0, 0.5) !important;
                 border-radius:  0.5em 0 0.9em 0 !important;
             }
+    // Добавляем CSS стили
+    var styleElement = document.createElement('style');
+    styleElement.id = 'quality-yellow-frame-styles';
+    styleElement.innerHTML = `
+        /* Желтая рамка для 4K и других форматов */
+        .card__quality--yellow {
+            background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+            color: #000 !important;
+            border: 2px solid #FF8C00 !important;
+            font-weight: bold !important;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card__quality--yellow::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF8C00, #FFD700);
+            z-index: -1;
+            border-radius: inherit;
+            animation: yellow-glow 2s linear infinite;
+        }
+        
+        @keyframes yellow-glow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .card__quality--yellow div {
+            color: #000 !important;
+            font-weight: bold !important;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+        }
+        
+        /* Для полного описания */
+        .card--quality[style*="background: #ffe216"],
+        .card--quality.yellow-frame,
+        .full-start__tag.card--quality.yellow-frame,
+        .full-start-new__details .card--quality.yellow-frame {
+            background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+            color: #000 !important;
+            border: 2px solid #FF8C00 !important;
+            font-weight: bold !important;
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.7) !important;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px rgba(255, 140, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.9); }
+            100% { box-shadow: 0 0 5px rgba(255, 140, 0, 0.5); }
+        }
+        
+        /* Для мобильных устройств */
+        @media (max-width: 768px) {
+            .card__quality--yellow {
+                font-size: 10px !important;
+                padding: 2px 4px !important;
+            }
+        }
+    `;
+    
+    // Добавляем стили в head документа
+    if (!document.querySelector('#quality-yellow-frame-styles')) {
+        document.head.appendChild(styleElement);
+    }
+})();
             .rating-logo {
                 height: 1.1em;
                 width: auto;
