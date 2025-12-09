@@ -1411,7 +1411,7 @@ Lampa.SettingsApi.addParam({
                 border-radius:  0.5em 0 0.9em 0 !important;
             }
              .card--quality div {
-                visibility: hidden;
+                opacity: 0;
             }
             .rating-logo {
                 height: 1.1em;
