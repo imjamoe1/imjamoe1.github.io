@@ -1162,12 +1162,6 @@ function applyLogo(data, logo, html, isDestroyed) {
     };
 }
 
-const qualityDiv = document.querySelector('.card--quality div');
-if (qualityDiv) {
-    qualityDiv.textContent = '';
-    // Или qualityDiv.innerHTML = '';
-}
-
 // Основной плагин для логотипов
 window.logoplugin || (window.logoplugin = !0, Lampa.Listener.follow("full", function(a) {
     if ("complite" == a.type && "1" != Lampa.Storage.get("logo_glav")) {
@@ -1415,6 +1409,12 @@ Lampa.SettingsApi.addParam({
                 font-weight: bold !important;
                 background-color: rgba(0, 0, 0, 0.5) !important;
                 border-radius:  0.5em 0 0.9em 0 !important;
+            }
+             .card--quality {
+                border: 2px solid #FFD700 !important; /* Жёлтая рамка */
+                border-radius: 4px !important;
+                padding: 2px 6px !important;
+                background-color: rgba(255, 215, 0, 0.1) !important; /* Полупрозрачный жёлтый фон */
             }
             .rating-logo {
                 height: 1.1em;
