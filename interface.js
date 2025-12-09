@@ -1416,8 +1416,8 @@ Lampa.SettingsApi.addParam({
                 background-color: rgba(255, 215, 0, 1) !important;
                 color: #000 !important;
                 font-weight: bold !important;
-                margin-left: 4px !important;
-                height: 20px !important;
+                margin-left: 8px !important;
+                height: 25px !important;
                 width: 30px !important; /* Фиксированная ширина */
                //text-align: center !important;
                //display: inline-block;
