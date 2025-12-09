@@ -41,7 +41,6 @@ const STYLE = `
     .card__series-completed-svg {
       width: 0.7em !important;
       height: 0.7em !important;
-      margin-right: 0.5em;
       display: inline-block;
       vertical-align: middle;
       position: relative;
@@ -51,7 +50,6 @@ const STYLE = `
     .card__series-ongoing-svg {
       width: 0.6em !important;
       height: 0.8em !important;
-      margin-right: 0.5em;
       display: inline-block;
       vertical-align: middle;
       position: relative;
@@ -250,6 +248,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
