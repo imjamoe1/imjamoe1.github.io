@@ -9,7 +9,7 @@ const STYLE = `
     .card__series-label {
       position: absolute;
       bottom: 0.3em;
-      left: 0.3em;
+      left: 0.1em;
       background: rgba(0,0,0,0.5);
       color: #fff;
       font-size: 0.9em !important;
@@ -248,6 +248,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
