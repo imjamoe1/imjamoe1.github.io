@@ -1410,21 +1410,13 @@ Lampa.SettingsApi.addParam({
                 background-color: rgba(0, 0, 0, 0.5) !important;
                 border-radius:  0.5em 0 0.9em 0 !important;
             }
-            $('.card--quality div').each(function() {
-                var $this = $(this);
-                var text = $this.text();
-                if (text.includes('Качество:')) {
-                    // Оставляем только текст после "Качество:"
-                    $this.text(text.replace('Качество:', '').trim());
-                }
-            });
              .card--quality {
                 background: linear-gradient(135deg, #FFD700, #FFA500) !important;
                 color: #000000 !important;
                 border: 2px solid #FF8C00 !important;
                 font-weight: bold !important;
                 padding: 4px 8px !important;
-                border-radius: 4px !important;
+                border-radius: 6px !important;
                 display: inline-block !important;
                 position: relative !important;
                 z-index: 10 !important;
