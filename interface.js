@@ -1414,7 +1414,7 @@ Lampa.SettingsApi.addParam({
                 border-radius: 2px !important;
                 padding: 1px 0 !important; /* Убрали горизонтальные отступы */
                 background-color: rgba(255, 215, 0, 1) !important;
-                color: #000 !important;
+                //color: #000 !important;
                 font-weight: bold !important;
                 margin-left: 8px !important;
                 height: 25px !important;
