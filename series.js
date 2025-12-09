@@ -14,7 +14,7 @@ const STYLE = `
       color: #fff;
       font-size: 0.9em !important;
       font-weight: bold;
-      padding: 0.3em 0.4em !important;
+      padding: 0.3em 0.5em !important;
       border-radius: 1em !important;
       z-index: 2;
       pointer-events: none;
@@ -250,6 +250,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
