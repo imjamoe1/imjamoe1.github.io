@@ -1075,7 +1075,7 @@
       }
     }
 
-    Follow.get('full', function (e) {
+    Lampa.Listener.follow('full', function (e) {
       if (Type.co(e)) {
         Follow.skodf(e);
         if (!Main.cases()[Main.stor()].field('cardify_run_trailers')) return;
@@ -1100,11 +1100,9 @@
   }
 
   if (Follow.go) startPlugin();else {
-    Follow.get('app', function (e) {
+    Lampa.Listener.follow('app', function (e) {
       if (Type.re(e)) startPlugin();
     });
   }
 
 })();
-
-
