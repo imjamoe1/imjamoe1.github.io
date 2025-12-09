@@ -1423,6 +1423,10 @@ Lampa.SettingsApi.addParam({
                 box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4) !important;
                 text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3) !important;
             }
+            $(".full-start-new__details", _0x53e9b2).append(
+                '<span class="full-start-new__split">●</span>' +
+                '<span class="card--quality">' + _0x352ffe + '</span>'
+            );
             .rating-logo {
                 height: 1.1em;
                 width: auto;
