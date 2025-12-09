@@ -1410,7 +1410,7 @@ Lampa.SettingsApi.addParam({
                 background-color: rgba(0, 0, 0, 0.5) !important;
                 border-radius:  0.5em 0 0.9em 0 !important;
             }
-             .card--quality div {
+             .card__quality {
                 opacity: 0;
             }
             .rating-logo {
