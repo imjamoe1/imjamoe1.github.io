@@ -1410,24 +1410,6 @@ Lampa.SettingsApi.addParam({
                 background-color: rgba(0, 0, 0, 0.5) !important;
                 border-radius:  0.5em 0 0.9em 0 !important;
             }
-             .card--quality {
-                display: inline-flex !important;
-                //justify-content: center !important;
-                //align-items: center !important;
-                //flex-shrink: 0 !important; /* Не позволяет сжиматься */
-                white-space: nowrap !important; /* Запрещает перенос текста */
-                border-radius: 2px !important;
-                padding: 1px 0 !important; /* Убрали горизонтальные отступы */
-                background-color: rgba(255, 215, 0, 1) !important;
-                //color: #000 !important;
-                font-weight: bold !important;
-                margin-left: 8px !important;
-                height: 25px !important;
-                width: 30px !important; /* Фиксированная ширина */
-               //text-align: center !important;
-               //display: inline-block;
-               //box-sizing: border-box !important;
-            }
             .rating-logo {
                 height: 1.1em;
                 width: auto;
