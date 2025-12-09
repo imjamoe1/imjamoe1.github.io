@@ -1092,7 +1092,7 @@
               }
             };
 
-            Follow.get('activity', follow);
+            Lampa.Listener.follow('activity', follow);
           }
         }
       }
@@ -1106,3 +1106,4 @@
   }
 
 })();
+
