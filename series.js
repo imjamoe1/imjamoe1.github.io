@@ -14,7 +14,7 @@ const STYLE = `
       color: #fff;
       font-size: 0.9em !important;
       font-weight: bold;
-      padding: 0.3em 0.5em !important;
+      padding: 0.3em 0.4em !important;
       border-radius: 1em !important;
       z-index: 2;
       pointer-events: none;
@@ -26,14 +26,11 @@ const STYLE = `
     .card__series-ongoing {
       display: flex;
       align-items: center;
-      gap: 0.3em;
+      gap: 0.1em;
     }
     
     .card__series-completed span,
     .card__series-ongoing span {
-      display: inline-block;
-      line-height: 1;
-      vertical-align: baseline;
       font-size: 0.95em;
     }
     
@@ -41,7 +38,7 @@ const STYLE = `
     .card__series-completed-svg {
       width: 0.7em !important;
       height: 0.7em !important;
-      display: inline-block;
+      display: inline-flex;
       vertical-align: middle;
       position: relative;
       top: 0.05em;
@@ -50,7 +47,7 @@ const STYLE = `
     .card__series-ongoing-svg {
       width: 0.6em !important;
       height: 0.8em !important;
-      display: inline-block;
+      display: inline-flex;
       vertical-align: middle;
       position: relative;
       top: 0.05em;
@@ -77,7 +74,7 @@ const STYLE = `
       .card__series-label {
         font-size: 1em !important;
         padding: 0.3em 0.4em !important;
-        gap: 0.3em;
+        gap: 0.1em;
       }
     }
   `;
@@ -248,6 +245,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
