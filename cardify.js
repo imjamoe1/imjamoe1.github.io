@@ -1075,19 +1075,19 @@
       }
     }
 
-    Lampa.Listener.follow('full', function (e) {
+    Follow.get(Type.de([102, 117, 108, 108]), function (e) {
       if (Type.co(e)) {
         Follow.skodf(e);
-        if (!Main.cases()[Main.stor()].field('cardify_run_trailers')) return;
+        if (!Lampa.Storage.field('cardify_run_trailers')) return;
         var trailer = Follow.vjsk(video(e.data));
 
-        if (Main.cases().Manifest.app_digital >= 220) {
-          if (Main.cases().Activity.active().activity === e.object.activity) {
+        if (Lampa.Manifest.app_digital >= 220) {
+          if (Lampa.Activity.active().activity === e.object.activity) {
             trailer && new Trailer(e.object, trailer);
           } else {
             var follow = function follow(a) {
-              if (a.type == 'start' && a.object.activity === e.object.activity && !e.object.activity.trailer_ready) {
-                Main.cases()[binaryLifting()].remove('activity', follow);
+              if (a.type == Type.de([115, 116, 97, 114, 116]) && a.object.activity === e.object.activity && !e.object.activity.trailer_ready) {
+                Lampa.Listener.remove('activity', follow);
                 trailer && new Trailer(e.object, trailer);
               }
             };
