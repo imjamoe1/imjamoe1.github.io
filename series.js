@@ -26,7 +26,7 @@ const STYLE = `
     .card__series-ongoing {
       display: flex;
       align-items: center;
-      gap: 0.1em;
+      gap: 0.3em;
     }
     
     .card__series-completed span,
@@ -57,7 +57,7 @@ const STYLE = `
       .card__series-label {
         font-size: 1em !important;
         padding: 0.3em 0.4em !important;
-        gap: 0.1em;
+        gap: 0.3em;
       }
     }
   `;
@@ -228,6 +228,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
