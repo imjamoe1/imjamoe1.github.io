@@ -53,23 +53,6 @@ const STYLE = `
       top: 0.05em;
     }
     
-    /* Адаптация для разных размеров экрана */
-    @media (max-width: 768px) {
-      .card__series-label {
-        font-size: 0.85em !important;
-        padding: 0.25em 0.4em !important;
-        gap: 0.3em;
-      }
-      .card__series-completed-svg {
-        width: 1em !important;
-        height: 1em !important;
-      }
-      .card__series-ongoing-svg {
-        width: 0.9em !important;
-        height: 1.2em !important;
-      }
-    }
-    
     @media (min-width: 1920px) {
       .card__series-label {
         font-size: 1em !important;
@@ -245,6 +228,7 @@ const STYLE = `
     document.addEventListener('lampaReady', init);
   }
 })();
+
 
 
 
