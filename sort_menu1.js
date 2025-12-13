@@ -530,11 +530,11 @@
                         c.includes('reload') ||
                         c.includes('extensions') ||
                         c.includes('exit')       
-                    ) || '';
+                    ) || ''
 
                     // Если не нашли специфичный класс, тогда ищем head__settings
                     if (!mainClass) {
-                        mainClass = allClasses.find(c => c.includes('head__settings')) || '';
+                        mainClass = allClasses.find(c => c.includes('head__settings')) || ''
                     }          
                         
                     let displayName = getHeadActionName(mainClass, item_orig)   
@@ -748,7 +748,7 @@
                         c.includes('reload') ||
                         c.includes('extensions') ||
                         c.includes('exit')
-                    );
+                    )
 
                     if (!uniqueClass) {
                         uniqueClass = classes.find(c => c.includes('head__settings'));
