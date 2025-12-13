@@ -1,11 +1,11 @@
+
 !function() {
     "use strict";
     
     var PLUGIN_NAME = "maxsm_categorized";
-    var JSON_URL = "https://raw.githubusercontent.com/your-repo/kinozal-data/main/recentTitlesByCategory.json";
-    var BACKUP_URL = "https://gist.githubusercontent.com/raw/your-gist-id/kinozal-data.json";
-    var CACHE_TIME = 1000 * 60 * 60 * 2; // 2 часа
-    var CACHE_KEY = "kinozal_cache_v2";
+    var JSON_URL = "https://kinozal.tv/top.php";
+    var CACHE_TIME = 1000 * 60 * 30;
+    var CACHE_KEY = "maxsm_categorized_cache_v1";
     var ICON_SVG = '<svg height="30" viewBox="0 0 38 30" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="1.5" width="35" height="27" rx="1.5" stroke="currentColor" stroke-width="3"></rect><path d="M18.105 22H15.2936V16H9.8114V22H7V8H9.8114V13.6731H15.2936V8H18.105V22Z" fill="currentColor"></path><path d="M20.5697 22V8H24.7681C25.9676 8 27.039 8.27885 27.9824 8.83654C28.9321 9.38782 29.6724 10.1763 30.2034 11.2019C30.7345 12.2212 31 13.3814 31 14.6827V15.3269C31 16.6282 30.7376 17.7853 30.2128 18.7981C29.6943 19.8109 28.9602 20.5962 28.0105 21.1538C27.0609 21.7115 25.9895 21.9936 24.7962 22H20.5697ZM23.3811 10.3365V19.6827H24.7399C25.8395 19.6827 26.6798 19.3141 27.2608 18.5769C27.8419 17.8397 28.1386 16.7853 28.1511 15.4135V14.6731C28.1511 13.25 27.8637 12.1731 27.289 11.4423C26.7142 10.7051 25.8739 10.3365 24.7681 10.3365H23.3811Z" fill="currentColor"></path></svg>';
     
     Lampa.Lang.add({
@@ -21,14 +21,14 @@
             bg: "Kinozal.tv",
         },
         maxsm_clear_cache: {
-            ru: "Очистить кэш Кинозал",
-            en: "Clear Kinozal cache",
-            uk: "Очистити кеш Кінозал"
+            ru: "Очистить кэш",
+            en: "Clear cache",
+            uk: "Очистити кеш"
         },
         maxsm_cache_cleared: {
-            ru: "Кэш Кинозал очищен",
-            en: "Kinozal cache cleared",
-            uk: "Кеш Кінозал очищено"
+            ru: "Кэш очищен",
+            en: "Cache cleared",
+            uk: "Кеш очищено"
         }
     });
     
@@ -48,14 +48,15 @@
         if (!localStorage[CACHE_KEY]) {
             localStorage[CACHE_KEY] = JSON.stringify({
                 data: {},
-                timestamp: 0,
-                version: "v2"
+                timestamp: Date.now(),
+                version: "v1"
             });
         }
     }
     
     // Получение данных из кэша
     function getCache() {
+        return null;
         try {
             return JSON.parse(localStorage[CACHE_KEY] || null);
         } catch (e) {
@@ -68,7 +69,7 @@
         localStorage[CACHE_KEY] = JSON.stringify({
             data: data,
             timestamp: Date.now(),
-            version: "v2"
+            version: "v1"
         });
     }
     
@@ -79,95 +80,23 @@
         return true;
     }
     
-    // Создание демо-данных для немедленного отображения
-    function createDemoData() {
-        return {
-            categories: [
-                {
-                    id: "movies_4k",
-                    title: "Фильмы 4K",
-                    items: [
-                        {
-                            id: "demo_1",
-                            title: "Загрузка данных...",
-                            name: "Загрузка данных...",
-                            poster_path: "",
-                            overview: "Пожалуйста, подождите, данные загружаются",
-                            vote_average: 0,
-                            release_date: "2024-01-01",
-                            type: "movie",
-                            source: PLUGIN_NAME,
-                            original_title: "Loading...",
-                            quality: "4K"
-                        }
-                    ]
-                }
-            ]
-        };
-    }
-    
     function CategorizedService() {
         var self = this;
         var network = new Lampa.Reguest();
         var categoriesData = {};
-        var isLoading = false;
         
         // Загрузка данных
         self.loadData = function(onComplete, onError) {
-            if (isLoading) return;
-            isLoading = true;
-            
             var cached = getCache();
-            if (cached && cached.version === "v2" && Date.now() - cached.timestamp < CACHE_TIME && Object.keys(cached.data).length > 0) {
+            if (cached && cached.version === "v1" && Date.now() - cached.timestamp < CACHE_TIME) {
                 categoriesData = cached.data;
-                isLoading = false;
                 onComplete();
                 return;
             }
             
-            console.log('[Kinozal] Загрузка данных с:', JSON_URL);
-            
-            // Пробуем основной URL
             network.silent(JSON_URL, function(json) {
                 if (!json || !json.categories || !Array.isArray(json.categories)) {
-                    console.log('[Kinozal] Основной URL не вернул данные, пробуем backup');
-                    // Пробуем backup URL
-                    network.silent(BACKUP_URL, function(backupJson) {
-                        processData(backupJson, onComplete, onError);
-                    }, function(backupError) {
-                        console.log('[Kinozal] Оба URL недоступны, создаем демо-данные');
-                        categoriesData = createDemoData().categories.reduce(function(acc, cat) {
-                            acc[cat.id] = cat;
-                            return acc;
-                        }, {});
-                        setCache(categoriesData);
-                        isLoading = false;
-                        onComplete();
-                    });
-                    return;
-                }
-                
-                processData(json, onComplete, onError);
-            }, function(error) {
-                console.log('[Kinozal] Ошибка загрузки, пробуем backup:', error);
-                network.silent(BACKUP_URL, function(backupJson) {
-                    processData(backupJson, onComplete, onError);
-                }, function(backupError) {
-                    console.log('[Kinozal] Оба URL недоступны, создаем демо-данные');
-                    categoriesData = createDemoData().categories.reduce(function(acc, cat) {
-                        acc[cat.id] = cat;
-                        return acc;
-                    }, {});
-                    setCache(categoriesData);
-                    isLoading = false;
-                    onComplete();
-                });
-            });
-            
-            function processData(json, onComplete, onError) {
-                if (!json || !json.categories || !Array.isArray(json.categories)) {
                     onError(new Error("Invalid JSON format"));
-                    isLoading = false;
                     return;
                 }
                 
@@ -183,9 +112,10 @@
                 
                 categoriesData = normalizedData;
                 setCache(normalizedData);
-                isLoading = false;
                 onComplete();
-            }
+            }, function(error) {
+                onError(error || new Error("Network error"));
+            });
         };
         
         // Нормализация элемента
@@ -198,6 +128,7 @@
                 poster_path: item.poster_path || "",
                 overview: item.overview || "",
                 vote_average: item.vote_average || 0,
+                //release_date: isTV ? (item.first_air_date || "") : (item.release_date || ""),
                 release_date: isTV ? (item.first_air_date || item.release_date || "") : (item.release_date || item.first_air_date || ""),
                 first_air_date: isTV ? (item.first_air_date || "") : "",
                 type: item.media_type || "movie",
@@ -240,32 +171,30 @@
         
         // Метод для построения главной страницы
         self.category = function(params, onSuccess, onError) {
-            // Немедленно возвращаем демо-данные
-            var demoData = createDemoData();
-            var sections = [];
-            
-            for (var i = 0; i < demoData.categories.length; i++) {
-                var category = demoData.categories[i];
-                sections.push({
-                    url: PLUGIN_NAME + '__' + category.id,
-                    title: category.title,
-                    page: 1,
-                    total_results: category.items.length,
-                    total_pages: 1,
-                    results: category.items.slice(0, 20),
-                    source: PLUGIN_NAME,
-                    more: false
-                });
-            }
-            
-            onSuccess(sections);
-            
-            // Затем загружаем реальные данные в фоне
             self.loadData(function() {
-                console.log('[Kinozal] Данные загружены в фоне');
-            }, function(error) {
-                console.log('[Kinozal] Ошибка загрузки в фоне:', error);
-            });
+                var sections = [];
+                
+                // Создаем разделы для всех категорий из JSON
+                for (var categoryId in categoriesData) {
+                    if (categoriesData.hasOwnProperty(categoryId)) {
+                        var category = categoriesData[categoryId];
+                        var categoryItems = category.items || [];
+                        
+                        sections.push({
+                            url: PLUGIN_NAME + '__' + categoryId,
+                            title: category.title,
+                            page: 1,
+                            total_results: categoryItems.length,
+                            total_pages: Math.ceil(categoryItems.length / 20),
+                            results: categoryItems.slice(0, 20),
+                            source: PLUGIN_NAME,
+                            more: categoryItems.length > 20
+                        });
+                    }
+                }
+                
+                onSuccess(sections);
+            }, onError);
         };
         
         // Остальные методы API
@@ -285,7 +214,6 @@
     }
 
     function startPlugin() {
-        console.log('[Kinozal] Инициализация плагина');
         initCache();
         
         // Добавляем кнопку очистки кэша
@@ -325,45 +253,11 @@
             });
         });
         
-        // Добавляем в меню
-        var menuList = $(".menu .menu__list").eq(0);
-        if (menuList.length) {
-            menuList.append(menuItem);
-            console.log('[Kinozal] Пункт меню добавлен');
-        } else {
-            // Если меню еще не загружено, пробуем позже
-            setTimeout(function() {
-                var menuList = $(".menu .menu__list").eq(0);
-                if (menuList.length) {
-                    menuList.append(menuItem);
-                    console.log('[Kinozal] Пункт меню добавлен (повторная попытка)');
-                }
-            }, 1000);
-        }
-        
-        // Загружаем данные в фоне сразу после инициализации
-        setTimeout(function() {
-            service.loadData(function() {
-                console.log('[Kinozal] Данные предзагружены');
-            }, function(error) {
-                console.log('[Kinozal] Ошибка предзагрузки:', error);
-            });
-        }, 2000);
-        
-        console.log('[Kinozal] Плагин успешно инициализирован');
+        $(".menu .menu__list").eq(0).append(menuItem);
     }
 
-    // Запуск плагина
-    if (window.appready) {
-        console.log('[Kinozal] Lampa уже готова, запускаем плагин');
-        setTimeout(startPlugin, 500);
-    } else {
-        console.log('[Kinozal] Ждем готовности Lampa');
-        Lampa.Listener.follow('app', function(e) {
-            if (e.type === 'ready') {
-                console.log('[Kinozal] Lampa готова, запускаем плагин');
-                setTimeout(startPlugin, 1000);
-            }
-        });
-    }
+    if (window.appready) startPlugin();
+    else Lampa.Listener.follow('app', function(e) {
+        if (e.type === 'ready') startPlugin();
+    });
 }();
