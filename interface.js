@@ -1423,6 +1423,10 @@ Lampa.SettingsApi.addParam({
                 box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4) !important;
                 text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3) !important;
             }
+            /* Отключаем стандартную анимацию Lampa для фона */
+            body.advanced--animation:not(.no--animation) .full-start__background.loaded {
+                animation: none !important;
+            }
             .rating-logo {
                 height: 1.1em;
                 width: auto;
