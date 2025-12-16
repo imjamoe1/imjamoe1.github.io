@@ -119,6 +119,14 @@
         Lampa.Storage.set(config.cache_key, cache);
     }
 
+    // Добавляем оверлей рядом с фоном
+    function addOverlay(activity) {
+        const background = activity.render().find('.full-start__background');
+        if (background.length && !background.next('.applecation__overlay').length) {
+            background.after('<div class="full-start__background loaded applecation__overlay"></div>');
+        }
+    }
+
     // --- Helper Functions for Kinopoisk ---
     function cleanTitle(str) {
         return (str || '').replace(/[\s.,:;'`!?]+/g, ' ').trim();
