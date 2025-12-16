@@ -119,14 +119,6 @@
         Lampa.Storage.set(config.cache_key, cache);
     }
 
-    // Добавляем оверлей рядом с фоном
-    function addOverlay(activity) {
-        const background = activity.render().find('.full-start__background');
-        if (background.length && !background.next('.applecation__overlay').length) {
-            background.after('<div class="full-start__background loaded applecation__overlay"></div>');
-        }
-    }
-
     // --- Helper Functions for Kinopoisk ---
     function cleanTitle(str) {
         return (str || '').replace(/[\s.,:;'`!?]+/g, ' ').trim();
@@ -1430,36 +1422,6 @@ Lampa.SettingsApi.addParam({
                 z-index: 10 !important;
                 box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4) !important;
                 text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3) !important;
-            }
-            .applecation__overlay {
-                width: 90vw;
-                background: linear-gradient(to right, 
-                    rgba(0, 0, 0, 0.792) 0%, 
-                    rgba(0, 0, 0, 0.504) 25%, 
-                    rgba(0, 0, 0, 0.264) 45%, 
-                    rgba(0, 0, 0, 0.12) 55%, 
-                    rgba(0, 0, 0, 0.043) 60%, 
-                    rgba(0, 0, 0, 0) 65%);
-            }
-            .full-start__background.dim {
-              filter: blur(30px);
-            }
-            .full-start__background {
-                height: calc(100% + 6em);
-                left: 0 !important;
-                opacity: 0 !important;
-                transition: opacity 0.6s ease-out, filter 0.3s ease-out !important;
-                animation: none !important;
-                transform: none !important;
-                will-change: opacity, filter;
-            }
-
-            .full-start__background.loaded:not(.dim) {
-                opacity: 1 !important;
-            }
-            /* Отключаем стандартную анимацию Lampa для фона */
-            body.advanced--animation:not(.no--animation) .full-start__background.loaded {
-                animation: none !important;
             }
             .rating-logo {
                 height: 1.1em;
