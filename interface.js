@@ -1353,14 +1353,8 @@ Lampa.SettingsApi.addParam({
                 font-weight: bold;
             }
             .full-start__background {
-                display: none !important;
                 opacity: 0 !important;
-                visibility: hidden !important;
                 background: transparent !important;
-                transition: none !important;
-                animation: none !important;
-                transform: none !important;
-                filter: none !important;
             }
             .full-start__background.loaded:not(.dim) {
                 opacity: 1 !important;
