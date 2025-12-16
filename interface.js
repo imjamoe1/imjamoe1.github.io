@@ -1330,7 +1330,7 @@ Lampa.SettingsApi.addParam({
             }    
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
             .new-interface .card-more__box { padding-bottom: 95%; }
-            .new-interface .full-start__background { height: 108%; top: -6em; }
+            //.new-interface .full-start__background { height: 108%; top: -6em; }
             .new-interface .card__promo { display: none; }
             .new-interface .card.card--wide+.card-more .card-more__box { padding-bottom: 95%; }
             .new-interface .card.card--wide .card-watched { display: none !important; }
@@ -1440,6 +1440,22 @@ Lampa.SettingsApi.addParam({
                     rgba(0, 0, 0, 0.12) 55%, 
                     rgba(0, 0, 0, 0.043) 60%, 
                     rgba(0, 0, 0, 0) 65%);
+            }
+            .full-start__background.dim {
+              filter: blur(30px);
+            }
+            .full-start__background {
+                height: calc(100% + 6em);
+                left: 0 !important;
+                opacity: 0 !important;
+                transition: opacity 0.6s ease-out, filter 0.3s ease-out !important;
+                animation: none !important;
+                transform: none !important;
+                will-change: opacity, filter;
+            }
+
+            .full-start__background.loaded:not(.dim) {
+                opacity: 1 !important;
             }
             /* Отключаем стандартную анимацию Lampa для фона */
             body.advanced--animation:not(.no--animation) .full-start__background.loaded {
