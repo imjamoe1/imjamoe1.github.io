@@ -1361,6 +1361,9 @@ Lampa.SettingsApi.addParam({
                 transform: none !important;
                 will-change: opacity, filter;
             }
+            .full-start__background.loaded:not(.dim) {
+                opacity: 1 !important;
+            }
             .new-interface-info__description {
                 position: absolute;
                 top: 1em;
