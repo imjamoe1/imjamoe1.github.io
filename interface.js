@@ -1352,16 +1352,17 @@ Lampa.SettingsApi.addParam({
             .full-start__rate {
                 font-weight: bold;
             }
-            .new-interface .full-start__background {
-                height: calc(100% + 6em);
-                left: 0 !important;
+            .full-start__background {
+                display: none !important;
                 opacity: 0 !important;
-                transition: opacity 0.6s ease-out, filter 0.3s ease-out !important;
+                visibility: hidden !important;
+                background: transparent !important;
+                transition: none !important;
                 animation: none !important;
                 transform: none !important;
-                will-change: opacity, filter;
+                filter: none !important;
             }
-            .new-interface .full-start__background.loaded:not(.dim) {
+            .full-start__background.loaded:not(.dim) {
                 opacity: 1 !important;
             }
             .new-interface-info__description {
