@@ -1431,6 +1431,16 @@ Lampa.SettingsApi.addParam({
                 box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4) !important;
                 text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3) !important;
             }
+            .applecation__overlay {
+                width: 90vw;
+                background: linear-gradient(to right, 
+                    rgba(0, 0, 0, 0.792) 0%, 
+                    rgba(0, 0, 0, 0.504) 25%, 
+                    rgba(0, 0, 0, 0.264) 45%, 
+                    rgba(0, 0, 0, 0.12) 55%, 
+                    rgba(0, 0, 0, 0.043) 60%, 
+                    rgba(0, 0, 0, 0) 65%);
+            }
             /* Отключаем стандартную анимацию Lampa для фона */
             body.advanced--animation:not(.no--animation) .full-start__background.loaded {
                 animation: none !important;
