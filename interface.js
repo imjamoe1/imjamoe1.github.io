@@ -1353,12 +1353,7 @@ Lampa.SettingsApi.addParam({
                 font-weight: bold;
             }
             .full-start__background {
-                left: 0 !important;
-                opacity: 0 !important;
                 mask-image: none;
-                animation: none !important;
-                transform: none !important;
-                will-change: opacity, filter;
             }
             .full-start__background.dim {
                 filter: blur(30px);
