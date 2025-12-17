@@ -1372,9 +1372,9 @@ Lampa.SettingsApi.addParam({
             .full-start__background.loaded.applecation-animated {
                 opacity: 1 !important;
             }
-            body:not(.menu--open) .full-start__background {
+           /* body:not(.menu--open) .full-start__background {
                 mask-image: none;
-            }
+            } */
             /* Отключаем стандартную анимацию Lampa для фона */
             body.advanced--animation:not(.no--animation) .full-start__background.loaded {
                 animation: none !important;
