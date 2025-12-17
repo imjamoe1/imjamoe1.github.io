@@ -1355,6 +1355,9 @@ Lampa.SettingsApi.addParam({
             .full-start__background {
                 mask-image: none;
             }
+            .full-start__background.loaded:not(.dim) {
+                opacity: 1 !important;
+            }
             .full-start__background.dim {
                 filter: blur(30px);
             }
