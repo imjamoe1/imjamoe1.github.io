@@ -1352,14 +1352,32 @@ Lampa.SettingsApi.addParam({
             .full-start__rate {
                 font-weight: bold;
             }
+            /* Фон - переопределяем стандартную анимацию на fade */
             .full-start__background {
-                mask-image: none;
+                height: calc(100% + 6em);
+                left: 0 !important;
+                opacity: 0 !important;
+                transition: opacity 0.6s ease-out, filter 0.3s ease-out !important;
+                animation: none !important;
+                transform: none !important;
+                will-change: opacity, filter;
             }
             .full-start__background.loaded:not(.dim) {
                 opacity: 1 !important;
             }
             .full-start__background.dim {
-                filter: blur(30px);
+              filter: blur(30px);
+            }
+            /* Удерживаем opacity при загрузке нового фона */
+            .full-start__background.loaded.applecation-animated {
+                opacity: 1 !important;
+            }
+            body:not(.menu--open) .full-start__background {
+                mask-image: none;
+            }
+            /* Отключаем стандартную анимацию Lampa для фона */
+            body.advanced--animation:not(.no--animation) .full-start__background.loaded {
+                animation: none !important;
             }
             .new-interface-info__description {
                 position: absolute;
