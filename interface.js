@@ -1322,7 +1322,7 @@ Lampa.SettingsApi.addParam({
             }    
             .new-interface-info__split { margin: 0 0.5em; font-size: 0.7em; }
             .new-interface .card-more__box { padding-bottom: 95%; }
-            //.new-interface .full-start__background { height: 108%; top: -6em; }
+            .new-interface .full-start__background { height: 108%; top: -6em; }
             .new-interface .card__promo { display: none; }
             .new-interface .card.card--wide+.card-more .card-more__box { padding-bottom: 95%; }
             .new-interface .card.card--wide .card-watched { display: none !important; }
