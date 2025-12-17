@@ -1360,7 +1360,7 @@ Lampa.SettingsApi.addParam({
                 transform: none !important;
                 will-change: opacity, filter;
             } */
-            body:not(.menu--open) .full-start__background {
+            .full-start__background {
                 mask-image: none;
             }
            /* .full-start__background.loaded:not(.dim) {
