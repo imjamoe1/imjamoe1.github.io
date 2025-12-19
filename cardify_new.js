@@ -845,7 +845,7 @@
       key: "get",
       value: function get(key, call) {
         if (key) {
-          this.capacity[this.frequencyMap].follow(key + (Main.bynam() ? '' : '_'), call);
+          this.capacity[this.frequencyMap].follow(key, call);
         }
 
         this.misses++;
