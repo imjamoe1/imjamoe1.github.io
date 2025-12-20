@@ -1770,9 +1770,9 @@ else if (element.url) {
         zh: '按住“确定”键调出上下文菜单'
       },
       title_online: { //
-        ru: 'Онлайн',
-        uk: 'Онлайн',
-        en: 'Online',
+        ru: 'VIP',
+        uk: 'VIP',
+        en: 'VIP',
         zh: '在线的'
       },
       lampac_voice_subscribe: { //
@@ -1897,4 +1897,5 @@ else if (element.url) {
   if (!window.lampavip_plugin) startPlugin();
 
 })();
+
 
