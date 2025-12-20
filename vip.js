@@ -1705,7 +1705,7 @@ else if (element.url) {
     var manifst = {
       type: 'video',
       version: '',
-      name: 'VIP',
+      name: '',
       description: '',
       component: 'lampavip',
       
@@ -1897,6 +1897,7 @@ else if (element.url) {
   if (!window.lampavip_plugin) startPlugin();
 
 })();
+
 
 
 
