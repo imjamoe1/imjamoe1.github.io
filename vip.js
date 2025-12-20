@@ -15,161 +15,170 @@
     Lampa.Storage.set('lampac_unic_id', 'guest');
   }
   
-    
-  function getAndroidVersion() {
-    if (Lampa.Platform.is('android')) {
-      try {
-        var current = AndroidJS.appVersion().split('-');
-        return parseInt(current.pop());
-      } catch (e) {
-        return 0;
-      }
-    } else {
+    function getAndroidVersion() {
+  if (Lampa.Platform.is('android')) {
+    try {
+      var current = AndroidJS.appVersion().split('-');
+      return parseInt(current.pop());
+    } catch (e) {
       return 0;
     }
+  } else {
+    return 0;
   }
+}
 
-  var hostkey = 'http://lampa.vip'.replace('http://', '').replace('https://', '');
+var hostkey = 'http://lampa.vip'.replace('http://', '').replace('https://', '');
 
-  if (!window.rch_nws || !window.rch_nws[hostkey]) {
-    if (!window.rch_nws) window.rch_nws = {};
+if (!window.rch_nws || !window.rch_nws[hostkey]) {
+  if (!window.rch_nws) window.rch_nws = {};
 
-    window.rch_nws[hostkey] = {
-      type: undefined,
-      startTypeInvoke: false,
-      rchRegistry: false,
-      apkVersion: getAndroidVersion()
+  window.rch_nws[hostkey] = {
+    type: Lampa.Platform.is('android') ? 'apk' : Lampa.Platform.is('tizen') ? 'cors' : undefined,
+    startTypeInvoke: false,
+    rchRegistry: false,
+    apkVersion: getAndroidVersion()
+  };
+}
+
+window.rch_nws[hostkey].typeInvoke = function rchtypeInvoke(host, call) {
+  if (!window.rch_nws[hostkey].startTypeInvoke) {
+    window.rch_nws[hostkey].startTypeInvoke = true;
+
+    var check = function check(good) {
+      window.rch_nws[hostkey].type = Lampa.Platform.is('android') ? 'apk' : good ? 'cors' : 'web';
+      call();
     };
 
-    window.rch_nws[hostkey].typeInvoke = function rchtypeInvoke(host, call) {
-      if (window.rch_nws[hostkey].type == undefined) {
-        window.rch_nws[hostkey].startTypeInvoke = true;
-
-        var check = function check(good) {
-          window.rch_nws[hostkey].type = Lampa.Platform.is('android') ? 'apk' : good ? 'cors' : 'web';
-          call();
-        };
-
-        if (Lampa.Platform.is('android') || Lampa.Platform.is('tizen')) check(true);
-        else {
-          var net = new Lampa.Reguest();
-          net.silent('http://lampa.vip'.indexOf(location.host) >= 0 ? 'https://github.com/' : host + '/cors/check', function () {
-            check(true);
-          }, function () {
-            check(false);
-          }, false, {
-            dataType: 'text'
-          });
-        }
-      } else call();
-    };
-
-    window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection) {
-      window.rch_nws[hostkey].typeInvoke('http://lampa.vip', function () {
-		  
-        client.invoke("RchRegistry", JSON.stringify({
-          version: 148,
-          host: location.host,
-          rchtype: window.rch_nws[hostkey].type,
-          apkVersion: window.rch_nws[hostkey].apkVersion,
-          player: Lampa.Storage.field('player')
-        }));
-		
-		if (client._shouldReconnect && window.rch_nws[hostkey].rchRegistry){
-			if (startConnection) startConnection();
-			return;
-		}
-		
-		window.rch_nws[hostkey].rchRegistry = true;
-
-		client.on('RchRegistry', function (connectionId) {
-			if (startConnection) startConnection();
-        });
-
-        client.on("RchClient", function (rchId, url, data, headers, returnHeaders) {
-          var network = new Lampa.Reguest();
-
-          function result(html) {
-            if (Lampa.Arrays.isObject(html) || Lampa.Arrays.isArray(html)) {
-              html = JSON.stringify(html);
-            }
-
-            if (typeof CompressionStream !== 'undefined' && html && html.length > 1000) {
-              var compressionStream = new CompressionStream('gzip');
-              var encoder = new TextEncoder();
-              var readable = new ReadableStream({
-                start: function (controller) {
-                  controller.enqueue(encoder.encode(html));
-                  controller.close();
-                }
-              });
-              var compressedStream = readable.pipeThrough(compressionStream);
-              new Response(compressedStream).arrayBuffer()
-                .then(function (compressedBuffer) {
-                  var compressedArray = new Uint8Array(compressedBuffer);
-                  if (compressedArray.length > html.length) {
-                    client.invoke("RchResult", rchId, html);
-                  } else {
-                    $.ajax({
-                      url: 'http://lampa.vip/rch/gzresult?id=' + rchId,
-                      type: 'POST',
-                      data: compressedArray,
-                      async: true,
-                      cache: false,
-                      contentType: false,
-                      processData: false,
-                      success: function (j) { },
-                      error: function () {
-                        client.invoke("RchResult", rchId, html);
-                      }
-                    });
-                  }
-                })
-                .catch(function () {
-                  client.invoke("RchResult", rchId, html);
-                });
-
-            } else {
-              client.invoke("RchResult", rchId, html);
-            }
-          }
-
-          if (url == 'eval') {
-            console.log('RCH', url, data);
-            result(eval(data));
-          } else if (url == 'ping') {
-            result('pong');
-          } else {
-            console.log('RCH', url);
-            network["native"](url, result, function () {
-              console.log('RCH', 'result empty');
-              result('');
-            }, data, {
-              dataType: 'text',
-              timeout: 1000 * 8,
-              headers: headers,
-              returnHeaders: returnHeaders
-            });
-          }
-        });
-
-        client.on('Connected', function (connectionId) {
-          console.log('RCH', 'ConnectionId: ' + connectionId);
-        });
-        client.on('Closed', function () {
-          console.log('RCH', 'Connection closed');
-        });
-        client.on('Error', function (err) {
-          console.log('RCH', 'error:', err); 
-        });
+    if (Lampa.Platform.is('android') || Lampa.Platform.is('tizen')) check(true);
+    else {
+      var net = new Lampa.Reguest();
+      net.silent('http://lampa.vip'.indexOf(location.host) >= 0 ? 'https://github.com/' : host + '/cors/check', function() {
+        check(true);
+      }, function() {
+        check(false);
+      }, false, {
+        dataType: 'text'
       });
-    };
-  }
+    }
+  } else call();
+};
 
+window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection) {
+  window.rch_nws[hostkey].typeInvoke('http://lampa.vip', function() {
+
+    client.invoke("RchRegistry", JSON.stringify({
+      version: 149,
+      host: location.host,
+      rchtype: Lampa.Platform.is('android') ? 'apk' : Lampa.Platform.is('tizen') ? 'cors' : window.rch_nws[hostkey].type,
+      apkVersion: window.rch_nws[hostkey].apkVersion,
+      player: Lampa.Storage.field('player'),
+	  account_email: Lampa.Storage.get('account_email'),
+	  unic_id: Lampa.Storage.get('lampac_unic_id', ''),
+	  profile_id: Lampa.Storage.get('lampac_profile_id', ''),
+	  token: ''
+    }));
+
+    if (client._shouldReconnect && window.rch_nws[hostkey].rchRegistry) {
+      if (startConnection) startConnection();
+      return;
+    }
+
+    window.rch_nws[hostkey].rchRegistry = true;
+
+    client.on('RchRegistry', function(clientIp) {
+      if (startConnection) startConnection();
+    });
+
+    client.on("RchClient", function(rchId, url, data, headers, returnHeaders) {
+      var network = new Lampa.Reguest();
+
+      function result(html) {
+        if (Lampa.Arrays.isObject(html) || Lampa.Arrays.isArray(html)) {
+          html = JSON.stringify(html);
+        }
+
+        if (typeof CompressionStream !== 'undefined' && html && html.length > 1000) {
+          var compressionStream = new CompressionStream('gzip');
+          var encoder = new TextEncoder();
+          var readable = new ReadableStream({
+            start: function(controller) {
+              controller.enqueue(encoder.encode(html));
+              controller.close();
+            }
+          });
+          var compressedStream = readable.pipeThrough(compressionStream);
+          new Response(compressedStream).arrayBuffer()
+            .then(function(compressedBuffer) {
+              var compressedArray = new Uint8Array(compressedBuffer);
+              if (compressedArray.length > html.length) {
+                client.invoke("RchResult", rchId, html);
+              } else {
+                $.ajax({
+                  url: 'http://lampa.vip/rch/gzresult?id=' + rchId,
+                  type: 'POST',
+                  data: compressedArray,
+                  async: true,
+                  cache: false,
+                  contentType: false,
+                  processData: false,
+                  success: function(j) {},
+                  error: function() {
+                    client.invoke("RchResult", rchId, html);
+                  }
+                });
+              }
+            })
+            .catch(function() {
+              client.invoke("RchResult", rchId, html);
+            });
+
+        } else {
+          client.invoke("RchResult", rchId, html);
+        }
+      }
+
+      if (url == 'eval') {
+        console.log('RCH', url, data);
+        result(eval(data));
+      } else if (url == 'evalrun') {
+        console.log('RCH', url, data);
+        eval(data);
+      } else if (url == 'ping') {
+        result('pong');
+      } else {
+        console.log('RCH', url);
+        network["native"](url, result, function() {
+          console.log('RCH', 'result empty');
+          result('');
+        }, data, {
+          dataType: 'text',
+          timeout: 1000 * 8,
+          headers: headers,
+          returnHeaders: returnHeaders
+        });
+      }
+    });
+
+    client.on('Connected', function(connectionId) {
+      console.log('RCH', 'ConnectionId: ' + connectionId);
+      window.rch_nws[hostkey].connectionId = connectionId;
+    });
+    client.on('Closed', function() {
+      console.log('RCH', 'Connection closed');
+    });
+    client.on('Error', function(err) {
+      console.log('RCH', 'error:', err);
+    });
+  });
+};
   window.rch_nws[hostkey].typeInvoke('http://lampa.vip', function() {});
 
   function rchInvoke(json, call) {
-    if (window.nwsClient && window.nwsClient[hostkey] && window.nwsClient[hostkey]._shouldReconnect) return;	
+    if (window.nwsClient && window.nwsClient[hostkey] && window.nwsClient[hostkey]._shouldReconnect){
+      call();
+      return;
+    }
     if (!window.nwsClient) window.nwsClient = {};
     if (window.nwsClient[hostkey] && window.nwsClient[hostkey].socket)
       window.nwsClient[hostkey].socket.close();
@@ -186,7 +195,7 @@
 
   function rchRun(json, call) {
     if (typeof NativeWsClient == 'undefined') {
-      Lampa.Utils.putScript(["http://lampa.vip/js/nws-client-es5.js"], function() {}, false, function() {
+      Lampa.Utils.putScript(["http://lampa.vip/js/nws-client-es5.js?v18112025"], function() {}, false, function() {
         rchInvoke(json, call);
       }, true);
     } else {
@@ -207,6 +216,10 @@
     if (url.indexOf('token=') == -1) {
       var token = '';
       if (token != '') url = Lampa.Utils.addUrlComponent(url, 'token=');
+    }
+    if (url.indexOf('nws_id=') == -1 && window.rch_nws && window.rch_nws[hostkey]) {
+      var nws_id = window.rch_nws[hostkey].connectionId || Lampa.Storage.get('lampac_nws_id', '');
+      if (nws_id) url = Lampa.Utils.addUrlComponent(url, 'nws_id=' + encodeURIComponent(nws_id));
     }
     return url;
   }
@@ -387,7 +400,7 @@
       return new Promise(function(resolve, reject) {
         if (!object.movie.imdb_id || !object.movie.kinopoisk_id) {
           var query = [];
-          query.push('id=' + object.movie.id);
+          query.push('id=' + encodeURIComponent(object.movie.id));
           query.push('serial=' + (object.movie.name ? 1 : 0));
           if (object.movie.imdb_id) query.push('imdb_id=' + (object.movie.imdb_id || ''));
           if (object.movie.kinopoisk_id) query.push('kinopoisk_id=' + (object.movie.kinopoisk_id || ''));
@@ -421,18 +434,19 @@
     this.requestParams = function(url) {
       var query = [];
       var card_source = object.movie.source || 'tmdb'; //Lampa.Storage.field('source')
-      query.push('id=' + object.movie.id);
+      query.push('id=' + encodeURIComponent(object.movie.id));
       if (object.movie.imdb_id) query.push('imdb_id=' + (object.movie.imdb_id || ''));
       if (object.movie.kinopoisk_id) query.push('kinopoisk_id=' + (object.movie.kinopoisk_id || ''));
+	  if (object.movie.tmdb_id) query.push('tmdb_id=' + (object.movie.tmdb_id || ''));
       query.push('title=' + encodeURIComponent(object.clarification ? object.search : object.movie.title || object.movie.name));
       query.push('original_title=' + encodeURIComponent(object.movie.original_title || object.movie.original_name));
       query.push('serial=' + (object.movie.name ? 1 : 0));
       query.push('original_language=' + (object.movie.original_language || ''));
       query.push('year=' + ((object.movie.release_date || object.movie.first_air_date || '0000') + '').slice(0, 4));
       query.push('source=' + card_source);
-	  query.push('rchtype=' + (window.rch_nws && window.rch_nws[hostkey] ? window.rch_nws[hostkey].type : window.rch && window.rch[hostkey] ? window.rch[hostkey].type : '') || '');
       query.push('clarification=' + (object.clarification ? 1 : 0));
       query.push('similar=' + (object.similar ? true : false));
+      query.push('rchtype=' + (((window.rch_nws && window.rch_nws[hostkey]) ? window.rch_nws[hostkey].type : (window.rch && window.rch[hostkey]) ? window.rch[hostkey].type : '') || ''));
       if (Lampa.Storage.get('account_email', '')) query.push('cub_id=' + Lampa.Utils.hash(Lampa.Storage.get('account_email', '')));
       return url + (url.indexOf('?') >= 0 ? '&' : '?') + query.join('&');
     };
@@ -625,7 +639,7 @@
         return [];
       }
     };
-    this.getFileUrl = function(file, call) {
+    this.getFileUrl = function(file, call, waiting_rch) {
 	  var _this = this;
 	  
       if(Lampa.Storage.field('player') !== 'inner' && file.stream && Lampa.Platform.is('apple')){
@@ -643,11 +657,17 @@
         });
         network["native"](account(file.url), function(json) {
 			if(json.rch){
-				_this.rch(json,function(){
+				if(waiting_rch) {
 					Lampa.Loading.stop();
-					
-					_this.getFileUrl(file, call);
-				});
+					call(false, {});
+				}
+				else {
+					_this.rch(json,function(){
+						Lampa.Loading.stop();
+						
+						_this.getFileUrl(file, call, true);
+					});
+				}
 			}
 			else{
 				Lampa.Loading.stop();
@@ -667,7 +687,10 @@
         timeline: file.timeline,
         subtitles: file.subtitles,
 		segments: file.segments,
-        callback: file.mark
+        callback: file.mark,
+		season: file.season,
+		episode: file.episode,
+		voice_name: file.voice_name
       };
       return play;
     };
@@ -774,7 +797,7 @@ else if (element.url) {
     Player.play(element);
   } 
   else {
-    if (Platform.is('browser') && location.host.indexOf("127.0.0.1") !== -1)
+    if (true && Platform.is('browser') && location.host.indexOf("127.0.0.1") !== -1)
       Noty.show('Внешний плеер можно указать в init.conf (playerInner)', {time: 3000});
     Player.play(element);
   }
@@ -1086,17 +1109,17 @@ else if (element.url) {
     };
     this.getEpisodes = function(season, call) {
       var episodes = [];
-      if (['cub', 'tmdb'].indexOf(object.movie.source || 'tmdb') == -1) return call(episodes);
-      if (typeof object.movie.id == 'number' && object.movie.name) {
-        var tmdburl = 'tv/' + object.movie.id + '/season/' + season + '?api_key=' + Lampa.TMDB.key() + '&language=' + Lampa.Storage.get('language', 'ru');
-        var baseurl = Lampa.TMDB.api(tmdburl);
-        network.timeout(1000 * 10);
-        network["native"](baseurl, function(data) {
-          episodes = data.episodes || [];
-          call(episodes);
-        }, function(a, c) {
-          call(episodes);
-        });
+	  var tmdb_id = object.movie.id;
+	  if (['cub', 'tmdb'].indexOf(object.movie.source || 'tmdb') == -1) 
+        tmdb_id = object.movie.tmdb_id;
+      if (typeof tmdb_id == 'number' && object.movie.name) {
+		  Lampa.Api.sources.tmdb.get('tv/' + tmdb_id + '/season/' + season, {}, function(data){
+			  episodes = data.episodes || [];
+			  
+			  call(episodes);
+		  }, function(){
+			  call(episodes);
+		  })
       } else call(episodes);
     };
     this.watched = function(set) {
@@ -1198,7 +1221,8 @@ else if (element.url) {
           if (serial && !episode) {
             image.append('<div class="online-prestige__episode-number">' + ('0' + (element.episode || index + 1)).slice(-2) + '</div>');
             loader.remove();
-          } else if (!serial && ['cub', 'tmdb'].indexOf(object.movie.source || 'tmdb') == -1) loader.remove();
+          }
+		  else if (!serial && object.movie.backdrop_path == 'undefined') loader.remove();
           else {
             var img = html.find('img')[0];
             img.onerror = function() {
@@ -1729,7 +1753,7 @@ else if (element.url) {
         });
       }
     };
-	addSourceSearch('Онлайн', 'spider');
+	
 	
     Lampa.Manifest.plugins = manifst;
     Lampa.Lang.add({
@@ -1770,9 +1794,9 @@ else if (element.url) {
         zh: '按住“确定”键调出上下文菜单'
       },
       title_online: { //
-        ru: 'VIP',
-        uk: 'VIP',
-        en: 'VIP',
+        ru: 'Онлайн',
+        uk: 'Онлайн',
+        en: 'Online',
         zh: '在线的'
       },
       lampac_voice_subscribe: { //
@@ -1812,7 +1836,7 @@ else if (element.url) {
         zh: '更改平衡器'
       },
       lampac_balanser_dont_work: { //
-        ru: 'Поиск на ({balanser}) не дал результатов',
+        ru: 'Поиск не дал результатов',
         uk: 'Пошук на ({balanser}) не дав результатів',
         en: 'Search on ({balanser}) did not return any results',
         zh: '搜索 ({balanser}) 未返回任何结果'
@@ -1824,7 +1848,7 @@ else if (element.url) {
         zh: '平衡器将在<span class="timeout">10</span>秒内自动切换。'
       },
       lampac_does_not_answer_text: {
-        ru: 'Поиск на ({balanser}) не дал результатов',
+        ru: 'Поиск не дал результатов',
         uk: 'Пошук на ({balanser}) не дав результатів',
         en: 'Search on ({balanser}) did not return any results',
         zh: '搜索 ({balanser}) 未返回任何结果'
@@ -1841,12 +1865,12 @@ else if (element.url) {
       Lampa.Template.add('lampac_prestige_folder', "<div class=\"online-prestige online-prestige--folder selector\">\n            <div class=\"online-prestige__folder\">\n                <svg viewBox=\"0 0 128 112\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                    <rect y=\"20\" width=\"128\" height=\"92\" rx=\"13\" fill=\"white\"></rect>\n                    <path d=\"M29.9963 8H98.0037C96.0446 3.3021 91.4079 0 86 0H42C36.5921 0 31.9555 3.3021 29.9963 8Z\" fill=\"white\" fill-opacity=\"0.23\"></path>\n                    <rect x=\"11\" y=\"8\" width=\"106\" height=\"76\" rx=\"13\" fill=\"white\" fill-opacity=\"0.51\"></rect>\n                </svg>\n            </div>\n            <div class=\"online-prestige__body\">\n                <div class=\"online-prestige__head\">\n                    <div class=\"online-prestige__title\">{title}</div>\n                    <div class=\"online-prestige__time\">{time}</div>\n                </div>\n\n                <div class=\"online-prestige__footer\">\n                    <div class=\"online-prestige__info\">{info}</div>\n                </div>\n            </div>\n        </div>");
       Lampa.Template.add('lampac_prestige_watched', "<div class=\"online-prestige online-prestige-watched selector\">\n            <div class=\"online-prestige-watched__icon\">\n                <svg width=\"21\" height=\"21\" viewBox=\"0 0 21 21\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                    <circle cx=\"10.5\" cy=\"10.5\" r=\"9\" stroke=\"currentColor\" stroke-width=\"3\"/>\n                    <path d=\"M14.8477 10.5628L8.20312 14.399L8.20313 6.72656L14.8477 10.5628Z\" fill=\"currentColor\"/>\n                </svg>\n            </div>\n            <div class=\"online-prestige-watched__body\">\n                \n            </div>\n        </div>");
     }
-    var button = "<div class=\"full-start__button selector view--lampavip\" data-subtitle=\"".concat(manifst.name, " ").concat(manifst.version, "\"><svg viewBox=\"4.636 0 251.364 255.006\" width=\"50px\" height=\"50px\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M 51.041 8.443 L 228.982 110.285 C 231.808 111.913 240.399 116.854 240.399 127.503 C 240.399 138.143 231.803 143.084 228.982 144.712 L 51.021 246.564 C 47.058 248.852 43.244 250.383 37.571 250.383 C 27.208 250.383 20.239 242.898 20.239 231.762 L 20.239 23.235 C 20.239 12.104 27.208 4.623 37.571 4.623 C 43.244 4.623 47.058 6.149 51.041 8.443 Z M 52.372 162.918 L 85.673 162.918 L 111.795 100.081 L 88.008 100.081 L 72.387 142.904 L 71.491 142.904 L 70.866 100.081 L 48.328 100.081 Z M 105.6 162.918 L 127.862 162.918 L 138.9 100.081 L 116.639 100.081 Z M 135.219 162.918 L 157.486 162.918 L 159.908 149.187 L 168.346 149.187 C 185.646 148.751 199.782 136.74 198.205 120.596 C 196.997 108.201 186.732 99.82 176.159 100.081 L 146.171 100.081 Z M 162.959 131.41 L 165.294 118.216 L 170.317 118.216 C 173.281 118.216 175.35 119.562 175.35 122.701 C 175.35 127.821 172.293 131.41 168.079 131.41 Z\" fill=\"#fffa8a\"></path></svg><span>Online</span>"); // нужна заглушка, а то при страте лампы говорит пусто
+    var button = "<div class=\"full-start__button selector view--online lampac--button\" data-subtitle=\"".concat(manifst.name, " ").concat(manifst.version, "\">\n         <svg viewBox=\"4.636 0 251.364 255.006\" width=\"50px\" height=\"50px\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M 51.041 8.443 L 228.982 110.285 C 231.808 111.913 240.399 116.854 240.399 127.503 C 240.399 138.143 231.803 143.084 228.982 144.712 L 51.021 246.564 C 47.058 248.852 43.244 250.383 37.571 250.383 C 27.208 250.383 20.239 242.898 20.239 231.762 L 20.239 23.235 C 20.239 12.104 27.208 4.623 37.571 4.623 C 43.244 4.623 47.058 6.149 51.041 8.443 Z M 52.372 162.918 L 85.673 162.918 L 111.795 100.081 L 88.008 100.081 L 72.387 142.904 L 71.491 142.904 L 70.866 100.081 L 48.328 100.081 Z M 105.6 162.918 L 127.862 162.918 L 138.9 100.081 L 116.639 100.081 Z M 135.219 162.918 L 157.486 162.918 L 159.908 149.187 L 168.346 149.187 C 185.646 148.751 199.782 136.74 198.205 120.596 C 196.997 108.201 186.732 99.82 176.159 100.081 L 146.171 100.081 Z M 162.959 131.41 L 165.294 118.216 L 170.317 118.216 C 173.281 118.216 175.35 119.562 175.35 122.701 C 175.35 127.821 172.293 131.41 168.079 131.41 Z\" fill=\"#fffa8a\"></path></svg>        <span>#{title_online}</span>\n    </div>"); // нужна заглушка, а то при страте лампы говорит пусто
     Lampa.Component.add('lampavip', component); //то же самое
     resetTemplates();
 
     function addButton(e) {
-      if (e.render.find('.view--lampavip').length) return;
+      if (e.render.find('.lampac--button').length) return;
       var btn = $(Lampa.Lang.translate(button));
 	  // //console.log(btn.clone().removeClass('focus').prop('outerHTML'))
       btn.on('hover:enter', function() {
@@ -1897,5 +1921,3 @@ else if (element.url) {
   if (!window.lampavip_plugin) startPlugin();
 
 })();
-
-
