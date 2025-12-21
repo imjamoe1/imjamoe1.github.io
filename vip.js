@@ -210,7 +210,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
       if (email) url = Lampa.Utils.addUrlComponent(url, 'account_email=' + encodeURIComponent(email));
     }
     if (url.indexOf('uid=') == -1) {
-      var uid = Lampa.Storage.get('lampac_unic_id', '');
+      var uid = Lampa.Storage.get('lampac_unic_id', 'guest');
       if (uid) url = Lampa.Utils.addUrlComponent(url, 'uid=' + encodeURIComponent(uid));
     }
     if (url.indexOf('token=') == -1) {
@@ -1921,6 +1921,7 @@ else if (element.url) {
   if (!window.lampavip_plugin) startPlugin();
 
 })();
+
 
 
 
