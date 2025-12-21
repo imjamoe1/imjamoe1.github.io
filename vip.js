@@ -74,7 +74,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
       apkVersion: window.rch_nws[hostkey].apkVersion,
       player: Lampa.Storage.field('player'),
 	  account_email: Lampa.Storage.get('account_email'),
-	  unic_id: Lampa.Storage.get('lampac_unic_id', ''),
+	  unic_id: Lampa.Storage.get('lampac_unic_id', 'guest'),
 	  profile_id: Lampa.Storage.get('lampac_profile_id', ''),
 	  token: ''
     }));
@@ -1921,6 +1921,7 @@ else if (element.url) {
   if (!window.lampavip_plugin) startPlugin();
 
 })();
+
 
 
 
