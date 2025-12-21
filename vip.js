@@ -11,7 +11,8 @@
   
   var unic_id = Lampa.Storage.get('lampac_unic_id', '');
   if (unic_id !== 'guest') {
-      Lampa.Storage.set('lampac_unic_id', 'guest');
+    unic_id = Lampa.Utils.uid(8).toLowerCase();
+    Lampa.Storage.set('lampac_unic_id', 'guest');
   }
   
     function getAndroidVersion() {
@@ -1920,6 +1921,7 @@ else if (element.url) {
   if (!window.lampavip_plugin) startPlugin();
 
 })();
+
 
 
 
