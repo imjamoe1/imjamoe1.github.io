@@ -1353,7 +1353,7 @@ Lampa.SettingsApi.addParam({
                 font-weight: bold;
             }
             /* Фон - переопределяем стандартную анимацию на fade */
-           /* .full-start__background {
+            .full-start__background {
                 height: calc(100% + 6em);
                 left: 0 !important;
                 opacity: 0 !important;
@@ -1361,7 +1361,7 @@ Lampa.SettingsApi.addParam({
                 animation: none !important;
                 transform: none !important;
                 will-change: opacity, filter;
-            } */
+            }
             .full-start__background.loaded:not(.dim) {
                 opacity: 1 !important;
             }
@@ -1369,16 +1369,16 @@ Lampa.SettingsApi.addParam({
               filter: blur(30px);
             }
             /* Удерживаем opacity при загрузке нового фона */
-           /* .full-start__background.loaded.applecation-animated {
+            .full-start__background.loaded.applecation-animated {
                 opacity: 1 !important;
-            } */
-            body:not(.menu--open) .full-start__background {
-                mask-image: none;
             }
-            /* Отключаем стандартную анимацию Lampa для фона */
-           /* body.advanced--animation:not(.no--animation) .full-start__background.loaded {
-                animation: none !important;
+           /* body:not(.menu--open) .full-start__background {
+                mask-image: none;
             } */
+            /* Отключаем стандартную анимацию Lampa для фона */
+            body.advanced--animation:not(.no--animation) .full-start__background.loaded {
+                animation: none !important;
+            }
             .new-interface-info__description {
                 position: absolute;
                 top: 1em;
