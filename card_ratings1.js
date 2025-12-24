@@ -590,24 +590,15 @@ function createCountryFlagElement(flagUrl) {
         return { element: ratingEl, text: textEl };
     }
     
-    // Скрытие стандартного рейтинга TMDB/MDBList
+// Скрытие стандартного рейтинга TMDB
     function hideTmdbRating(card) {
-        // Ищем все элементы с рейтингом TMDB
-        const voteContainers = card.querySelectorAll('.card__vote');
-    
-        voteContainers.forEach(container => {
-            // Проверяем, содержит ли класс "rate--tmdb" или "tmdb"
-            if (container.className.includes('rate--tmdb') || 
-                container.className.includes('tmdb') ||
-                container.querySelector('.source--name')) {
-                container.style.display = 'none';
-            }
-        });
-    }
+        const view = card.querySelector('.card__view');
+        if (!view) return;
 
-    .card .card__view .card__vote.rate--mdblist,
-    .card .card__view .card__vote[data-source="mdblist"] {
-        display: none !important;
+        const voteContainer = view.querySelector('.card__vote--mdblist');
+        if (voteContainer) {
+            voteContainer.style.display = 'none';
+        }
     }
 
     // Отрисовка рейтингов на карточке
