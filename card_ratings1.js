@@ -591,11 +591,11 @@ function createCountryFlagElement(flagUrl) {
     }
     
     // Скрытие стандартного рейтинга TMDB
-    function hideTmdbRating(card) {
+    function hidemdblistRating(card) {
         const view = card.querySelector('.card__view');
         if (!view) return;
 
-        const mdblistRating = view.querySelector('.rate--mdblist');
+        const mdblistRating = view.querySelector('.card__vote .rate--mdblist');
         if (mdblistRating) {
             mdblistRating.style.display = 'none';
         }
