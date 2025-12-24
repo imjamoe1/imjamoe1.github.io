@@ -597,15 +597,24 @@ function createCountryFlagElement(flagUrl) {
     }
     
 // Скрытие стандартного рейтинга TMDB
-    function hideTmdbRating(card) {
-        const view = card.querySelector('.card__view');
-        if (!view) return;
+function hideTmdbRating(card) {
+    const view = card.querySelector('.card__view');
+    if (!view) return;
 
-        const voteContainer = view.querySelector('.card__vote .rate--mdblist');
-        if (voteContainer) {
-            voteContainer.style.display = 'none';
+    // Находим все элементы с рейтингом
+    const allRatings = view.querySelectorAll('.card__vote');
+    
+    allRatings.forEach(rating => {
+        // Пропускаем элементы с data-source="mdblist" или классом rate--mdblist
+        const source = rating.getAttribute('data-source');
+        const isMdblist = source === 'mdblist' || rating.classList.contains('rate--mdblist');
+        
+        if (!isMdblist) {
+            // Скрываем все остальные (предполагаем, что это TMDB)
+            rating.style.display = 'none';
         }
-    }
+    });
+}
 
     // Отрисовка рейтингов на карточке
     async function renderRating(card) {
