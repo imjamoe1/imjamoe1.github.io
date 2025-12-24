@@ -597,7 +597,7 @@ function createCountryFlagElement(flagUrl) {
 
         const voteContainer = view.querySelector('.card__vote');
         if (voteContainer) {
-            voteContainer.style.display = 'none';
+         // voteContainer.style.display = 'none';
             voteContainer.style.visibility = 'hidden';
         }
     }
