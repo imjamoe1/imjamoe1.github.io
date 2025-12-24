@@ -601,11 +601,6 @@ function createCountryFlagElement(flagUrl) {
         }
     }
 
-      .card__vote.rate--tmdb {
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
-
     // Отрисовка рейтингов на карточке
     async function renderRating(card) {
         if (processedCards.has(card)) return;
