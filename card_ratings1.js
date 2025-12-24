@@ -590,16 +590,25 @@ function createCountryFlagElement(flagUrl) {
         return { element: ratingEl, text: textEl };
     }
     
-    // Скрытие стандартного рейтинга TMDB
-    function hideTmdbRating(card) {
-        const view = card.querySelector('.card__view');
-        if (!view) return;
+// Скрытие стандартного рейтинга TMDB
+function hideTmdbRating(card) {
+    const view = card.querySelector('.card__view');
+    if (!view) return;
 
-        const voteContainer = view.querySelector('.card__vote');
-        if (voteContainer) {
+    const voteContainer = view.querySelector('.card__vote');
+    if (voteContainer) {
+        // Проверяем, содержит ли элемент TMDB рейтинг
+        const ratingText = voteContainer.textContent || '';
+        const ratingNumber = parseFloat(ratingText);
+        
+        // Скрываем только если это число от 0 до 10 (типичный TMDB рейтинг)
+        if (!isNaN(ratingNumber) && ratingNumber >= 0 && ratingNumber <= 10) {
             voteContainer.style.display = 'none';
+            voteContainer.style.visibility = 'hidden';
+            voteContainer.style.opacity = '0';
         }
     }
+}
 
     // Отрисовка рейтингов на карточке
     async function renderRating(card) {
