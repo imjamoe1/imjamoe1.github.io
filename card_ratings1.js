@@ -605,6 +605,11 @@ function createCountryFlagElement(flagUrl) {
         });
     }
 
+    .card .card__view .card__vote.rate--mdblist,
+    .card .card__view .card__vote[data-source="mdblist"] {
+        display: none !important;
+    }
+
     // Отрисовка рейтингов на карточке
     async function renderRating(card) {
         if (processedCards.has(card)) return;
