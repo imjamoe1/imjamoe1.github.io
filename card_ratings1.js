@@ -589,10 +589,6 @@ function createCountryFlagElement(flagUrl) {
 
         return { element: ratingEl, text: textEl };
     }
-
-        .hidden-rating {
-            display: none !important;
-    }
     
     // Скрытие стандартного рейтинга TMDB/MDBList
     function hideTmdbRating(card) {
