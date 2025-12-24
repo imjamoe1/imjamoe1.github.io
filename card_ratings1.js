@@ -590,7 +590,7 @@ function createCountryFlagElement(flagUrl) {
         return { element: ratingEl, text: textEl };
     }
     
-// Скрытие стандартного рейтинга TMDB
+    // Скрытие стандартного рейтинга TMDB
     function hideTmdbRating(card) {
         const view = card.querySelector('.card__view');
         if (!view) return;
