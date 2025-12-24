@@ -1,8 +1,11 @@
 (function () {
   'use strict';
-
-  Lampa.Platform.tv();
-  if (Lampa.Manifest.app_digital >= 300)
+  
+  if (typeof Lampa !== 'undefined') {
+      Lampa.Platform.tv();
+  }
+  
+  if (Lampa.Manifest && Lampa.Manifest.app_digital >= 300) {
 
     // Настройки плагина
     const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
