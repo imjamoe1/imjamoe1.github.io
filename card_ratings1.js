@@ -597,16 +597,9 @@ function createCountryFlagElement(flagUrl) {
 
         const voteContainer = view.querySelector('.card__vote');
         if (voteContainer) {
-            // Проверяем, содержит ли элемент TMDB рейтинг
-            const ratingText = voteContainer.textContent || '';
-            const ratingNumber = parseFloat(ratingText);
-        
-            // Скрываем только если это число от 0 до 10 (типичный TMDB рейтинг)
-            if (!isNaN(ratingNumber) && ratingNumber >= 0 && ratingNumber <= 10) {
-                voteContainer.style.display = 'none';
-                voteContainer.style.visibility = 'hidden';
-                voteContainer.style.opacity = '0';
-            }
+            voteContainer.style.display = 'none';
+            voteContainer.style.visibility = 'hidden';
+            voteContainer.style.opacity = '0';
         }
     }
 
