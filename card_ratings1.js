@@ -590,15 +590,16 @@ function createCountryFlagElement(flagUrl) {
         return { element: ratingEl, text: textEl };
     }
     
-    // Скрытие стандартного рейтинга TMDB
-    function hidemdblistRating(card) {
-        const view = card.querySelector('.card__view');
-        if (!view) return;
-
-        const mdblistRating = view.querySelector('.card__vote .rate--mdblist');
-        if (mdblistRating) {
-            mdblistRating.style.display = 'none';
-        }
+    // Скрытие стандартного рейтинга TMDB/MDBList
+    function hideTmdbRating(card) {
+        const ratings = card.querySelectorAll('.card__vote.rate--mdblist, .card__vote[data-source="mdblist"]');
+    
+        ratings.forEach(rating => {
+            // Добавляем класс для скрытия
+            rating.classList.add('hidden-rating');
+            // Или напрямую скрываем
+            // rating.style.display = 'none';
+        });
     }
 
     // Отрисовка рейтингов на карточке
