@@ -601,7 +601,7 @@ function createCountryFlagElement(flagUrl) {
         const view = card.querySelector('.card__view');
         if (!view) return;
 
-        const voteContainer = view.querySelector('.card__vote.rate--mdblist');
+        const voteContainer = view.querySelector('.card__vote .rate--mdblist');
         if (voteContainer) {
             voteContainer.style.display = 'none';
         }
