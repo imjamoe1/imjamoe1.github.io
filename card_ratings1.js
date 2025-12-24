@@ -599,7 +599,6 @@ function createCountryFlagElement(flagUrl) {
         if (voteContainer) {
             voteContainer.style.display = 'none';
             voteContainer.style.visibility = 'hidden';
-            voteContainer.style.opacity = '0';
         }
     }
 
