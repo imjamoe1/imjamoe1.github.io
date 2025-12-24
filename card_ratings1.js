@@ -595,20 +595,12 @@ function createCountryFlagElement(flagUrl) {
         const view = card.querySelector('.card__view');
         if (!view) return;
 
-        const voteContainer = view.querySelector('.card__vote');
-        if (voteContainer) {
-            // Проверяем, содержит ли элемент TMDB рейтинг
-            const ratingText = voteContainer.textContent || '';
-            const ratingNumber = parseFloat(ratingText);
-        
-            // Скрываем только если это число от 0 до 10 (типичный TMDB рейтинг)
-            if (!isNaN(ratingNumber) && ratingNumber >= 0 && ratingNumber <= 10) {
-                voteContainer.style.display = 'none';
-                voteContainer.style.visibility = 'hidden';
-                voteContainer.style.opacity = '0';
-            }
+        // Вариант 1: Скрыть по классу (если он есть)
+        const tmdbRating = view.querySelector('.card__vote.tmdb-rating, .rate--tmdb');
+        if (tmdbRating) {
+            tmdbRating.style.display = 'none';
+            return;
         }
-    }
 
     // Отрисовка рейтингов на карточке
     async function renderRating(card) {
