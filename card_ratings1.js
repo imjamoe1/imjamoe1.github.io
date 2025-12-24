@@ -601,18 +601,11 @@ function hideTmdbRating(card) {
     const view = card.querySelector('.card__view');
     if (!view) return;
 
-    // Находим элементы с рейтингом
-    const voteContainers = view.querySelectorAll('.card__vote');
+    // Находим и скрываем все элементы card__vote, которые не являются rate--mdblist
+    const tmdbRatings = view.querySelectorAll('.card__vote:not(.rate--mdblist)');
     
-    voteContainers.forEach(container => {
-        // Проверяем, является ли это mdblist рейтингом
-        const source = container.getAttribute('data-source');
-        const hasMdblistClass = container.classList.contains('rate--mdblist');
-        
-        // Если это НЕ mdblist рейтинг, скрываем его
-        if (source !== 'mdblist' && !hasMdblistClass) {
-            container.style.display = 'none';
-        }
+    tmdbRatings.forEach(rating => {
+        rating.style.display = 'none';
     });
 }
 
