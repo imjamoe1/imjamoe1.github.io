@@ -592,13 +592,16 @@ function createCountryFlagElement(flagUrl) {
     
     // Скрытие стандартного рейтинга TMDB/MDBList
     function hideTmdbRating(card) {
-        const ratings = card.querySelectorAll('.card__vote.rate--mdblist, .card__vote[data-source="mdblist"]');
+        // Ищем все элементы с рейтингом TMDB
+        const voteContainers = card.querySelectorAll('.card__vote');
     
-        ratings.forEach(rating => {
-            // Добавляем класс для скрытия
-            rating.classList.add('hidden-rating');
-            // Или напрямую скрываем
-            rating.style.display = 'none';
+        voteContainers.forEach(container => {
+            // Проверяем, содержит ли класс "rate--tmdb" или "tmdb"
+            if (container.className.includes('rate--tmdb') || 
+                container.className.includes('tmdb') ||
+                container.querySelector('.source--name')) {
+                container.style.display = 'none';
+            }
         });
     }
 
