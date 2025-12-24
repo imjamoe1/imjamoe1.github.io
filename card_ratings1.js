@@ -591,25 +591,15 @@ function createCountryFlagElement(flagUrl) {
     }
     
 // Скрытие стандартного рейтинга TMDB
-function hideTmdbRating(card) {
-    const view = card.querySelector('.card__view');
-    if (!view) return;
+    function hideTmdbRating(card) {
+        const view = card.querySelector('.card__view');
+        if (!view) return;
 
-    // Селектор для всех рейтингов, которые НЕ являются mdblist
-    const tmdbRatings = view.querySelectorAll(`
-        .card__vote:not(.rate--mdblist),
-        .card__vote:not([data-source="mdblist"])
-    `);
-    
-    tmdbRatings.forEach(rating => {
-        // Дополнительная проверка на случай если селектор не сработал
-        const isMdblist = rating.classList.contains('rate--mdblist') || 
-                         rating.getAttribute('data-source') === 'mdblist';
-        if (!isMdblist) {
-            rating.style.display = 'none';
+        const voteContainer = view.querySelector('.card__vote');
+        if (voteContainer) {
+            voteContainer.style.display = 'none';
         }
-    });
-}
+    }
 
     // Отрисовка рейтингов на карточке
     async function renderRating(card) {
