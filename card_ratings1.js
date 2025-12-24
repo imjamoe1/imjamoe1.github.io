@@ -601,17 +601,17 @@ function hideTmdbRating(card) {
     const view = card.querySelector('.card__view');
     if (!view) return;
 
-    // Находим все элементы с рейтингом
-    const allRatings = view.querySelectorAll('.card__vote');
+    // Находим элементы с рейтингом
+    const voteContainers = view.querySelectorAll('.card__vote');
     
-    allRatings.forEach(rating => {
-        // Пропускаем элементы с data-source="mdblist" или классом rate--mdblist
-        const source = rating.getAttribute('data-source');
-        const isMdblist = source === 'mdblist' || rating.classList.contains('rate--mdblist');
+    voteContainers.forEach(container => {
+        // Проверяем, является ли это mdblist рейтингом
+        const source = container.getAttribute('data-source');
+        const hasMdblistClass = container.classList.contains('rate--mdblist');
         
-        if (!isMdblist) {
-            // Скрываем все остальные (предполагаем, что это TMDB)
-            rating.style.display = 'none';
+        // Если это НЕ mdblist рейтинг, скрываем его
+        if (source !== 'mdblist' && !hasMdblistClass) {
+            container.style.display = 'none';
         }
     });
 }
