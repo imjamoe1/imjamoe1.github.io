@@ -595,11 +595,19 @@ function hideTmdbRating(card) {
     const view = card.querySelector('.card__view');
     if (!view) return;
 
-    // Находим и скрываем все элементы card__vote, которые не являются rate--mdblist
-    const tmdbRatings = view.querySelectorAll('.card__vote:not(.rate--mdblist)');
+    // Селектор для всех рейтингов, которые НЕ являются mdblist
+    const tmdbRatings = view.querySelectorAll(`
+        .card__vote:not(.rate--mdblist),
+        .card__vote:not([data-source="mdblist"])
+    `);
     
     tmdbRatings.forEach(rating => {
-        rating.style.display = 'none';
+        // Дополнительная проверка на случай если селектор не сработал
+        const isMdblist = rating.classList.contains('rate--mdblist') || 
+                         rating.getAttribute('data-source') === 'mdblist';
+        if (!isMdblist) {
+            rating.style.display = 'none';
+        }
     });
 }
 
