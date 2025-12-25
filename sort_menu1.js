@@ -521,7 +521,8 @@
                     let allClasses = item_clone.attr('class').split(' ')          
                     let mainClass = allClasses.find(c =>       
                         c.startsWith('open--') ||           
-                        c.startsWith('notice--') ||           
+                        c.startsWith('notice--') || 
+                        c.startsWith('notice-') ||
                         c.startsWith('full--') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
@@ -739,7 +740,8 @@
                     let classes = item.attr('class').split(' ')      
                     uniqueClass = classes.find(c =>       
                         c.startsWith('open--') ||           
-                        c.startsWith('notice--') ||           
+                        c.startsWith('notice--') ||
+                        c.startsWith('notice-') ||
                         c.startsWith('full--') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
