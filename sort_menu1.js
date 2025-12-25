@@ -388,7 +388,7 @@
                     titleKey = 'head_action_feed';
                 } else if (mainClass.includes('open--premium')) {    
                     titleKey = 'head_action_premium';
-                } else if (mainClass.includes('notice-unread')) {    
+                } else if (mainClass.includes('notice-screen')) {    
                     titleKey = 'head_action_noticescreen';     
                 } else if (mainClass.includes('notice--icon')) {    
                     titleKey = 'head_action_notice';    
