@@ -400,8 +400,8 @@
                     titleKey = 'head_action_notice';    
                 } else if (mainClass.includes('open--settings')) {    
                     titleKey = 'head_action_settings';
-                } else if (mainClass.includes('switch-sreen')) {    
-                    titleKey = 'head_action_switchsreen';
+                } else if (mainClass.includes('switch-screen')) {    
+                    titleKey = 'head_action_switchscreen';
                 } else if (mainClass.includes('open--profile')) {    
                     titleKey = 'head_action_profile';    
                 } else if (mainClass.includes('full--screen')) {    
