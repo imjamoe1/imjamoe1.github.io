@@ -396,7 +396,7 @@
                     titleKey = 'head_action_settings';    
                 } else if (mainClass.includes('open--profile')) {    
                     titleKey = 'head_action_profile';    
-                } else if (mainClass.includes('full-screen')) {    
+                } else if (mainClass.includes('full--screen')) {    
                     titleKey = 'head_action_fullscreen';    
                 } else if (mainClass.includes('open--broadcast')) {    
                     titleKey = 'head_action_broadcast';    
@@ -522,7 +522,7 @@
                     let mainClass = allClasses.find(c =>       
                         c.startsWith('open--') ||           
                         c.startsWith('notice--') ||           
-                        c.startsWith('full-') ||
+                        c.startsWith('full--') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
                         c.includes('ai-search') ||
@@ -740,7 +740,7 @@
                     uniqueClass = classes.find(c =>       
                         c.startsWith('open--') ||           
                         c.startsWith('notice--') ||           
-                        c.startsWith('full-') ||
+                        c.startsWith('full--') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
                         c.includes('ai-search') ||
