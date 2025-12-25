@@ -390,7 +390,7 @@
                     titleKey = 'head_action_premium';
                 } else if (mainClass.includes('notice-screen')) {    
                     titleKey = 'head_action_noticescreen';     
-                } else if (mainClass.includes('open--notice')) {    
+                } else if (mainClass.includes('notice--icon')) {    
                     titleKey = 'head_action_notice';    
                 } else if (mainClass.includes('open--settings')) {    
                     titleKey = 'head_action_settings';    
@@ -521,7 +521,7 @@
                     let allClasses = item_clone.attr('class').split(' ')          
                     let mainClass = allClasses.find(c =>       
                         c.startsWith('open--') ||           
-                        c.startsWith('notice-') ||           
+                        c.startsWith('notice--') ||           
                         c.startsWith('full-') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
@@ -739,7 +739,7 @@
                     let classes = item.attr('class').split(' ')      
                     uniqueClass = classes.find(c =>       
                         c.startsWith('open--') ||           
-                        c.startsWith('notice-') ||           
+                        c.startsWith('notice--') ||           
                         c.startsWith('full-') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
