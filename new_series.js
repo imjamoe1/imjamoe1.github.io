@@ -44,22 +44,22 @@
             'padding: 0.4em;' +
             '-webkit-border-radius: 0 0.4em 0 0.4em;' +
             '-moz-border-radius: 0 0.4em 0 0.4em;' +
-            'border-radius: 0 0.4em 0 0.4em;' +
+            'border-radius: 0.5em 0 0 0.5em;' +
         '}' +
         '.card__series:empty { display: none; }' +
         '.card__language {' +
             'position: absolute;' +
             'top: 2.2em;' +
-            'left: 5em;' +
+            'left: 3em;' +
             'font-size: 0.8em;' +
             'font-weight: 700;' +
             'color: #fff;' +
             'background: rgba(0, 0, 0, 0.7);' +
             'border-radius: 0.5em;' +
             'padding: 0.4em;' +
-            '-webkit-border-radius: 0.5em 0 0 0.5em;' +
-            '-moz-border-radius: 0.5em 0 0 0.5em;' +
-            'border-radius: 0.5em 0 0 0.5em;' +
+            //'-webkit-border-radius: 0.5em 0 0 0.5em;' +
+            //'-moz-border-radius: 0.5em 0 0 0.5em;' +
+            //'border-radius: 0.5em 0 0 0.5em;' +
         '}' +
         '.card__language:empty { display: none; }';
     document.head.appendChild(style);
