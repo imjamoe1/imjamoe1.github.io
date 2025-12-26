@@ -49,7 +49,7 @@
         '.card__series:empty { display: none; }' +
         '.card__language {' +
             'position: absolute;' +
-            'top: 5.7em;' +
+            'top: 4.7em;' +
             'left: 0em;' +
             'font-size: 0.8em;' +
             'font-weight: 700;' +
