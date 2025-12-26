@@ -28,13 +28,13 @@
                 z-index: 10 !important;
             }
             
-            /* Сериал - синий */
+            /* Сериал */
             .serial-label {
                 border: 1px solid #FFFFFF !important; 
                 background-color: rgba(0, 0, 0, 0.7) !important;
             }
             
-            /* Фильм - зелёный */
+            /* Фильм */
             .movie-label {
                 border: 1px solid #FFFFFF !important;
                 background-color: rgba(0, 0, 0, 0.7) !important;
