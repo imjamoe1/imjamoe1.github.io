@@ -49,8 +49,8 @@
         '.card__series:empty { display: none; }' +
         '.card__language {' +
             'position: absolute;' +
-            'top: 4.2em;' +
-            'left: 2.2em;' +
+            'top: 3.8em;' +
+            'left: 2.5em;' +
             'font-size: 0.7em;' +
             'font-weight: 700;' +
             'color: #fff;' +
