@@ -57,6 +57,7 @@
             'background: rgba(0, 0, 0, 0.7);' +
             'border-radius: 0.3em;' +
             'padding: 0.4em;' +
+            'z-index: 10;' +
             //'-webkit-border-radius: 0.5em 0 0 0.5em;' +
             //'-moz-border-radius: 0.5em 0 0 0.5em;' +
             //'border-radius: 0.5em 0 0 0.5em;' +
