@@ -50,8 +50,8 @@
         '.card__language {' +
             'position: absolute;' +
             'top: 3.2em;' +
-            'left: 2em;' +
-            'font-size: 0.8em;' +
+            'left: 2.2em;' +
+            'font-size: 0.6em;' +
             'font-weight: 700;' +
             'color: #fff;' +
             'background: rgba(0, 0, 0, 0.7);' +
