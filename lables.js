@@ -18,7 +18,7 @@
             /* Базовый стиль для всех лейблов */
             .content-label {
                 position: absolute !important;
-                top: 1.2em !important;
+                top: 1.25em !important;
                 left: -0.6em !important;
                 color: white !important;
                 padding: 0.4em 0.4em !important;
