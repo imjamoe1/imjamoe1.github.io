@@ -294,7 +294,7 @@
                 }  
             }      
       
-            // Применение настроек верхнего меню      
+            // ИСПРАВЛЕНО: Применение настроек верхнего меню      
             function applyTopMenu() {      
                 let sort = Lampa.Storage.get('head_menu_sort', [])      
                 let hide = Lampa.Storage.get('head_menu_hide', [])      
@@ -303,22 +303,30 @@
                 if(!actionsContainer.length) return      
                       
                 if(sort.length) {      
-                    sort.forEach((uniqueClass) => {      
+                    // Сначала восстанавливаем порядок ВСЕХ сохраненных кнопок
+                    // Создаем временный массив для хранения текущих кнопок
+                    let currentButtons = $('.head__action').toArray();
+                    
+                    // Если новогодняя кнопка есть в сохраненном порядке, но ее нет сейчас,
+                    // мы все равно применяем порядок для остальных кнопок
+                    sort.forEach((uniqueClass) => {
                         let item = null;
                         
                         if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
                             item = $('#' + uniqueClass);
                         } else if (uniqueClass === 'new-year__button') {
-                            // Особый поиск для новогодней кнопки
+                            // Ищем новогоднюю кнопку
                             item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
                         } else {
                             item = $('.head__action.' + uniqueClass);
                         }
                         
                         if(item.length) {
+                            // Перемещаем найденную кнопку в конец контейнера
+                            // Это создаст правильный порядок
                             item.appendTo(actionsContainer);
                         }
-                    })      
+                    });
                 }      
           
                 // Сначала снимаем все скрытия
@@ -350,6 +358,29 @@
                         if (newYearButton.length && !newYearButton.hasClass('hide')) {
                             newYearButton.addClass('hide');
                         }
+                    }
+                    
+                    // ПОВТОРНО применяем порядок после появления всех кнопок
+                    let sort = Lampa.Storage.get('head_menu_sort', []);
+                    let actionsContainer = $('.head__actions');
+                    
+                    if(sort.length && actionsContainer.length) {
+                        // Применяем порядок заново, чтобы учесть появившиеся кнопки
+                        sort.forEach((uniqueClass) => {
+                            let item = null;
+                            
+                            if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
+                                item = $('#' + uniqueClass);
+                            } else if (uniqueClass === 'new-year__button') {
+                                item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
+                            } else {
+                                item = $('.head__action.' + uniqueClass);
+                            }
+                            
+                            if(item.length) {
+                                item.appendTo(actionsContainer);
+                            }
+                        });
                     }
                 }, 3000);
             }
