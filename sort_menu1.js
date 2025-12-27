@@ -249,7 +249,20 @@
                     en: 'Additional Menu',    
                     uk: 'Додаткове меню',    
                     zh: '附加菜单'    
+                },
+                head_action_newyear_sock: {    
+                    ru: 'Новогодний носок',    
+                    en: 'New Year Sock',    
+                    uk: 'Новорічна шкарпетка',    
+                    zh: '圣诞袜'    
                 },    
+                // ИЛИ/И (альтернативный вариант)
+                head_action_newyear: {    
+                    ru: 'Новогодняя',    
+                    en: 'New Year',    
+                    uk: 'Новорічна',    
+                    zh: '新年'    
+                },
                 no_name: {    
                     ru: 'Элемент без названия',    
                     en: 'Unnamed element',    
@@ -418,7 +431,18 @@
                     titleKey = 'head_action_extensions';    
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
-                }      
+                }
+                // ДОБАВЛЕН НОВЫЙ БЛОК ДЛЯ НОВОГОДНЕЙ КНОПКИ
+                else if (mainClass === 'head__settings' || 
+                         element.hasClass('head__settings') || 
+                         element.hasClass('new-year__button')) {    
+                    // Проверяем, есть ли новогодние классы
+                    if (element.hasClass('new-year__button') || element.hasClass('--animate')) {
+                        titleKey = 'head_action_newyear_sock'; // Новогодний носок
+                    } else {
+                        titleKey = 'head_action_additional_menu';     
+                    }
+                }
         
                 return titleKey ? Lampa.Lang.translate(titleKey) : Lampa.Lang.translate('no_name');    
             }
@@ -539,7 +563,9 @@
                         c.includes('m-reload-screen') ||
                         c.includes('reload') ||
                         c.includes('extensions') ||
-                        c.includes('exit')       
+                        c.includes('exit') ||
+                        c.includes('head__settings') ||
+                        c.includes('new-year__button')                            
                     ) || ''
 
                     // Если не нашли специфичный класс, тогда ищем head__settings
@@ -748,7 +774,9 @@
                         c.includes('m-reload-screen') ||
                         c.includes('reload') ||
                         c.includes('extensions') ||
-                        c.includes('exit')
+                        c.includes('exit') ||
+                        c.includes('head__settings') ||
+                        c.includes('new-year__button')
                     )
 
                     if (!uniqueClass) {
