@@ -421,22 +421,13 @@
                 } else if (mainClass.includes('exit')) {    
                     titleKey = 'head_action_exit';
                 } else if (mainClass.includes('extensions')) {    
-                    titleKey = 'head_action_extensions';    
+                    titleKey = 'head_action_extensions';
+                } else if (mainClass.includes('new-year__button')) {    
+                    titleKey = 'head_action_newyear_button';
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
                 }
-                // ДОБАВЛЕН НОВЫЙ БЛОК ДЛЯ НОВОГОДНЕЙ КНОПКИ
-                else if (mainClass === 'head__settings' || 
-                         element.hasClass('head__settings') || 
-                         element.hasClass('new-year__button')) {    
-                    // Проверяем, есть ли новогодние классы
-                    if (element.hasClass('new-year__button') || element.hasClass('--animate')) {
-                        titleKey = 'head_action_newyear_button'; // Новогодний носок
-                    } else {
-                        titleKey = 'head_action_additional_menu';     
-                    }
-                }
-        
+                
                 return titleKey ? Lampa.Lang.translate(titleKey) : Lampa.Lang.translate('no_name');    
             }
 
