@@ -250,7 +250,7 @@
                     uk: 'Додаткове меню',    
                     zh: '附加菜单'    
                 },
-                head_action_newyear_button: {    
+                head_action_newyear_sock: {    
                     ru: 'Новогодний носок',    
                     en: 'New Year Sock',    
                     uk: 'Новорічна шкарпетка',    
@@ -389,6 +389,17 @@
                 } else if (elementId === 'EXTENSIONS') {
                     titleKey = 'head_action_extensions';
                 }
+                // ОСНОВНОЕ: Различаем две разные кнопки с head__settings
+                else if (element.hasClass('head__settings')) {
+                    // Проверяем, это новогодний носок или обычное доп. меню
+                    if (element.hasClass('new-year__button')) {
+                        // Это новогодний носок
+                        titleKey = 'head_action_newyear_sock';
+                    } else {
+                        // Это обычное дополнительное меню
+                        titleKey = 'head_action_additional_menu';
+                    }
+                }
                 // Затем проверяем классы - в порядке специфичности
                 else if (mainClass.includes('sources')) {    
                     titleKey = 'head_action_sources';  
@@ -423,7 +434,7 @@
                 } else if (mainClass.includes('extensions')) {    
                     titleKey = 'head_action_extensions';
                 } else if (mainClass.includes('new-year__button || new-year__button --animate')) {    
-                    titleKey = 'head_action_newyear_button';
+                    titleKey = 'head_action_newyear_sock';
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
                 }
@@ -552,10 +563,19 @@
                         c.includes('new-year__button')                            
                     ) || ''
 
+                    // Если это head__settings без new-year__button, то это просто head__settings
+                    if (!mainClass && item_orig.hasClass('head__settings') && !item_orig.hasClass('new-year__button')) {
+                        mainClass = 'head__settings';
+                    }
+                    // Если это head__settings с new-year__button, то это new-year__button
+                    else if (!mainClass && item_orig.hasClass('new-year__button')) {
+                        mainClass = 'new-year__button';
+                    }
+
                     // Если не нашли специфичный класс, тогда ищем head__settings
-                    if (!mainClass) {
+                   /* if (!mainClass) {
                         mainClass = allClasses.find(c => c.includes('head__settings')) || ''
-                    }          
+                    } */          
                         
                     let displayName = getHeadActionName(mainClass, item_orig)   
                               
@@ -759,8 +779,8 @@
                         c.includes('reload') ||
                         c.includes('extensions') ||
                         c.includes('exit') ||
-                        c.includes('head__settings') ||
-                        c.includes('new-year__button')
+                        c.includes('new-year__button') ||
+                        c.includes('head__settings')
                     )
 
                     if (!uniqueClass) {
