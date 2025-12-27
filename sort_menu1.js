@@ -250,19 +250,12 @@
                     uk: 'Додаткове меню',    
                     zh: '附加菜单'    
                 },
-                head_action_new-year__button: {    
+                head_action_new-year_button: {    
                     ru: 'Новогодний носок',    
                     en: 'New Year Sock',    
                     uk: 'Новорічна шкарпетка',    
                     zh: '圣诞袜'    
                 },    
-                // ИЛИ/И (альтернативный вариант)
-                head_action_newyear: {    
-                    ru: 'Новогодняя',    
-                    en: 'New Year',    
-                    uk: 'Новорічна',    
-                    zh: '新年'    
-                },
                 no_name: {    
                     ru: 'Элемент без названия',    
                     en: 'Unnamed element',    
@@ -438,7 +431,7 @@
                          element.hasClass('new-year__button')) {    
                     // Проверяем, есть ли новогодние классы
                     if (element.hasClass('new-year__button') || element.hasClass('--animate')) {
-                        titleKey = 'head_action_new-year__button'; // Новогодний носок
+                        titleKey = 'head_action_new-year_button'; // Новогодний носок
                     } else {
                         titleKey = 'head_action_additional_menu';     
                     }
