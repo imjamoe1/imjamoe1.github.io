@@ -324,27 +324,41 @@
                 console.log(' - Hidden items:', hide);
                 
                 let actionsContainer = $('.head__actions')      
-                if(!actionsContainer.length) return      
+                if(!actionsContainer.length) {
+                    console.log('Menu Editor: head__actions container not found');
+                    return;
+                }
                       
                 if(sort.length) {      
                     sort.forEach((uniqueClass) => {      
                         let item = null;
+                        let found = false;
                         
                         if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
                             // Ищем по ID
                             item = $('#' + uniqueClass);
+                            found = item.length > 0;
                         } else {
-                            // Исправлено: Правильный селектор для классов
+                            // Пробуем несколько способов поиска
+                            // 1. По точному классу
                             let escapedClass = uniqueClass.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
                             item = $('.head__action.' + escapedClass);
+                            found = item.length > 0;
                             
-                            // Если не нашли по прямому классу, ищем по частичному совпадению
-                            if (!item.length) {
+                            // 2. По частичному совпадению класса
+                            if (!found) {
                                 item = $('.head__action[class*="' + uniqueClass + '"]');
+                                found = item.length > 0;
+                            }
+                            
+                            // 3. Для new-year__button ищем с учетом всех возможных классов
+                            if (!found && uniqueClass === 'new-year__button') {
+                                item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
+                                found = item.length > 0;
                             }
                         }
                         
-                        if(item.length) {
+                        if(found) {
                             item.appendTo(actionsContainer);
                             console.log('Menu Editor: Applied order for:', uniqueClass, 'found:', item.length);
                         } else {
@@ -359,21 +373,32 @@
                 if(hide.length) {      
                     hide.forEach((uniqueClass) => {      
                         let item = null;
+                        let found = false;
                         
                         if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
                             item = $('#' + uniqueClass);
+                            found = item.length > 0;
                         } else {
-                            // Исправлено: Правильный селектор для классов
+                            // Пробуем несколько способов поиска
+                            // 1. По точному классу
                             let escapedClass = uniqueClass.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
                             item = $('.head__action.' + escapedClass);
+                            found = item.length > 0;
                             
-                            // Если не нашли по прямому классу, ищем по частичному совпадению
-                            if (!item.length) {
+                            // 2. По частичному совпадению класса
+                            if (!found) {
                                 item = $('.head__action[class*="' + uniqueClass + '"]');
+                                found = item.length > 0;
+                            }
+                            
+                            // 3. Для new-year__button ищем с учетом всех возможных классов
+                            if (!found && uniqueClass === 'new-year__button') {
+                                item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
+                                found = item.length > 0;
                             }
                         }
                         
-                        if(item.length) {
+                        if(found) {
                             item.addClass('hide');
                             console.log('Menu Editor: Hidden item:', uniqueClass, 'found:', item.length);
                         } else {
@@ -382,13 +407,21 @@
                     })      
                 }      
                 
-                // Дополнительная проверка через таймаут
+                // Проверка через таймаут для новогодней кнопки (может появиться позже)
                 setTimeout(() => {
+                    if (hide.includes('new-year__button')) {
+                        let newYearButton = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
+                        if (newYearButton.length) {
+                            newYearButton.addClass('hide');
+                            console.log('Menu Editor: Late applied hide for new-year__button');
+                        }
+                    }
+                    
                     console.log('Menu Editor: Final check - all head__actions:', $('.head__action').length);
                     $('.head__action').each(function() {
                         console.log(' - Class:', $(this).attr('class'), 'Hidden:', $(this).hasClass('hide'));
                     });
-                }, 500);
+                }, 2000); // Увеличено до 2 секунд для новогодней кнопки
             }
       
             // Применение настроек к меню настроек      
@@ -974,6 +1007,73 @@
                   setTimeout(applySettingsMenu, 300)      
                 })      
             }      
+            
+            // ИСПРАВЛЕНИЕ: Слушатель для новогодней кнопки - применяем настройки когда она появляется
+            let observer = null;
+            try {
+                // Используем MutationObserver для отслеживания появления новогодней кнопки
+                observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                            for (let node of mutation.addedNodes) {
+                                if (node.nodeType === 1 && // ELEMENT_NODE
+                                    (node.classList && 
+                                     (node.classList.contains('new-year__button') || 
+                                      (node.classList.contains('head__settings') && node.classList.contains('new-year__button'))))) {
+                                    console.log('Menu Editor: New Year button appeared, applying settings');
+                                    setTimeout(applyTopMenu, 100);
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                });
+                
+                // Начинаем наблюдение за head__actions
+                let headActions = $('.head__actions')[0];
+                if (headActions) {
+                    observer.observe(headActions, {
+                        childList: true,
+                        subtree: true
+                    });
+                    console.log('Menu Editor: Started observing for New Year button');
+                }
+            } catch(e) {
+                console.log('Menu Editor: MutationObserver failed:', e);
+            }
+            
+            // Альтернатива: периодическая проверка
+            let checkInterval = setInterval(function() {
+                let newYearButton = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
+                if (newYearButton.length) {
+                    let sort = Lampa.Storage.get('head_menu_sort', []);
+                    let hide = Lampa.Storage.get('head_menu_hide', []);
+                    
+                    // Применяем порядок
+                    if (sort.length) {
+                        let actionsContainer = $('.head__actions');
+                        if (actionsContainer.length) {
+                            sort.forEach((uniqueClass) => {
+                                if (uniqueClass === 'new-year__button') {
+                                    newYearButton.appendTo(actionsContainer);
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Применяем скрытие
+                    if (hide.includes('new-year__button')) {
+                        newYearButton.addClass('hide');
+                        console.log('Menu Editor: Interval check - hid New Year button');
+                    }
+                }
+            }, 5000); // Проверяем каждые 5 секунд
+            
+            // Очистка интервала при перезагрузке
+            window.addEventListener('beforeunload', function() {
+                if (observer) observer.disconnect();
+                clearInterval(checkInterval);
+            });
         }             
                 
         if(window.appready) initialize()            
