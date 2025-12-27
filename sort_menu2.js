@@ -264,7 +264,7 @@
                 }    
             })  
   
-            // ИСПРАВЛЕНО: Применение настроек левого меню с улучшенной поддержкой версий 
+            // Применение настроек левого меню
             function applyLeftMenu() {      
                 let sort = Lampa.Storage.get('menu_sort', [])      
                 let hide = Lampa.Storage.get('menu_hide', [])      
@@ -281,88 +281,42 @@
                     })      
                 }      
                     
-                // ИСПРАВЛЕНИЕ: Применяем скрытие ко всем пунктам меню из обеих секций  
-                // Сначала снимаем все скрытия  
+                // Применяем скрытие ко всем пунктам меню  
                 $('.menu .menu__item').removeClass('hidden')      
                   
                 if(hide.length) {      
                     hide.forEach((name) => {      
-                        // Ищем в обеих секциях отдельно  
                         let item = $('.menu .menu__list').find('.menu__item').filter(function() {      
                             return $(this).find('.menu__text').text().trim() === name      
                         })      
-                        if(item.length) {  
-                            item.addClass('hidden')  
-                            console.log('Menu Editor: Hidden item:', name, item.length)  
-                        }  
+                        if(item.length) item.addClass('hidden')  
                     })      
                 }  
-                  
-                // Дополнительная проверка через небольшой таймаут для уверенности  
-                setTimeout(() => {  
-                    if(hide.length) {      
-                        hide.forEach((name) => {      
-                            let item = $('.menu .menu__list').find('.menu__item').filter(function() {      
-                                return $(this).find('.menu__text').text().trim() === name      
-                            })      
-                            if(item.length && !item.hasClass('hidden')) {  
-                                item.addClass('hidden')  
-                                console.log('Menu Editor: Re-applied hidden to:', name)  
-                            }  
-                        })      
-                    }  
-                }, 100)  
             }      
       
-            // ИСПРАВЛЕНО: Применение настроек верхнего меню      
+            // Применение настроек верхнего меню      
             function applyTopMenu() {      
                 let sort = Lampa.Storage.get('head_menu_sort', [])      
                 let hide = Lampa.Storage.get('head_menu_hide', [])      
-                
-                console.log('Menu Editor: Applying top menu settings');
-                console.log(' - Sort order:', sort);
-                console.log(' - Hidden items:', hide);
-                
+                      
                 let actionsContainer = $('.head__actions')      
-                if(!actionsContainer.length) {
-                    console.log('Menu Editor: head__actions container not found');
-                    return;
-                }
+                if(!actionsContainer.length) return      
                       
                 if(sort.length) {      
                     sort.forEach((uniqueClass) => {      
                         let item = null;
-                        let found = false;
                         
                         if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
-                            // Ищем по ID
                             item = $('#' + uniqueClass);
-                            found = item.length > 0;
+                        } else if (uniqueClass === 'new-year__button') {
+                            // Особый поиск для новогодней кнопки
+                            item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
                         } else {
-                            // Пробуем несколько способов поиска
-                            // 1. По точному классу
-                            let escapedClass = uniqueClass.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
-                            item = $('.head__action.' + escapedClass);
-                            found = item.length > 0;
-                            
-                            // 2. По частичному совпадению класса
-                            if (!found) {
-                                item = $('.head__action[class*="' + uniqueClass + '"]');
-                                found = item.length > 0;
-                            }
-                            
-                            // 3. Для new-year__button ищем с учетом всех возможных классов
-                            if (!found && uniqueClass === 'new-year__button') {
-                                item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
-                                found = item.length > 0;
-                            }
+                            item = $('.head__action.' + uniqueClass);
                         }
                         
-                        if(found) {
+                        if(item.length) {
                             item.appendTo(actionsContainer);
-                            console.log('Menu Editor: Applied order for:', uniqueClass, 'found:', item.length);
-                        } else {
-                            console.log('Menu Editor: NOT found for order:', uniqueClass);
                         }
                     })      
                 }      
@@ -373,55 +327,31 @@
                 if(hide.length) {      
                     hide.forEach((uniqueClass) => {      
                         let item = null;
-                        let found = false;
                         
                         if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
                             item = $('#' + uniqueClass);
-                            found = item.length > 0;
+                        } else if (uniqueClass === 'new-year__button') {
+                            // Особый поиск для новогодней кнопки
+                            item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
                         } else {
-                            // Пробуем несколько способов поиска
-                            // 1. По точному классу
-                            let escapedClass = uniqueClass.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
-                            item = $('.head__action.' + escapedClass);
-                            found = item.length > 0;
-                            
-                            // 2. По частичному совпадению класса
-                            if (!found) {
-                                item = $('.head__action[class*="' + uniqueClass + '"]');
-                                found = item.length > 0;
-                            }
-                            
-                            // 3. Для new-year__button ищем с учетом всех возможных классов
-                            if (!found && uniqueClass === 'new-year__button') {
-                                item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
-                                found = item.length > 0;
-                            }
+                            item = $('.head__action.' + uniqueClass);
                         }
                         
-                        if(found) {
+                        if(item.length) {
                             item.addClass('hide');
-                            console.log('Menu Editor: Hidden item:', uniqueClass, 'found:', item.length);
-                        } else {
-                            console.log('Menu Editor: NOT found for hide:', uniqueClass);
                         }
                     })      
                 }      
                 
-                // Проверка через таймаут для новогодней кнопки (может появиться позже)
+                // Дополнительная проверка для новогодней кнопки через 3 секунды
                 setTimeout(() => {
                     if (hide.includes('new-year__button')) {
                         let newYearButton = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
-                        if (newYearButton.length) {
+                        if (newYearButton.length && !newYearButton.hasClass('hide')) {
                             newYearButton.addClass('hide');
-                            console.log('Menu Editor: Late applied hide for new-year__button');
                         }
                     }
-                    
-                    console.log('Menu Editor: Final check - all head__actions:', $('.head__action').length);
-                    $('.head__action').each(function() {
-                        console.log(' - Class:', $(this).attr('class'), 'Hidden:', $(this).hasClass('hide'));
-                    });
-                }, 2000); // Увеличено до 2 секунд для новогодней кнопки
+                }, 3000);
             }
       
             // Применение настроек к меню настроек      
@@ -463,16 +393,9 @@
                 } else if (elementId === 'EXTENSIONS') {
                     titleKey = 'head_action_extensions';
                 }
-                // ОСНОВНОЕ: Различаем две разные кнопки с head__settings
-                else if (element.hasClass('head__settings')) {
-                    // Проверяем, это новогодний носок или обычное доп. меню
-                    if (element.hasClass('new-year__button')) {
-                        // Это новогодний носок
-                        titleKey = 'head_action_newyear_sock';
-                    } else {
-                        // Это обычное дополнительное меню
-                        titleKey = 'head_action_additional_menu';
-                    }
+                // Проверяем новогоднюю кнопку
+                else if (element.hasClass('new-year__button')) {
+                    titleKey = 'head_action_newyear_sock';
                 }
                 // Затем проверяем остальные классы
                 else if (mainClass && mainClass.includes('sources')) {    
@@ -507,18 +430,18 @@
                     titleKey = 'head_action_exit';
                 } else if (mainClass && mainClass.includes('extensions')) {    
                     titleKey = 'head_action_extensions';    
+                } else if (mainClass === 'head__settings') {    
+                    titleKey = 'head_action_additional_menu';     
                 }      
                 
-                console.log('Menu Editor: For classes', element.attr('class'), 'got titleKey:', titleKey);
                 return titleKey ? Lampa.Lang.translate(titleKey) : Lampa.Lang.translate('no_name');    
             }
 
-            // Функция для редактирования левого меню (Исправлено: удалены стрелочки для второй секции)    
+            // Функция для редактирования левого меню   
             function editLeftMenu() {          
                 let list = $('<div class="menu-edit-list"></div>')          
                 let menu = $('.menu')          
                     
-                // Обрабатываем все пункты меню из обеих секций    
                 menu.find('.menu__item').each(function(){          
                     let item_orig = $(this)          
                     let item_clone = $(this).clone()    
@@ -791,7 +714,8 @@
                     })          
                 }, 300)          
             }
-            // ИСПРАВЛЕНО: Сохранение настроек левого меню с логированием  
+            
+            // Сохранение настроек левого меню  
             function saveLeftMenu() {          
                 let sort = []          
                 let hide = []          
@@ -802,21 +726,19 @@
                     sort.push(name)          
                 })    
     
-                // Сохраняем скрытые пункты из обеих секций    
+                // Сохраняем скрытые пункты  
                 $('.menu .menu__item').each(function(){    
                     if($(this).hasClass('hidden')){    
                         let name = $(this).find('.menu__text').text().trim()    
                         hide.push(name)  
-                        console.log('Menu Editor: Saving hidden item:', name)  
                     }          
                 })          
     
-                console.log('Menu Editor: Saved hide list:', hide)  
                 Lampa.Storage.set('menu_sort', sort)          
                 Lampa.Storage.set('menu_hide', hide)          
             }          
                 
-            // ИСПРАВЛЕНО: Сохранение настроек верхнего меню            
+            // Сохранение настроек верхнего меню            
             function saveTopMenu() {            
                 let sort = []            
                 let hide = []            
@@ -830,18 +752,14 @@
                     if (elementId === 'MRELOAD' || elementId === 'RELOAD' || elementId === 'EXTENSIONS') {
                         uniqueClass = elementId;
                     } else {
-                        // Определяем уникальный класс в правильном порядке приоритета
+                        // Определяем уникальный класс
                         let classes = item.attr('class').split(' ');
                         
-                        // 1. Сначала проверяем специфические классы (новогодняя кнопка имеет приоритет)
+                        // Сначала проверяем новогоднюю кнопку
                         if (item.hasClass('new-year__button')) {
                             uniqueClass = 'new-year__button';
                         } 
-                        // 2. Затем проверяем head__settings (но только если это не новогодняя кнопка)
-                        else if (item.hasClass('head__settings') && !item.hasClass('new-year__button')) {
-                            uniqueClass = 'head__settings';
-                        }
-                        // 3. Затем проверяем остальные специфические классы
+                        // Затем проверяем остальные специфические классы
                         else {
                             uniqueClass = classes.find(c =>       
                                 c.startsWith('open--') ||           
@@ -855,11 +773,12 @@
                                 c.includes('m-reload-screen') ||
                                 c.includes('reload') ||
                                 c.includes('extensions') ||
-                                c.includes('exit')
+                                c.includes('exit') ||
+                                c.includes('head__settings')
                             ) || '';
                         }
 
-                        // 4. Если все еще не нашли, берем второй класс (после head__action)
+                        // Если не нашли, берем второй класс
                         if (!uniqueClass && classes.length > 1) {
                             uniqueClass = classes[1];
                         }
@@ -870,14 +789,8 @@
                         if($(this).hasClass('hide')){      
                             hide.push(uniqueClass)      
                         }      
-                        
-                        // Отладка
-                        console.log('Menu Editor: Saving item - classes:', item.attr('class'), 'uniqueClass:', uniqueClass, 'hidden:', item.hasClass('hide'));
                     }      
                 })            
-                
-                console.log('Menu Editor: Saved top menu sort order:', sort);
-                console.log('Menu Editor: Saved top menu hidden items:', hide);
                 
                 Lampa.Storage.set('head_menu_sort', sort)            
                 Lampa.Storage.set('head_menu_hide', hide)            
@@ -898,10 +811,6 @@
                 
                 Lampa.Storage.set('settings_menu_sort', sort)            
                 Lampa.Storage.set('settings_menu_hide', hide)  
-                
-                // При изменении меню сбрасываем флаг первого открытия
-                Lampa.Storage.set('menu_editor_first_open', true);
-                console.log('Menu Editor: Reset first open flag due to menu changes');
             }            
                 
             // Добавляем отдельный раздел в настройки            
@@ -982,98 +891,25 @@
             addExtensionsButton();
             addSettings();      
               
-            // ИСПРАВЛЕНО: Увеличен таймаут и добавлен слушатель события меню  
+            // Применяем настройки с задержкой
             setTimeout(() => {      
                 applyLeftMenu()      
-                setTimeout(applyTopMenu, 300)      
-            }, 1000)  // Увеличено с 500 до 1000  
+                setTimeout(applyTopMenu, 500)      
+            }, 1500)  
               
-            // Дополнительный слушатель события завершения инициализации меню  
+            // Применяем настройки при каждом открытии меню
             Lampa.Listener.follow('menu', (e) => {  
                 if(e.type === 'end') {  
                     setTimeout(applyLeftMenu, 200)  
                 }  
             })  
                   
-            // Просто применяем настройки при открытии настроек
+            // Применяем настройки при открытии настроек
             Lampa.Listener.follow('activity', function(e) {      
                 if(e.type === 'start' && e.component === 'settings') {      
                   setTimeout(applySettingsMenu, 500)      
                 }      
             })         
-                  
-            if(Lampa.Settings && Lampa.Settings.listener) {      
-                Lampa.Settings.listener.follow('open', function(e) {      
-                  setTimeout(applySettingsMenu, 300)      
-                })      
-            }      
-            
-            // ИСПРАВЛЕНИЕ: Слушатель для новогодней кнопки - применяем настройки когда она появляется
-            let observer = null;
-            try {
-                // Используем MutationObserver для отслеживания появления новогодней кнопки
-                observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                            for (let node of mutation.addedNodes) {
-                                if (node.nodeType === 1 && // ELEMENT_NODE
-                                    (node.classList && 
-                                     (node.classList.contains('new-year__button') || 
-                                      (node.classList.contains('head__settings') && node.classList.contains('new-year__button'))))) {
-                                    console.log('Menu Editor: New Year button appeared, applying settings');
-                                    setTimeout(applyTopMenu, 100);
-                                    break;
-                                }
-                            }
-                        }
-                    });
-                });
-                
-                // Начинаем наблюдение за head__actions
-                let headActions = $('.head__actions')[0];
-                if (headActions) {
-                    observer.observe(headActions, {
-                        childList: true,
-                        subtree: true
-                    });
-                    console.log('Menu Editor: Started observing for New Year button');
-                }
-            } catch(e) {
-                console.log('Menu Editor: MutationObserver failed:', e);
-            }
-            
-            // Альтернатива: периодическая проверка
-            let checkInterval = setInterval(function() {
-                let newYearButton = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
-                if (newYearButton.length) {
-                    let sort = Lampa.Storage.get('head_menu_sort', []);
-                    let hide = Lampa.Storage.get('head_menu_hide', []);
-                    
-                    // Применяем порядок
-                    if (sort.length) {
-                        let actionsContainer = $('.head__actions');
-                        if (actionsContainer.length) {
-                            sort.forEach((uniqueClass) => {
-                                if (uniqueClass === 'new-year__button') {
-                                    newYearButton.appendTo(actionsContainer);
-                                }
-                            });
-                        }
-                    }
-                    
-                    // Применяем скрытие
-                    if (hide.includes('new-year__button')) {
-                        newYearButton.addClass('hide');
-                        console.log('Menu Editor: Interval check - hid New Year button');
-                    }
-                }
-            }, 5000); // Проверяем каждые 5 секунд
-            
-            // Очистка интервала при перезагрузке
-            window.addEventListener('beforeunload', function() {
-                if (observer) observer.disconnect();
-                clearInterval(checkInterval);
-            });
         }             
                 
         if(window.appready) initialize()            
