@@ -422,7 +422,7 @@
                     titleKey = 'head_action_exit';
                 } else if (mainClass.includes('extensions')) {    
                     titleKey = 'head_action_extensions';
-                } else if (mainClass.includes('new-year__button')) {    
+                } else if (mainClass.includes('new-year__button || new-year__button --animate')) {    
                     titleKey = 'head_action_newyear_button';
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
