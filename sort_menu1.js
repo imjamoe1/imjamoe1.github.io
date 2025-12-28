@@ -249,13 +249,7 @@
                     en: 'Additional Menu',    
                     uk: 'Додаткове меню',    
                     zh: '附加菜单'    
-                },
-                head_action_newyear_sock: {    
-                    ru: 'Новогодний носок',    
-                    en: 'New Year Sock',    
-                    uk: 'Новорічна шкарпетка',    
-                    zh: '圣诞袜'    
-                },    
+                },   
                 no_name: {    
                     ru: 'Элемент без названия',    
                     en: 'Unnamed element',    
@@ -389,17 +383,6 @@
                 } else if (elementId === 'EXTENSIONS') {
                     titleKey = 'head_action_extensions';
                 }
-                // ОСНОВНОЕ: Различаем две разные кнопки с head__settings
-                else if (element.hasClass('head__settings')) {
-                    // Проверяем, это новогодний носок или обычное доп. меню
-                    if (element.hasClass('new-year__button')) {
-                        // Это новогодний носок
-                        titleKey = 'head_action_newyear_sock';
-                    } else {
-                        // Это обычное дополнительное меню
-                        titleKey = 'head_action_additional_menu';
-                    }
-                }
                 // Затем проверяем классы - в порядке специфичности
                 else if (mainClass.includes('sources')) {    
                     titleKey = 'head_action_sources';  
@@ -433,8 +416,6 @@
                     titleKey = 'head_action_exit';
                 } else if (mainClass.includes('extensions')) {    
                     titleKey = 'head_action_extensions';
-                } else if (mainClass.includes('new-year__button || new-year__button --animate')) {    
-                    titleKey = 'head_action_newyear_sock';
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
                 }
@@ -551,6 +532,7 @@
                         c.startsWith('notice--') || 
                         c.startsWith('notice-') ||
                         c.startsWith('full--') ||
+                        c.includes('head__settings') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
                         c.includes('switch-screen') ||
@@ -558,9 +540,7 @@
                         c.includes('m-reload-screen') ||
                         c.includes('reload') ||
                         c.includes('extensions') ||
-                        c.includes('exit') ||
-                        c.includes('head__settings') ||
-                        c.includes('new-year__button')                            
+                        c.includes('exit')                            
                     ) || ''
 
                     // Если это head__settings без new-year__button, то это просто head__settings
@@ -771,6 +751,7 @@
                         c.startsWith('notice--') ||
                         c.startsWith('notice-') ||
                         c.startsWith('full--') ||
+                        c.includes('head__settings') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
                         c.includes('switch-screen') ||
@@ -778,9 +759,7 @@
                         c.includes('m-reload-screen') ||
                         c.includes('reload') ||
                         c.includes('extensions') ||
-                        c.includes('exit') ||
-                        c.includes('new-year__button') ||
-                        c.includes('head__settings')
+                        c.includes('exit')
                     )
 
                     if (!uniqueClass) {
