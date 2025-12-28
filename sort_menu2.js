@@ -294,7 +294,7 @@
                 }  
             }      
       
-            // Применение настроек верхнего меню      
+            // ИСПРАВЛЕНО: Применение настроек верхнего меню      
             function applyTopMenu() {      
                 let sort = Lampa.Storage.get('head_menu_sort', [])      
                 let hide = Lampa.Storage.get('head_menu_hide', [])      
@@ -303,22 +303,27 @@
                 if(!actionsContainer.length) return      
                       
                 if(sort.length) {      
-                    // Восстанавливаем порядок ВСЕХ сохраненных кнопок
+                    // Сначала восстанавливаем порядок ВСЕХ сохраненных кнопок
+                    // Создаем временный массив для хранения текущих кнопок
+                    let currentButtons = $('.head__action').toArray();
+                    
+                    // Если новогодняя кнопка есть в сохраненном порядке, но ее нет сейчас,
+                    // мы все равно применяем порядок для остальных кнопок
                     sort.forEach((uniqueClass) => {
                         let item = null;
                         
                         if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
                             item = $('#' + uniqueClass);
                         } else if (uniqueClass === 'new-year__button') {
-                            // Ищем новогоднюю кнопку (игнорируем временный класс --animate)
-                            item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button')
-                                .not('.--animate');
+                            // Ищем новогоднюю кнопку
+                            item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
                         } else {
                             item = $('.head__action.' + uniqueClass);
                         }
                         
                         if(item.length) {
                             // Перемещаем найденную кнопку в конец контейнера
+                            // Это создаст правильный порядок
                             item.appendTo(actionsContainer);
                         }
                     });
@@ -334,9 +339,8 @@
                         if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
                             item = $('#' + uniqueClass);
                         } else if (uniqueClass === 'new-year__button') {
-                            // Особый поиск для новогодней кнопки (игнорируем --animate)
-                            item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button')
-                                .not('.--animate');
+                            // Особый поиск для новогодней кнопки
+                            item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
                         } else {
                             item = $('.head__action.' + uniqueClass);
                         }
@@ -350,8 +354,7 @@
                 // Дополнительная проверка для новогодней кнопки через 3 секунды
                 setTimeout(() => {
                     if (hide.includes('new-year__button')) {
-                        let newYearButton = $('.head__action.new-year__button, .head__action.head__settings.new-year__button')
-                            .not('.--animate');
+                        let newYearButton = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
                         if (newYearButton.length && !newYearButton.hasClass('hide')) {
                             newYearButton.addClass('hide');
                         }
@@ -369,8 +372,7 @@
                             if (uniqueClass === 'MRELOAD' || uniqueClass === 'RELOAD' || uniqueClass === 'EXTENSIONS') {
                                 item = $('#' + uniqueClass);
                             } else if (uniqueClass === 'new-year__button') {
-                                item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button')
-                                    .not('.--animate');
+                                item = $('.head__action.new-year__button, .head__action.head__settings.new-year__button');
                             } else {
                                 item = $('.head__action.' + uniqueClass);
                             }
@@ -422,12 +424,8 @@
                 } else if (elementId === 'EXTENSIONS') {
                     titleKey = 'head_action_extensions';
                 }
-                // Улучшенная проверка новогодней кнопки (учитывает SVG и временный класс --animate)
-                else if (element.hasClass('new-year__button') || 
-                         (element.hasClass('head__settings') && element.hasClass('new-year__button')) ||
-                         (element.hasClass('head__settings') && 
-                          element.find('svg').length && 
-                          element.find('svg').html().includes('FD003A'))) {
+                // Проверяем новогоднюю кнопку
+                else if (element.hasClass('new-year__button')) {
                     titleKey = 'head_action_newyear_sock';
                 }
                 // Затем проверяем остальные классы
@@ -590,13 +588,13 @@
                         c.includes('new-year__button')                            
                     ) || ''
 
-                    // Улучшенное определение классов для новогодней кнопки
-                    if (!mainClass && item_orig.hasClass('head__settings')) {
-                        if (item_orig.hasClass('new-year__button')) {
-                            mainClass = 'new-year__button';
-                        } else {
-                            mainClass = 'head__settings';
-                        }
+                    // Если это head__settings без new-year__button, то это просто head__settings
+                    if (!mainClass && item_orig.hasClass('head__settings') && !item_orig.hasClass('new-year__button')) {
+                        mainClass = 'head__settings';
+                    }
+                    // Если это head__settings с new-year__button, то это new-year__button
+                    else if (!mainClass && item_orig.hasClass('new-year__button')) {
+                        mainClass = 'new-year__button';
                     }
                         
                     let displayName = getHeadActionName(mainClass, item_orig)   
@@ -785,11 +783,11 @@
                     if (elementId === 'MRELOAD' || elementId === 'RELOAD' || elementId === 'EXTENSIONS') {
                         uniqueClass = elementId;
                     } else {
-                        // Определяем уникальный класс (игнорируем временный класс --animate)
-                        let classes = item.attr('class').split(' ').filter(c => c !== '--animate');
+                        // Определяем уникальный класс
+                        let classes = item.attr('class').split(' ');
                         
                         // Сначала проверяем новогоднюю кнопку
-                        if (classes.includes('new-year__button')) {
+                        if (item.hasClass('new-year__button')) {
                             uniqueClass = 'new-year__button';
                         } 
                         // Затем проверяем остальные специфические классы
@@ -811,7 +809,7 @@
                             ) || '';
                         }
 
-                        // Если не нашли, берем второй класс (после head__action)
+                        // Если не нашли, берем второй класс
                         if (!uniqueClass && classes.length > 1) {
                             uniqueClass = classes[1];
                         }
