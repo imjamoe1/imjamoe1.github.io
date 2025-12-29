@@ -1090,7 +1090,7 @@ function create() {
         Lampa.InteractionMain = function (object) { 
             var use = new_interface;
             //if (!(object.source == 'tmdb' || object.source == 'cub')) use = old_interface;
-            var supportedSources = ['tmdb', 'cub', 'filmix'];
+            var supportedSources = ['tmdb', 'cub', 'filmix', 'rezka', 'kp', 'online', 'hdvb', 'ashdi'];
             if (supportedSources.indexOf(object.source) === -1) use = old_interface; 
             if (window.innerWidth < 767) use = old_interface; 
             if (!Lampa.Account.hasPremium()) use = old_interface; 
