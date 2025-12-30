@@ -96,8 +96,8 @@
                 // Добавляем обработчики событий
                 $('#EXTENSIONS').on('hover:enter hover:click hover:touch', function() {
                     Lampa.Extensions.show();
-                 // });
-                });
+                    });
+                }
                 
                 // Добавляем CSS для анимации при наведении
              /* $('<style>')
