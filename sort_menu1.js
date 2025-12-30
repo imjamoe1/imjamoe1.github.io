@@ -196,7 +196,7 @@
                     uk: 'Налаштування',    
                     zh: '设置'    
                 },
-                head_action_redirectcreen: {    
+                head_action_redirectscreen: {    
                     ru: 'Смена сервера',    
                     en: 'Changing the server',    
                     uk: 'Зміна серверу',    
