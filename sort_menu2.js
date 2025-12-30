@@ -98,21 +98,6 @@
                     Lampa.Extensions.show();
                     });
                 }
-                
-                // Добавляем CSS для анимации при наведении
-             /* $('<style>')
-                    .prop('type', 'text/css')
-                    .html(`
-                        #EXTENSIONS:hover svg {
-                            transform: scale(1.1);
-                            transition: transform 0.3s ease;
-                        }
-                        #EXTENSIONS svg {
-                            transition: transform 0.3s ease;
-                        }
-                    `)
-                    .appendTo('head');
-            } */
             
             // Добавляем переводы (включая переводы для верхнего меню)    
             Lampa.Lang.add({            
