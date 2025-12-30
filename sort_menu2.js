@@ -196,11 +196,17 @@
                     uk: 'Налаштування',    
                     zh: '设置'    
                 },
-                head_action_switchscreen: {    
+                head_action_redirectscreen: {    
                     ru: 'Смена сервера',    
                     en: 'Changing the server',    
                     uk: 'Зміна серверу',    
                     zh: '伺服器變更'    
+                },
+                head_action_switchscreen: {    
+                    ru: 'Free TorrServer',    
+                    en: 'Free TorrServer',    
+                    uk: 'Free TorrServer',    
+                    zh: '免费 Torr 服务器'    
                 },
                 head_action_extensions: {    
                     ru: 'Расширения',    
@@ -445,6 +451,8 @@
                     titleKey = 'head_action_notice';    
                 } else if (mainClass && mainClass.includes('open--settings')) {    
                     titleKey = 'head_action_settings';
+                } else if (mainClass.includes('redirect-screen')) {    
+                    titleKey = 'head_action_redirectscreen';
                 } else if (mainClass && mainClass.includes('switch-screen')) {    
                     titleKey = 'head_action_switchscreen';
                 } else if (mainClass && mainClass.includes('open--profile')) {    
@@ -578,6 +586,7 @@
                         c.startsWith('full--') ||
                         c.startsWith('console-') ||
                         c.includes('sources') ||
+                        c.includes('redirect-screen') ||
                         c.includes('switch-screen') ||
                         c.includes('ai-search') ||
                         c.includes('m-reload-screen') ||
@@ -799,6 +808,7 @@
                                 c.startsWith('full--') ||
                                 c.startsWith('console-') ||
                                 c.includes('sources') ||
+                                c.includes('redirect-screen') ||
                                 c.includes('switch-screen') ||
                                 c.includes('ai-search') ||
                                 c.includes('m-reload-screen') ||
