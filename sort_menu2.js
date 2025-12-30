@@ -95,13 +95,12 @@
                 
                 // Добавляем обработчики событий
                 $('#EXTENSIONS').on('hover:enter hover:click hover:touch', function() {
-                    Lampa.Extensions.show({
-                        with_installed: true
-                    });
+                    Lampa.Extensions.show();
+                 // });
                 });
                 
                 // Добавляем CSS для анимации при наведении
-                $('<style>')
+             /* $('<style>')
                     .prop('type', 'text/css')
                     .html(`
                         #EXTENSIONS:hover svg {
@@ -113,7 +112,7 @@
                         }
                     `)
                     .appendTo('head');
-            }
+            } */
             
             // Добавляем переводы (включая переводы для верхнего меню)    
             Lampa.Lang.add({            
