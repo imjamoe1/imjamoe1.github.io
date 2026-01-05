@@ -566,7 +566,7 @@
                             <path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <div class="menu-edit-list__move move-down selector>
+                    <div class="menu-edit-list__move move-down selector">
                         <svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2 2L11 11L20 2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
                         </svg>
@@ -989,3 +989,4 @@
     if (!window.plugin_cardbtn_ready) init();
 
 })();
+
