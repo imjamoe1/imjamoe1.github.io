@@ -966,51 +966,24 @@
         component: "cardbtn"
     };
 
+    // Загружает плагин (манифест, настройки, обработчики)
     function loadPlugin() {
-        // Сохраняем информацию о плагине
-        try {
-            let plugins = localStorageGet('plugins', []);
-            if (!Array.isArray(plugins)) {
-                plugins = [];
-            }
-            
-            // Проверяем, есть ли уже этот плагин
-            const existingIndex = plugins.findIndex(p => p && p.name === pluginInfo.name);
-            if (existingIndex === -1) {
-                plugins.push(pluginInfo);
-                localStorageSet('plugins', plugins);
-            }
-        } catch (e) {
-            console.error('Error saving plugin info:', e);
-        }
-
-        // Сохраняем в Lampa.Manifest если доступно
-        if (Lampa.Manifest && Lampa.Manifest.plugins) {
-            Lampa.Manifest.plugins = pluginInfo;
-        }
-        
-        SettingsConfig.run();
-        
-        // Проверяем включен ли плагин
-        const isEnabled = localStorageGet('cardbtn_showall', false);
-        if (isEnabled) {
-            CardHandler.run();
-        }
+      Lampa.Manifest.plugins = pluginInfo;
+      SettingsConfig.run();
+      if (Lampa.Storage.get('cardbtn_showall') === true) {
+        CardHandler.run();
+      }
     }
 
+    // Инициализация плагина при готовности приложения
     function init() {
-        window.plugin_cardbtn_ready = true;
-        
-        // Небольшая задержка для инициализации Lampa
-        if (window.appready) {
-            setTimeout(loadPlugin, 1000);
-        } else {
-            Lampa.Listener.follow("app", e => {
-                if (e.type === "ready") {
-                    setTimeout(loadPlugin, 1000);
-                }
-            });
-        }
+      window.plugin_cardbtn_ready = true;
+      if (window.appready) loadPlugin();
+      else {
+        Lampa.Listener.follow("app", e => {
+          if (e.type === "ready") loadPlugin();
+        });
+      }
     }
 
     if (!window.plugin_cardbtn_ready) init();
