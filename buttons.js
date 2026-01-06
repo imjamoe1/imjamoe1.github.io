@@ -63,10 +63,18 @@
 
     function getRenamedButtons() {
         const data = localStorageGet(RENAME_STORAGE, {});
-        return data && typeof data === 'object' ? data : {};
+        if (data && typeof data === 'object') {
+            const result = {};
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    result[key] = data[key];
+                }
+            }
+            return result;
+        }
+        return {};
     }
 
-    // Также сохраняем через Lampa.Storage для совместимости
     function saveToBoth(key, value) {
         localStorageSet(key, value);
         if (Lampa.Storage && Lampa.Storage.set) {
@@ -85,7 +93,7 @@
             .card-button-hidden {
                 display: none !important;
             }
-            .card-icons-only span {
+            .card-icons-only .full-start__button:not(.button-empty) span {
                 display: none;
             }
             .card-always-text span {
@@ -158,6 +166,9 @@
                 opacity: 0.5;
                 text-decoration: line-through;
             }
+            .button-empty span {
+                display: none !important;
+            }
         `;
         $('head').append(`<style id="${STYLE_TAG}">${css}</style>`);
     }
@@ -180,55 +191,32 @@
     }
 
     function extractButtonKey($element) {
-        // Пытаемся найти data-id или data-name
-        let key = $element.data('id') || $element.data('name') || $element.attr('data-id') || $element.attr('data-name');
+        const html = $element.clone().removeClass('focus').prop('outerHTML');
+        const hash = Lampa.Utils.hash(html).substring(0, 12);
         
-        if (key) return `data:${key}`;
-        
-        // Проверяем все классы
+        const text = $element.text().trim() || $element.find('span').first().text().trim();
         const classes = ($element.attr('class') || '').split(/\s+/);
         
-        // Ищем modss в классах
-        const modssClass = classes.find(c => c.includes('modss') || c.includes('mods'));
-        if (modssClass) return `modss:${modssClass}`;
+        let baseType = 'button';
+        if (classes.find(c => c.startsWith('view--'))) baseType = 'view';
+        if (classes.find(c => c.includes('modss'))) baseType = 'modss';
+        if (classes.find(c => c.includes('reaction'))) baseType = 'reaction';
+        if (classes.find(c => c.includes('online'))) baseType = 'online';
+        if (classes.find(c => c.includes('torrent'))) baseType = 'torrent';
+        if (classes.find(c => c.includes('trailer'))) baseType = 'trailer';
+        if (classes.find(c => c.includes('book'))) baseType = 'book';
         
-        // Ищем reaction/rate в классах
-        const reactionClass = classes.find(c => c.includes('reaction') || c.includes('rate'));
-        if (reactionClass) return `reaction:${reactionClass}`;
-        
-        // Ищем online в классах
-        const onlineClass = classes.find(c => c.includes('online'));
-        if (onlineClass) return `online:${onlineClass}`;
-        
-        // Ищем стандартные классы
-        const buttonClass = classes.find(c => c.startsWith('button--') && c !== 'button--priority');
-        if (buttonClass) return `button:${buttonClass}`;
-        
-        const viewClass = classes.find(c => c.startsWith('view--'));
-        if (viewClass) return `view:${viewClass}`;
-        
-        // Используем текст кнопки
-        const text = $element.text().trim();
-        if (text) {
-            const cleanText = text.replace(/\s+/g, '_').replace(/[^\wа-яА-ЯёЁ_]/g, '').toLowerCase();
-            // Создаем уникальный ключ на основе текста и хэша
-            const hash = Lampa.Utils.hash($element.prop('outerHTML')).substring(0, 8);
-            return `text:${cleanText}_${hash}`;
-        }
-        
-        // Если ничего не нашли, используем хэш
-        const html = $element.clone().removeClass('focus').prop('outerHTML');
-        return `hash:${Lampa.Utils.hash(html)}`;
+        return `${baseType}:${hash}`;
     }
 
     function extractButtonLabel(key, $element, allButtons = []) {
         const renamed = getRenamedButtons();
-        if (renamed[key]) return renamed[key];
+        if (renamed.hasOwnProperty(key)) {
+            return renamed[key] === '' ? '<span style="opacity:0.5"><i>(без текста)</i></span>' : renamed[key];
+        }
         
-        // Берем текст из span или из всей кнопки
         const spanText = $element.find('span').first().text().trim();
         if (spanText) {
-            // Проверяем, есть ли другие кнопки с таким же текстом
             const sameTextCount = allButtons.filter(btn => 
                 btn.find('span').first().text().trim() === spanText
             ).length;
@@ -239,12 +227,18 @@
                     return spanText + ' <span style="opacity:0.5">(' + subtitle.substring(0, 30) + ')</span>';
                 }
                 
-                // Используем класс для идентификации
                 const classes = ($element.attr('class') || '').split(/\s+/);
                 const viewClass = classes.find(c => c.startsWith('view--'));
                 if (viewClass) {
                     const identifier = viewClass.replace('view--', '').replace(/_/g, ' ');
                     return spanText + ' <span style="opacity:0.5">(' + capitalize(identifier) + ')</span>';
+                }
+                
+                const index = allButtons.findIndex(btn => 
+                    btn.find('span').first().text().trim() === spanText
+                );
+                if (index !== -1) {
+                    return spanText + ` <span style="opacity:0.5">(${index + 1})</span>`;
                 }
             }
             return spanText;
@@ -253,28 +247,23 @@
         const fullText = $element.text().trim();
         if (fullText) return fullText;
         
-        // Пробуем получить текст из data-атрибутов
         const dataText = $element.data('text') || $element.attr('data-text');
         if (dataText) return dataText;
         
-        // Если нет текста, пробуем извлечь из классов
         const classes = ($element.attr('class') || '').split(/\s+/);
         
-        // Ищем view-- классы
         const viewClass = classes.find(c => c.startsWith('view--'));
         if (viewClass) {
             const viewName = viewClass.replace('view--', '').replace(/_/g, ' ');
             return capitalize(viewName);
         }
         
-        // Ищем button-- классы
         const buttonClass = classes.find(c => c.startsWith('button--') && c !== 'button--priority');
         if (buttonClass) {
             const buttonName = buttonClass.replace('button--', '').replace(/_/g, ' ');
             return capitalize(buttonName);
         }
         
-        // Проверяем специальные классы
         if (classes.find(c => c.includes('modss'))) return 'MODSS';
         if (classes.find(c => c.includes('reaction'))) return 'Оценить';
         if (classes.find(c => c.includes('online'))) return 'Онлайн';
@@ -282,29 +271,8 @@
         if (classes.find(c => c.includes('torrent'))) return 'Торренты';
         if (classes.find(c => c.includes('trailer'))) return 'Трейлеры';
         
-        // Пробуем извлечь из ключа
-        if (key.startsWith('text:')) {
-            const textPart = key.substring(5).split('_')[0];
-            return textPart.replace(/_/g, ' ');
-        }
-        
-        if (key.startsWith('button:')) {
-            const buttonType = key.substring(7);
-            if (DEFAULT_LABELS[buttonType]) {
-                return DEFAULT_LABELS[buttonType]();
-            }
-            return capitalize(buttonType.replace('button--', '').replace(/_/g, ' '));
-        }
-        
-        if (key.startsWith('view:')) {
-            const viewType = key.substring(5);
-            if (viewType === 'view--torrent') return 'Торренты';
-            if (viewType === 'view--trailer') return 'Трейлеры';
-            return capitalize(viewType.replace('view--', '').replace(/_/g, ' '));
-        }
-        
-        // Возвращаем пустую строку вместо "Кнопка"
-        return '';
+        const baseType = key.split(':')[0];
+        return capitalize(baseType);
     }
 
     function collectButtons(container, remove) {
@@ -313,7 +281,7 @@
         const keys = [];
         const elements = {};
         
-        function process($items) {
+        function process($items, isMainArea) {
             $items.each(function() {
                 const $item = $(this);
                 if ($item.hasClass('button--play') || $item.hasClass('button--priority')) return;
@@ -321,25 +289,26 @@
                 const key = extractButtonKey($item);
                 if (!key) return;
                 
-                // Сохраняем оригинальный элемент для будущего использования
                 if (remove) {
                     const cloned = $item.clone(true, true);
                     elements[key] = {
                         element: $item.detach(),
-                        original: cloned
+                        original: cloned,
+                        isMainArea: isMainArea
                     };
                 } else {
                     elements[key] = {
                         element: $item,
-                        original: $item.clone(true, true)
+                        original: $item.clone(true, true),
+                        isMainArea: isMainArea
                     };
                 }
                 keys.push(key);
             });
         }
         
-        process(mainArea.find('.full-start__button'));
-        process(extraArea.find('.full-start__button'));
+        process(mainArea.find('.full-start__button'), true);
+        process(extraArea.find('.full-start__button'), false);
         
         return {
             keys,
@@ -353,12 +322,10 @@
         const result = [];
         const known = new Set(available);
         
-        // Сначала добавляем сохраненные ключи, которые есть в доступных
         saved.forEach(k => {
             if (known.has(k)) result.push(k);
         });
         
-        // Затем добавляем новые кнопки, которых нет в сохраненном порядке
         available.forEach(k => {
             if (!result.includes(k)) result.push(k);
         });
@@ -377,10 +344,8 @@
     }
 
     function rebuildCard(container) {
-        // Проверяем через localStorage
         const showAll = localStorageGet('cardbtn_showall', false);
         if (!showAll && Lampa.Storage) {
-            // Также проверяем через Lampa.Storage для совместимости
             const lampaShowAll = Lampa.Storage.get('cardbtn_showall');
             if (lampaShowAll !== true) return;
         } else if (!showAll) {
@@ -421,37 +386,37 @@
         const saved = getStoredArray(ORDER_STORAGE);
         let ordered = buildOrder(saved, keys);
 
-        if (saved.length === 0) {
-            ordered.sort((a, b) => {
-                // Приоритет для modss и online кнопок
-                const aPriority = a.includes('modss') || a.includes('online') || a.startsWith('button:');
-                const bPriority = b.includes('modss') || b.includes('online') || b.startsWith('button:');
-                if (aPriority && !bPriority) return -1;
-                if (!aPriority && bPriority) return 1;
-                return 0;
-            });
-        }
+        const allButtonsArray = Object.values(elements).map(item => item.original);
 
         mainArea.empty();
         if (priorityBtn.length) mainArea.append(priorityBtn);
         
-        // Получаем переименованные кнопки
         const renamedButtons = getRenamedButtons();
         
         ordered.forEach(k => {
             if (elements[k] && elements[k].element) {
                 const $btn = elements[k].element;
-                // Применяем переименованное название если есть
-                if (renamedButtons[k]) {
-                    const span = $btn.find('span').first();
-                    if (span.length) {
-                        span.text(renamedButtons[k]);
+                
+                $btn.removeClass('button-empty');
+                
+                if (renamedButtons[k] !== undefined) {
+                    if (renamedButtons[k] === '') {
+                        $btn.addClass('button-empty');
+                        $btn.find('span').remove();
+                        $btn.contents().filter(function() {
+                            return this.nodeType === 3 && this.textContent.trim() !== '';
+                        }).remove();
                     } else {
-                        const icon = $btn.find('svg').first();
-                        if (icon.length) {
-                            icon.after(`<span>${renamedButtons[k]}</span>`);
+                        const span = $btn.find('span').first();
+                        if (span.length) {
+                            span.text(renamedButtons[k]);
                         } else {
-                            $btn.append(`<span>${renamedButtons[k]}</span>`);
+                            const icon = $btn.find('svg').first();
+                            if (icon.length) {
+                                icon.after(`<span>${renamedButtons[k]}</span>`);
+                            } else {
+                                $btn.append(`<span>${renamedButtons[k]}</span>`);
+                            }
                         }
                     }
                 }
@@ -479,7 +444,6 @@
         }
     }
 
-    // Функция для сохранения порядка из редактора
     function saveOrderFromEditor(editorList) {
         const newOrder = [];
         editorList.find('.menu-edit-list__item').each(function() {
@@ -490,13 +454,21 @@
         return newOrder;
     }
 
-    // Упрощенная функция переименования
+    function saveOrderAfterMove() {
+        if (currentCard && currentCard.length) {
+            const collected = collectButtons(currentCard, false);
+            const { keys } = collected;
+            const saved = getStoredArray(ORDER_STORAGE);
+            const newOrder = buildOrder(saved, keys);
+            saveToBoth(ORDER_STORAGE, newOrder);
+        }
+    }
+
     function openRenameModal(key, currentLabel, callback) {
         renameModalActive = true;
         
-        const cleanLabel = currentLabel.replace(/<[^>]*>/g, '');
+        const cleanLabel = currentLabel.replace(/<[^>]*>/g, '').replace('(без текста)', '').trim();
         
-        // Используем стандартный Input.edit от Lampa
         Lampa.Input.edit({
             free: true,
             title: 'Переименовать кнопку',
@@ -504,22 +476,27 @@
             value: cleanLabel,
             nomic: true,
             maxlength: 50,
-            placeholder: 'Введите новое название'
+            placeholder: 'Введите новое название (оставьте пустым для удаления текста)'
         }, function(newName) {
             renameModalActive = false;
-            if (newName && newName.trim() !== cleanLabel) {
-                const trimmedName = newName.trim();
-                callback(trimmedName);
-                
-                // Сохраняем в хранилище
-                const renamedButtons = getRenamedButtons();
+            
+            const trimmedName = newName === null ? '' : newName.trim();
+            
+            callback(trimmedName);
+            
+            const renamedButtons = getRenamedButtons();
+            if (trimmedName === '') {
+                renamedButtons[key] = '';
+            } else {
                 renamedButtons[key] = trimmedName;
-                saveToBoth(RENAME_STORAGE, renamedButtons);
-                
-                // Немедленно обновляем текущую карточку
-                if (currentCard && currentCard.length) {
-                    rebuildCard(currentCard);
-                }
+            }
+            saveToBoth(RENAME_STORAGE, renamedButtons);
+            
+            const currentOrder = getStoredArray(ORDER_STORAGE);
+            saveToBoth(ORDER_STORAGE, currentOrder);
+            
+            if (currentCard && currentCard.length) {
+                rebuildCard(currentCard);
             }
         }, function() {
             renameModalActive = false;
@@ -532,7 +509,6 @@
         const collected = collectButtons(container, false);
         const { keys, elements } = collected;
 
-        // Получаем все кнопки для передачи в extractButtonLabel
         const allButtonsArray = Object.values(elements).map(item => item.element);
 
         const ordered = buildOrder(getStoredArray(ORDER_STORAGE), keys);
@@ -546,8 +522,12 @@
             if (!elementData || !elementData.element) return;
 
             const $elem = elementData.element;
-            // Используем переименованное название если есть, иначе оригинальное
-            let label = renamed[k] || extractButtonLabel(k, $elem, allButtonsArray);
+            let label = '';
+            if (renamed.hasOwnProperty(k)) {
+                label = renamed[k] === '' ? '<span style="opacity:0.5"><i>(без текста)</i></span>' : renamed[k];
+            } else {
+                label = extractButtonLabel(k, $elem, allButtonsArray);
+            }
             
             const svg = $elem.find('svg').first().prop('outerHTML') || '';
 
@@ -586,20 +566,22 @@
             row.toggleClass('menu-edit-list__item-hidden', isHidden);
             row.find('.dot').attr('opacity', isHidden ? 0 : 1);
 
-            // Добавляем обработчики фокуса для всех кнопок действий
             const renameBtn = row.find('.menu-edit-list__rename');
             const moveUpBtn = row.find('.move-up');
             const moveDownBtn = row.find('.move-down');
             const toggleBtn = row.find('.toggle');
 
-            // Обработчики для кнопки "Переименовать"
             renameBtn.on('hover:enter', (e) => {
                 e.stopPropagation();
                 Lampa.Modal.close();
                 setTimeout(() => {
                     openRenameModal(k, label || '', (newName) => {
                         const renamedButtons = getRenamedButtons();
-                        renamedButtons[k] = newName;
+                        if (newName === '') {
+                            renamedButtons[k] = '';
+                        } else {
+                            renamedButtons[k] = newName;
+                        }
                         saveToBoth(RENAME_STORAGE, renamedButtons);
                         
                         if (currentCard && currentCard.length) {
@@ -613,12 +595,12 @@
                 }, 100);
             });
 
-            // Обработчики для кнопок перемещения
             moveUpBtn.on('hover:enter', () => {
                 const prev = row.prev();
                 if (prev.length) {
                     row.insertBefore(prev);
                     saveOrderFromEditor(editorList);
+                    saveOrderAfterMove();
                 }
             });
 
@@ -627,19 +609,17 @@
                 if (next.length) {
                     row.insertAfter(next);
                     saveOrderFromEditor(editorList);
+                    saveOrderAfterMove();
                 }
             });
 
-            // Обработчик для кнопки скрытия/показа
             toggleBtn.on('hover:enter', () => {
                 const newHidden = !row.hasClass('menu-edit-list__item-hidden');
                 row.toggleClass('menu-edit-list__item-hidden', newHidden);
                 row.find('.dot').attr('opacity', newHidden ? 0 : 1);
                 
-                // Обновляем заголовок кнопки
                 toggleBtn.attr('title', newHidden ? 'Показать' : 'Скрыть');
                 
-                // Немедленно сохраняем состояние скрытия
                 const hiddenButtons = getStoredArray(HIDE_STORAGE);
                 const index = hiddenButtons.indexOf(k);
                 if (newHidden) {
@@ -649,7 +629,6 @@
                 }
                 saveToBoth(HIDE_STORAGE, hiddenButtons);
                 
-                // Немедленно применяем к карточке
                 if (currentCard && currentCard.length) {
                     const elements = collectButtons(currentCard, false).elements;
                     if (elements[k] && elements[k].element) {
@@ -658,9 +637,7 @@
                 }
             });
 
-            // Добавляем навигацию с клавиатуры для всех кнопок
             row.on('focusin', function() {
-                // При фокусе на строке, фокусируем первую кнопку (Переименовать)
                 if (!renameBtn.hasClass('focus') && 
                     !moveUpBtn.hasClass('focus') && 
                     !moveDownBtn.hasClass('focus') && 
@@ -669,7 +646,6 @@
                 }
             });
 
-            // Обработка навигации между кнопками в строке
             row.on('navleft', function() {
                 if (toggleBtn.hasClass('focus')) {
                     toggleBtn.removeClass('focus');
@@ -696,25 +672,19 @@
                 }
             });
 
-            // Обработка нажатия Enter на кнопках
             row.on('hover:enter', function(e) {
-                // Если фокус на кнопке "Переименовать"
                 if (renameBtn.hasClass('focus')) {
                     renameBtn.trigger('hover:enter');
                 }
-                // Если фокус на кнопке "Вверх"
                 else if (moveUpBtn.hasClass('focus')) {
                     moveUpBtn.trigger('hover:enter');
                 }
-                // Если фокус на кнопке "Вниз"
                 else if (moveDownBtn.hasClass('focus')) {
                     moveDownBtn.trigger('hover:enter');
                 }
-                // Если фокус на кнопке "Скрыть/Показать"
                 else if (toggleBtn.hasClass('focus')) {
                     toggleBtn.trigger('hover:enter');
                 }
-                // Если ни одна кнопка не в фокусе, фокусируем "Переименовать"
                 else {
                     e.stopPropagation();
                     renameBtn.addClass('focus');
@@ -724,7 +694,6 @@
             editorList.append(row);
         });
 
-        // Добавляем кнопку сброса
         const resetBtn = $(`
             <div class="menu-edit-list__item selector" style="justify-content: center; margin-top: 20px; background: rgba(200, 100, 100, 0.2); border-radius: 5px;">
                 <div class="menu-edit-list__title" style="text-align: center;">Сбросить по умолчанию</div>
@@ -732,12 +701,10 @@
         `);
 
         resetBtn.on('hover:enter', () => {
-            // Очищаем все сохраненные данные
             localStorage.removeItem(ORDER_STORAGE);
             localStorage.removeItem(HIDE_STORAGE);
             localStorage.removeItem(RENAME_STORAGE);
             
-            // Также очищаем через Lampa.Storage если доступен
             if (Lampa.Storage && Lampa.Storage.set) {
                 Lampa.Storage.set(ORDER_STORAGE, []);
                 Lampa.Storage.set(HIDE_STORAGE, []);
@@ -758,9 +725,7 @@
 
         editorList.append(resetBtn);
 
-        // Инициализация навигации при открытии редактора
         setTimeout(() => {
-            // Фокусируем первую строку и первую кнопку в ней
             const firstRow = editorList.find('.menu-edit-list__item').first();
             if (firstRow.length) {
                 const firstRenameBtn = firstRow.find('.menu-edit-list__rename');
@@ -770,7 +735,6 @@
             }
         }, 100);
 
-        // Открываем модальное окно редактора
         Lampa.Modal.open({
             title: 'Редактировать кнопки',
             html: editorList,
@@ -793,6 +757,19 @@
                 }, 100);
             }
         });
+    }
+
+    function checkAndFixOrder() {
+        const savedOrder = getStoredArray(ORDER_STORAGE);
+        const renamedButtons = getRenamedButtons();
+        
+        const hasEmptyNamedButtons = savedOrder.some(k => renamedButtons[k] === '');
+        
+        if (hasEmptyNamedButtons && currentCard && currentCard.length) {
+            setTimeout(() => {
+                rebuildCard(currentCard);
+            }, 100);
+        }
     }
 
     function startEditorFromSettings() {
@@ -836,9 +813,11 @@
                 if (!container) return;
                 currentCard = container;
                 
-                // Небольшая задержка чтобы все кнопки успели загрузиться
                 setTimeout(() => {
                     rebuildCard(container);
+                    setTimeout(() => {
+                        checkAndFixOrder();
+                    }, 200);
                 }, 300);
             }
         });
@@ -850,7 +829,6 @@
     };
 
     function setupSettings() {
-        // Сначала проверяем существующие настройки
         const existingSettings = localStorageGet('cardbtn_showall', false);
         
         Lampa.SettingsApi.addComponent({
@@ -871,17 +849,14 @@
                 description: 'Требуется перезагрузить приложение после включения'
             },
             onChange: (value) => {
-                // Сохраняем в localStorage
                 localStorageSet('cardbtn_showall', value);
                 
-                // Также сохраняем в Lampa.Storage
                 if (Lampa.Storage && Lampa.Storage.set) {
                     Lampa.Storage.set('cardbtn_showall', value);
                 }
                 
                 Lampa.Settings.update();
                 
-                // Перезагружаем текущую карточку если она открыта
                 if (currentCard && currentCard.length) {
                     setTimeout(() => {
                         rebuildCard(currentCard);
@@ -889,7 +864,6 @@
                 }
             },
             onRender: function(element, component) {
-                // Устанавливаем текущее значение из localStorage
                 const currentValue = localStorageGet('cardbtn_showall', false);
                 const checkbox = element.find('input[type="checkbox"]');
                 if (checkbox.length) {
@@ -898,7 +872,6 @@
             }
         });
 
-        // Проверяем включен ли плагин
         const isEnabled = localStorageGet('cardbtn_showall', false);
         
         if (isEnabled) {
@@ -959,14 +932,13 @@
 
     const pluginInfo = {
         type: "other",
-        version: "1.1.1",
+        version: "1.1.4",
         author: '@custom',
         name: "Кастомные кнопки карточки",
-        description: "Управление кнопками действий в карточке фильма/сериала",
+        description: "Управление кнопками действий в карточке фильма/сериала. Возможность переименования, скрытия, изменения порядка. Поддержка пустых имен для кнопок.",
         component: "cardbtn"
     };
 
-    // Загружает плагин (манифест, настройки, обработчики)
     function loadPlugin() {
       Lampa.Manifest.plugins = pluginInfo;
       SettingsConfig.run();
@@ -975,7 +947,6 @@
       }
     }
 
-    // Инициализация плагина при готовности приложения
     function init() {
       window.plugin_cardbtn_ready = true;
       if (window.appready) loadPlugin();
@@ -989,5 +960,3 @@
     if (!window.plugin_cardbtn_ready) init();
 
 })();
-
-
