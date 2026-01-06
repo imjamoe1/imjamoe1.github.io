@@ -2,7 +2,7 @@
   'use strict';
 
     // Настройки плагина
-    const API_KEY = '2a4a0808-81a3-40ae-b0d3-e11335ede616';
+    const API_KEY = '14342b35-714b-449d-bf10-30d0d9ac22e6';
     const TMDB_API_KEY = '4ef0d7355d9ffb5151e987764708ce96';
     const TMDB_API_URL = 'https://api.themoviedb.org/3/';
     const KP_RATING_URL = 'https://rating.kinopoisk.ru/';
