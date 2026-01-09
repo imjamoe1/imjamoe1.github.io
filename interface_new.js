@@ -1159,7 +1159,6 @@
 						flex-wrap: wrap;
 						min-height: 2.5em;
 						font-size: 1.2em;
-						font-weight: bold;
 					}
 					.new-interface-info__details {
 						margin-bottom: 1.6em;
@@ -1219,6 +1218,9 @@
 					.new-interface .full-start__background.active {
 						opacity: 1;
 					}
+                    body:not(.menu--open) .new-interface .full-start__background {
+                        mask-image: none;
+                    }
 					/* --- Rating Box Styles --- */
 					.new-interface .full-start__rate {
 						font-size: 1.2em;
