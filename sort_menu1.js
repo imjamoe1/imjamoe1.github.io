@@ -262,7 +262,7 @@
                     uk: 'Температура',    
                     zh: '温度'    
                 },
-                head_action_weather_widget: {    
+                head_action_weather_icon: {    
                     ru: 'Погода',    
                     en: 'Weather',    
                     uk: 'Погода',    
@@ -438,8 +438,8 @@
                     titleKey = 'head_action_extensions';
                 } else if (mainClass.includes('weather-temp')) {    
                     titleKey = 'head_action_weather_temp';
-                } else if (mainClass.includes('weather-widget')) {    
-                    titleKey = 'head_action_weather_widget';
+                } else if (mainClass.includes('weather-icon')) {    
+                    titleKey = 'head_action_weather_icon';
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
                 }
@@ -567,7 +567,7 @@
                         c.includes('extensions') ||
                         c.includes('exit') ||
                         c.includes('weather-temp') || 
-                        c.includes('weather-widget')
+                        c.includes('weather-icon')
                     ) || ''
 
                     // Если это head__settings без new-year__button, то это просто head__settings
@@ -789,7 +789,7 @@
                         c.includes('extensions') ||
                         c.includes('exit') ||
                         c.includes('weather-temp') || 
-                        c.includes('weather-widget')                        
+                        c.includes('weather-icon')                        
                     )
 
                     if (!uniqueClass) {
