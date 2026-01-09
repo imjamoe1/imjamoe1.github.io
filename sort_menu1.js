@@ -255,7 +255,19 @@
                     en: 'Additional Menu',    
                     uk: 'Додаткове меню',    
                     zh: '附加菜单'    
-                },   
+                },
+                head_action_weather_temp: {    
+                    ru: 'Температура',    
+                    en: 'Temperature',    
+                    uk: 'Температура',    
+                    zh: '温度'    
+                },
+                head_action_weather_widget: {    
+                    ru: 'Погода',    
+                    en: 'Weather',    
+                    uk: 'Погода',    
+                    zh: '天气'    
+                },
                 no_name: {    
                     ru: 'Элемент без названия',    
                     en: 'Unnamed element',    
@@ -424,6 +436,10 @@
                     titleKey = 'head_action_exit';
                 } else if (mainClass.includes('extensions')) {    
                     titleKey = 'head_action_extensions';
+                } else if (mainClass.includes('weather-temp')) {    
+                    titleKey = 'head_action_weather_temp';
+                } else if (mainClass.includes('weather-widget')) {    
+                    titleKey = 'head_action_weather_widget';
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
                 }
@@ -549,7 +565,9 @@
                         c.includes('m-reload-screen') ||
                         c.includes('reload') ||
                         c.includes('extensions') ||
-                        c.includes('exit')                            
+                        c.includes('exit') ||
+                        c.includes('weather-temp') || 
+                        c.includes('weather-widget')
                     ) || ''
 
                     // Если это head__settings без new-year__button, то это просто head__settings
@@ -769,7 +787,9 @@
                         c.includes('m-reload-screen') ||
                         c.includes('reload') ||
                         c.includes('extensions') ||
-                        c.includes('exit')
+                        c.includes('exit') ||
+                        c.includes('weather-temp') || 
+                        c.includes('weather-widget')                        
                     )
 
                     if (!uniqueClass) {
