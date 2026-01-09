@@ -1,9 +1,7 @@
 (function() {
     'use strict';
 
-    var LAMPAC_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M20.331 14.644l-13.794-13.831 17.55 10.075zM2.938 0c-0.813 0.425-1.356 1.2-1.356 2.206v27.581c0 1.006 0.544 1.781 1.356 2.206l16.038-16zM29.512 14.1l-3.681-2.131-4.106 4.031 4.106 4.031 3.756-2.131c1.125-0.893 1.125-2.906-0.075-3.8zM6.538 31.188l17.55-10.075-3.756-3.756z" fill="currentColor"></path></svg>';
-    
-    var EXCLUDED_CLASSES = ['button--play', 'button--edit-order', 'button--folder'];
+    var EXCLUDED_CLASSES = ['button--play', 'button--edit-order', 'button--color'];
     
     var DEFAULT_GROUPS = [
         { name: 'online', patterns: ['online', 'lampac', 'modss', 'showy'], label: 'Онлайн' },
@@ -37,13 +35,13 @@
         return btn;
     }
 
-    function getButtonsInFolders() {
-        var folders = getFolders();
-        var buttonsInFolders = [];
-        folders.forEach(function(folder) {
-            buttonsInFolders = buttonsInFolders.concat(folder.buttons);
+    function getButtonsInColors() {
+        var colors = getColors();
+        var buttonsInColors = [];
+        colors.forEach(function(color) {
+            buttonsInColors = buttonsInColors.concat(color.buttons);
         });
-        return buttonsInFolders;
+        return buttonsInColors;
     }
 
     // ========== ХРАНЕНИЕ ДАННЫХ ==========
@@ -72,12 +70,12 @@
         Lampa.Storage.set('button_hidden', hidden);
     }
 
-    function getFolders() {
-        return Lampa.Storage.get('button_folders', []);
+    function getColors() {
+        return Lampa.Storage.get('button_colors', []);
     }
 
-    function setFolders(folders) {
-        Lampa.Storage.set('button_folders', folders);
+    function setColors(colors) {
+        Lampa.Storage.set('button_colors', colors);
     }
 
     function getViewMode() {
@@ -90,7 +88,6 @@
 
     function getRenamedButtons() {
         var renamed = Lampa.Storage.get('button_renamed', {});
-        // Проверяем что это объект
         if (typeof renamed !== 'object' || renamed === null) {
             renamed = {};
         }
@@ -98,12 +95,152 @@
     }
 
     function setRenamedButtons(renamed) {
-        // Сохраняем как объект
         if (typeof renamed === 'object' && renamed !== null) {
             Lampa.Storage.set('button_renamed', renamed);
         } else {
             Lampa.Storage.set('button_renamed', {});
         }
+    }
+
+    function getColoredLogos() {
+        return Lampa.Storage.get('buttons_colored_logos', false);
+    }
+
+    function setColoredLogos(enabled) {
+        Lampa.Storage.set('buttons_colored_logos', enabled);
+        applyColoredIcons();
+    }
+
+    // ========== ФУНКЦИИ ДЛЯ ЦВЕТНЫХ ИКОНОК ==========
+
+    function applyColoredIcons() {
+        if (!currentContainer) return;
+        
+        var coloredLogos = getColoredLogos();
+        
+        if (coloredLogos) {
+            // Включаем цветные иконки
+            replaceIcons();
+            
+            // Наблюдатель за изменениями DOM
+            setupIconObserver();
+        } else {
+            // Выключаем цветные иконки - возвращаем оригинальные
+            restoreOriginalIcons();
+            
+            // Останавливаем наблюдение
+            if (window.iconObserver) {
+                window.iconObserver.disconnect();
+                window.iconObserver = null;
+            }
+        }
+    }
+
+    function replaceIcons() {
+        if (!currentContainer) return;
+        
+        // Замена онлайн-иконок
+        currentContainer.find('.full-start__button.view--online svg').each(function() {
+            var svg = $(this);
+            if (!svg.attr('data-replaced')) {
+                var newSvg = `
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' data-replaced='true'>
+                        <path fill='#2196f3' d='M20.331 14.644l-13.794-13.831 17.55 10.075zM2.938 0c-0.813 0.425-1.356 1.2-1.356 2.206v27.581c0 1.006 0.544 1.781 1.356 2.206l16.038-16zM29.512 14.1l-3.681-2.131-4.106 4.031 4.106 4.031 3.756-2.131c1.125-0.893 1.125-2.906-0.075-3.8zM6.538 31.188l17.55-10.075-3.756-3.756z'/>
+                    </svg>
+                `;
+                svg.replaceWith(newSvg);
+            }
+        });
+
+        // Замена торрент-иконок
+        currentContainer.find('.full-start__button.view--torrent svg').each(function() {
+            var svg = $(this);
+            if (!svg.attr('data-replaced')) {
+                var newSvg = `
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 42 42' width='48' height='48' data-replaced='true'>
+                        <path fill='#4caf50' fill-rule='evenodd' d='M23.501,44.125c11.016,0,20-8.984,20-20 c0-11.015-8.984-20-20-20c-11.016,0-20,8.985-20,20C3.501,35.141,12.485,44.125,23.501,44.125z' clip-rule='evenodd'/>
+                        <path fill='#fff' fill-rule='evenodd' d='M43.252,27.114C39.718,25.992,38.055,19.625,34,11l-7,1.077 c1.615,4.905,8.781,16.872,0.728,18.853C20.825,32.722,17.573,20.519,15,14l-8,2l10.178,27.081c1.991,0.67,4.112,1.044,6.323,1.044 c0.982,0,1.941-0.094,2.885-0.232l-4.443-8.376c6.868,1.552,12.308-0.869,12.962-6.203c1.727,2.29,4.089,3.183,6.734,3.172 C42.419,30.807,42.965,29.006,43.252,27.114z' clip-rule='evenodd'/>
+                    </svg>
+                `;
+                svg.replaceWith(newSvg);
+            }
+        });
+
+        // Замена трейлер-иконок
+        currentContainer.find('.full-start__button.view--trailer svg').each(function() {
+            var svg = $(this);
+            if (!svg.attr('data-replaced')) {
+                var newSvg = `
+                    <svg height='70' viewBox='0 0 80 70' fill='#f44336' xmlns='http://www.w3.org/2000/svg' data-replaced='true'>
+                        <path fill-rule='evenodd' clip-rule='evenodd' d='M71.2555 2.08955C74.6975 3.2397 77.4083 6.62804 78.3283 10.9306C80 18.7291 80 35 80 35C80 35 80 51.2709 78.3283 59.0694C77.4083 63.372 74.6975 66.7603 71.2555 67.9104C65.0167 70 40 70 40 70C40 70 14.9833 70 8.74453 67.9104C5.3025 66.7603 2.59172 63.372 1.67172 59.0694C0 51.2709 0 35 0 35C0 35 0 18.7291 1.67172 10.9306C2.59172 6.62804 5.3025 3.2395 8.74453 2.08955C14.9833 0 40 0 40 0C40 0 65.0167 0 71.2555 2.08955Z'/>
+                        <path fill='white' d='M55.5909 35.0004L29.9773 49.5714V20.4286L55.5909 35.0004Z'/>
+                    </svg>
+                `;
+                svg.replaceWith(newSvg);
+            }
+        });
+    }
+
+    function restoreOriginalIcons() {
+        if (!currentContainer) return;
+        
+        // Удаляем замененные иконки
+        currentContainer.find('svg[data-replaced="true"]').each(function() {
+            var $this = $(this);
+            var $button = $this.closest('.full-start__button');
+            
+            // Находим оригинальную иконку
+            var btnId = getButtonId($button);
+            var originalBtn = findButton(btnId);
+            
+            if (originalBtn) {
+                var originalIcon = originalBtn.find('svg').first();
+                if (originalIcon.length) {
+                    $this.replaceWith(originalIcon.clone());
+                }
+            }
+        });
+    }
+
+    function setupIconObserver() {
+        if (window.iconObserver) {
+            window.iconObserver.disconnect();
+        }
+        
+        // Наблюдатель за изменениями DOM для обновления иконок
+        var observer = new MutationObserver(function(mutations) {
+            var shouldUpdate = false;
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        var node = mutation.addedNodes[i];
+                        if (node.nodeType === 1) {
+                            var $node = $(node);
+                            if ($node.hasClass('full-start__button') || 
+                                $node.find('.full-start__button').length > 0) {
+                                shouldUpdate = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+            
+            if (shouldUpdate) {
+                setTimeout(function() {
+                    if (getColoredLogos()) {
+                        replaceIcons();
+                    }
+                }, 100);
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        window.iconObserver = observer;
     }
 
     // ========== РАБОТА С КНОПКАМИ ==========
@@ -152,11 +289,9 @@
         buttons.forEach(function(btn) {
             var id = getButtonId(btn);
             if (renamed.hasOwnProperty(id)) {
-                // Пустая строка - удаляем текст
                 if (renamed[id] === '') {
                     btn.addClass('button-empty');
                     btn.find('span').remove();
-                    // Удаляем текстовые узлы
                     btn.contents().filter(function() {
                         return this.nodeType === 3 && this.textContent.trim() !== '';
                     }).remove();
@@ -166,7 +301,6 @@
                     if (span.length) {
                         span.text(renamed[id]);
                     } else {
-                        // Если нет span, создаем его
                         var icon = btn.find('svg').first();
                         if (icon.length) {
                             icon.after('<span>' + renamed[id] + '</span>');
@@ -205,7 +339,7 @@
     }
 
     function categorizeButtons(container) {
-        var allButtons = container.find('.full-start__button').not('.button--edit-order, .button--folder, .button--play');
+        var allButtons = container.find('.full-start__button').not('.button--edit-order, .button--color, .button--play');
         
         var categories = {
             online: [],
@@ -224,14 +358,6 @@
             if (isExcluded($btn)) return;
 
             var type = getButtonType($btn);
-            
-            // Замена иконки для lampac
-            if (type === 'online' && $btn.hasClass('lampac--button') && !$btn.hasClass('modss--button') && !$btn.hasClass('showy--button')) {
-                var svgElement = $btn.find('svg').first();
-                if (svgElement.length && !svgElement.hasClass('modss-online-icon')) {
-                    svgElement.replaceWith(LAMPAC_ICON);
-                }
-            }
             
             if (categories[type]) {
                 categories[type].push($btn);
@@ -258,7 +384,6 @@
             }
         });
         
-        // Сортировка приоритетных кнопок
         priority.sort(function(a, b) {
             var idA = getButtonId(a);
             var idB = getButtonId(b);
@@ -269,7 +394,6 @@
             return 0;
         });
         
-        // Если нет пользовательского порядка, сортируем по типам
         if (!customOrder.length) {
             regular.sort(function(a, b) {
                 var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
@@ -284,7 +408,6 @@
             return priority.concat(regular);
         }
 
-        // Сортировка по пользовательскому порядку
         var sorted = [];
         var remaining = regular.slice();
 
@@ -330,7 +453,6 @@
             openEditDialog();
         });
 
-        // Проверяем настройку и скрываем кнопку если редактор выключен
         if (Lampa.Storage.get('buttons_editor_enabled') === false) {
             btn.hide();
         }
@@ -347,7 +469,6 @@
         var btnId = getButtonId(btn);
         var renamedButtons = getRenamedButtons();
 
-        // Возвращаем переименованное название если оно есть
         if (renamedButtons.hasOwnProperty(btnId)) {
             if (renamedButtons[btnId] === '') {
                 return '<span style="opacity:0.5"><i>(без текста)</i></span>';
@@ -397,385 +518,7 @@
         return text;
     }
 
-    // ========== ПАПКИ ==========
-
-    function createFolderButton(folder) {
-        var firstBtnId = folder.buttons[0];
-        var firstBtn = findButton(firstBtnId);
-        var icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-                '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
-            '</svg>';
-        
-        if (firstBtn) {
-            var btnIcon = firstBtn.find('svg').first();
-            if (btnIcon.length) {
-                icon = btnIcon.prop('outerHTML');
-            }
-        }
-        
-        var hasName = folder.name && folder.name.trim();
-        var btn = $('<div class="full-start__button selector button--folder' + (!hasName ? ' folder--no-name' : '') + 
-                    '" data-folder-id="' + folder.id + '">' +
-            icon +
-            (hasName ? '<span>' + folder.name + '</span>' : '') +
-        '</div>');
-
-        btn.on('hover:enter', function() {
-            openFolderMenu(folder);
-        });
-
-        return btn;
-    }
-
-    function openFolderMenu(folder) {
-        var items = [];
-        
-        folder.buttons.forEach(function(btnId) {
-            var btn = findButton(btnId);
-            if (btn) {
-                var displayName = getButtonDisplayName(btn, allButtonsOriginal);
-                var iconElement = btn.find('svg').first();
-                var icon = iconElement.length ? iconElement.prop('outerHTML') : '';
-                var subtitle = btn.attr('data-subtitle') || '';
-                
-                var item = {
-                    title: displayName.replace(/<[^>]*>/g, ''),
-                    button: btn,
-                    btnId: btnId
-                };
-                
-                if (icon) {
-                    item.template = 'selectbox_icon';
-                    item.icon = icon;
-                }
-                
-                if (subtitle) {
-                    item.subtitle = subtitle;
-                }
-                
-                items.push(item);
-            }
-        });
-
-        Lampa.Select.show({
-            title: folder.name || 'Папка',
-            items: items,
-            onSelect: function(item) {
-                item.button.trigger('hover:enter');
-            },
-            onBack: function() {
-                Lampa.Controller.toggle('full_start');
-            }
-        });
-    }
-
-    function openFolderEditDialog(folder) {
-        var list = $('<div class="menu-edit-list"></div>');
-        
-        folder.buttons.forEach(function(btnId) {
-            var btn = findButton(btnId);
-            if (btn) {
-                var displayName = getButtonDisplayName(btn, allButtonsOriginal);
-                var iconElement = btn.find('svg').first();
-                var icon = iconElement.length ? iconElement.clone() : $('<svg></svg>');
-
-                var item = $('<div class="menu-edit-list__item">' +
-                    '<div class="menu-edit-list__icon"></div>' +
-                    '<div class="menu-edit-list__title">' + displayName + '</div>' +
-                    '<div class="menu-edit-list__move move-up selector">' +
-                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__move move-down selector">' +
-                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<path d="M2 2L11 11L20 2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__rename selector">' +
-                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 18" fill="none"><use xlink:href="#sprite-edit"></use></svg>' +
-                    '</div>' +
-                '</div>');
-
-                item.find('.menu-edit-list__icon').append(icon);
-                item.data('btnId', btnId);
-
-                item.find('.move-up').on('hover:enter', function() {
-                    var prev = item.prev();
-                    if (prev.length) {
-                        item.insertBefore(prev);
-                        saveFolderButtonOrder(folder, list);
-                    }
-                });
-
-                item.find('.move-down').on('hover:enter', function() {
-                    var next = item.next();
-                    if (next.length) {
-                        item.insertAfter(next);
-                        saveFolderButtonOrder(folder, list);
-                    }
-                });
-
-                item.find('.menu-edit-list__rename').on('hover:enter', function() {
-                    var currentName = getButtonDisplayName(btn, allButtonsOriginal).replace(/<[^>]*>/g, '');
-                    Lampa.Modal.close();
-                    setTimeout(function() {
-                        Lampa.Input.edit({
-                            free: true,
-                            title: 'Новое название кнопки',
-                            nosave: true,
-                            value: currentName,
-                            nomic: true,
-                            placeholder: 'Оставьте пустым для удаления текста'
-                        }, function(newName) {
-                            // Ключевое исправление: newName может быть null при отмене или пустой строкой
-                            // Принимаем любую строку, включая пустую
-                            if (newName !== null) {
-                                var renamedButtons = getRenamedButtons();
-                                renamedButtons[btnId] = newName.trim();
-                                setRenamedButtons(renamedButtons);
-                                Lampa.Noty.show('Кнопка переименована');
-                            }
-                            openFolderEditDialog(folder);
-                        });
-                    }, 100);
-                });
-
-                list.append(item);
-            }
-        });
-
-        Lampa.Modal.open({
-            title: 'Порядок кнопок в папке',
-            html: list,
-            size: 'small',
-            scroll_to_center: true,
-            onBack: function() {
-                Lampa.Modal.close();
-                updateFolderIcon(folder);
-                openEditDialog();
-            }
-        });
-    }
-
-    function saveFolderButtonOrder(folder, list) {
-        var newOrder = [];
-        list.find('.menu-edit-list__item').each(function() {
-            var btnId = $(this).data('btnId');
-            newOrder.push(btnId);
-        });
-        
-        folder.buttons = newOrder;
-        
-        var folders = getFolders();
-        for (var i = 0; i < folders.length; i++) {
-            if (folders[i].id === folder.id) {
-                folders[i].buttons = newOrder;
-                break;
-            }
-        }
-        setFolders(folders);
-        
-        updateFolderIcon(folder);
-    }
-
-    function updateFolderIcon(folder) {
-        if (!folder.buttons || folder.buttons.length === 0) return;
-        
-        var folderBtn = currentContainer.find('.button--folder[data-folder-id="' + folder.id + '"]');
-        if (folderBtn.length) {
-            var firstBtnId = folder.buttons[0];
-            var firstBtn = findButton(firstBtnId);
-            
-            if (firstBtn) {
-                var iconElement = firstBtn.find('svg').first();
-                if (iconElement.length) {
-                    var btnIcon = iconElement.clone();
-                    folderBtn.find('svg').replaceWith(btnIcon);
-                }
-            } else {
-                var defaultIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-                    '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
-                '</svg>';
-                folderBtn.find('svg').replaceWith(defaultIcon);
-            }
-        }
-    }
-
-    function createFolder(name, buttonIds) {
-        var folders = getFolders();
-        var folder = {
-            id: 'folder_' + Date.now(),
-            name: name,
-            buttons: buttonIds
-        };
-        folders.push(folder);
-        setFolders(folders);
-        return folder;
-    }
-
-    function deleteFolder(folderId) {
-        var folders = getFolders();
-        folders = folders.filter(function(f) { return f.id !== folderId; });
-        setFolders(folders);
-    }
-
     // ========== ДИАЛОГИ ==========
-
-    function openCreateFolderDialog() {
-        Lampa.Input.edit({
-            free: true,
-            title: 'Название папки',
-            nosave: true,
-            value: '',
-            nomic: true,
-            placeholder: 'Оставьте пустым для папки без названия'
-        }, function(folderName) {
-            // Ключевое исправление: принимаем любую строку, включая пустую
-            if (folderName !== null) {
-                openSelectButtonsDialog(folderName.trim());
-            } else {
-                openEditDialog();
-            }
-        });
-    }
-
-    function openSelectButtonsDialog(folderName) {
-        var selectedButtons = [];
-        var list = $('<div class="menu-edit-list"></div>');
-        
-        var buttonsInFolders = getButtonsInFolders();
-        var sortedButtons = sortByCustomOrder(allButtonsOriginal.slice());
-
-        sortedButtons.forEach(function(btn) {
-            var btnId = getButtonId(btn);
-            
-            if (buttonsInFolders.indexOf(btnId) !== -1) {
-                return;
-            }
-            
-            var displayName = getButtonDisplayName(btn, sortedButtons);
-            var iconElement = btn.find('svg').first();
-            var icon = iconElement.length ? iconElement.clone() : $('<svg></svg>');
-
-            var item = $('<div class="menu-edit-list__item">' +
-                '<div class="menu-edit-list__icon"></div>' +
-                '<div class="menu-edit-list__title">' + displayName + '</div>' +
-                '<div class="menu-edit-list__toggle selector">' +
-                    '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                        '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
-                        '<path d="M7.44873 12.9658L10.8179 16.3349L18.1269 9.02588" stroke="currentColor" stroke-width="3" class="dot" opacity="0" stroke-linecap="round"/>' +
-                    '</svg>' +
-                '</div>' +
-            '</div>');
-
-            item.find('.menu-edit-list__icon').append(icon);
-
-            item.find('.menu-edit-list__toggle').on('hover:enter', function() {
-                var index = selectedButtons.indexOf(btnId);
-                if (index !== -1) {
-                    selectedButtons.splice(index, 1);
-                    item.find('.dot').attr('opacity', '0');
-                } else {
-                    selectedButtons.push(btnId);
-                    item.find('.dot').attr('opacity', '1');
-                }
-            });
-
-            list.append(item);
-        });
-
-        var confirmText = folderName && folderName.trim() ? 
-            'Создать папку "' + folderName + '"' : 
-            'Создать папку без названия';
-        
-        var createBtn = $('<div class="selector folder-create-confirm">' +
-            '<div style="text-align: center; padding: 1em;">' + confirmText + '</div>' +
-        '</div>');
-        
-        createBtn.on('hover:enter', function() {
-            if (selectedButtons.length < 2) {
-                Lampa.Noty.show('Выберите минимум 2 кнопки');
-                return;
-            }
-
-            var folder = createFolder(folderName, selectedButtons);
-            
-            var itemOrder = getItemOrder();
-            
-            if (itemOrder.length === 0) {
-                currentButtons.forEach(function(btn) {
-                    itemOrder.push({
-                        type: 'button',
-                        id: getButtonId(btn)
-                    });
-                });
-            }
-            
-            var folderAdded = false;
-            
-            for (var i = 0; i < selectedButtons.length; i++) {
-                var btnId = selectedButtons[i];
-                
-                for (var j = 0; j < itemOrder.length; j++) {
-                    if (itemOrder[j].type === 'button' && itemOrder[j].id === btnId) {
-                        if (!folderAdded) {
-                            itemOrder[j] = {
-                                type: 'folder',
-                                id: folder.id
-                            };
-                            folderAdded = true;
-                        } else {
-                            itemOrder.splice(j, 1);
-                            j--;
-                        }
-                        break;
-                    }
-                }
-                
-                for (var k = 0; k < currentButtons.length; k++) {
-                    if (getButtonId(currentButtons[k]) === btnId) {
-                        currentButtons.splice(k, 1);
-                        break;
-                    }
-                }
-            }
-            
-            if (!folderAdded) {
-                itemOrder.push({
-                    type: 'folder',
-                    id: folder.id
-                });
-            }
-            
-            setItemOrder(itemOrder);
-            
-            Lampa.Modal.close();
-            var notifyText = folderName && folderName.trim() ? 
-                'Папка "' + folderName + '" создана' : 
-                'Папка без названия создана';
-            Lampa.Noty.show(notifyText);
-            
-            if (currentContainer) {
-                currentContainer.data('buttons-processed', false);
-                reorderButtons(currentContainer);
-            }
-            refreshController();
-        });
-
-        list.append(createBtn);
-
-        Lampa.Modal.open({
-            title: 'Выберите кнопки для папки',
-            html: list,
-            size: 'medium',
-            scroll_to_center: true,
-            onBack: function() {
-                Lampa.Modal.close();
-                openEditDialog();
-            }
-        });
-    }
 
     function openEditDialog() {
         if (currentContainer) {
@@ -793,14 +536,14 @@
             allButtons = sortByCustomOrder(allButtons);
             allButtonsCache = allButtons;
             
-            var folders = getFolders();
-            var buttonsInFolders = [];
-            folders.forEach(function(folder) {
-                buttonsInFolders = buttonsInFolders.concat(folder.buttons);
+            var colors = getColors();
+            var buttonsInColors = [];
+            colors.forEach(function(color) {
+                buttonsInColors = buttonsInColors.concat(color.buttons);
             });
             
             var filteredButtons = allButtons.filter(function(btn) {
-                return buttonsInFolders.indexOf(getButtonId(btn)) === -1;
+                return buttonsInColors.indexOf(getButtonId(btn)) === -1;
             });
             
             currentButtons = filteredButtons;
@@ -808,7 +551,7 @@
         
         var list = $('<div class="menu-edit-list"></div>');
         var hidden = getHiddenButtons();
-        var folders = getFolders();
+        var colors = getColors();
         var itemOrder = getItemOrder();
 
         // Добавляем переключатель режимов отображения
@@ -835,14 +578,29 @@
         
         list.append(modeBtn);
 
-        function createFolderItem(folder) {
-            var item = $('<div class="menu-edit-list__item folder-item">' +
+        // Добавляем переключатель цветных логотипов
+        var coloredLogos = getColoredLogos();
+        var logosBtn = $('<div class="selector colored-logos-switch">' +
+            '<div style="text-align: center; padding: 1em;">Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет') + '</div>' +
+            '</div>');
+        
+        logosBtn.on('hover:enter', function() {
+            var newValue = !coloredLogos;
+            setColoredLogos(newValue);
+            coloredLogos = newValue;
+            $(this).find('div').text('Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет'));
+        });
+        
+        list.append(logosBtn);
+
+        function createColorItem(color) {
+            var item = $('<div class="menu-edit-list__item color-item">' +
                 '<div class="menu-edit-list__icon">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
                         '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
                     '</svg>' +
                 '</div>' +
-                '<div class="menu-edit-list__title">' + (folder.name || 'Папка') + ' <span style="opacity:0.5">(' + folder.buttons.length + ')</span></div>' +
+                '<div class="menu-edit-list__title">' + (color.name || 'Цвет') + ' <span style="opacity:0.5">(' + color.buttons.length + ')</span></div>' +
                 '<div class="menu-edit-list__move move-up selector">' +
                     '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
                         '<path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
@@ -874,19 +632,19 @@
                 '</div>' +
             '</div>');
 
-            item.data('folderId', folder.id);
-            item.data('itemType', 'folder');
+            item.data('colorId', color.id);
+            item.data('itemType', 'color');
 
             item.find('.menu-edit-list__edit-content').on('hover:enter', function() {
                 Lampa.Modal.close();
                 setTimeout(function() {
-                    openFolderEditDialog(folder);
+                    openColorEditDialog(color);
                 }, 100);
             });
 
             item.find('.move-up').on('hover:enter', function() {
                 var prev = item.prev();
-                while (prev.length && (prev.hasClass('menu-edit-list__create-folder') || prev.hasClass('viewmode-switch'))) {
+                while (prev.length && (prev.hasClass('colored-logos-switch') || prev.hasClass('viewmode-switch'))) {
                     prev = prev.prev();
                 }
                 if (prev.length) {
@@ -897,10 +655,10 @@
 
             item.find('.move-down').on('hover:enter', function() {
                 var next = item.next();
-                while (next.length && next.hasClass('folder-reset-button')) {
+                while (next.length && next.hasClass('color-reset-button')) {
                     next = next.next();
                 }
-                if (next.length && !next.hasClass('folder-reset-button')) {
+                if (next.length && !next.hasClass('color-reset-button')) {
                     item.insertAfter(next);
                     saveItemOrder();
                 }
@@ -910,21 +668,20 @@
                 Lampa.Modal.close();
                 setTimeout(function() {
                     Lampa.Input.edit({
-                        title: 'Переименовать папку',
-                        value: folder.name || '',
+                        title: 'Переименовать цвет',
+                        value: color.name || '',
                         free: true,
                         nosave: true,
                         nomic: true,
-                        placeholder: 'Оставьте пустым для папки без названия'
+                        placeholder: 'Оставьте пустым для цвета без названия'
                     }, function(newName) {
-                        // Ключевое исправление: принимаем любую строку, включая пустую
                         if (newName !== null) {
-                            var folders = getFolders();
-                            var targetFolder = folders.find(function(f) { return f.id === folder.id; });
-                            if (targetFolder) {
-                                targetFolder.name = newName.trim();
-                                setFolders(folders);
-                                Lampa.Noty.show('Папка переименована');
+                            var colors = getColors();
+                            var targetColor = colors.find(function(f) { return f.id === color.id; });
+                            if (targetColor) {
+                                targetColor.name = newName.trim();
+                                setColors(colors);
+                                Lampa.Noty.show('Цвет переименован');
                             }
                         }
                         openEditDialog();
@@ -933,27 +690,27 @@
             });
 
             item.find('.menu-edit-list__delete').on('hover:enter', function() {
-                var folderId = folder.id;
-                var folderButtons = folder.buttons.slice();
+                var colorId = color.id;
+                var colorButtons = color.buttons.slice();
                 
-                deleteFolder(folderId);
+                deleteColor(colorId);
                 
                 var itemOrder = getItemOrder();
                 var newItemOrder = [];
                 
                 for (var i = 0; i < itemOrder.length; i++) {
-                    if (itemOrder[i].type === 'folder' && itemOrder[i].id === folderId) {
+                    if (itemOrder[i].type === 'color' && itemOrder[i].id === colorId) {
                         continue;
                     }
                     if (itemOrder[i].type === 'button') {
-                        var isInFolder = false;
-                        for (var j = 0; j < folderButtons.length; j++) {
-                            if (itemOrder[i].id === folderButtons[j]) {
-                                isInFolder = true;
+                        var isInColor = false;
+                        for (var j = 0; j < colorButtons.length; j++) {
+                            if (itemOrder[i].id === colorButtons[j]) {
+                                isInColor = true;
                                 break;
                             }
                         }
-                        if (isInFolder) {
+                        if (isInColor) {
                             continue;
                         }
                     }
@@ -966,8 +723,8 @@
                 var newCustomOrder = [];
                 for (var i = 0; i < customOrder.length; i++) {
                     var found = false;
-                    for (var j = 0; j < folderButtons.length; j++) {
-                        if (customOrder[i] === folderButtons[j]) {
+                    for (var j = 0; j < colorButtons.length; j++) {
+                        if (customOrder[i] === colorButtons[j]) {
                             found = true;
                             break;
                         }
@@ -979,7 +736,7 @@
                 setCustomOrder(newCustomOrder);
                 
                 item.remove();
-                Lampa.Noty.show('Папка удалена');
+                Lampa.Noty.show('Цвет удален');
                 
                 setTimeout(function() {
                     if (currentContainer) {
@@ -1032,10 +789,10 @@
 
             item.find('.move-up').on('hover:enter', function() {
                 var prev = item.prev();
-                while (prev.length && (prev.hasClass('menu-edit-list__create-folder') || prev.hasClass('viewmode-switch'))) {
+                while (prev.length && (prev.hasClass('colored-logos-switch') || prev.hasClass('viewmode-switch'))) {
                     prev = prev.prev();
                 }
-                if (prev.length && !prev.hasClass('menu-edit-list__create-folder')) {
+                if (prev.length) {
                     item.insertBefore(prev);
                     var btnIndex = currentButtons.indexOf(btn);
                     if (btnIndex > 0) {
@@ -1048,10 +805,10 @@
 
             item.find('.move-down').on('hover:enter', function() {
                 var next = item.next();
-                while (next.length && next.hasClass('folder-reset-button')) {
+                while (next.length && next.hasClass('color-reset-button')) {
                     next = next.next();
                 }
-                if (next.length && !next.hasClass('folder-reset-button')) {
+                if (next.length && !next.hasClass('color-reset-button')) {
                     item.insertAfter(next);
                     var btnIndex = currentButtons.indexOf(btn);
                     if (btnIndex < currentButtons.length - 1) {
@@ -1064,7 +821,6 @@
 
             item.find('.menu-edit-list__rename').on('hover:enter', function() {
                 var currentName = getButtonDisplayName(btn, currentButtons).replace(/<[^>]*>/g, '');
-                // Убираем "(без текста)" из текущего названия
                 currentName = currentName.replace('(без текста)', '').trim();
                 
                 Lampa.Modal.close();
@@ -1077,8 +833,6 @@
                         nomic: true,
                         placeholder: 'Оставьте пустым для удаления текста'
                     }, function(newName) {
-                        // Ключевое исправление: newName может быть null при отмене или пустой строкой
-                        // Принимаем любую строку, включая пустую
                         if (newName !== null) {
                             var renamedButtons = getRenamedButtons();
                             renamedButtons[btnId] = newName.trim();
@@ -1109,31 +863,13 @@
             
             return item;
         }
-
-        var createFolderBtn = $('<div class="menu-edit-list__item menu-edit-list__create-folder selector">' +
-            '<div class="menu-edit-list__icon">' +
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-                    '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
-                    '<line x1="12" y1="11" x2="12" y2="17"></line>' +
-                    '<line x1="9" y1="14" x2="15" y2="14"></line>' +
-                '</svg>' +
-            '</div>' +
-            '<div class="menu-edit-list__title">Создать папку</div>' +
-        '</div>');
-
-        createFolderBtn.on('hover:enter', function() {
-            Lampa.Modal.close();
-            openCreateFolderDialog();
-        });
-
-        list.append(createFolderBtn);
         
         if (itemOrder.length > 0) {
             itemOrder.forEach(function(item) {
-                if (item.type === 'folder') {
-                    var folder = folders.find(function(f) { return f.id === item.id; });
-                    if (folder) {
-                        list.append(createFolderItem(folder));
+                if (item.type === 'color') {
+                    var color = colors.find(function(f) { return f.id === item.id; });
+                    if (color) {
+                        list.append(createColorItem(color));
                     }
                 } else if (item.type === 'button') {
                     var btn = currentButtons.find(function(b) { return getButtonId(b) === item.id; });
@@ -1153,17 +889,17 @@
                 }
             });
             
-            folders.forEach(function(folder) {
+            colors.forEach(function(color) {
                 var found = itemOrder.some(function(item) {
-                    return item.type === 'folder' && item.id === folder.id;
+                    return item.type === 'color' && item.id === color.id;
                 });
                 if (!found) {
-                    list.append(createFolderItem(folder));
+                    list.append(createColorItem(color));
                 }
             });
         } else {
-            folders.forEach(function(folder) {
-                list.append(createFolderItem(folder));
+            colors.forEach(function(color) {
+                list.append(createColorItem(color));
             });
             
             currentButtons.forEach(function(btn) {
@@ -1171,7 +907,7 @@
             });
         }
 
-        var resetBtn = $('<div class="selector folder-reset-button">' +
+        var resetBtn = $('<div class="selector color-reset-button">' +
             '<div style="text-align: center; padding: 1em;">Сбросить по умолчанию</div>' +
         '</div>');
         
@@ -1179,15 +915,16 @@
             Lampa.Storage.set('button_renamed', {});
             Lampa.Storage.set('button_custom_order', []);
             Lampa.Storage.set('button_hidden', []);
-            Lampa.Storage.set('button_folders', []);
+            Lampa.Storage.set('button_colors', []);
             Lampa.Storage.set('button_item_order', []);
             Lampa.Storage.set('buttons_viewmode', 'default');
+            Lampa.Storage.set('buttons_colored_logos', false);
             Lampa.Modal.close();
             Lampa.Noty.show('Настройки сброшены');
             
             setTimeout(function() {
                 if (currentContainer) {
-                    currentContainer.find('.button--play, .button--edit-order, .button--folder').remove();
+                    currentContainer.find('.button--play, .button--edit-order, .button--color').remove();
                     currentContainer.data('buttons-processed', false);
                     
                     var targetContainer = currentContainer.find('.full-start-new__buttons');
@@ -1245,16 +982,16 @@
 
     function saveItemOrder() {
         var order = [];
-        var items = $('.menu-edit-list .menu-edit-list__item').not('.menu-edit-list__create-folder, .viewmode-switch, .folder-reset-button');
+        var items = $('.menu-edit-list .menu-edit-list__item').not('.colored-logos-switch, .viewmode-switch, .color-reset-button');
         
         items.each(function() {
             var $item = $(this);
             var itemType = $item.data('itemType');
             
-            if (itemType === 'folder') {
+            if (itemType === 'color') {
                 order.push({
-                    type: 'folder',
-                    id: $item.data('folderId')
+                    type: 'color',
+                    id: $item.data('colorId')
                 });
             } else if (itemType === 'button') {
                 order.push({
@@ -1286,15 +1023,14 @@
         allButtons = sortByCustomOrder(allButtons);
         allButtonsCache = allButtons;
         
-        var folders = getFolders();
-        var foldersUpdated = false;
+        var colors = getColors();
+        var colorsUpdated = false;
         
-        // Обновляем кнопки в папках
-        folders.forEach(function(folder) {
+        colors.forEach(function(color) {
             var updatedButtons = [];
             var usedButtons = [];
             
-            folder.buttons.forEach(function(oldBtnId) {
+            color.buttons.forEach(function(oldBtnId) {
                 var found = false;
                 
                 for (var i = 0; i < allButtons.length; i++) {
@@ -1342,24 +1078,24 @@
                 }
             });
             
-            if (updatedButtons.length !== folder.buttons.length || 
-                updatedButtons.some(function(id, i) { return id !== folder.buttons[i]; })) {
-                folder.buttons = updatedButtons;
-                foldersUpdated = true;
+            if (updatedButtons.length !== color.buttons.length || 
+                updatedButtons.some(function(id, i) { return id !== color.buttons[i]; })) {
+                color.buttons = updatedButtons;
+                colorsUpdated = true;
             }
         });
         
-        if (foldersUpdated) {
-            setFolders(folders);
+        if (colorsUpdated) {
+            setColors(colors);
         }
         
-        var buttonsInFolders = [];
-        folders.forEach(function(folder) {
-            buttonsInFolders = buttonsInFolders.concat(folder.buttons);
+        var buttonsInColors = [];
+        colors.forEach(function(color) {
+            buttonsInColors = buttonsInColors.concat(color.buttons);
         });
         
         var filteredButtons = allButtons.filter(function(btn) {
-            return buttonsInFolders.indexOf(getButtonId(btn)) === -1;
+            return buttonsInColors.indexOf(getButtonId(btn)) === -1;
         });
         
         currentButtons = filteredButtons;
@@ -1372,31 +1108,30 @@
         
         var itemOrder = getItemOrder();
         var visibleButtons = [];
-        var folders = getFolders();
-        var buttonsInFolders = [];
-        folders.forEach(function(folder) {
-            buttonsInFolders = buttonsInFolders.concat(folder.buttons);
+        var colors = getColors();
+        var buttonsInColors = [];
+        colors.forEach(function(color) {
+            buttonsInColors = buttonsInColors.concat(color.buttons);
         });
         
-        // Применяем переименованные названия
         applyRenamedButtons(allButtons);
         
         if (itemOrder.length > 0) {
-            var addedFolders = [];
+            var addedColors = [];
             var addedButtons = [];
             
             itemOrder.forEach(function(item) {
-                if (item.type === 'folder') {
-                    var folder = folders.find(function(f) { return f.id === item.id; });
-                    if (folder) {
-                        var folderBtn = createFolderButton(folder);
-                        targetContainer.append(folderBtn);
-                        visibleButtons.push(folderBtn);
-                        addedFolders.push(folder.id);
+                if (item.type === 'color') {
+                    var color = colors.find(function(f) { return f.id === item.id; });
+                    if (color) {
+                        var colorBtn = createColorButton(color);
+                        targetContainer.append(colorBtn);
+                        visibleButtons.push(colorBtn);
+                        addedColors.push(color.id);
                     }
                 } else if (item.type === 'button') {
                     var btnId = item.id;
-                    if (buttonsInFolders.indexOf(btnId) === -1) {
+                    if (buttonsInColors.indexOf(btnId) === -1) {
                         var btn = currentButtons.find(function(b) { return getButtonId(b) === btnId; });
                         if (btn && !btn.hasClass('hidden')) {
                             targetContainer.append(btn);
@@ -1409,7 +1144,7 @@
             
             currentButtons.forEach(function(btn) {
                 var btnId = getButtonId(btn);
-                if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden') && buttonsInFolders.indexOf(btnId) === -1) {
+                if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden') && buttonsInColors.indexOf(btnId) === -1) {
                     var insertBefore = null;
                     var btnType = getButtonType(btn);
                     var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
@@ -1417,7 +1152,7 @@
                     if (btnTypeIndex === -1) btnTypeIndex = 999;
                     
                     if (btnId === 'modss_online_button' || btnId === 'showy_online_button') {
-                        var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--folder').filter(function() {
+                        var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').filter(function() {
                             var id = getButtonId($(this));
                             return id !== 'modss_online_button' && id !== 'showy_online_button';
                         }).first();
@@ -1438,7 +1173,7 @@
                             }
                         }
                     } else {
-                        targetContainer.find('.full-start__button').not('.button--edit-order, .button--folder').each(function() {
+                        targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').each(function() {
                             var existingBtn = $(this);
                             var existingId = getButtonId(existingBtn);
                             
@@ -1471,30 +1206,29 @@
                 }
             });
             
-            folders.forEach(function(folder) {
-                if (addedFolders.indexOf(folder.id) === -1) {
-                    var folderBtn = createFolderButton(folder);
-                    targetContainer.append(folderBtn);
-                    visibleButtons.push(folderBtn);
+            colors.forEach(function(color) {
+                if (addedColors.indexOf(color.id) === -1) {
+                    var colorBtn = createColorButton(color);
+                    targetContainer.append(colorBtn);
+                    visibleButtons.push(colorBtn);
                 }
             });
         } else {
             currentButtons.forEach(function(btn) {
                 var btnId = getButtonId(btn);
-                if (!btn.hasClass('hidden') && buttonsInFolders.indexOf(btnId) === -1) {
+                if (!btn.hasClass('hidden') && buttonsInColors.indexOf(btnId) === -1) {
                     targetContainer.append(btn);
                     visibleButtons.push(btn);
                 }
             });
             
-            folders.forEach(function(folder) {
-                var folderBtn = createFolderButton(folder);
-                targetContainer.append(folderBtn);
-                visibleButtons.push(folderBtn);
+            colors.forEach(function(color) {
+                var colorBtn = createColorButton(color);
+                targetContainer.append(colorBtn);
+                visibleButtons.push(colorBtn);
             });
         }
 
-        // Применяем режим отображения
         var viewmode = getViewMode();
         targetContainer.removeClass('icons-only always-text');
         if (viewmode === 'icons') targetContainer.addClass('icons-only');
@@ -1510,6 +1244,14 @@
 
         saveOrder();
         
+        // Применяем цветные иконки если нужно
+        if (getColoredLogos()) {
+            setTimeout(function() {
+                replaceIcons();
+                setupIconObserver();
+            }, 100);
+        }
+        
         setTimeout(function() {
             if (currentContainer) {
                 setupButtonNavigation(currentContainer);
@@ -1517,12 +1259,233 @@
         }, 100);
     }
 
+    // ========== ЦВЕТА ==========
+
+    function createColorButton(color) {
+        var firstBtnId = color.buttons[0];
+        var firstBtn = findButton(firstBtnId);
+        var icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
+            '</svg>';
+        
+        if (firstBtn) {
+            var btnIcon = firstBtn.find('svg').first();
+            if (btnIcon.length) {
+                icon = btnIcon.prop('outerHTML');
+            }
+        }
+        
+        var hasName = color.name && color.name.trim();
+        var btn = $('<div class="full-start__button selector button--color' + (!hasName ? ' color--no-name' : '') + 
+                    '" data-color-id="' + color.id + '">' +
+            icon +
+            (hasName ? '<span>' + color.name + '</span>' : '') +
+        '</div>');
+
+        btn.on('hover:enter', function() {
+            openColorMenu(color);
+        });
+
+        return btn;
+    }
+
+    function openColorMenu(color) {
+        var items = [];
+        
+        color.buttons.forEach(function(btnId) {
+            var btn = findButton(btnId);
+            if (btn) {
+                var displayName = getButtonDisplayName(btn, allButtonsOriginal);
+                var iconElement = btn.find('svg').first();
+                var icon = iconElement.length ? iconElement.prop('outerHTML') : '';
+                var subtitle = btn.attr('data-subtitle') || '';
+                
+                var item = {
+                    title: displayName.replace(/<[^>]*>/g, ''),
+                    button: btn,
+                    btnId: btnId
+                };
+                
+                if (icon) {
+                    item.template = 'selectbox_icon';
+                    item.icon = icon;
+                }
+                
+                if (subtitle) {
+                    item.subtitle = subtitle;
+                }
+                
+                items.push(item);
+            }
+        });
+
+        Lampa.Select.show({
+            title: color.name || 'Цвет',
+            items: items,
+            onSelect: function(item) {
+                item.button.trigger('hover:enter');
+            },
+            onBack: function() {
+                Lampa.Controller.toggle('full_start');
+            }
+        });
+    }
+
+    function openColorEditDialog(color) {
+        var list = $('<div class="menu-edit-list"></div>');
+        
+        color.buttons.forEach(function(btnId) {
+            var btn = findButton(btnId);
+            if (btn) {
+                var displayName = getButtonDisplayName(btn, allButtonsOriginal);
+                var iconElement = btn.find('svg').first();
+                var icon = iconElement.length ? iconElement.clone() : $('<svg></svg>');
+
+                var item = $('<div class="menu-edit-list__item">' +
+                    '<div class="menu-edit-list__icon"></div>' +
+                    '<div class="menu-edit-list__title">' + displayName + '</div>' +
+                    '<div class="menu-edit-list__move move-up selector">' +
+                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                            '<path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+                        '</svg>' +
+                    '</div>' +
+                    '<div class="menu-edit-list__move move-down selector">' +
+                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                            '<path d="M2 2L11 11L20 2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+                        '</svg>' +
+                    '</div>' +
+                    '<div class="menu-edit-list__rename selector">' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 18" fill="none"><use xlink:href="#sprite-edit"></use></svg>' +
+                    '</div>' +
+                '</div>');
+
+                item.find('.menu-edit-list__icon').append(icon);
+                item.data('btnId', btnId);
+
+                item.find('.move-up').on('hover:enter', function() {
+                    var prev = item.prev();
+                    if (prev.length) {
+                        item.insertBefore(prev);
+                        saveColorButtonOrder(color, list);
+                    }
+                });
+
+                item.find('.move-down').on('hover:enter', function() {
+                    var next = item.next();
+                    if (next.length) {
+                        item.insertAfter(next);
+                        saveColorButtonOrder(color, list);
+                    }
+                });
+
+                item.find('.menu-edit-list__rename').on('hover:enter', function() {
+                    var currentName = getButtonDisplayName(btn, allButtonsOriginal).replace(/<[^>]*>/g, '');
+                    Lampa.Modal.close();
+                    setTimeout(function() {
+                        Lampa.Input.edit({
+                            free: true,
+                            title: 'Новое название кнопки',
+                            nosave: true,
+                            value: currentName,
+                            nomic: true,
+                            placeholder: 'Оставьте пустым для удаления текста'
+                        }, function(newName) {
+                            if (newName !== null) {
+                                var renamedButtons = getRenamedButtons();
+                                renamedButtons[btnId] = newName.trim();
+                                setRenamedButtons(renamedButtons);
+                                Lampa.Noty.show('Кнопка переименована');
+                            }
+                            openColorEditDialog(color);
+                        });
+                    }, 100);
+                });
+
+                list.append(item);
+            }
+        });
+
+        Lampa.Modal.open({
+            title: 'Порядок кнопок в цвете',
+            html: list,
+            size: 'small',
+            scroll_to_center: true,
+            onBack: function() {
+                Lampa.Modal.close();
+                updateColorIcon(color);
+                openEditDialog();
+            }
+        });
+    }
+
+    function saveColorButtonOrder(color, list) {
+        var newOrder = [];
+        list.find('.menu-edit-list__item').each(function() {
+            var btnId = $(this).data('btnId');
+            newOrder.push(btnId);
+        });
+        
+        color.buttons = newOrder;
+        
+        var colors = getColors();
+        for (var i = 0; i < colors.length; i++) {
+            if (colors[i].id === color.id) {
+                colors[i].buttons = newOrder;
+                break;
+            }
+        }
+        setColors(colors);
+        
+        updateColorIcon(color);
+    }
+
+    function updateColorIcon(color) {
+        if (!color.buttons || color.buttons.length === 0) return;
+        
+        var colorBtn = currentContainer.find('.button--color[data-color-id="' + color.id + '"]');
+        if (colorBtn.length) {
+            var firstBtnId = color.buttons[0];
+            var firstBtn = findButton(firstBtnId);
+            
+            if (firstBtn) {
+                var iconElement = firstBtn.find('svg').first();
+                if (iconElement.length) {
+                    var btnIcon = iconElement.clone();
+                    colorBtn.find('svg').replaceWith(btnIcon);
+                }
+            } else {
+                var defaultIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                    '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
+                '</svg>';
+                colorBtn.find('svg').replaceWith(defaultIcon);
+            }
+        }
+    }
+
+    function createColor(name, buttonIds) {
+        var colors = getColors();
+        var color = {
+            id: 'color_' + Date.now(),
+            name: name,
+            buttons: buttonIds
+        };
+        colors.push(color);
+        setColors(colors);
+        return color;
+    }
+
+    function deleteColor(colorId) {
+        var colors = getColors();
+        colors = colors.filter(function(f) { return f.id !== colorId; });
+        setColors(colors);
+    }
+
     function reorderButtons(container) {
         var targetContainer = container.find('.full-start-new__buttons');
         if (!targetContainer.length) return false;
 
         currentContainer = container;
-        container.find('.button--play, .button--edit-order, .button--folder').remove();
+        container.find('.button--play, .button--edit-order, .button--color').remove();
 
         var categories = categorizeButtons(container);
         
@@ -1545,14 +1508,14 @@
             });
         }
 
-        var folders = getFolders();
-        var buttonsInFolders = [];
-        folders.forEach(function(folder) {
-            buttonsInFolders = buttonsInFolders.concat(folder.buttons);
+        var colors = getColors();
+        var buttonsInColors = [];
+        colors.forEach(function(color) {
+            buttonsInColors = buttonsInColors.concat(color.buttons);
         });
 
         var filteredButtons = allButtons.filter(function(btn) {
-            return buttonsInFolders.indexOf(getButtonId(btn)) === -1;
+            return buttonsInColors.indexOf(getButtonId(btn)) === -1;
         });
 
         currentButtons = filteredButtons;
@@ -1563,21 +1526,20 @@
         var visibleButtons = [];
         var itemOrder = getItemOrder();
         
-        // Применяем переименованные названия
         applyRenamedButtons(allButtons);
         
         if (itemOrder.length > 0) {
-            var addedFolders = [];
+            var addedColors = [];
             var addedButtons = [];
             
             itemOrder.forEach(function(item) {
-                if (item.type === 'folder') {
-                    var folder = folders.find(function(f) { return f.id === item.id; });
-                    if (folder) {
-                        var folderBtn = createFolderButton(folder);
-                        targetContainer.append(folderBtn);
-                        visibleButtons.push(folderBtn);
-                        addedFolders.push(folder.id);
+                if (item.type === 'color') {
+                    var color = colors.find(function(f) { return f.id === item.id; });
+                    if (color) {
+                        var colorBtn = createColorButton(color);
+                        targetContainer.append(colorBtn);
+                        visibleButtons.push(colorBtn);
+                        addedColors.push(color.id);
                     }
                 } else if (item.type === 'button') {
                     var btn = filteredButtons.find(function(b) { return getButtonId(b) === item.id; });
@@ -1599,7 +1561,7 @@
                     if (btnTypeIndex === -1) btnTypeIndex = 999;
                     
                     if (btnId === 'modss_online_button' || btnId === 'showy_online_button') {
-                        var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--folder').filter(function() {
+                        var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').filter(function() {
                             var id = getButtonId($(this));
                             return id !== 'modss_online_button' && id !== 'showy_online_button';
                         }).first();
@@ -1620,7 +1582,7 @@
                             }
                         }
                     } else {
-                        targetContainer.find('.full-start__button').not('.button--edit-order, .button--folder').each(function() {
+                        targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').each(function() {
                             var existingBtn = $(this);
                             var existingId = getButtonId(existingBtn);
                             
@@ -1648,18 +1610,18 @@
                 }
             });
             
-            folders.forEach(function(folder) {
-                if (addedFolders.indexOf(folder.id) === -1) {
-                    var folderBtn = createFolderButton(folder);
-                    targetContainer.append(folderBtn);
-                    visibleButtons.push(folderBtn);
+            colors.forEach(function(color) {
+                if (addedColors.indexOf(color.id) === -1) {
+                    var colorBtn = createColorButton(color);
+                    targetContainer.append(colorBtn);
+                    visibleButtons.push(colorBtn);
                 }
             });
         } else {
-            folders.forEach(function(folder) {
-                var folderBtn = createFolderButton(folder);
-                targetContainer.append(folderBtn);
-                visibleButtons.push(folderBtn);
+            colors.forEach(function(color) {
+                var colorBtn = createColorButton(color);
+                targetContainer.append(colorBtn);
+                visibleButtons.push(colorBtn);
             });
             
             filteredButtons.forEach(function(btn) {
@@ -1674,13 +1636,20 @@
         targetContainer.append(editButton);
         visibleButtons.push(editButton);
 
-        // Применяем режим отображения
         var viewmode = getViewMode();
         targetContainer.removeClass('icons-only always-text');
         if (viewmode === 'icons') targetContainer.addClass('icons-only');
         if (viewmode === 'always') targetContainer.addClass('always-text');
 
         applyButtonAnimation(visibleButtons);
+        
+        // Применяем цветные иконки если нужно
+        if (getColoredLogos()) {
+            setTimeout(function() {
+                replaceIcons();
+                setupIconObserver();
+            }, 100);
+        }
         
         setTimeout(function() {
             setupButtonNavigation(container);
@@ -1722,7 +1691,7 @@
             '@keyframes button-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }' +
             '.full-start__button { opacity: 0; }' +
             '.full-start__button.hidden { display: none !important; }' +
-            '.button--folder { cursor: pointer; }' +
+            '.button--color { cursor: pointer; }' +
             '.full-start-new__buttons { ' +
                 'display: flex !important; ' +
                 'flex-direction: row !important; ' +
@@ -1730,28 +1699,24 @@
                 'gap: 0.5em !important; ' +
             '}' +
             '.full-start-new__buttons.buttons-loading .full-start__button { visibility: hidden !important; }' +
-            '.full-start-new__buttons.icons-only .full-start__button:not(.button--folder) span,' +
-            '.full-start-new__buttons.icons-only .button--folder span {' +
+            '.full-start-new__buttons.icons-only .full-start__button:not(.button--color) span,' +
+            '.full-start-new__buttons.icons-only .button--color span {' +
                 'display: none;' +
             '}' +
             '.full-start-new__buttons.always-text .full-start__button span {' +
                 'display: block !important;' +
             '}' +
-            '.menu-edit-list__create-folder { background: rgba(100,200,100,0.2); }' +
-            '.menu-edit-list__create-folder.focus { background: rgba(100,200,100,0.3); border: 3px solid rgba(255,255,255,0.8); }' +
+            '.colored-logos-switch, .viewmode-switch { background: rgba(100,100,255,0.3); margin: 0 0 1em 0; border-radius: 0.3em; }' +
+            '.colored-logos-switch.focus, .viewmode-switch.focus { border: 3px solid rgba(255,255,255,0.8); }' +
             '.menu-edit-list__delete, .menu-edit-list__rename, .menu-edit-list__edit-content { width: 2.4em; height: 2.4em; display: flex; align-items: center; justify-content: center; cursor: pointer; }' +
             '.menu-edit-list__delete svg, .menu-edit-list__rename svg, .menu-edit-list__edit-content svg { width: 1.2em !important; height: 1.2em !important; }' +
             '.menu-edit-list__delete.focus, .menu-edit-list__rename.focus, .menu-edit-list__edit-content.focus { border: 2px solid rgba(255,255,255,0.8); border-radius: 0.3em; }' +
-            '.folder-item .menu-edit-list__move { margin-right: 0; }' +
-            '.folder-create-confirm { background: rgba(100,200,100,0.3); margin-top: 1em; border-radius: 0.3em; }' +
-            '.folder-create-confirm.focus { border: 3px solid rgba(255,255,255,0.8); }' +
-            '.folder-reset-button { background: rgba(200,100,100,0.3); margin-top: 1em; border-radius: 0.3em; }' +
-            '.folder-reset-button.focus { border: 3px solid rgba(255,255,255,0.8); }' +
+            '.color-item .menu-edit-list__move { margin-right: 0; }' +
+            '.color-reset-button { background: rgba(200,100,100,0.3); margin-top: 1em; border-radius: 0.3em; }' +
+            '.color-reset-button.focus { border: 3px solid rgba(255,255,255,0.8); }' +
             '.menu-edit-list__toggle.focus { border: 2px solid rgba(255,255,255,0.8); border-radius: 0.3em; }' +
-            '.viewmode-switch { background: rgba(100,100,255,0.3); margin: 0 0 1em 0; border-radius: 0.3em; }' +
-            '.viewmode-switch.focus { border: 3px solid rgba(255,255,255,0.8); }' +
-            '.button--folder.folder--no-name { min-width: 3.5em; max-width: 3.5em; justify-content: center; }' +
-            '.button--folder.folder--no-name > span { display: none; }' +
+            '.button--color.color--no-name { min-width: 3.5em; max-width: 3.5em; justify-content: center; }' +
+            '.button--color.color--no-name > span { display: none; }' +
             '.button-empty span { display: none !important; }' +
         '</style>');
         $('body').append(style);
