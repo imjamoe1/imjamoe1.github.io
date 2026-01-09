@@ -1152,6 +1152,7 @@
 						line-height: 1.3;
 					}
 					.new-interface-info__ratings {
+                        font-weight: bold;
 						margin-bottom: 0.8em;
 						display: flex;
 						align-items: center;
@@ -1160,6 +1161,7 @@
 						font-size: 1.2em;
 					}
 					.new-interface-info__details {
+                        font-weight: bold;
 						margin-bottom: 1.6em;
 						display: flex;
 						align-items: center;
