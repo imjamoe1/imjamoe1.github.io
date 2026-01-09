@@ -950,7 +950,7 @@
 						overflow: hidden;
 						-o-text-overflow: '.';
 						text-overflow: '.';
-                        text-shadow: 1px 1px 2px #000;
+						text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
 						display: -webkit-box;
 						-webkit-line-clamp: 3;
 						line-clamp: 3;
@@ -1179,7 +1179,7 @@
 						overflow: hidden;
 						-o-text-overflow: '.';
 						text-overflow: '.';
-                        text-shadow: 1px 1px 2px #000;
+						text-shadow: 1px 1px 2px #000;
 						display: -webkit-box;
 						-webkit-line-clamp: 2;
 						line-clamp: 2;
