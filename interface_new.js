@@ -915,7 +915,7 @@
 						overflow: hidden;
 						-o-text-overflow: '.';
 						text-overflow: '.';
-                                                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
 						display: -webkit-box;
 						-webkit-line-clamp: 1;
 						line-clamp: 1;
@@ -977,7 +977,7 @@
 					}
 					.new-interface .full-start__background {
 						position: absolute;
-						height: 108%;
+						height: calc(100% + 6em);
 						width: 100%;
 						top: -5em;
 						left: 0;
@@ -1179,7 +1179,7 @@
 						overflow: hidden;
 						-o-text-overflow: '.';
 						text-overflow: '.';
-                                                text-shadow: 1px 1px 2px #000;
+                        text-shadow: 1px 1px 2px #000;
 						display: -webkit-box;
 						-webkit-line-clamp: 2;
 						line-clamp: 2;
@@ -1206,7 +1206,7 @@
 					}
 					.new-interface .full-start__background {
 						position: absolute;
-						height: 108%;
+						height: calc(100% + 6em);
 						width: 100%;
 						top: -5em;
 						left: 0;
