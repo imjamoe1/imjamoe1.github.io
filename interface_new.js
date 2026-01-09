@@ -1132,6 +1132,7 @@
 						color: rgba(255, 255, 255, 0.6);
 						margin-bottom: 0.3em;
 						font-size: 1.2em;
+						font-weight: bold;
 						min-height: 1em;
 					}
 					.new-interface-info__head span {
@@ -1152,22 +1153,22 @@
 						line-height: 1.3;
 					}
 					.new-interface-info__ratings {
-                        font-weight: bold;
 						margin-bottom: 0.8em;
 						display: flex;
 						align-items: center;
 						flex-wrap: wrap;
 						min-height: 2.5em;
 						font-size: 1.2em;
+						font-weight: bold;
 					}
 					.new-interface-info__details {
-                        font-weight: bold;
 						margin-bottom: 1.6em;
 						display: flex;
 						align-items: center;
 						flex-wrap: wrap;
 						min-height: 1.9em;
 						font-size: 1.2em;
+						font-weight: bold;
 					}
 					.new-interface-info__split {
 						margin: 0 0.5em;
