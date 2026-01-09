@@ -950,7 +950,7 @@
 						overflow: hidden;
 						-o-text-overflow: '.';
 						text-overflow: '.';
-                                                text-shadow: 1px 1px 2px #000;
+                        text-shadow: 1px 1px 2px #000;
 						display: -webkit-box;
 						-webkit-line-clamp: 3;
 						line-clamp: 3;
