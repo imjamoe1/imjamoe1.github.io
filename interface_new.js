@@ -1216,11 +1216,11 @@
 						transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 					}
 					.new-interface .full-start__background.active {
-						opacity: 1;
+						mask-image: none;
 					}
-                    body:not(.menu--open) .new-interface .full-start__background {
-                        mask-image: none;
-                    }
+					/*.new-interface .full-start__background.active {
+						opacity: 1;
+					}*/
 					/* --- Rating Box Styles --- */
 					.new-interface .full-start__rate {
 						font-size: 1.2em;
