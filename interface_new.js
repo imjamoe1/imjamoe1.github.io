@@ -1065,6 +1065,9 @@
 						margin-bottom: 0.2em;
 						margin-right: 0.5em;
 					}
+					.full-start__rate {
+						font-weight: bold;
+					}
 					.new-interface .full-start__rate > div {
 						font-weight: bold;
 						font-size: 0.9em;
@@ -1267,7 +1270,7 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    /* --- Rating Box Styles --- */
+					/* --- Rating Box Styles --- */
 					.new-interface .full-start__rate {
 						font-size: 1.2em;
 						margin-right: 0;
@@ -1282,6 +1285,9 @@
 						height: auto;
 						margin-bottom: 0.2em;
 						margin-right: 0.5em;
+					}
+					.full-start__rate {
+						font-weight: bold;
 					}
 					.new-interface .full-start__rate > div {
 						font-weight: bold;
