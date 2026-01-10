@@ -1120,7 +1120,7 @@
 					.new-interface-info {
 						position: relative;
 						padding: 1.5em;
-						height: 22.8em;
+						height: 20.8em;
 					}
 					.new-interface-info__body {
 						position: absolute;
@@ -1217,9 +1217,6 @@
 					}
 					.new-interface .full-start__background.active {
 						opacity: 1;
-					}
-					.new-interface .full-start__background {
-						mask-image: none;
 					}
 					/* --- Rating Box Styles --- */
 					.new-interface .full-start__rate {
