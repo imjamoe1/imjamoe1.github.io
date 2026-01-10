@@ -1081,7 +1081,7 @@
 						display: flex;
 						align-items: center;
 						flex-shrink: 0;
-					}
+                    }
                     .rating-logo {
                         height: 1.1em;
                         width: auto;
@@ -1302,7 +1302,7 @@
 						display: flex;
 						align-items: center;
 						flex-shrink: 0;
-					}
+                    }
                     .rating-logo {
                         height: 1.1em;
                         width: auto;
