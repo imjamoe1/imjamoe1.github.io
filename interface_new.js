@@ -4,8 +4,8 @@
 
     if (typeof Lampa === "undefined") return;
     if (!Lampa.Maker || !Lampa.Maker.map || !Lampa.Utils) return;
-    if (window.plugin_interface_ready_v4) return;
-    window.plugin_interface_ready_v4 = true;
+    if (window.plugin_interface_ready_v3) return;
+    window.plugin_interface_ready_v3 = true;
 
     // --- Конфигурация Kinopoisk ---
     const KP_CONFIG = {
