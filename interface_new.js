@@ -1049,38 +1049,35 @@
                     body.advanced--animation:not(.no--animation) .new-interface .full-start__background {
                         animation: none !important;
                     }
-					/* --- Rating Box Styles --- */
-					.new-interface .full-start__rate {
-						font-size: 1.3em;
-						margin-right: 0;
-						display: inline-flex;
-						align-items: center;
-						vertical-align: middle;
-						background-color: rgba(255, 255, 255, 0.12);
-						padding: 0 0.2em 0 0;
-						border-radius: 0.3em;
-						gap: 0.4em;
-						overflow: hidden;
-						height: auto;
-						margin-bottom: 0.2em;
-						margin-right: 0.5em;
-					}
-					.full-start__rate {
-						font-weight: bold;
-					}
-					.new-interface .full-start__rate > div {
-						font-weight: bold;
-						font-size: 0.9em;
-						justify-content: center;
-						background-color: rgba(0, 0, 0, 0.4);
-						color: #ffffff;
-						padding: 0em 0.2em;
-						border-radius: 0.3em;
-						line-height: 1;
-						order: 1;
-						display: flex;
-						align-items: center;
-						flex-shrink: 0;
+                    /* --- Rating Box Styles --- */
+                    .new-interface .full-start__rate {
+                        font-size: 1.3em;
+                        margin-right: 0;
+                        display: inline-flex;
+                        align-items: center;
+                        vertical-align: middle;
+                        background-color: rgba(255, 255, 255, 0.12);
+                        padding: 0 0.2em 0 0;
+                        border-radius: 0.3em;
+                        gap: 0.4em;
+                        overflow: hidden;;
+                        height: auto;
+                        margin-bottom: 0.2em;
+                        margin-right: 0.5em;
+                    }
+                    .new-interface .full-start__rate > div {
+                        font-weight: bold;
+                        font-size: 0.9em;
+                        justify-content: center;
+                        background-color: rgba(0, 0, 0, 0.4);
+                        color: #ffffff;
+                        padding: 0em 0.2em;
+                        border-radius: 0.3em;
+                        line-height: 1;
+                        order: 1;
+                        display: flex;
+                        align-items: center;
+                        flex-shrink: 0;
                     }
                     .rating-logo {
                         height: 1.1em;
@@ -1270,38 +1267,35 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-					/* --- Rating Box Styles --- */
-					.new-interface .full-start__rate {
-						font-size: 1.2em;
-						margin-right: 0;
-						display: inline-flex;
-						align-items: center;
-						vertical-align: middle;
-						background-color: rgba(255, 255, 255, 0.12);
-						padding: 0 0.2em 0 0;
-						border-radius: 0.3em;
-						gap: 0.4em;
-						overflow: hidden;
-						height: auto;
-						margin-bottom: 0.2em;
-						margin-right: 0.5em;
-					}
-					.full-start__rate {
-						font-weight: bold;
-					}
-					.new-interface .full-start__rate > div {
-						font-weight: bold;
-						font-size: 0.9em;
-						justify-content: center;
-						background-color: rgba(0, 0, 0, 0.4);
-						color: #ffffff;
-						padding: 0em 0.2em;
-						border-radius: 0.3em;
-						line-height: 1;
-						order: 1;
-						display: flex;
-						align-items: center;
-						flex-shrink: 0;
+                    /* --- Rating Box Styles --- */
+                    .new-interface .full-start__rate {
+                        font-size: 1.2em;
+                        margin-right: 0;
+                        display: inline-flex;
+                        align-items: center;
+                        vertical-align: middle;
+                        background-color: rgba(255, 255, 255, 0.12);
+                        padding: 0 0.2em 0 0;
+                        border-radius: 0.3em;
+                        gap: 0.4em;
+                        overflow: hidden;;
+                        height: auto;
+                        margin-bottom: 0.2em;
+                        margin-right: 0.5em;
+                    }
+                    .new-interface .full-start__rate > div {
+                        font-weight: bold;
+                        font-size: 0.9em;
+                        justify-content: center;
+                        background-color: rgba(0, 0, 0, 0.4);
+                        color: #ffffff;
+                        padding: 0em 0.2em;
+                        border-radius: 0.3em;
+                        line-height: 1;
+                        order: 1;
+                        display: flex;
+                        align-items: center;
+                        flex-shrink: 0;
                     }
                     .rating-logo {
                         height: 1.1em;
