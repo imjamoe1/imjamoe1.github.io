@@ -268,6 +268,12 @@
                     uk: 'Погода',    
                     zh: '天气'    
                 },
+                head_markers: {    
+                    ru: 'Индикатор',    
+                    en: 'Indicator',    
+                    uk: 'Індикатор',    
+                    zh: '指标'    
+                },
                 head_time: {    
                     ru: 'Время',    
                     en: 'Time',    
@@ -446,6 +452,8 @@
                     titleKey = 'head_action_weather_temp';
                 } else if (mainClass.includes('weather-icon')) {    
                     titleKey = 'head_action_weather_icon';
+                } else if (mainClass.includes('head__markers')) {    
+                    titleKey = 'head_markers';
                 } else if (mainClass.includes('head__time')) {    
                     titleKey = 'head_time';
                 } else if (mainClass === 'head__settings') {    
@@ -576,6 +584,7 @@
                         c.includes('exit') ||
                         c.includes('weather-temp') || 
                         c.includes('weather-icon') ||
+                        c.includes('head__markers') ||
                         c.includes('head__time')
                     ) || ''
 
@@ -799,6 +808,7 @@
                         c.includes('exit') ||
                         c.includes('weather-temp') || 
                         c.includes('weather-icon') ||
+                        c.includes('head__markers') ||
                         c.includes('head__time')                       
                     )
 
