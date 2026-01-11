@@ -440,6 +440,8 @@
                     titleKey = 'head_action_weather_temp';
                 } else if (mainClass.includes('weather-icon')) {    
                     titleKey = 'head_action_weather_icon';
+                } else if (mainClass.includes('head__time')) {    
+                    titleKey = 'head_time';
                 } else if (mainClass === 'head__settings') {    
                     titleKey = 'head_action_additional_menu';     
                 }
@@ -567,7 +569,8 @@
                         c.includes('extensions') ||
                         c.includes('exit') ||
                         c.includes('weather-temp') || 
-                        c.includes('weather-icon')
+                        c.includes('weather-icon') ||
+                        c.includes('head__time')
                     ) || ''
 
                     // Если это head__settings без new-year__button, то это просто head__settings
@@ -789,7 +792,8 @@
                         c.includes('extensions') ||
                         c.includes('exit') ||
                         c.includes('weather-temp') || 
-                        c.includes('weather-icon')                        
+                        c.includes('weather-icon') ||
+                        c.includes('head__time')                       
                     )
 
                     if (!uniqueClass) {
