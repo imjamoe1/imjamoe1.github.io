@@ -1038,17 +1038,6 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    /* Удерживаем opacity при загрузке нового фона */
-                    .new-interface .full-start__background.loaded {
-                        opacity: 1 !important;
-                    }
-                    .new-interface .full-start__background {
-                        mask-image: none !important;
-                    } 
-                    /* Отключаем стандартную анимацию Lampa для фона */
-                    body.advanced--animation:not(.no--animation) .new-interface .full-start__background {
-                        animation: none !important;
-                    }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
@@ -1165,7 +1154,7 @@
                     .new-interface-info {
                         position: relative;
                         padding: 1.5em;
-                        height: 20em;
+                        height: 19.8em;
                     }
                     .new-interface-info__body {
                         position: absolute;
