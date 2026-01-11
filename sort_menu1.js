@@ -268,6 +268,12 @@
                     uk: 'Погода',    
                     zh: '天气'    
                 },
+                head_time: {    
+                    ru: 'Время',    
+                    en: 'Time',    
+                    uk: 'Час і дата',    
+                    zh: '时间'    
+                },
                 no_name: {    
                     ru: 'Элемент без названия',    
                     en: 'Unnamed element',    
