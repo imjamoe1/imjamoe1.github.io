@@ -3,7 +3,7 @@
 
     // Настройки плагина
     const API_KEY = 'cf4d8e72-0ef2-47b7-a5fd-08e7ad3a2939';
-    const TMDB_API_KEY = '4ef0d7355d9ffb5151e987764708ce96';
+    const TMDB_API_KEY = ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a', '5421e2f6-e0ed-4c08-aee9-492334f88937', '34abd082-4543-44a2-84fb-2169f49ce93e'];
     const TMDB_API_URL = 'https://api.themoviedb.org/3/';
     const KP_RATING_URL = 'https://rating.kinopoisk.ru/';
     const KP_API_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
