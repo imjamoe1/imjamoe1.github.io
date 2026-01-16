@@ -7,10 +7,13 @@
         { name: 'online', patterns: ['online', 'lampac', 'modss', 'showy'], label: 'Онлайн' },
         { name: 'torrent', patterns: ['torrent'], label: 'Торренты' },
         { name: 'trailer', patterns: ['trailer', 'rutube'], label: 'Трейлеры' },
+        { name: 'rating', patterns: ['rating'], label: 'Оценить' },
         { name: 'favorite', patterns: ['favorite'], label: 'Избранное' },
         { name: 'subscribe', patterns: ['subscribe'], label: 'Подписка' },
         { name: 'book', patterns: ['book'], label: 'Закладки' },
         { name: 'reaction', patterns: ['reaction'], label: 'Реакции' },
+        { name: 'network', patterns: ['network'], label: 'Network' },
+        { name: 'plaftorms', patterns: ['plaftorms', 'platforms'], label: 'Платформы' },
         { name: 'other', patterns: [], label: 'Другие' }
     ];
 
@@ -24,6 +27,7 @@
     var allButtonsCache = [];
     var allButtonsOriginal = [];
     var currentContainer = null;
+    var platformsObserver = null;
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
@@ -47,35 +51,35 @@
     // ========== ХРАНЕНИЕ ДАННЫХ ==========
 
     function getCustomOrder() {
-        return Lampa.Storage.get('button_custom_order', []);
+        return Lampa.Storage.get('button_custom_order', []) || [];
     }
 
     function setCustomOrder(order) {
-        Lampa.Storage.set('button_custom_order', order);
+        Lampa.Storage.set('button_custom_order', order || []);
     }
 
     function getItemOrder() {
-        return Lampa.Storage.get('button_item_order', []);
+        return Lampa.Storage.get('button_item_order', []) || [];
     }
 
     function setItemOrder(order) {
-        Lampa.Storage.set('button_item_order', order);
+        Lampa.Storage.set('button_item_order', order || []);
     }
 
     function getHiddenButtons() {
-        return Lampa.Storage.get('button_hidden', []);
+        return Lampa.Storage.get('button_hidden', []) || [];
     }
 
     function setHiddenButtons(hidden) {
-        Lampa.Storage.set('button_hidden', hidden);
+        Lampa.Storage.set('button_hidden', hidden || []);
     }
 
     function getColors() {
-        return Lampa.Storage.get('button_colors', []);
+        return Lampa.Storage.get('button_colors', []) || [];
     }
 
     function setColors(colors) {
-        Lampa.Storage.set('button_colors', colors);
+        Lampa.Storage.set('button_colors', colors || []);
     }
 
     function getViewMode() {
@@ -174,6 +178,25 @@
                     <svg height='70' viewBox='0 0 80 70' fill='#f44336' xmlns='http://www.w3.org/2000/svg' data-replaced='true'>
                         <path fill-rule='evenodd' clip-rule='evenodd' d='M71.2555 2.08955C74.6975 3.2397 77.4083 6.62804 78.3283 10.9306C80 18.7291 80 35 80 35C80 35 80 51.2709 78.3283 59.0694C77.4083 63.372 74.6975 66.7603 71.2555 67.9104C65.0167 70 40 70 40 70C40 70 14.9833 70 8.74453 67.9104C5.3025 66.7603 2.59172 63.372 1.67172 59.0694C0 51.2709 0 35 0 35C0 35 0 18.7291 1.67172 10.9306C2.59172 6.62804 5.3025 3.2395 8.74453 2.08955C14.9833 0 40 0 40 0C40 0 65.0167 0 71.2555 2.08955Z'/>
                         <path fill='white' d='M55.5909 35.0004L29.9773 49.5714V20.4286L55.5909 35.0004Z'/>
+                    </svg>
+                `;
+                svg.replaceWith(newSvg);
+            }
+        });
+
+        // Замена платформы-иконок
+        currentContainer.find('.full-start__button.button--plaftorms svg').each(function() {
+            var svg = $(this);
+            if (!svg.attr('data-replaced')) {
+                var newSvg = `
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512.000000pt" height="512.000000pt" viewBox="0 0 512.000000 512.000000">
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="currentColor">
+                            <path d="M895 4306 c-16 -7 -59 -44 -95 -82 -284 -302 -487 -669 -586 -1060 -57 -227 -69 -330 -69 -604 0 -274 12 -377 69 -604 86 -339 253 -666 483 -943 156 -189 209 -225 300 -208 49 9 109 69 118 118 13 67 -1 103 -72 180 -389 422 -583 908 -583 1457 0 551 193 1032 584 1459 45 48 67 81 72 105 24 131 -102 234 -221 182z"/>
+                            <path d="M4095 4306 c-41 -18 -83 -69 -91 -111 -12 -65 3 -102 73 -178 388 -422 583 -909 583 -1457 0 -548 -195 -1035 -583 -1457 -71 -77 -85 -113 -72 -180 9 -49 69 -109 118 -118 77 -15 105 -1 199 96 272 279 482 659 583 1053 58 225 70 331 70 606 0 275 -12 381 -70 606 -101 394 -301 756 -585 1058 -88 94 -148 116 -225 82z"/>
+                            <path d="M1525 3695 c-83 -28 -274 -269 -364 -458 -53 -111 -95 -234 -123 -358 -20 -91 -23 -130 -23 -319 0 -189 3 -228 23 -319 28 -124 70 -247 123 -358 92 -193 290 -440 371 -461 102 -27 198 46 198 151 0 60 -8 76 -83 157 -32 36 -83 101 -112 145 -142 215 -205 425 -205 685 0 260 63 470 205 685 29 44 80 109 112 145 75 81 83 97 83 158 0 107 -103 181 -205 147z"/>
+                            <path d ="M3513 3700 c-76 -17 -123 -76 -123 -153 0 -60 8 -76 83 -157 153 -168 262 -390 302 -614 19 -114 19 -318 0 -432 -40 -224 -149 -446 -302 -614 -75 -81 -83 -97 -83 -157 0 -105 96 -178 198 -151 81 21 279 268 371 461 53 111 95 234 123 358 20 91 23 130 23 319 0 189 -3 228 -23 319 -61 273 -193 531 -367 719 -88 95 -133 118 -202 102z"/>
+                            <path d="M2435 3235 c-417 -77 -668 -518 -519 -912 111 -298 421 -488 723 -445 326 46 557 277 603 603 41 289 -136 595 -412 710 -130 55 -260 69 -395 44z m197 -316 c77 -17 137 -50 190 -107 57 -61 83 -110 98 -190 22 -111 -12 -222 -96 -312 -138 -148 -359 -156 -510 -18 -96 88 -138 210 -114 330 16 82 42 132 99 191 52 55 97 81 174 102 65 17 92 18 159 4z"/>
+                        </g>
                     </svg>
                 `;
                 svg.replaceWith(newSvg);
@@ -345,10 +368,13 @@
             online: [],
             torrent: [],
             trailer: [],
+            rating: [],
             favorite: [],
             subscribe: [],
             book: [],
             reaction: [],
+            network: [],
+            plaftorms: [],
             other: []
         };
 
@@ -396,7 +422,7 @@
         
         if (!customOrder.length) {
             regular.sort(function(a, b) {
-                var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
+                var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'network', 'plaftorms', 'other'];
                 var typeA = getButtonType(a);
                 var typeB = getButtonType(b);
                 var indexA = typeOrder.indexOf(typeA);
@@ -518,6 +544,40 @@
         return text;
     }
 
+    // ========== СОХРАНЕНИЕ ПОРЯДКА ==========
+
+    function saveOrder() {
+        var order = [];
+        currentButtons.forEach(function(btn) {
+            order.push(getButtonId(btn));
+        });
+        setCustomOrder(order);
+    }
+
+    function saveItemOrder() {
+        var order = [];
+        var items = $('.menu-edit-list .menu-edit-list__item').not('.colored-logos-switch, .viewmode-switch, .color-reset-button');
+        
+        items.each(function() {
+            var $item = $(this);
+            var itemType = $item.data('itemType');
+            
+            if (itemType === 'color') {
+                order.push({
+                    type: 'color',
+                    id: $item.data('colorId')
+                });
+            } else if (itemType === 'button') {
+                order.push({
+                    type: 'button',
+                    id: $item.data('buttonId')
+                });
+            }
+        });
+        
+        setItemOrder(order);
+    }
+
     // ========== ДИАЛОГИ ==========
 
     function openEditDialog() {
@@ -527,10 +587,13 @@
                 .concat(categories.online)
                 .concat(categories.torrent)
                 .concat(categories.trailer)
+                .concat(categories.rating)
                 .concat(categories.favorite)
                 .concat(categories.subscribe)
                 .concat(categories.book)
                 .concat(categories.reaction)
+                .concat(categories.network)
+                .concat(categories.plaftorms)
                 .concat(categories.other);
             
             allButtons = sortByCustomOrder(allButtons);
@@ -972,38 +1035,6 @@
         });
     }
 
-    function saveOrder() {
-        var order = [];
-        currentButtons.forEach(function(btn) {
-            order.push(getButtonId(btn));
-        });
-        setCustomOrder(order);
-    }
-
-    function saveItemOrder() {
-        var order = [];
-        var items = $('.menu-edit-list .menu-edit-list__item').not('.colored-logos-switch, .viewmode-switch, .color-reset-button');
-        
-        items.each(function() {
-            var $item = $(this);
-            var itemType = $item.data('itemType');
-            
-            if (itemType === 'color') {
-                order.push({
-                    type: 'color',
-                    id: $item.data('colorId')
-                });
-            } else if (itemType === 'button') {
-                order.push({
-                    type: 'button',
-                    id: $item.data('buttonId')
-                });
-            }
-        });
-        
-        setItemOrder(order);
-    }
-
     // ========== ОСНОВНАЯ ЛОГИКА ==========
 
     function applyChanges() {
@@ -1011,14 +1042,17 @@
         
         var categories = categorizeButtons(currentContainer);
         var allButtons = []
-            .concat(categories.online)
-            .concat(categories.torrent)
-            .concat(categories.trailer)
-            .concat(categories.favorite)
-            .concat(categories.subscribe)
-            .concat(categories.book)
-            .concat(categories.reaction)
-            .concat(categories.other);
+                .concat(categories.online)
+                .concat(categories.torrent)
+                .concat(categories.trailer)
+                .concat(categories.rating)
+                .concat(categories.favorite)
+                .concat(categories.subscribe)
+                .concat(categories.book)
+                .concat(categories.reaction)
+                .concat(categories.network)
+                .concat(categories.plaftorms)
+                .concat(categories.other);
         
         allButtons = sortByCustomOrder(allButtons);
         allButtonsCache = allButtons;
@@ -1147,7 +1181,7 @@
                 if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden') && buttonsInColors.indexOf(btnId) === -1) {
                     var insertBefore = null;
                     var btnType = getButtonType(btn);
-                    var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
+                    var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'network', 'plaftorms', 'other'];
                     var btnTypeIndex = typeOrder.indexOf(btnType);
                     if (btnTypeIndex === -1) btnTypeIndex = 999;
                     
@@ -1487,173 +1521,179 @@
         currentContainer = container;
         container.find('.button--play, .button--edit-order, .button--color').remove();
 
-        var categories = categorizeButtons(container);
-        
-        var allButtons = []
-            .concat(categories.online)
-            .concat(categories.torrent)
-            .concat(categories.trailer)
-            .concat(categories.favorite)
-            .concat(categories.subscribe)
-            .concat(categories.book)
-            .concat(categories.reaction)
-            .concat(categories.other);
-
-        allButtons = sortByCustomOrder(allButtons);
-        allButtonsCache = allButtons;
-        
-        if (allButtonsOriginal.length === 0) {
-            allButtons.forEach(function(btn) {
-                allButtonsOriginal.push(btn.clone(true, true));
-            });
-        }
-
-        var colors = getColors();
-        var buttonsInColors = [];
-        colors.forEach(function(color) {
-            buttonsInColors = buttonsInColors.concat(color.buttons);
-        });
-
-        var filteredButtons = allButtons.filter(function(btn) {
-            return buttonsInColors.indexOf(getButtonId(btn)) === -1;
-        });
-
-        currentButtons = filteredButtons;
-        applyHiddenButtons(filteredButtons);
-
-        targetContainer.children().detach();
-        
-        var visibleButtons = [];
-        var itemOrder = getItemOrder();
-        
-        applyRenamedButtons(allButtons);
-        
-        if (itemOrder.length > 0) {
-            var addedColors = [];
-            var addedButtons = [];
+        // ДОБАВЛЯЕМ ЗАДЕРЖКУ ЗАГРУЗКИ КОНТЕЙНЕРА КНОПОК - 500 миллисекунд (0.5 секунды)
+        setTimeout(function() {
+            var categories = categorizeButtons(container);
             
-            itemOrder.forEach(function(item) {
-                if (item.type === 'color') {
-                    var color = colors.find(function(f) { return f.id === item.id; });
-                    if (color) {
+            var allButtons = []
+                .concat(categories.online)
+                .concat(categories.torrent)
+                .concat(categories.trailer)
+                .concat(categories.rating)
+                .concat(categories.favorite)
+                .concat(categories.subscribe)
+                .concat(categories.book)
+                .concat(categories.reaction)
+                .concat(categories.network)
+                .concat(categories.plaftorms)
+                .concat(categories.other);
+
+            allButtons = sortByCustomOrder(allButtons);
+            allButtonsCache = allButtons;
+            
+            if (allButtonsOriginal.length === 0) {
+                allButtons.forEach(function(btn) {
+                    allButtonsOriginal.push(btn.clone(true, true));
+                });
+            }
+
+            var colors = getColors();
+            var buttonsInColors = [];
+            colors.forEach(function(color) {
+                buttonsInColors = buttonsInColors.concat(color.buttons);
+            });
+
+            var filteredButtons = allButtons.filter(function(btn) {
+                return buttonsInColors.indexOf(getButtonId(btn)) === -1;
+            });
+
+            currentButtons = filteredButtons;
+            applyHiddenButtons(filteredButtons);
+
+            targetContainer.children().detach();
+            
+            var visibleButtons = [];
+            var itemOrder = getItemOrder();
+            
+            applyRenamedButtons(allButtons);
+            
+            if (itemOrder.length > 0) {
+                var addedColors = [];
+                var addedButtons = [];
+                
+                itemOrder.forEach(function(item) {
+                    if (item.type === 'color') {
+                        var color = colors.find(function(f) { return f.id === item.id; });
+                        if (color) {
+                            var colorBtn = createColorButton(color);
+                            targetContainer.append(colorBtn);
+                            visibleButtons.push(colorBtn);
+                            addedColors.push(color.id);
+                        }
+                    } else if (item.type === 'button') {
+                        var btn = filteredButtons.find(function(b) { return getButtonId(b) === item.id; });
+                        if (btn && !btn.hasClass('hidden')) {
+                            targetContainer.append(btn);
+                            visibleButtons.push(btn);
+                            addedButtons.push(getButtonId(btn));
+                        }
+                    }
+                });
+                
+                filteredButtons.forEach(function(btn) {
+                    var btnId = getButtonId(btn);
+                    if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden')) {
+                        var insertBefore = null;
+                        var btnType = getButtonType(btn);
+                        var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'network', 'plaftorms', 'other'];
+                        var btnTypeIndex = typeOrder.indexOf(btnType);
+                        if (btnTypeIndex === -1) btnTypeIndex = 999;
+                        
+                        if (btnId === 'modss_online_button' || btnId === 'showy_online_button') {
+                            var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').filter(function() {
+                                var id = getButtonId($(this));
+                                return id !== 'modss_online_button' && id !== 'showy_online_button';
+                            }).first();
+                            
+                            if (firstNonPriority.length) {
+                                insertBefore = firstNonPriority;
+                            }
+                            
+                            if (btnId === 'showy_online_button') {
+                                var modsBtn = targetContainer.find('.full-start__button').filter(function() {
+                                    return getButtonId($(this)) === 'modss_online_button';
+                                });
+                                if (modsBtn.length) {
+                                    insertBefore = modsBtn.next();
+                                    if (!insertBefore.length || insertBefore.hasClass('button--edit-order')) {
+                                        insertBefore = null;
+                                    }
+                                }
+                            }
+                        } else {
+                            targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').each(function() {
+                                var existingBtn = $(this);
+                                var existingId = getButtonId(existingBtn);
+                                
+                                if (existingId === 'modss_online_button' || existingId === 'showy_online_button') {
+                                    return true;
+                                }
+                                
+                                var existingType = getButtonType(existingBtn);
+                                var existingTypeIndex = typeOrder.indexOf(existingType);
+                                if (existingTypeIndex === -1) existingTypeIndex = 999;
+                                
+                                if (btnTypeIndex < existingTypeIndex) {
+                                    insertBefore = existingBtn;
+                                    return false;
+                                }
+                            });
+                        }
+                        
+                        if (insertBefore && insertBefore.length) {
+                            btn.insertBefore(insertBefore);
+                        } else {
+                            targetContainer.append(btn);
+                        }
+                        visibleButtons.push(btn);
+                    }
+                });
+                
+                colors.forEach(function(color) {
+                    if (addedColors.indexOf(color.id) === -1) {
                         var colorBtn = createColorButton(color);
                         targetContainer.append(colorBtn);
                         visibleButtons.push(colorBtn);
-                        addedColors.push(color.id);
                     }
-                } else if (item.type === 'button') {
-                    var btn = filteredButtons.find(function(b) { return getButtonId(b) === item.id; });
-                    if (btn && !btn.hasClass('hidden')) {
-                        targetContainer.append(btn);
-                        visibleButtons.push(btn);
-                        addedButtons.push(getButtonId(btn));
-                    }
-                }
-            });
-            
-            filteredButtons.forEach(function(btn) {
-                var btnId = getButtonId(btn);
-                if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden')) {
-                    var insertBefore = null;
-                    var btnType = getButtonType(btn);
-                    var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
-                    var btnTypeIndex = typeOrder.indexOf(btnType);
-                    if (btnTypeIndex === -1) btnTypeIndex = 999;
-                    
-                    if (btnId === 'modss_online_button' || btnId === 'showy_online_button') {
-                        var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').filter(function() {
-                            var id = getButtonId($(this));
-                            return id !== 'modss_online_button' && id !== 'showy_online_button';
-                        }).first();
-                        
-                        if (firstNonPriority.length) {
-                            insertBefore = firstNonPriority;
-                        }
-                        
-                        if (btnId === 'showy_online_button') {
-                            var modsBtn = targetContainer.find('.full-start__button').filter(function() {
-                                return getButtonId($(this)) === 'modss_online_button';
-                            });
-                            if (modsBtn.length) {
-                                insertBefore = modsBtn.next();
-                                if (!insertBefore.length || insertBefore.hasClass('button--edit-order')) {
-                                    insertBefore = null;
-                                }
-                            }
-                        }
-                    } else {
-                        targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').each(function() {
-                            var existingBtn = $(this);
-                            var existingId = getButtonId(existingBtn);
-                            
-                            if (existingId === 'modss_online_button' || existingId === 'showy_online_button') {
-                                return true;
-                            }
-                            
-                            var existingType = getButtonType(existingBtn);
-                            var existingTypeIndex = typeOrder.indexOf(existingType);
-                            if (existingTypeIndex === -1) existingTypeIndex = 999;
-                            
-                            if (btnTypeIndex < existingTypeIndex) {
-                                insertBefore = existingBtn;
-                                return false;
-                            }
-                        });
-                    }
-                    
-                    if (insertBefore && insertBefore.length) {
-                        btn.insertBefore(insertBefore);
-                    } else {
-                        targetContainer.append(btn);
-                    }
-                    visibleButtons.push(btn);
-                }
-            });
-            
-            colors.forEach(function(color) {
-                if (addedColors.indexOf(color.id) === -1) {
+                });
+            } else {
+                colors.forEach(function(color) {
                     var colorBtn = createColorButton(color);
                     targetContainer.append(colorBtn);
                     visibleButtons.push(colorBtn);
-                }
-            });
-        } else {
-            colors.forEach(function(color) {
-                var colorBtn = createColorButton(color);
-                targetContainer.append(colorBtn);
-                visibleButtons.push(colorBtn);
-            });
+                });
+                
+                filteredButtons.forEach(function(btn) {
+                    if (!btn.hasClass('hidden')) {
+                        targetContainer.append(btn);
+                        visibleButtons.push(btn);
+                    }
+                });
+            }
+
+            var editButton = createEditButton();
+            targetContainer.append(editButton);
+            visibleButtons.push(editButton);
+
+            var viewmode = getViewMode();
+            targetContainer.removeClass('icons-only always-text');
+            if (viewmode === 'icons') targetContainer.addClass('icons-only');
+            if (viewmode === 'always') targetContainer.addClass('always-text');
+
+            applyButtonAnimation(visibleButtons);
             
-            filteredButtons.forEach(function(btn) {
-                if (!btn.hasClass('hidden')) {
-                    targetContainer.append(btn);
-                    visibleButtons.push(btn);
-                }
-            });
-        }
-
-        var editButton = createEditButton();
-        targetContainer.append(editButton);
-        visibleButtons.push(editButton);
-
-        var viewmode = getViewMode();
-        targetContainer.removeClass('icons-only always-text');
-        if (viewmode === 'icons') targetContainer.addClass('icons-only');
-        if (viewmode === 'always') targetContainer.addClass('always-text');
-
-        applyButtonAnimation(visibleButtons);
-        
-        // Применяем цветные иконки если нужно
-        if (getColoredLogos()) {
+            // Применяем цветные иконки если нужно
+            if (getColoredLogos()) {
+                setTimeout(function() {
+                    replaceIcons();
+                    setupIconObserver();
+                }, 100);
+            }
+            
             setTimeout(function() {
-                replaceIcons();
-                setupIconObserver();
+                setupButtonNavigation(container);
             }, 100);
-        }
-        
-        setTimeout(function() {
-            setupButtonNavigation(container);
-        }, 100);
+        }, 500); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
 
         return true;
     }
@@ -1736,9 +1776,11 @@
                         container.data('buttons-processed', true);
                         if (reorderButtons(container)) {
                             if (targetContainer.length) {
-                                targetContainer.removeClass('buttons-loading');
+                                setTimeout(function() {
+                                    targetContainer.removeClass('buttons-loading');
+                                }, 600); // Чуть больше чем задержка в reorderButtons
+                                refreshController();
                             }
-                            refreshController();
                         }
                     }
                 } catch(err) {
