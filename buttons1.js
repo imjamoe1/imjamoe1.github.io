@@ -460,12 +460,7 @@
 
     function applyButtonAnimation(buttons) {
         buttons.forEach(function(btn, index) {
-            // Пропускаем кнопку платформ
-            if (btn.hasClass('button--plaftorms')) {
-                btn.css('opacity', '1');  // Сразу делаем видимой
-                return;
-            }
-            
+
             btn.css({
                 'opacity': '0',
                 'animation': 'button-fade-in 0.4s ease forwards',
@@ -1543,8 +1538,6 @@
                 .concat(categories.network)
                 .concat(categories.plaftorms)
                 .concat(categories.other);
-
-            var visibleButtons = [];
 
             allButtons = sortByCustomOrder(allButtons);
             allButtonsCache = allButtons;
