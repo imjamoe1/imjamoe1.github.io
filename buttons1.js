@@ -1693,7 +1693,7 @@
             setTimeout(function() {
                 setupButtonNavigation(container);
             }, 100);
-        }, 200); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
+        }, 100); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
 
         return true;
     }
@@ -1778,7 +1778,7 @@
                             if (targetContainer.length) {
                                 setTimeout(function() {
                                     targetContainer.removeClass('buttons-loading');
-                                }, 300); // Чуть больше чем задержка в reorderButtons
+                                }, 150); // Чуть больше чем задержка в reorderButtons
                                 refreshController();
                             }
                         }
