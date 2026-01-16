@@ -465,6 +465,7 @@
                 btn.css('opacity', '1');  // Сразу делаем видимой
                 return;
             }
+            
             btn.css({
                 'opacity': '0',
                 'animation': 'button-fade-in 0.4s ease forwards',
@@ -1700,7 +1701,7 @@
             setTimeout(function() {
                 setupButtonNavigation(container);
             }, 100);
-        }, 100); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
+        }, 150); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
 
         return true;
     }
@@ -1785,7 +1786,7 @@
                             if (targetContainer.length) {
                                 setTimeout(function() {
                                     targetContainer.removeClass('buttons-loading');
-                                }, 150); // Чуть больше чем задержка в reorderButtons
+                                }, 200); // Чуть больше чем задержка в reorderButtons
                                 refreshController();
                             }
                         }
