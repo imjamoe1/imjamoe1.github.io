@@ -314,6 +314,7 @@
                     '.full-start-new__title, .full-start__title {',
                     '    position: relative;',
                     '    margin-bottom: 0.6em !important;',
+                    '    display: block !important;',
                     '}',
                     '.full--tagline {',
                     '    margin-bottom: 0.6em !important;',
@@ -357,4 +358,5 @@
             }
         });
     }
+
 })();
