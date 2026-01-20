@@ -1,13 +1,3 @@
-// Плагин KUV studios для Lampa.
-
-// Добавляет кнопку студии/телесети (источник — TMDb) в карточку.
-// Добавляет оригинальное название второй строкой в карточку.
-// Добавляет логотип фильма/сериала (источник — TMDb) в карточку в портретном режиме.
-// Подходит как для отдельного использования, так и в комплексе с kuv-style.
-
-// Частично основано на плагине tmdb-networks v2.0.3 от levende (https://t.me/levende)
-// https://levende.github.io/lampa-plugins/tmdb-networks.js
-
 (function () {
     'use strict';
 
@@ -313,6 +303,7 @@
                     '}',
                     '.full-start-new__title, .full-start__title {',
                     '    position: relative;',
+                    '    font-size: 3em !important;',
                     '    margin-bottom: 0.6em !important;',
                     '    display: block !important;',
                     '}',
@@ -320,7 +311,7 @@
                     '    margin-bottom: 0.6em !important;',
                     '}',
                     '.original-title {',
-                    '    font-size: 0.8em;',
+                    '    font-size: 0.5em;',
                     '    color: rgba(255, 255, 255, 0.7);',
                     '    font-weight: normal;',
                     '}'
@@ -360,3 +351,4 @@
     }
 
 })();
+
