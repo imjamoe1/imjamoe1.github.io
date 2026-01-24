@@ -3,7 +3,7 @@
 
   var Defined = {
     api: 'lampac',
-    localhost: 'http://185.87.48.42:2627/',
+    localhost: 'http://83.143.112.137:11333/',
     apn: ''
   };
 
@@ -1902,5 +1902,6 @@ else if (element.url) {
   if (!window.cinema_online_plugin) startPlugin();
 
 })();
+
 
 
