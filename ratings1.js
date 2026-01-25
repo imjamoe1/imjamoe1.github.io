@@ -2704,33 +2704,33 @@ Lampa.Listener.follow('full', function(e) {
                     '    display: flex !important;' +
                     '    align-items: center !important;' +
                     '    flex-wrap: wrap !important;' +
-                    '    gap: 8px !important;' +
-                    '    margin: 12px 0 16px 0 !important;' +
+                    '    gap: 0.5em !important;' +
+                    '    margin: 0.75em 0 1em 0 !important;' +
                     '}' +
                     '.maxsm-tag-item {' +
                     '    display: inline-flex !important;' +
                     '    align-items: center !important;' +
-                    '    gap: 6px !important;' +
-                    '    padding: 6px 14px !important;' +
+                    '    gap: 0.3em !important;' +
+                    '    padding: 0.25em 0.75em !important;' +
                     '    background: rgba(0, 0, 0, 0.2) !important;' +
-                    '    border-radius: 12px !important;' +
-                    '    font-size: 18px !important;' +
+                    '    border-radius: 0.6em !important;' +
+                    '    font-size: 1.1em !important;' +
                     '    color: rgba(255, 255, 255, 0.95) !important;' +
                     '    line-height: 1 !important;' +
-                    '    min-height: 32px !important;' +
+                    '    min-height: 1.5em !important;' +
                     '    box-sizing: border-box !important;' +
                     '}' +
                     '.maxsm-tag-item svg {' +
                     '    flex-shrink: 0 !important;' +
-                    '    width: 16px !important;' +
-                    '    height: 16px !important;' +
+                    '    width: 1em !important;' +
+                    '    height: 1em !important;' +
                     '}' +
                     '.maxsm-series-container {' +
                     '    width: 100% !important;' +
                     '    display: flex !important;' +
                     '    flex-wrap: wrap !important;' +
-                    '    gap: 8px !important;' +
-                    '    margin-top: 8px !important;' +
+                    '    gap: 0.5em !important;' +
+                    '    margin-top: 0.5em !important;' +
                     '}' +
                     '</style>';
                 
