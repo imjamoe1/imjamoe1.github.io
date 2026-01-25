@@ -355,6 +355,16 @@
         "    height: 100% !important;" +
         "    transform: translateY(0.45em) translateX(-0.2em) scaleY(1.3) !important;" +
         "}" +
+        ".full-start__status.maxsm-quality img {" +
+        "    height: 1em !important;" +
+        "    vertical-align: middle !important;" +
+        "    object-fit: contain !important;" +
+        "}" +    
+        ".card__quality img {" +
+        "    height: 1em !important;" +
+        "    vertical-align: middle !important;" +
+        "    object-fit: contain !important;" +
+        "}" +
         "</style>";
     
     Lampa.Template.add('maxsm_ratings_css', style);
@@ -1263,23 +1273,55 @@
         });
     }
     // Обновляем качество в карточке
-    function updateQualityElement(quality, localCurrentCard, render) {
-        if (!render) return;
-        var element = $('.full-start__status.maxsm-quality', render);
-        var rateLine = $('.full-start-new__rate-line', render);
-        if (!rateLine.length) return;
-        
-        if (element.length) {
-            if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Updating existing element with quality "' + quality + '" (displayed as "' + quality + '")');
-            element.text(quality).css('opacity', '1');
-        } else {
-            if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Creating new element with quality "' + quality + '" (displayed as "' + quality + '")');
-            var div = document.createElement('div');
-            div.className = 'full-start__status maxsm-quality';
-            div.textContent = quality;
-            rateLine.append(div);
-        }
+function updateQualityElement(quality, localCurrentCard, render) {
+    if (!render) return;
+    
+    var element = $('.full-start__status.maxsm-quality', render);
+    var rateLine = $('.full-start-new__rate-line', render);
+    if (!rateLine.length) return;
+    
+    // Определяем URL иконки на основе качества
+    var qualityIcon = '';
+    switch(quality) {
+        case '4K':
+            qualityIcon = 'https://imjamoe1.github.io/quality/4K.png';
+            break;
+        case 'FHD':
+            qualityIcon = 'https://imjamoe1.github.io/quality/FHD.png';
+            break;
+        case 'HD':
+            qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+            break;
+        default:
+            // Для других значений качества (если есть)
+            qualityIcon = '';
     }
+    
+    if (element.length) {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Updating existing element with quality "' + quality + '"');
+        
+        if (qualityIcon) {
+            // Заменяем текст на иконку
+            element.html('<img src="' + qualityIcon + '" alt="' + quality + '" style="height: 1.2em; vertical-align: middle;">');
+        } else {
+            element.text(quality);
+        }
+        element.css('opacity', '1');
+    } else {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Creating new element with quality "' + quality + '"');
+        
+        var div = document.createElement('div');
+        div.className = 'full-start__status maxsm-quality';
+        
+        if (qualityIcon) {
+            div.innerHTML = '<img src="' + qualityIcon + '" alt="' + quality + '" style="height: 1.2em; vertical-align: middle;">';
+        } else {
+            div.textContent = quality;
+        }
+        
+        rateLine.append(div);
+    }
+}
 
     // Основная функция
     function fetchAdditionalRatings(card, render) {
@@ -2137,71 +2179,125 @@ function forceReplacebylampaWithStar() {
     }
 
     // Общая функция для применения качества к карточке
-    function applyQualityToCard(card, quality, source, qCacheKey) {
-        if (!document.body.contains(card)) {
-            if (Q_LOGGING) console.log('MAXSM-RATINGS', 'Card removed from DOM:', card.card_data?.id);
-            return;
+function applyQualityToCard(card, quality, source, qCacheKey) {
+    if (!document.body.contains(card)) {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', 'Card removed from DOM:', card.card_data?.id);
+        return;
+    }
+    
+    card.setAttribute('data-quality-added', 'true');
+    
+    var cardView = card.querySelector('.card__view');
+    var qualityElements = null;
+    
+    // Сохраняем в кеш если данные от JacRed
+    if (source === 'JacRed' && quality && quality !== 'NO') {
+        saveQualityCache(qCacheKey, { quality: quality }, card.card_data?.id);
+    }
+    
+    // Определяем URL иконки на основе качества
+    var qualityIcon = '';
+    var displayText = quality;
+    
+    if (quality && quality !== '...') {
+        switch(quality) {
+            case '4K':
+                qualityIcon = 'https://imjamoe1.github.io/quality/4K.png';
+                break;
+            case 'FHD':
+                qualityIcon = 'https://imjamoe1.github.io/quality/FHD.png';
+                break;
+            case 'HD':
+                qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+                break;
+            default:
+                // Для других значений качества оставляем текст
+                displayText = quality;
         }
+    }
+    
+    if (quality && quality !== 'NO' && quality !== '...') {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + (card.card_data?.id) + ', CARDLIST: ' + source + ' found quality: ' + quality);
         
-        card.setAttribute('data-quality-added', 'true');
-        
-        var cardView = card.querySelector('.card__view');
-        var qualityElements = null;
-        
-        // Сохраняем в кеш если данные от JacRed
-        if (source === 'JacRed' && quality && quality !== 'NO') {
-            saveQualityCache(qCacheKey, { quality: quality }, card.card_data?.id);
-        }
-        
-        if (quality && quality !== 'NO') {
-            if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + (card.card_data?.id) + ', CARDLIST: ' + source + ' found quality: ' + quality);
+        if (cardView) {
+            var hasQuality = false;
+            qualityElements = cardView.getElementsByClassName('card__quality');
+            if (qualityElements.length > 0) hasQuality = true;
             
-            if (cardView) {
-                var hasQuality = false;
-                qualityElements = cardView.getElementsByClassName('card__quality');
-                if (qualityElements.length > 0) hasQuality = true;
+            var qualityDiv;
+            var innerElement;
+            
+            if (!hasQuality) {
+                qualityDiv = document.createElement('div');
+                qualityDiv.className = 'card__quality';
                 
-                var qualityDiv;
-                var innerElement;
-                var qualityInner;
-                
-                if (!hasQuality) {
-                    qualityDiv = document.createElement('div');
-                    qualityDiv.className = 'card__quality';
-                    qualityInner = document.createElement('div');
-                    qualityInner.textContent = quality;
-                    qualityDiv.appendChild(qualityInner);
-                    cardView.appendChild(qualityDiv);
+                if (qualityIcon) {
+                    // Создаем элемент с иконкой
+                    var img = document.createElement('img');
+                    img.src = qualityIcon;
+                    img.alt = quality;
+                    img.style.cssText = 'height: 1.2em; vertical-align: middle;';
+                    qualityDiv.appendChild(img);
                 } else {
-                    qualityDiv = qualityElements[0];
-                    innerElement = qualityDiv.firstElementChild;
-                    
-                    if (innerElement) {
-                        innerElement.textContent = quality;
+                    // Или просто текст
+                    qualityDiv.textContent = displayText;
+                }
+                
+                cardView.appendChild(qualityDiv);
+            } else {
+                qualityDiv = qualityElements[0];
+                innerElement = qualityDiv.firstElementChild;
+                
+                if (innerElement) {
+                    if (qualityIcon) {
+                        // Если это img элемент, обновляем src
+                        if (innerElement.tagName === 'IMG') {
+                            innerElement.src = qualityIcon;
+                            innerElement.alt = quality;
+                        } else {
+                            // Если это текстовый элемент, заменяем на img
+                            qualityDiv.innerHTML = '';
+                            var img = document.createElement('img');
+                            img.src = qualityIcon;
+                            img.alt = quality;
+                            img.style.cssText = 'height: 1.2em; vertical-align: middle;';
+                            qualityDiv.appendChild(img);
+                        }
                     } else {
-                        qualityInner = document.createElement('div');
-                        qualityInner.textContent = quality;
+                        // Если нет иконки, используем текст
+                        innerElement.textContent = displayText;
+                    }
+                } else {
+                    if (qualityIcon) {
+                        var img = document.createElement('img');
+                        img.src = qualityIcon;
+                        img.alt = quality;
+                        img.style.cssText = 'height: 1.2em; vertical-align: middle;';
                         qualityDiv.innerHTML = '';
-                        qualityDiv.appendChild(qualityInner);
+                        qualityDiv.appendChild(img);
+                    } else {
+                        qualityDiv.textContent = displayText;
                     }
                 }
             }
-        } else {
-            if (cardView) {
-                qualityElements = cardView.getElementsByClassName('card__quality');
-                var elementsToRemove = [];
-                for (var j = 0; j < qualityElements.length; j++) {
-                    elementsToRemove.push(qualityElements[j]);
-                }
-                for (var k = 0; k < elementsToRemove.length; k++) {
-                    var el = elementsToRemove[k];
-                    if (el.parentNode) {
-                        el.parentNode.removeChild(el);
-                    }
+        }
+    } else {
+        // Удаляем качество если его нет
+        if (cardView) {
+            qualityElements = cardView.getElementsByClassName('card__quality');
+            var elementsToRemove = [];
+            for (var j = 0; j < qualityElements.length; j++) {
+                elementsToRemove.push(qualityElements[j]);
+            }
+            for (var k = 0; k < elementsToRemove.length; k++) {
+                var el = elementsToRemove[k];
+                if (el.parentNode) {
+                    el.parentNode.removeChild(el);
                 }
             }
         }
     }
+}
     
     // Обсервер DOM для новых карт
     var observer = new MutationObserver(function(mutations) {
