@@ -2539,57 +2539,166 @@ Lampa.Listener.follow('full', function(e) {
             
             if (!head.length || !details.length) return;
             
-            // SVG иконки
-            var yearSVG = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="#fff" d="M256,0C114.84,0,0,114.84,0,256s114.84,256,256,256s256-114.84,256-256S397.16,0,256,0z M256,475.429c-120.997,0-219.429-98.432-219.429-219.429S135.003,36.571,256,36.571S475.429,135.003,475.429,256S376.997,475.429,256,475.429z M256,134.095c-10.1,0-18.286,8.186-18.286,18.286v207.238c0,10.1,8.186,18.286,18.286,18.286c10.1,0,18.286-8.186,18.286-18.286V152.381C274.286,142.281,266.1,134.095,256,134.095z M359.619,237.714H152.381c-10.1,0-18.286,8.186-18.286,18.286c0,10.1,8.186,18.286,18.286,18.286h207.238c10.1,0,18.286-8.186,18.286-18.286C377.905,245.9,369.719,237.714,359.619,237.714z"/></svg>';
+            // Сохраняем оригинальный контент details
+            var originalDetailsHTML = details.html();
             
-            var genreSVG = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="#fff" d="M493.929,237.927H409.6c-6.795,0-13.011,3.813-16.095,9.866l-71.325,139.794L209.769,72.84c-2.427-6.795-8.656-11.493-15.854-11.957c-7.21-0.5-13.981,3.391-17.257,9.818L91.335,237.933H18.071C8.09,237.933,0,246.029,0,256.003c0,9.975,8.09,18.071,18.071,18.071h84.335c6.789,0,13.005-3.813,16.095-9.861l71.319-139.794l112.411,314.748c2.427,6.794,8.662,11.493,15.854,11.957c0.391,0.024,0.783,0.036,1.169,0.036c6.752,0,12.987-3.783,16.089-9.854l85.323-167.237h73.264c9.981,0,18.071-8.09,18.071-18.071S503.91,237.927,493.929,237.927z"/></svg>';
-            
+            // SVG иконки - для длительности и следующей серии
             var timeSVG = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="#fff" d="M256,0C114.845,0,0,114.839,0,256s114.845,256,256,256c141.161,0,256-114.839,256-256S397.155,0,256,0z M256,474.628C135.45,474.628,37.372,376.55,37.372,256S135.45,37.372,256,37.372s218.628,98.077,218.628,218.622C474.628,376.55,376.55,474.628,256,474.628z M343.202,256h-80.973V143.883c0-10.321-8.365-18.686-18.686-18.686s-18.686,8.365-18.686,18.686v130.803c0,10.321,8.365,18.686,18.686,18.686h99.659c10.321,0,18.686-8.365,18.686-18.686S353.523,256,343.202,256z"/></svg>';
             
+            // Получаем текст
             var headText = head.text();
+            var detailsText = details.text();
+            
+            // Проверяем, это сериал или фильм
+            var isSeries = false;
+            var seriesInfo = [];
+            var durationElement = null;
+            var nextEpisodeInfo = null;
+            
+            // Ищем всю информацию о сериалах
+            var tempDiv = $('<div>').html(originalDetailsHTML);
+            var seriesElements = tempDiv.find('span, div');
+            
+            // Собираем все части информации о сериале
+            seriesElements.each(function() {
+                var text = $(this).text().trim();
+                if (text.includes('Сезон') || text.includes('сезон') || 
+                    text.includes('Серии') || text.includes('серии') ||
+                    text.includes('Следующ') || text.includes('следующ')) {
+                    isSeries = true;
+                    // Разбиваем на отдельные части если есть разделители
+                    var parts = text.split(/[●·]/).map(p => p.trim()).filter(p => p);
+                    seriesInfo = seriesInfo.concat(parts);
+                }
+            });
+            
+            // Если не нашли в спанах, ищем в тексте details
+            if (seriesInfo.length === 0) {
+                var lines = detailsText.split('●');
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim();
+                    if (line.includes('Сезон') || line.includes('сезон') || 
+                        line.includes('Серии') || line.includes('серии') ||
+                        line.includes('Следующ') || line.includes('следующ')) {
+                        isSeries = true;
+                        var parts = line.split(/[●·]/).map(p => p.trim()).filter(p => p);
+                        seriesInfo = seriesInfo.concat(parts);
+                    }
+                }
+            }
+            
+            // Извлекаем данные из head
             var year = headText.match(/(\d{4})/);
             var country = headText.match(/,\s*([^,]+)/);
             
             var tags = [];
             
-            // Год (с иконкой)
-            if (year) tags.push({icon: yearSVG, text: year[1]});
+            // Год (БЕЗ иконки)
+            if (year) tags.push({icon: '', text: year[1]});
             
             // Страна (БЕЗ иконки)
             if (country) tags.push({icon: '', text: country[1].trim()});
             
-            // Данные из details
-            var detailsText = details.text();
+            // Разбиваем details на части
             var parts = detailsText.split('●').map(p => p.trim()).filter(p => p);
             
-            // Жанры (с иконкой)
+            // Добавляем жанры (исключая информацию о сериалах)
             parts.forEach(function(part) {
                 if (part.includes('|')) {
-                    var formattedGenres = part.replace(/\s*\|\s*/g, ' , ');
-                    // Обрезаем слишком длинные жанры
-                    if (formattedGenres.length > 32) {
-                        formattedGenres = formattedGenres.substring(0, 32) + '...';
+                    // Проверяем, что это не информация о сериале
+                    var isSeriesPart = false;
+                    for (var i = 0; i < seriesInfo.length; i++) {
+                        if (part.includes(seriesInfo[i])) {
+                            isSeriesPart = true;
+                            break;
+                        }
                     }
-                    tags.push({icon: genreSVG, text: formattedGenres});
+                    
+                    if (!isSeriesPart) {
+                        var formattedGenres = part.replace(/\s*\|\s*/g, ' , ');
+                        if (formattedGenres.length > 32) {
+                            formattedGenres = formattedGenres.substring(0, 32) + '...';
+                        }
+                        tags.push({icon: '', text: formattedGenres});
+                    }
+                }
+                
+                // Находим время (длительность) - отдельно от информации о сериалах
+                if (part.match(/\d{2}:\d{2}/)) {
+                    // Проверяем, что это не "Следующая HH:MM" и не часть информации о сезонах
+                    var isSeriesTime = false;
+                    for (var i = 0; i < seriesInfo.length; i++) {
+                        if (part.includes(seriesInfo[i]) || seriesInfo[i].includes(part)) {
+                            isSeriesTime = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!isSeriesTime && !part.includes('Следующ') && !part.includes('следующ')) {
+                        durationElement = {icon: timeSVG, text: part};
+                    }
+                    
+                    // Отдельно сохраняем информацию о следующей серии
+                    if (part.includes('Следующ') || part.includes('следующ')) {
+                        nextEpisodeInfo = {icon: timeSVG, text: part};
+                    }
                 }
             });
             
-            // Время (с иконкой) - В КОНЦЕ
-            parts.forEach(function(part) {
-                if (part.match(/\d{2}:\d{2}/)) {
-                    tags.push({icon: timeSVG, text: part});
-                }
-            });
+            // Добавляем длительность в конец (если есть) С ИКОНКОЙ
+            if (durationElement) {
+                tags.push(durationElement);
+            }
+            
+            // Создаем HTML для первой строки
+            var tagsHtml = '';
             
             if (tags.length > 0) {
-                var tagsHtml = tags.map(function(tag) {
+                tagsHtml = tags.map(function(tag) {
                     var content = tag.icon ? tag.icon + ' ' + tag.text : tag.text;
                     return '<span class="maxsm-tag-item">' + content + '</span>';
                 }).join('');
+            }
+            
+            // Для сериалов добавляем отдельные теги для сезонов, серий и следующей серии
+            if (isSeries && seriesInfo.length > 0) {
+                // Фильтруем уникальные значения
+                var uniqueSeriesInfo = [];
+                seriesInfo.forEach(function(item) {
+                    if (uniqueSeriesInfo.indexOf(item) === -1 && item) {
+                        uniqueSeriesInfo.push(item);
+                    }
+                });
                 
+                // Создаем отдельные теги для каждой части информации
+                var seriesTagsHtml = '';
+                uniqueSeriesInfo.forEach(function(item) {
+                    // Проверяем, что это не длительность (формат HH:MM)
+                    if (!item.match(/^\d{2}:\d{2}$/)) {
+                        // Для "Следующая HH:MM" добавляем иконку часов
+                        if (item.includes('Следующ') || item.includes('следующ')) {
+                            seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + item + '</span>';
+                        } else {
+                            // Для сезонов и серий без иконки
+                            seriesTagsHtml += '<span class="maxsm-tag-item">' + item + '</span>';
+                        }
+                    }
+                });
+                
+                // Если у нас есть отдельная информация о следующей серии, добавляем её
+                if (nextEpisodeInfo && !seriesTagsHtml.includes('Следующ') && !seriesTagsHtml.includes('следующ')) {
+                    seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + nextEpisodeInfo.text + '</span>';
+                }
+                
+                if (seriesTagsHtml) {
+                    tagsHtml += '<div class="maxsm-series-container">' + seriesTagsHtml + '</div>';
+                }
+            }
+            
+            if (tagsHtml) {
                 details.html('<div class="maxsm-tags-container">' + tagsHtml + '</div>');
                 
-                // Стили - одинаковые контейнеры для всех элементов
+                // Стили
                 var style = '<style id="maxsm-tags-equal">' +
                     '.maxsm-tags-container {' +
                     '    display: flex !important;' +
@@ -2608,13 +2717,20 @@ Lampa.Listener.follow('full', function(e) {
                     '    font-size: 18px !important;' +
                     '    color: rgba(255, 255, 255, 0.95) !important;' +
                     '    line-height: 1 !important;' +
-                    '    min-height: 32px !important;' + /* одинаковая высота */
+                    '    min-height: 32px !important;' +
                     '    box-sizing: border-box !important;' +
                     '}' +
                     '.maxsm-tag-item svg {' +
                     '    flex-shrink: 0 !important;' +
                     '    width: 16px !important;' +
                     '    height: 16px !important;' +
+                    '}' +
+                    '.maxsm-series-container {' +
+                    '    width: 100% !important;' +
+                    '    display: flex !important;' +
+                    '    flex-wrap: wrap !important;' +
+                    '    gap: 8px !important;' +
+                    '    margin-top: 8px !important;' +
                     '}' +
                     '</style>';
                 
@@ -2627,12 +2743,15 @@ Lampa.Listener.follow('full', function(e) {
                 if (rateLine.length) {
                     head.html(rateLine);
                     rateLine.css('visibility', 'visible');
+                } else {
+                    head.remove();
                 }
             }
             
         }, 300);
     }
 });
+
     /**
      * Анализирует качество контента из данных ffprobe
      * Извлекает информацию о разрешении, HDR, Dolby Vision, аудио каналах
