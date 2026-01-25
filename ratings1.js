@@ -270,7 +270,7 @@
         //"flex-wrap: wrap !important;" +
         //"gap: 0.4em 0;" +  
         "}" +
-        ".full-start-new__head {" +
+        ".full-start__status:not(.maxsm-quality) {" +
         "display: none !important;" + 
         "}" +
         ".full-start-new__rate-line > * {" +
