@@ -42,7 +42,7 @@
             pt: 'Classificação e Qualidade',
             zh: '评分与画质',
             he: 'דירוג ואיכות',
-            cs: 'Hodnocení a kvalita',
+                        cs: 'Hodnocení a kvalita',
             bg: 'Рейтинг и качество'
         },
         maxsm_ratings_cc: {
@@ -53,7 +53,7 @@
             pt: 'Limpar cache local',
             zh: '清除本地缓存',
             he: 'נקה מטמון מקומי',
-            cs: 'Vymazat místní mezipaměť',
+                        cs: 'Vymazat místní mezipaměť',
             bg: 'Изчистване на локалния кеш'
         },
         maxsm_ratings_critic: {
@@ -64,7 +64,7 @@
             pt: 'Avaliações da crítica',
             zh: '影评人评分',
             he: 'דירוגי מבקרים',
-            cs: 'Hodnocení kritiků',
+                        cs: 'Hodnocení kritiků',
             bg: 'Оценки на критиците'
         },
         maxsm_ratings_mode: {
@@ -75,7 +75,7 @@
             pt: 'Classificação média',
             zh: '平均评分',
             he: 'דירוג ממוצע',
-            cs: 'Průměrné hodnocení',
+                        cs: 'Průměrné hodnocení',
             bg: 'Среден рейтинг'
         },
         maxsm_ratings_mode_normal: {
@@ -86,7 +86,7 @@
             pt: 'Mostrar classificação média',
             zh: '显示平均评分',
             he: 'הצג דירוג ממוצע',
-            cs: 'Zobrazit průměrné hodnocení',
+                        cs: 'Zobrazit průměrné hodnocení',
             bg: 'Показване на среден рейтинг'
         },
         maxsm_ratings_mode_simple: {
@@ -97,7 +97,7 @@
             pt: 'Apenas classificação média',
             zh: '仅显示平均评分',
             he: 'רק דירוג ממוצע',
-            cs: 'Pouze průměrné hodnocení',
+                        cs: 'Pouze průměrné hodnocení',
             bg: 'Само среден рейтинг'
         },
         maxsm_ratings_mode_noavg: {
@@ -108,7 +108,7 @@
             pt: 'Sem média',
             zh: '无平均值',
             he: 'ללא ממוצע',
-            cs: 'Bez průměru',
+                        cs: 'Bez průměru',
             bg: 'Без среден рейтинг'
         }, 
         maxsm_ratings_icons: {
@@ -119,7 +119,7 @@
             pt: 'Ícones',
             zh: '图标',
             he: 'סמלים',
-            cs: 'Ikony',
+                        cs: 'Ikony',
             bg: 'Икони'
         },
         maxsm_ratings_colors: {
@@ -130,7 +130,7 @@
             pt: 'Cores',
             zh: '颜色',
             he: 'צבעים',
-            cs: 'Barvy',
+                        cs: 'Barvy',
             bg: 'Цветове'
         },
         maxsm_ratings_avg: {
@@ -141,7 +141,7 @@
             pt: 'TOTAL',
             zh: '总评',
             he: 'סה"כ',
-            cs: 'VÝSLEDEK',
+                        cs: 'VÝSLEDEK',
             bg: 'РЕЗУЛТАТ'
         },
         maxsm_ratings_avg_simple: {
@@ -152,7 +152,7 @@
             pt: 'Avaliação',
             zh: '评分',
             he: 'דירוג',
-            cs: 'Hodnocení',
+                        cs: 'Hodnocení',
             bg: 'Оценка'
         },
         maxsm_ratings_loading: {
@@ -163,7 +163,7 @@
             pt: 'Carregando',
             zh: '加载中',
             he: 'טוען',
-            cs: 'Načítání',
+                        cs: 'Načítání',
             bg: 'Зареждане'
         },
         maxsm_ratings_oscars: { 
@@ -174,7 +174,7 @@
             pt: 'Oscar',
             zh: '奥斯卡奖',
             he: 'אוסקר',
-            cs: 'Oscar',
+                        cs: 'Oscar',
             bg: 'Оскар'
         },
         maxsm_ratings_emmy: {
@@ -185,7 +185,7 @@
             pt: 'Emmy',
             zh: '艾美奖',
             he: 'אמי',
-            cs: 'Emmy',
+                        cs: 'Emmy',
             bg: 'Еми'
         },
         maxsm_ratings_awards: {
@@ -196,8 +196,18 @@
             pt: 'Prêmios',
             zh: '奖项',
             he: 'פרסים',
-            cs: 'Ocenění',
+                        cs: 'Ocenění',
             bg: 'Награди'
+        },
+        maxsm_ratings_pg: {
+            ru: 'Возрастной рейтинг',
+            en: 'Age rating',
+            uk: 'Віковий рейтинг'
+        },
+        maxsm_ratings_status: {
+            ru: 'Статус внутри карточек',
+            en: 'Status inside cards',
+            uk: 'Статус всередині карток'
         },
         maxsm_ratings_quality: {
             ru: 'Качество внутри карточек',
@@ -207,7 +217,7 @@
             pt: 'Qualidade dentro dos cartões',
             zh: '卡片内的质量',
             he: 'איכות בתוך כרטיסים',
-            cs: 'Kvalita uvnitř karet',
+                        cs: 'Kvalita uvnitř karet',
             bg: 'Качество вътре в картите'
         },
         maxsm_ratings_quality_inlist: {
@@ -218,7 +228,7 @@
             pt: 'Qualidade nos cartões',
             zh: '卡片上的质量',
             he: 'איכות בכרטיסים',
-            cs: 'Kvalita na kartách',
+                        cs: 'Kvalita na kartách',
             bg: 'Качество по картите'
         },
         maxsm_ratings_quality_tv: {
@@ -229,7 +239,7 @@
             pt: 'Qualidade para séries',
             zh: '剧集的质量',
             he: 'איכות לסדרות',
-            cs: 'Kvalita pro seriály',
+                        cs: 'Kvalita pro seriály',
             bg: 'Качество за сериали'
         }
     });
@@ -269,9 +279,6 @@
         "visibility: hidden;" +
         //"flex-wrap: wrap !important;" +
         //"gap: 0.4em 0;" +  
-        "}" +
-        ".full-start__status:not(.maxsm-quality) {" +
-        "display: none !important;" + 
         "}" +
         ".full-start-new__rate-line > * {" +
         "margin-right: 0.5em !important;" +
@@ -355,16 +362,57 @@
         "    height: 100% !important;" +
         "    transform: translateY(0.45em) translateX(-0.2em) scaleY(1.3) !important;" +
         "}" +
-        ".full-start__status.maxsm-quality img {" +
-        "    height: 1em !important;" +
-        "    vertical-align: middle !important;" +
-        "    object-fit: contain !important;" +
-        "}" +    
-        ".card__quality img {" +
-        "    height: 1em !important;" +
-        "    vertical-align: middle !important;" +
-        "    object-fit: contain !important;" +
-        "}" +
+    /* Стили для логотипов качества внутри карточки */
+    ".full-start__status.maxsm-quality {" +
+    "    min-width: auto !important;" +
+    "    width: 2.6em !important;" +
+    "    height: 1.6em !important;" +
+    "    padding: 1px !important;" +
+    "    border-radius: 0.2em !important;" +
+    "    display: inline-flex !important;" +
+    "    align-items: center !important;" +
+    "    justify-content: center !important;" +
+    //"    margin: 0 1px !important;" +
+    "    background: rgba(0, 0, 0, 0.85) !important;" +
+    "    border: 1px solid rgba(255, 255, 255, 1) !important;" +
+    "    vertical-align: middle !important;" +
+    "    overflow: hidden !important;" +
+    "}" +
+    
+    ".full-start__status.maxsm-quality img {" +
+    "    height: 1.6em !important;" +
+    "    width: 2.6em !important;" +
+    //"    max-width: 1.8em !important;" +
+    "    object-fit: contain !important;" +
+    "}" +
+    /* Стили для логотипов на карточках в списке */
+    ".card__quality {" +
+    "    position: absolute !important;" +
+    "    top: 0.3em !important;" +
+    "    right: 0.3em !important;" +
+    "    z-index: 10 !important;" +
+    "    width: 1.8em !important;" +  // Меньше для карточек
+    "    height: 1em !important;" +   // Меньше для карточек
+    "    background: rgba(0, 0, 0, 0.8) !important;" +
+    "    border-radius: 0.2em !important;" +
+    "    border: 1px solid rgba(255, 255, 255, 0.15) !important;" +
+    "    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;" +
+    "    display: flex !important;" +
+    "    align-items: center !important;" +
+    "    justify-content: center !important;" +
+    "    padding: 0.05em 0 !important;" +
+    "    overflow: hidden !important;" +
+    "    box-sizing: border-box !important;" +
+    "}" +    
+    ".card__quality img {" +
+    "    height: 0.8em !important;" +   // Меньше для карточек
+    "    width: auto !important;" +
+    "    max-width: 1.6em !important;" + // Меньше для карточек
+    "    object-fit: contain !important;" +
+    "    vertical-align: middle !important;" +
+    "    display: block !important;" +
+    "    margin: 0 auto !important;" +
+    "}" +
         "</style>";
     
     Lampa.Template.add('maxsm_ratings_css', style);
@@ -1909,23 +1957,40 @@ function forceReplacebylampaWithStar() {
         });
     }
     
-    function updateHiddenElements(ratings, localCurrentCard, render) {
-        if (!render) return;
-        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Update hidden elements");        
+function updateHiddenElements(ratings, localCurrentCard, render) {
+    if (!render) return;
+    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Update hidden elements");        
+    
+    // Обновление возрастного рейтинга
+    var pgElement = $('.full-start__pg', render);
+    if (pgElement.length && ratings.ageRating) {
+        var invalidRatings = ['N/A', 'Not Rated', 'Unrated', 'NR'];
+        var isValid = invalidRatings.indexOf(ratings.ageRating) === -1;
         
-        // Обновление возрастного рейтинга с проверкой "Not Rated"
-         var pgElement = $('.full-start__pg.hide', render);
-        //var pgElement = $('.full-start__pg.hide');
-        if (pgElement.length && ratings.ageRating) {
-            var invalidRatings = ['N/A', 'Not Rated', 'Unrated', 'NR'];
-            var isValid = invalidRatings.indexOf(ratings.ageRating) === -1;
-            
-            if (isValid) {
-                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert PG");
-                var localizedRating = AGE_RATINGS[ratings.ageRating] || ratings.ageRating;
-                pgElement.removeClass('hide').text(localizedRating);
-            }
+        var showPg = localStorage.getItem('maxsm_ratings_pg') === 'true';
+        
+        if (isValid && showPg) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert PG");
+            var localizedRating = AGE_RATINGS[ratings.ageRating] || ratings.ageRating;
+            pgElement.removeClass('hide').text(localizedRating);
+        } else {
+            // Скрываем, но НЕ удаляем
+            pgElement.addClass('hide');
         }
+    }
+
+    var statusElement = $('.full-start__status', render);
+    if (statusElement.length) {
+        var showStatus = localStorage.getItem('maxsm_ratings_status') === 'true';
+        
+        if (showStatus) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Show status");
+            statusElement.removeClass('hide');
+        } else {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Hide status");
+            statusElement.addClass('hide');
+        }
+    }
         
         // Заполняем IMDb рейтинга
         var imdbElement = $('.rate--imdb', render);
@@ -2346,6 +2411,14 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
         if (!localStorage.getItem('maxsm_ratings_mode')) {
             localStorage.setItem('maxsm_ratings_mode', '0');
         }
+
+        if (!localStorage.getItem('maxsm_ratings_pg')) {
+            localStorage.setItem('maxsm_ratings_pg', 'true');
+        }
+
+        if (!localStorage.getItem('maxsm_ratings_status')) {
+            localStorage.setItem('maxsm_ratings_status', 'true');
+        }
         
         if (!localStorage.getItem('maxsm_ratings_quality')) {
             localStorage.setItem('maxsm_ratings_quality', 'true');
@@ -2445,6 +2518,36 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
             },
             field: {
                 name: Lampa.Lang.translate("maxsm_ratings_icons"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
+
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_pg",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_pg"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
+
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_status",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_status"),
                 description: ''
             },
             onChange: function(value) {
