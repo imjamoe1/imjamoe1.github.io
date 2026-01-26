@@ -388,9 +388,7 @@
     /* Стили для логотипов на карточках в списке */
     ".card__quality {" +
     "    position: absolute !important;" +
-    "    top: 0.3em !important;" +
     "    right: 0.3em !important;" +
-    "    z-index: 10 !important;" +
     "    width: 1.8em !important;" +  // Меньше для карточек
     "    height: 1em !important;" +   // Меньше для карточек
     "    background: rgba(0, 0, 0, 0.8) !important;" +
