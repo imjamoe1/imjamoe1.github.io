@@ -387,17 +387,20 @@
     /* Стили для логотипов на карточках в списке */
     ".card__quality {" +
     "    position: absolute !important;" +
-    "    right: 0.3em !important;" +
-    "    width: 2.8em !important;" +  // Меньше для карточек
-    "    height: 2em !important;" +   // Меньше для карточек
-    "    background: rgba(0, 0, 0, 0.8) !important;" +
-    "    border-radius: 0.2em !important;" +
+    "    bottom: 2.55em !important; " +
+    "    left: -0.8em !important; " +
+    "    z-index: 10 !important;" +
+    "    width: 2.8em !important; " +  // Меньше для карточек
+    "    max-width: calc(100% - 1em) !important; " +
+    "    height: 1.8em !important;" +   // Меньше для карточек
+    "    background-color: transparent !important; " +
+    "    border-radius: 0.3em !important;" +
     "    border: 1px solid rgba(255, 255, 255, 0.15) !important;" +
-    "    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;" +
+    "    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;" +
     "    display: flex !important;" +
     "    align-items: center !important;" +
     "    justify-content: center !important;" +
-    "    padding: 0.05em 0 !important;" +
+    "    padding: 0.01em 0 !important;" +
     "    overflow: hidden !important;" +
     "    box-sizing: border-box !important;" +
     "}" +    
