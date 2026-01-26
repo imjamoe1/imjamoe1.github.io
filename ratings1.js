@@ -382,6 +382,7 @@
     ".full-start__status.maxsm-quality img {" +
     "    height: 1.6em !important;" +
     "    width: 2.6em !important;" +
+    //"    max-width: 1.8em !important;" +
     "    object-fit: contain !important;" +
     "}" +
     /* Стили для логотипов на карточках в списке */
@@ -1339,6 +1340,9 @@ function updateQualityElement(quality, localCurrentCard, render) {
         case 'HD':
             qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
             break;
+        case 'TS':
+            qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+            break;
         default:
             // Для других значений качества (если есть)
             qualityIcon = '';
@@ -2272,6 +2276,9 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
                 qualityIcon = 'https://imjamoe1.github.io/quality/FHD.png';
                 break;
             case 'HD':
+                qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+                break;
+            case 'TS':
                 qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
                 break;
             default:
