@@ -382,15 +382,14 @@
     ".full-start__status.maxsm-quality img {" +
     "    height: 1.6em !important;" +
     "    width: 2.6em !important;" +
-    //"    max-width: 1.8em !important;" +
     "    object-fit: contain !important;" +
     "}" +
     /* Стили для логотипов на карточках в списке */
     ".card__quality {" +
     "    position: absolute !important;" +
     "    right: 0.3em !important;" +
-    "    width: 1.8em !important;" +  // Меньше для карточек
-    "    height: 1em !important;" +   // Меньше для карточек
+    "    width: 2.8em !important;" +  // Меньше для карточек
+    "    height: 2em !important;" +   // Меньше для карточек
     "    background: rgba(0, 0, 0, 0.8) !important;" +
     "    border-radius: 0.2em !important;" +
     "    border: 1px solid rgba(255, 255, 255, 0.15) !important;" +
@@ -403,9 +402,8 @@
     "    box-sizing: border-box !important;" +
     "}" +    
     ".card__quality img {" +
-    "    height: 0.8em !important;" +   // Меньше для карточек
+    "    height: 2em !important;" +   // Меньше для карточек
     "    width: auto !important;" +
-    "    max-width: 1.6em !important;" + // Меньше для карточек
     "    object-fit: contain !important;" +
     "    vertical-align: middle !important;" +
     "    display: block !important;" +
