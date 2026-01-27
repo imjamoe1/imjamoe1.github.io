@@ -390,7 +390,7 @@
     "    position: absolute !important;" +
     "    bottom: 2.55em !important; " +
     "    left: -0.8em !important; " +
-    "    width: 2.8em !important; " +  // Меньше для карточек
+    "    width: 3em !important; " +  // Меньше для карточек
     "    max-width: calc(100% - 1em) !important; " +
     "    height: 2em !important;" +   // Меньше для карточек
     "    background: rgba(0, 0, 0, 0.8) !important; " +
