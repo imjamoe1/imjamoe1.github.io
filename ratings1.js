@@ -365,7 +365,7 @@
     /* Стили для логотипов качества внутри карточки */
     ".full-start__status.maxsm-quality {" +
     "    min-width: auto !important;" +
-    "    width: 2.6em !important;" +
+    "    width: 2.5em !important;" +
     "    height: 1.6em !important;" +
     "    padding: 1px !important;" +
     "    border-radius: 0.2em !important;" +
@@ -393,7 +393,7 @@
     "    width: 2.8em !important; " +  // Меньше для карточек
     "    max-width: calc(100% - 1em) !important; " +
     "    height: 1.8em !important;" +   // Меньше для карточек
-    "    background-color: transparent !important; " +
+    "    background: rgba(0, 0, 0, 0.8) !important; " +
     "    border-radius: 0.3em !important;" +
     "    border: 1px solid rgba(255, 255, 255, 0.15) !important;" +
     "    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;" +
