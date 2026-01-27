@@ -366,7 +366,7 @@
     ".full-start__status.maxsm-quality {" +
     "    min-width: auto !important;" +
     "    width: 2.5em !important;" +
-    "    height: 1.6em !important;" +
+    "    height: 1.5em !important;" +
     "    padding: 1px !important;" +
     "    border-radius: 0.2em !important;" +
     "    display: inline-flex !important;" +
