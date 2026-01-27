@@ -392,7 +392,7 @@
     "    left: -0.8em !important; " +
     "    width: 3em !important; " +  // Меньше для карточек
     "    max-width: calc(100% - 1em) !important; " +
-    "    height: 2em !important;" +   // Меньше для карточек
+    "    height: 1.8em !important;" +   // Меньше для карточек
     "    background: rgba(0, 0, 0, 0.8) !important; " +
     "    border-radius: 0.2em !important;" +
     "    border: 1px solid rgba(255, 255, 255, 0.15) !important;" +
