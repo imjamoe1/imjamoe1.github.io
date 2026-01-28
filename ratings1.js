@@ -2953,6 +2953,40 @@ Lampa.Listener.follow('full', function(e) {
     }
 });
 
+Lampa.Listener.follow('full', function(e) {
+    if (e.type == 'complite') {
+        var interval = setInterval(function() {
+            try {
+                var render = e.object.activity.render();
+                var networks = $('.tmdb-networks', render);
+                var buttons = $('.full-start-new__buttons', render);
+                
+                if (networks.length && buttons.length) {
+                    buttons.before(networks);
+                    
+                    networks.css({
+                        'display': 'inline-block',
+                        'width': '100%',
+                        'margin-top': '0.1em',
+                        'padding-top': '5em'
+                    });
+                    
+                    console.log('TMDB Networks: Position fixed');
+                    clearInterval(interval);
+                }
+            } catch(err) {
+                console.error('TMDB Networks: Error:', err);
+                clearInterval(interval);
+            }
+        }, 100);
+        
+        setTimeout(function() {
+            clearInterval(interval);
+            console.log('TMDB Networks: Interval stopped (timeout)');
+        }, 5000);
+    }
+});
+
     /**
      * Анализирует качество контента из данных ffprobe
      * Извлекает информацию о разрешении, HDR, Dolby Vision, аудио каналах
