@@ -2967,8 +2967,7 @@ Lampa.Listener.follow('full', function(e) {
                     networks.css({
                         'display': 'inline-block',
                         'width': '100%',
-                        'margin-top': '0.1em',
-                        'padding-top': '5em'
+                        'margin-top': '0.1em'
                     });
                     
                     console.log('TMDB Networks: Position fixed');
