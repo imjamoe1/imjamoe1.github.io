@@ -732,7 +732,7 @@ function createCountryFlagElement(flagUrl) {
         if (!view) return;
 
         // Проверяем, не добавлены ли уже элементы
-        if (view.querySelector('.card__rating--kp') || view.querySelector('.card__rating--lampa')) {
+        if (view.querySelector('.card__rating--kp') || view.querySelector('.card__rating--lampa') || view.querySelector('.country-flag')) {
             return;
         }
 
@@ -745,6 +745,21 @@ function createCountryFlagElement(flagUrl) {
         const { element: lampaElement, text: lampaText } = createRatingElement('lampa');
         lampaText.textContent = '...';
         view.appendChild(lampaElement);
+
+        // Получаем полные данные для определения страны
+        const type = data.name ? 'tv' : 'movie';
+        const fullData = await fetchFullMovieData(data.id, type);
+        
+        if (fullData) {
+            const flagUrl = getCountryCode(fullData);
+            if (flagUrl) {
+                const flagElement = createCountryFlagElement(flagUrl);
+                if (flagElement) {
+                    view.appendChild(flagElement);
+                    console.log('Flag added for:', fullData.title || fullData.name);
+                }
+            }
+        }
 
         // Запускаем асинхронную загрузку рейтингов
         setTimeout(async () => {
