@@ -2953,72 +2953,38 @@ Lampa.Listener.follow('full', function(e) {
     }
 });
 
+function fixNetworksPosition() {
+    const networks = $('.tmdb-networks');
+    const buttons = $('.full-start-new__buttons');
+    
+    if (networks.length && buttons.length) {
+        if (!networks.next().is(buttons)) {
+            buttons.before(networks);
+            
+            networks.css({
+                'display': 'block',
+                'width': '100%',
+                'margin-top': '1em'
+            });
+            
+            console.log('Networks moved above buttons');
+        }
+    }
+}
+
+// Запускаем с интервалом
+let interval = setInterval(fixNetworksPosition, 150);
+
+// Останавливаем через 8 секунд
+setTimeout(() => {
+    clearInterval(interval);
+    console.log('Position fix interval stopped');
+}, 8000);
+
+// События Lampa
 Lampa.Listener.follow('full', function(e) {
-    if (e.type == 'complite') {
-        var interval = setInterval(function() {
-            try {
-                var render = e.object.activity.render();
-                var networks = $('.tmdb-networks', render);
-                var buttons = $('.full-start-new__buttons', render);
-                
-                if (networks.length && buttons.length) {
-                    // Перемещаем
-                    buttons.before(networks);
-                    
-                    // ВАЖНО: CSS который делает networks НЕДОСТУПНЫМ для фокуса
-                    var styleId = 'tmdb-networks-focus-fix';
-                    if (!$('#' + styleId).length) {
-                        $('<style id="' + styleId + '">').html(`
-                            .tmdb-networks,
-                            .tmdb-networks * {
-                                pointer-events: none !important;
-                                user-select: none !important;
-                                -webkit-user-select: none !important;
-                            }
-                            
-                            .full-start-new__buttons,
-                            .full-start-new__buttons * {
-                                pointer-events: auto !important;
-                                user-select: auto !important;
-                                -webkit-user-select: auto !important;
-                            }
-                            
-                            .full-start-new__buttons button:first-child {
-                                outline: 2px solid #00a8ff !important;
-                                outline-offset: 2px !important;
-                            }
-                        `).appendTo('head');
-                    }
-                    
-                    networks.css({
-                        'display': 'inline-block',
-                        'width': '100%',
-                        'margin-top': '0.1em'
-                    });
-                    
-                    // Добавляем индикатор фокуса
-                    buttons.css({
-                        'position': 'relative'
-                    });
-                    
-                    // Фокус на первую кнопку
-                    setTimeout(function() {
-                        var firstBtn = buttons.find('button').first();
-                        if (firstBtn.length) {
-                            firstBtn.focus();
-                            // Добавляем класс для визуального выделения
-                            firstBtn.addClass('force-focused');
-                        }
-                    }, 50);
-                    
-                    console.log('TMDB Networks: CSS focus lock');
-                    clearInterval(interval);
-                }
-            } catch(err) {
-                console.error('TMDB Networks: Error:', err);
-                clearInterval(interval);
-            }
-        }, 100);
+    if (e.type === 'complite') {
+        setTimeout(fixNetworksPosition, 80);
     }
 });
 
