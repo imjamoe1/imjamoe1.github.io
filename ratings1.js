@@ -2962,7 +2962,33 @@ Lampa.Listener.follow('full', function(e) {
                 var buttons = $('.full-start-new__buttons', render);
                 
                 if (networks.length && buttons.length) {
+                    // Перемещаем
                     buttons.before(networks);
+                    
+                    // ВАЖНО: CSS который делает networks НЕДОСТУПНЫМ для фокуса
+                    var styleId = 'tmdb-networks-focus-fix';
+                    if (!$('#' + styleId).length) {
+                        $('<style id="' + styleId + '">').html(`
+                            .tmdb-networks,
+                            .tmdb-networks * {
+                                pointer-events: none !important;
+                                user-select: none !important;
+                                -webkit-user-select: none !important;
+                            }
+                            
+                            .full-start-new__buttons,
+                            .full-start-new__buttons * {
+                                pointer-events: auto !important;
+                                user-select: auto !important;
+                                -webkit-user-select: auto !important;
+                            }
+                            
+                            .full-start-new__buttons button:first-child {
+                                outline: 2px solid #00a8ff !important;
+                                outline-offset: 2px !important;
+                            }
+                        `).appendTo('head');
+                    }
                     
                     networks.css({
                         'display': 'inline-block',
@@ -2970,7 +2996,22 @@ Lampa.Listener.follow('full', function(e) {
                         'margin-top': '0.1em'
                     });
                     
-                    console.log('TMDB Networks: Position fixed');
+                    // Добавляем индикатор фокуса
+                    buttons.css({
+                        'position': 'relative'
+                    });
+                    
+                    // Фокус на первую кнопку
+                    setTimeout(function() {
+                        var firstBtn = buttons.find('button').first();
+                        if (firstBtn.length) {
+                            firstBtn.focus();
+                            // Добавляем класс для визуального выделения
+                            firstBtn.addClass('force-focused');
+                        }
+                    }, 50);
+                    
+                    console.log('TMDB Networks: CSS focus lock');
                     clearInterval(interval);
                 }
             } catch(err) {
@@ -2978,11 +3019,6 @@ Lampa.Listener.follow('full', function(e) {
                 clearInterval(interval);
             }
         }, 100);
-        
-        setTimeout(function() {
-            clearInterval(interval);
-            console.log('TMDB Networks: Interval stopped (timeout)');
-        }, 5000);
     }
 });
 
