@@ -2973,18 +2973,18 @@ function fixNetworksPosition() {
 }
 
 // Запускаем с интервалом
-let interval = setInterval(fixNetworksPosition, 150);
+let interval = setInterval(fixNetworksPosition, 200);
 
-// Останавливаем через 8 секунд
+// Останавливаем через 10 секунд
 setTimeout(() => {
     clearInterval(interval);
     console.log('Position fix interval stopped');
-}, 8000);
+}, 10000);
 
 // События Lampa
 Lampa.Listener.follow('full', function(e) {
     if (e.type === 'complite') {
-        setTimeout(fixNetworksPosition, 80);
+        setTimeout(fixNetworksPosition, 100);
     }
 });
 
