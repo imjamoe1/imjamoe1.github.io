@@ -362,56 +362,63 @@
         "    height: 100% !important;" +
         "    transform: translateY(0.45em) translateX(-0.2em) scaleY(1.3) !important;" +
         "}" +
-    /* Стили для логотипов качества внутри карточки */
-    ".full-start__status.maxsm-quality {" +
-    "    min-width: auto !important;" +
-    "    width: 2.5em !important;" +
-    "    height: 1.5em !important;" +
-    "    padding: 1px !important;" +
-    "    border-radius: 0.2em !important;" +
-    "    display: inline-flex !important;" +
-    "    align-items: center !important;" +
-    "    justify-content: center !important;" +
-    //"    margin: 0 1px !important;" +
-    "    background: rgba(0, 0, 0, 0.85) !important;" +
-    "    border: 1px solid rgba(255, 255, 255, 1) !important;" +
-    "    vertical-align: middle !important;" +
-    "    overflow: hidden !important;" +
-    "}" +
-    
-    ".full-start__status.maxsm-quality img {" +
-    "    height: 1.6em !important;" +
-    "    width: 2.6em !important;" +
-    //"    max-width: 1.8em !important;" +
-    "    object-fit: contain !important;" +
-    "}" +
-    /* Стили для логотипов на карточках в списке */
-    ".card__quality {" +
-    "    position: absolute !important;" +
-    "    bottom: 2.55em !important; " +
-    "    left: -0.8em !important; " +
-    "    width: 2.8em !important; " +  // Меньше для карточек
-    "    max-width: calc(100% - 1em) !important; " +
-    "    height: 1.7em !important;" +   // Меньше для карточек
-    "    background: rgba(0, 0, 0, 0.8) !important; " +
-    "    border-radius: 0.2em !important;" +
-    "    border: 1px solid rgba(255, 255, 255, 0.15) !important;" +
-    "    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;" +
-    "    display: flex !important;" +
-    "    align-items: center !important;" +
-    "    justify-content: center !important;" +
-    "    padding: 0.01em 0 !important;" +
-    "    overflow: hidden !important;" +
-    "    box-sizing: border-box !important;" +
-    "}" +    
-    ".card__quality img {" +
-    "    height: 2em !important;" +   // Меньше для карточек
-    "    width: auto !important;" +
-    "    object-fit: contain !important;" +
-    "    vertical-align: middle !important;" +
-    "    display: block !important;" +
-    "    margin: 0 auto !important;" +
-    "}" +
+        ".tmdb-networks {" +
+        "    position: relative;" +
+        "    bottom: 10em !important;" +
+        "}" +
+        ".full-start-new__buttons {" +
+        "    position: relative;" +
+        "    top: 5em !important;" +
+        "}" +
+        /* Стили для логотипов качества внутри карточки */
+        ".full-start__status.maxsm-quality {" +
+        "    min-width: auto !important;" +
+        "    width: 2.5em !important;" +
+        "    height: 1.5em !important;" +
+        "    padding: 1px !important;" +
+        "    border-radius: 0.2em !important;" +
+        "    display: inline-flex !important;" +
+        "    align-items: center !important;" +
+        "    justify-content: center !important;" +
+        //"    margin: 0 1px !important;" +
+        "    background: rgba(0, 0, 0, 0.85) !important;" +
+        "    border: 1px solid rgba(255, 255, 255, 1) !important;" +
+        "    vertical-align: middle !important;" +
+        "    overflow: hidden !important;" +
+        "}" +    
+        ".full-start__status.maxsm-quality img {" +
+        "    height: 1.6em !important;" +
+        "    width: 2.6em !important;" +
+        //"    max-width: 1.8em !important;" +
+        "    object-fit: contain !important;" +
+        "}" +
+        /* Стили для логотипов на карточках в списке */
+        ".card__quality {" +
+        "    position: absolute !important;" +
+        "    bottom: 2.55em !important; " +
+        "    left: -0.8em !important; " +
+        "    width: 2.8em !important; " +  // Меньше для карточек
+        "    max-width: calc(100% - 1em) !important; " +
+        "    height: 1.7em !important;" +   // Меньше для карточек
+        "    background: rgba(0, 0, 0, 0.8) !important; " +
+        "    border-radius: 0.2em !important;" +
+        "    border: 1px solid rgba(255, 255, 255, 0.15) !important;" +
+        "    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;" +
+        "    display: flex !important;" +
+        "    align-items: center !important;" +
+        "    justify-content: center !important;" +
+        "    padding: 0.01em 0 !important;" +
+        "    overflow: hidden !important;" +
+        "    box-sizing: border-box !important;" +
+        "}" +    
+        ".card__quality img {" +
+        "    height: 2em !important;" +   // Меньше для карточек
+        "    width: auto !important;" +
+        "    object-fit: contain !important;" +
+        "    vertical-align: middle !important;" +
+        "    display: block !important;" +
+        "    margin: 0 auto !important;" +
+        "}" +
         "</style>";
     
     Lampa.Template.add('maxsm_ratings_css', style);
@@ -2950,41 +2957,6 @@ Lampa.Listener.follow('full', function(e) {
             }
             
         }, 300);
-    }
-});
-
-function fixNetworksPosition() {
-    const networks = $('.tmdb-networks');
-    const buttons = $('.full-start-new__buttons');
-    
-    if (networks.length && buttons.length) {
-        if (!networks.next().is(buttons)) {
-            buttons.before(networks);
-            
-            networks.css({
-                'display': 'block',
-                'width': '100%',
-                'margin-top': '1em'
-            });
-            
-            console.log('Networks moved above buttons');
-        }
-    }
-}
-
-// Запускаем с интервалом
-let interval = setInterval(fixNetworksPosition, 200);
-
-// Останавливаем через 10 секунд
-setTimeout(() => {
-    clearInterval(interval);
-    console.log('Position fix interval stopped');
-}, 10000);
-
-// События Lampa
-Lampa.Listener.follow('full', function(e) {
-    if (e.type === 'complite') {
-        setTimeout(fixNetworksPosition, 100);
     }
 });
 
