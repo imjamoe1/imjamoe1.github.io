@@ -362,9 +362,14 @@
         "    height: 100% !important;" +
         "    transform: translateY(0.45em) translateX(-0.2em) scaleY(1.3) !important;" +
         "}" +
+        ".items-line.layer--visible.layer--render {" +
+        "    position: relative;" +
+        "    overflow: visible;" +
+        "    top: 5em !important;" +
+        "}" +
         ".tmdb-networks {" +
         "    position: relative;" +
-        "    bottom: 10em !important;" +
+        "    top: -15em !important;" +
         "}" +
         ".full-start-new__buttons {" +
         "    position: relative;" +
