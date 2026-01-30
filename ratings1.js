@@ -368,11 +368,11 @@
         "}" +
         ".tmdb-networks {" +
         "    position: relative;" +
-        "    bottom: 10em !important;" +
+        "    bottom: 9em !important;" +
         "}" +
         ".full-start-new__buttons {" +
         "    position: relative;" +
-        "    top: 5em !important;" +
+        "    top: 7em !important;" +
         "}" +
         /* Стили для логотипов качества внутри карточки */
         ".full-start__status.maxsm-quality {" +
