@@ -365,11 +365,10 @@
         ".items-line.layer--visible.layer--render {" +
         "    position: relative;" +
         "    overflow: visible;" +
-        "    top: 5em !important;" +
         "}" +
         ".tmdb-networks {" +
         "    position: relative;" +
-        "    top: -15em !important;" +
+        "    bottom: 10em !important;" +
         "}" +
         ".full-start-new__buttons {" +
         "    position: relative;" +
