@@ -2964,6 +2964,44 @@ Lampa.Listener.follow('full', function(e) {
     }
 });
 
+Lampa.Listener.follow('full', function(e) {
+    if (e.type == 'complite') {
+        setTimeout(function() {
+            try {
+                var render = e.object.activity.render();
+                var qualityBadges = $('div.applecation__quality-badges', render);
+                var reactions = $('.full-start-new__reactions', render);
+                
+                if (qualityBadges.length && reactions.length) {
+                    // Находим общий родительский контейнер
+                    var parentContainer = reactions.parent();
+                    
+                    if (parentContainer.length) {
+                        // 1. Перемещаем qualityBadges перед reactions внутри их общего родителя
+                        qualityBadges.insertBefore(reactions);
+                        
+                        // 2. Применяем стили
+                        qualityBadges.css({
+                            'visibility': 'visible',
+                            'margin-left': '5px',
+                            'margin-bottom': '20px',
+                            'display': 'flex',
+                            'flex-wrap': 'wrap'
+                        });
+                        
+                        // 3. Добавляем отступ для reactions, чтобы не наезжал
+                        reactions.css('margin-top', '5px');
+                        
+                        console.log('MAXSM-RATINGS: Quality badges positioned above reactions');
+                    }
+                }
+            } catch(err) {
+                console.error('MAXSM-RATINGS: Error:', err);
+            }
+        }, 100);
+    }
+});
+
     /**
      * Анализирует качество контента из данных ffprobe
      * Извлекает информацию о разрешении, HDR, Dolby Vision, аудио каналах
