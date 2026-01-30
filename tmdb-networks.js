@@ -2,7 +2,7 @@
     'use strict';
 
     var pluginManifest = {
-        version: '2.0.3',
+        version: '2.0.4',
         author: 'levende',
         docs: 'https://levende.github.io/lampa-plugins/docs/tmdb-networks',
         contact: 'https://t.me/levende'
@@ -180,73 +180,83 @@
         return hideBtn;
     }
 
-    function getMovieProviders(movie, callback) {
+    function getProvidersFromData(data) {
         var allowedCountryCodes = ['US', 'RU'];
         var excludeKeywords = ['Free', 'Ad', 'With Ads', 'Free with Ads', 'Plex', 'Tubi', 'Pluto TV', 'Google Play', 'Youtube', 'Max Amazon Channel'];
         var maxDisplayPriority = 20;
 
-        var url = Lampa.TMDB.api('movie/' + movie.id + '/watch/providers?api_key=' + Lampa.TMDB.key());
-        network.silent(url, function (data) {
-            if (!data.results) {
-                return [];
-            }
+        if (!data.results) {
+            return [];
+        }
 
-            var countryCodes = Object.keys(data.results).filter(function(countryCode) {
-                return allowedCountryCodes.includes(countryCode);
-            });
-
-            var providers = [];
-            var uniqueProviders = [];
-
-            countryCodes.forEach(function(countryCode) {
-                var countryProviders = (data.results[countryCode].flatrate || [])
-                    .concat(data.results[countryCode].rent || [])
-                    .concat(data.results[countryCode].buy || []);
-            
-                countryProviders.forEach(function(provider) { provider.country_code = countryCode });
-                providers = providers.concat(countryProviders);
-            });
-
-            providers.forEach(function (provider) {
-                if (provider.display_priority > maxDisplayPriority) return;
-
-                if (uniqueProviders.some(function(p) { return p.id == provider.provider_id } )) return;
-
-                var name = provider.provider_name;
-                var excluded = excludeKeywords.some(function (keyword) {
-                    return name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-                });
-
-                if (excluded) return;
-
-                uniqueProviders.push({
-                    id: provider.provider_id,
-                    name: name,
-                    logo_path: provider.logo_path,
-                    display_priority: provider.display_priority,
-                    country_code: provider.country_code
-                });
-            });
-
-            uniqueProviders = uniqueProviders.sort(function (a, b) { return a.display_priority - b.display_priority });
-            console.log(uniqueProviders);
-            callback(uniqueProviders);
+        var countryCodes = Object.keys(data.results).filter(function(countryCode) {
+            return allowedCountryCodes.includes(countryCode);
         });
+
+        var providers = [];
+        var uniqueProviders = [];
+
+        countryCodes.forEach(function(countryCode) {
+            var countryProviders = (data.results[countryCode].flatrate || [])
+                .concat(data.results[countryCode].rent || [])
+                .concat(data.results[countryCode].buy || []);
+        
+            countryProviders.forEach(function(provider) { 
+                provider.country_code = countryCode;
+            });
+            providers = providers.concat(countryProviders);
+        });
+
+        providers.forEach(function (provider) {
+            if (provider.display_priority > maxDisplayPriority) return;
+
+            if (uniqueProviders.some(function(p) { 
+                return p.id == provider.provider_id || p.name === provider.provider_name;
+            })) return;
+
+            var name = provider.provider_name;
+            var excluded = excludeKeywords.some(function (keyword) {
+                return name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+            });
+
+            if (excluded) return;
+
+            uniqueProviders.push({
+                id: provider.provider_id,
+                name: name,
+                logo_path: provider.logo_path,
+                display_priority: provider.display_priority,
+                country_code: provider.country_code
+            });
+        });
+
+        uniqueProviders = uniqueProviders.sort(function (a, b) { 
+            return a.display_priority - b.display_priority;
+        });
+        
+        return uniqueProviders;
     }
 
     function getNetworks(object, callback) {
         var movie = object.card;
         if (!movie) return callback([]);
 
-        var getFn = movie.networksList // cache
-            ? function() { callback(movie.networksList); }
-            : movie.networks 
-                ? function() { callback(movie.networks); }
-                : getMovieProviders;
+        // Кэширование результатов
+        if (movie.networksList) {
+            callback(movie.networksList);
+            return;
+        }
+
+        // ВСЕГДА используем watch/providers для обоих типов контента
+        // Это убирает TV сети для сериалов и показывает только стриминговые сервисы
+        var type = object.method; // 'tv' или 'movie'
+        var apiPath = type === 'tv' ? 'tv/' : 'movie/';
         
-        getFn(movie, function(networks) {
-            movie.networksList = networks;
-            callback(networks);
+        var url = Lampa.TMDB.api(apiPath + movie.id + '/watch/providers?api_key=' + Lampa.TMDB.key());
+        network.silent(url, function (data) {
+            var providers = getProvidersFromData(data);
+            movie.networksList = providers;
+            callback(providers);
         });
     }
 
@@ -260,6 +270,7 @@
         switch (displayMode) {
             case EXTRA_BTN_DISPLAY_MODE.LOGO:
             case EXTRA_BTN_DISPLAY_MODE.TEXT: {
+                if (networks.length === 0) return;
                 btn = createNetworkButton(networks[0], 0, type, displayMode, 1);
                 btn.removeClass('tag-count').addClass('full-start__button').addClass('button--plaftorms');
                 btn.css('height', $('.full-start__button', render).first().outerHeight() + 'px');
@@ -298,8 +309,10 @@
             default: return;
         }
 
-        container.append(btn);
-        Lampa.Activity.active().activity.toggle();
+        if (networks.length > 0) {
+            container.append(btn);
+            Lampa.Activity.active().activity.toggle();
+        }
     }
 
     function renderNetworks() {
@@ -556,18 +569,17 @@
 
         $('<style>').prop('type', 'text/css').html(
             '.tmdb-networks { margin-top: -3em; } ' +
-            '.network-btn { height: 2.94em; } ' +
-            '.network-btn.movie { height: 4em; } ' +
-            '.network-logo { background-color: #fff; position: relative; } ' +
-            '.network-logo.movie { background: none; padding: 0; } ' +
+            '.network-btn { height: 4.5em; } ' + // Еще больше
+            '.network-logo { background-color: #fff; position: relative; padding: 0.4em; } ' +
             '.network-logo .overlay { ' +
                 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; ' +
                 'background: rgba(0, 0, 0, 0); ' +
             '} ' +
-            '.network-logo img { border-radius: 0.6em; height: 100%; } ' +
-            '.network-logo.full-start__button .overlay, .network-logo.full-start__button.movie * { border-radius: 1em }' + 
+            '.network-logo img { border-radius: 0.8em; height: 100%; width: auto; } ' + // width: auto для пропорций
+            '.network-logo.full-start__button { height: 5em; padding: 0.5em; }' + // Особый размер для кнопки в начале
+            '.network-logo.full-start__button .overlay { border-radius: 1.5em; }' +
             '.network-logo.focus .overlay { background: rgba(0, 0, 0, 0.3); } ' +
-            '.network-logo.focus { box-shadow: 0 0 0 0.2em rgb(255, 255, 255); }'
+            '.network-logo.focus { box-shadow: 0 0 0 0.3em rgb(255, 255, 255); }'
         ).appendTo('head');
 
         initSettings();
