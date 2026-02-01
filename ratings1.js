@@ -282,7 +282,7 @@
         //"gap: 0.4em 0;" +  
         "}" +
         ".full-start-new__rate-line > * {" +
-        "margin-right: 0.1em !important;" +
+        "margin-right: 0.3em !important;" +
         "margin-bottom: 1.1em !important;" +
         "}" +
         ".full-start__rate {" +
