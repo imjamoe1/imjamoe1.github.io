@@ -277,11 +277,13 @@
     var style = "<style id=\"maxsm_ratings\">" +
         ".full-start-new__rate-line {" +
         "visibility: hidden;" +
+        "left: 0.5em !important;" +
         //"flex-wrap: wrap !important;" +
         //"gap: 0.4em 0;" +  
         "}" +
         ".full-start-new__rate-line > * {" +
-        "margin-right: 0.5em !important;" +
+        "margin-right: 0.1em !important;" +
+        "margin-bottom: 1.1em !important;" +
         "}" +
         ".full-start__rate {" +
         "background-color: rgba(0, 0, 0, 0.25) !important;" + // Добавлено: фон для каждого рейтинга
@@ -2969,30 +2971,25 @@ Lampa.Listener.follow('full', function(e) {
         setTimeout(function() {
             try {
                 var render = e.object.activity.render();
-                var qualityBadges = $('div.applecation__quality-badges', render);
-                var reactions = $('.full-start-new__reactions', render);
+                var title = $('.original-title', render);
+                var titleElement = $('.full-start-new__title', render);
                 
-                if (qualityBadges.length && reactions.length) {
+                if (title.length && titleElement.length) {
                     // Находим общий родительский контейнер
-                    var parentContainer = reactions.parent();
+                    var parentContainer = titleElement.parent();
                     
                     if (parentContainer.length) {
-                        // 1. Перемещаем qualityBadges перед reactions внутри их общего родителя
-                        qualityBadges.insertBefore(reactions);
+                        // 1. Перемещаем title перед titleElement внутри их общего родителя
+                        title.insertBefore(titleElement);
                         
                         // 2. Применяем стили
-                        qualityBadges.css({
-                            'visibility': 'visible',
-                            'margin-left': '5px',
-                            'margin-bottom': '20px',
-                            'display': 'flex',
-                            'flex-wrap': 'wrap'
+                        title.css({
+                            'font-size': '1.5em',
+                            'margin-top': '0.3em',
+                            'margin-bottom': '0.3em'
                         });
                         
-                        // 3. Добавляем отступ для reactions, чтобы не наезжал
-                        reactions.css('margin-top', '5px');
-                        
-                        console.log('MAXSM-RATINGS: Quality badges positioned above reactions');
+                        console.log('MAXSM-RATINGS: Original title positioned above titleElement');
                     }
                 }
             } catch(err) {
@@ -3272,7 +3269,7 @@ function updateQualityBadges(activity, qualityInfo) {
     const render = activity.render();
     
     // Ищем контейнер с оригинальным названием (используем те же селекторы, что и в плагине оригинального названия)
-    let originalTitleContainer = render.find('.original-title-display');
+    let originalTitleContainer = render.find('.original-title');
     
     if (!originalTitleContainer.length) {
         console.log('Контейнер оригинального названия не найден');
@@ -3423,7 +3420,7 @@ function initializePlugin() {
             // Ждем немного, чтобы плагин оригинального названия успел добавить свой контейнер
             setTimeout(() => {
                 // Ищем контейнер с оригинальным названием
-                let originalTitleContainer = render.find('.original-title-display');
+                let originalTitleContainer = render.find('.original-title');
                 
                 // Анализируем качество контента если нашли контейнер
                 if (data && originalTitleContainer.length) {
