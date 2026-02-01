@@ -3271,55 +3271,23 @@ Lampa.Listener.follow('full', function(e) {
 function updateQualityBadges(activity, qualityInfo) {
     const render = activity.render();
     
-    // Ищем основной заголовок
-    const titleContainer = $('.full-start-new__title', render);
+    // Ищем контейнер с оригинальным названием (используем те же селекторы, что и в плагине оригинального названия)
+    let originalTitleContainer = render.find('.original-title-display');
     
-    if (!titleContainer.length) return;
-    
-    // Ищем контейнер ПОД заголовком (например, детали или описания)
-    let targetContainer = titleContainer.next('.full-start-new__details');
-    if (!targetContainer.length) {
-        targetContainer = titleContainer.next('.full-start-new__subtitle');
-    }
-    if (!targetContainer.length) {
-        // Создаем свой контейнер если нет подходящего
-        targetContainer = $('<div class="maxsm-quality-row"></div>').insertAfter(titleContainer);
+    if (!originalTitleContainer.length) {
+        console.log('Контейнер оригинального названия не найден');
+        return;
     }
     
-    // Создаем строку для оригинального названия и бейджей
-    const qualityRow = $('<div class="maxsm-quality-row"></div>');
+    // Проверяем, есть ли уже бейджи
+    let badgesContainer = originalTitleContainer.find('.applecation__quality-badges');
     
-    // Клонируем оригинальное название из заголовка
-    const originalTitle = titleContainer.find('.original-title').clone();
-    qualityRow.append(originalTitle);
-    
-    // Создаем контейнер для бейджей
-    const badgesContainer = $('<div class="applecation__quality-badges"></div>');
-    qualityRow.append(badgesContainer);
-    
-    // Вставляем строку в целевой контейнер или после него
-    if (targetContainer.length) {
-        qualityRow.prependTo(targetContainer);
-    } else {
-        qualityRow.insertAfter(titleContainer);
+    // Если контейнера для бейджей нет, создаем его внутри оригинального названия
+    if (!badgesContainer.length) {
+        // Добавляем бейджи ВНУТРИ контейнера с оригинальным названием
+        originalTitleContainer.append('<div class="applecation__quality-badges"></div>');
+        badgesContainer = originalTitleContainer.find('.applecation__quality-badges');
     }
-    
-    // Стили для строки
-    qualityRow.css({
-        'display': 'flex',
-        'font-size': '1.4em',
-        'align-items': 'center',
-        'flex-wrap': 'wrap',
-        'gap': '0.6em',
-        'margin-top': '1em',
-        'margin-bottom': '1em'
-    });
-    
-    // Стили для оригинального названия
-    originalTitle.css({
-        'font-size': '1.2em',
-        //'margin-bottom': '0.5em'
-    });
         
         const badges = [];
         
@@ -3439,54 +3407,32 @@ function updateQualityBadges(activity, qualityInfo) {
     /**
      * Инициализация плагина
      */
-    function initializePlugin() {
-        console.log('Applecation Quality Badges loaded');
-        
-        // Добавляем стили
-        addStyles();
-        
-        // Добавляем слушатель для карточки фильма
-        Lampa.Listener.follow('full', (event) => {
-            if (event.type === 'complite') {
-                const activity = event.object.activity;
-                const render = activity.render();
-                const data = event.data && event.data.movie;
+function initializePlugin() {
+    console.log('Applecation Quality Badges loaded');
+    
+    // Добавляем стили
+    addStyles();
+    
+    // Добавляем слушатель для карточки фильма - с небольшой задержкой, чтобы оригинальное название успело создаться
+    Lampa.Listener.follow('full', (event) => {
+        if (event.type === 'complite') {
+            const activity = event.object.activity;
+            const render = activity.render();
+            const data = event.data && event.data.movie;
+            
+            // Ждем немного, чтобы плагин оригинального названия успел добавить свой контейнер
+            setTimeout(() => {
+                // Ищем контейнер с оригинальным названием
+                let originalTitleContainer = render.find('.original-title-display');
                 
-                // Добавляем контейнер для бейджей качества
-                let badgesContainer = render.find('.applecation__quality-badges');
-                
-                if (!badgesContainer.length) {
-                    // Ищем подходящее место для размещения бейджей
-                    let metaContainer = render.find('.full-start__details');
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__details');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__body');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__body');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__head');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__head');
-                    }
-                    
-                    if (metaContainer.length) {
-                        metaContainer.append('<div class="applecation__quality-badges"></div>');
-                        badgesContainer = render.find('.applecation__quality-badges');
-                    }
-                }
-                
-                // Анализируем качество контента
-                if (data && badgesContainer.length) {
+                // Анализируем качество контента если нашли контейнер
+                if (data && originalTitleContainer.length) {
                     analyzeContentQualities(data, activity);
                 }
-            }
-        });
-    }
+            }, 300); // Небольшая задержка
+        }
+    });
+}
 
     // Унифицированный запуск плагина
     (function initAllPlugins() {
