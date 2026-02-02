@@ -3272,9 +3272,9 @@ function updateQualityBadges(activity, qualityInfo) {
     const render = activity.render();
     
     // Ищем контейнер с оригинальным названием (используем те же селекторы, что и в плагине оригинального названия)
-    let originalTitleContainer = render.find('.original-title');
+    let originalTitleElement = render.find('.original-title');
     
-    if (!originalTitleContainer.length) {
+    if (!originalTitleElement.length) {
         console.log('Контейнер оригинального названия не найден');
         return;
     }
@@ -3285,8 +3285,8 @@ function updateQualityBadges(activity, qualityInfo) {
     // Если контейнера для бейджей нет, создаем его внутри оригинального названия
     if (!badgesContainer.length) {
         // Добавляем бейджи ВНУТРИ контейнера с оригинальным названием
-        originalTitleContainer.append('<div class="applecation__quality-badges"></div>');
-        badgesContainer = originalTitleContainer.find('.applecation__quality-badges');
+        originalTitleElement.append('<div class="applecation__quality-badges"></div>');
+        badgesContainer = originalTitleElement.find('.applecation__quality-badges');
     }
         
         const badges = [];
