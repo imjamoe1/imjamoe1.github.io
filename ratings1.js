@@ -376,6 +376,9 @@
         "    position: relative;" +
         "    top: 7em !important;" +
         "}" +
+        ".original-title {" +
+        "display: none !important;" +
+        "}" + 
         /* Стили для логотипов качества внутри карточки */
         ".full-start__status.maxsm-quality {" +
         "    min-width: auto !important;" +
@@ -2966,28 +2969,31 @@ Lampa.Listener.follow('full', function(e) {
     }
 });
 
-Lampa.Listener.follow('full', function(e) {
+/*Lampa.Listener.follow('full', function(e) {
     if (e.type == 'complite') {
         setTimeout(function() {
             try {
                 var render = e.object.activity.render();
-                var title = $('.original-title', render);
+                var originalTitleElement = $('.original-title', render);
                 var titleElement = $('.full-start-new__title', render);
                 
-                if (title.length && titleElement.length) {
+                if (originalTitleElement.length && titleElement.length) {
                     // Находим общий родительский контейнер
                     var parentContainer = titleElement.parent();
                     
                     if (parentContainer.length) {
-                        // 1. Перемещаем title перед titleElement внутри их общего родителя
-                        title.insertBefore(titleElement);
+                        // 1. Перемещаем originalTitleElement перед titleElement
+                        titleElement.before(originalTitleElement);
                         
                         // 2. Применяем стили
-                        title.css({
+                        originalTitleElement.css({
                             'font-size': '1.5em',
                             'margin-top': '0.3em',
                             'margin-bottom': '0.3em'
                         });
+                        
+                        // 3. Добавляем отступ для titleElement, чтобы не наезжал
+                        titleElement.css('margin-top', '5px');
                         
                         console.log('MAXSM-RATINGS: Original title positioned above titleElement');
                     }
@@ -2997,7 +3003,7 @@ Lampa.Listener.follow('full', function(e) {
             }
         }, 100);
     }
-});
+});*/
 
     /**
      * Анализирует качество контента из данных ffprobe
@@ -3269,7 +3275,7 @@ function updateQualityBadges(activity, qualityInfo) {
     const render = activity.render();
     
     // Ищем контейнер с оригинальным названием (используем те же селекторы, что и в плагине оригинального названия)
-    let originalTitleContainer = render.find('.original-title');
+    let originalTitleContainer = render.find('.original-title-display');
     
     if (!originalTitleContainer.length) {
         console.log('Контейнер оригинального названия не найден');
@@ -3404,29 +3410,29 @@ function updateQualityBadges(activity, qualityInfo) {
     /**
      * Инициализация плагина
      */
-function initializePlugin() {
-    console.log('Applecation Quality Badges loaded');
-    
-    // Добавляем стили
-    addStyles();
-    
-    // Добавляем слушатель для карточки фильма - с небольшой задержкой, чтобы оригинальное название успело создаться
-    Lampa.Listener.follow('full', (event) => {
-        if (event.type === 'complite') {
-            const activity = event.object.activity;
-            const render = activity.render();
-            const data = event.data && event.data.movie;
-            
-            // Ждем немного, чтобы плагин оригинального названия успел добавить свой контейнер
-            setTimeout(() => {
-                // Ищем контейнер с оригинальным названием
-                let originalTitleContainer = render.find('.original-title');
+    function initializePlugin() {
+        console.log('Applecation Quality Badges loaded');
+        
+        // Добавляем стили
+        addStyles();
+        
+        // Добавляем слушатель для карточки фильма
+        Lampa.Listener.follow('full', (event) => {
+            if (event.type === 'complite') {
+                const activity = event.object.activity;
+                const render = activity.render();
+                const data = event.data && event.data.movie;
                 
-                // Анализируем качество контента если нашли контейнер
+                // Ждем немного, чтобы плагин оригинального названия успел добавить свой контейнер
+                setTimeout(() => {
+                    // Ищем контейнер с оригинальным названием
+                    let originalTitleContainer = render.find('.original-title-display');
+                
+                // Анализируем качество контента
                 if (data && originalTitleContainer.length) {
                     analyzeContentQualities(data, activity);
                 }
-            }, 300); // Небольшая задержка
+            }, 50); // Небольшая задержка
         }
     });
 }
