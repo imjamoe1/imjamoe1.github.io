@@ -3423,10 +3423,10 @@ function updateQualityBadges(activity, qualityInfo) {
                 // Ждем немного, чтобы плагин оригинального названия успел добавить свой контейнер
                 setTimeout(() => {
                     // Ищем контейнер с оригинальным названием
-                    let originalTitleContainer = render.find('.original-title');
+                    let originalTitleElement = render.find('.original-title');
                 
                 // Анализируем качество контента
-                if (data && originalTitleContainer.length) {
+                if (data && originalTitleElement.length) {
                     analyzeContentQualities(data, activity);
                 }
             }, 50); // Небольшая задержка
