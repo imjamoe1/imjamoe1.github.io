@@ -2966,7 +2966,7 @@ Lampa.Listener.follow('full', function(e) {
     }
 });
 
-/*Lampa.Listener.follow('full', function(e) {
+Lampa.Listener.follow('full', function(e) {
     if (e.type == 'complite') {
         setTimeout(function() {
             try {
@@ -3000,7 +3000,7 @@ Lampa.Listener.follow('full', function(e) {
             }
         }, 100);
     }
-});*/
+});
 
     /**
      * Анализирует качество контента из данных ffprobe
