@@ -3280,7 +3280,7 @@ function updateQualityBadges(activity, qualityInfo) {
     }
     
     // Проверяем, есть ли уже бейджи
-    let badgesContainer = originalTitleContainer.find('.applecation__quality-badges');
+    let badgesContainer = originalTitleElement.find('.applecation__quality-badges');
     
     // Если контейнера для бейджей нет, создаем его внутри оригинального названия
     if (!badgesContainer.length) {
