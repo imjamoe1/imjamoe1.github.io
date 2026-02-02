@@ -376,9 +376,6 @@
         "    position: relative;" +
         "    top: 7em !important;" +
         "}" +
-        ".original-title {" +
-        "display: none !important;" +
-        "}" + 
         /* Стили для логотипов качества внутри карточки */
         ".full-start__status.maxsm-quality {" +
         "    min-width: auto !important;" +
@@ -3275,7 +3272,7 @@ function updateQualityBadges(activity, qualityInfo) {
     const render = activity.render();
     
     // Ищем контейнер с оригинальным названием (используем те же селекторы, что и в плагине оригинального названия)
-    let originalTitleContainer = render.find('.original-title-display');
+    let originalTitleContainer = render.find('.original-title');
     
     if (!originalTitleContainer.length) {
         console.log('Контейнер оригинального названия не найден');
@@ -3426,7 +3423,7 @@ function updateQualityBadges(activity, qualityInfo) {
                 // Ждем немного, чтобы плагин оригинального названия успел добавить свой контейнер
                 setTimeout(() => {
                     // Ищем контейнер с оригинальным названием
-                    let originalTitleContainer = render.find('.original-title-display');
+                    let originalTitleContainer = render.find('.original-title');
                 
                 // Анализируем качество контента
                 if (data && originalTitleContainer.length) {
