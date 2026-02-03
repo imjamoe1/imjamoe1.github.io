@@ -283,7 +283,6 @@
         "}" +
         ".full-start-new__rate-line > * {" +
         "margin-right: 0.3em !important;" +
-        "margin-bottom: 1.1em !important;" +
         "}" +
         ".full-start__rate {" +
         "background-color: rgba(0, 0, 0, 0.25) !important;" + // Добавлено: фон для каждого рейтинга
@@ -295,6 +294,11 @@
         "border: none !important;" +
         "background: transparent !important;" +
         "padding: 0 !important;" +
+        "}" +
+        ".full-start-new__tagline.full--tagline {" +
+        "position: relative !important;" +
+        "bottom: 0.8em !important;" +
+        "margin-bottom: 1.2em !important;" +
         "}" +
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
