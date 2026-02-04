@@ -3258,14 +3258,14 @@ Lampa.Listener.follow('full', function(e) {
             }
 
             // Сохраняем данные для отображения бейджей
-            if (activity && activity.applecation_quality === undefined) {
-                activity.applecation_quality = qualityInfo;
+            if (activity && activity.quality_info === undefined) {
+                activity.quality_info = qualityInfo;
                 // Обновляем бейджи качества
                 updateQualityBadges(activity, qualityInfo);
             }
             
         }, (error) => {
-            console.log('Applecation Quality Badges', { error: error });
+            console.log('Quality Badges', { error: error });
         });
     }
 
@@ -3277,7 +3277,7 @@ Lampa.Listener.follow('full', function(e) {
         
         // Ищем подходящее место для размещения бейджей
         // Попробуем разные селекторы
-        let badgesContainer = render.find('.applecation__quality-badges');
+        let badgesContainer = render.find('.quality-badges');
         
         // Если контейнера нет, создадим его в подходящем месте
         if (!badgesContainer.length) {
@@ -3294,8 +3294,8 @@ Lampa.Listener.follow('full', function(e) {
             }
             
             if (metaContainer.length) {
-                metaContainer.append('<div class="applecation__quality-badges"></div>');
-                badgesContainer = render.find('.applecation__quality-badges');
+                metaContainer.append('<div class="quality-badges"></div>');
+                badgesContainer = render.find('.quality-badges');
             }
         }
         
@@ -3367,7 +3367,7 @@ Lampa.Listener.follow('full', function(e) {
     function addStyles() {
         const styles = `<style>
         /* Бейджи качества */
-        .applecation__quality-badges {
+        .quality-badges {
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
@@ -3377,7 +3377,7 @@ Lampa.Listener.follow('full', function(e) {
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
         
-        .applecation__quality-badges.show {
+        .quality-badges.show {
             opacity: 1;
             transform: translateY(0);
         }
@@ -3407,8 +3407,8 @@ Lampa.Listener.follow('full', function(e) {
         </style>`;
         
         // Добавляем стили в DOM
-        if (!$('style[data-id="applecation-quality-badges"]').length) {
-            $(styles).attr('data-id', 'applecation-quality-badges').appendTo('head');
+        if (!$('style[data-id="quality-badges"]').length) {
+            $(styles).attr('data-id', 'quality-badges').appendTo('head');
         }
     }
 
@@ -3416,7 +3416,7 @@ Lampa.Listener.follow('full', function(e) {
      * Инициализация плагина
      */
     function initializePlugin() {
-        console.log('Applecation Quality Badges loaded');
+        console.log('Quality Badges loaded');
         
         // Добавляем стили
         addStyles();
@@ -3429,7 +3429,7 @@ Lampa.Listener.follow('full', function(e) {
                 const data = event.data && event.data.movie;
                 
                 // Добавляем контейнер для бейджей качества
-                let badgesContainer = render.find('.applecation__quality-badges');
+                let badgesContainer = render.find('.quality-badges');
                 
                 if (!badgesContainer.length) {
                     // Ищем подходящее место для размещения бейджей
@@ -3451,8 +3451,8 @@ Lampa.Listener.follow('full', function(e) {
                     }
                     
                     if (metaContainer.length) {
-                        metaContainer.append('<div class="applecation__quality-badges"></div>');
-                        badgesContainer = render.find('.applecation__quality-badges');
+                        metaContainer.append('<div class="quality-badges"></div>');
+                        badgesContainer = render.find('.quality-badges');
                     }
                 }
                 
