@@ -3272,26 +3272,37 @@ Lampa.Listener.follow('full', function(e) {
     /**
      * Обновляет бейджи качества
      */
-function updateQualityBadges(activity, qualityInfo) {
-    const render = activity.render();
-    
-    // Ищем контейнер с оригинальным названием (используем те же селекторы, что и в плагине оригинального названия)
-    let originalTitleElement = render.find('.original-title');
-    
-    if (!originalTitleElement.length) {
-        console.log('Контейнер оригинального названия не найден');
-        return;
-    }
-    
-    // Проверяем, есть ли уже бейджи
-    let badgesContainer = originalTitleElement.find('.applecation__quality-badges');
-    
-    // Если контейнера для бейджей нет, создаем его внутри оригинального названия
-    if (!badgesContainer.length) {
-        // Добавляем бейджи ВНУТРИ контейнера с оригинальным названием
-        originalTitleElement.append('<div class="applecation__quality-badges"></div>');
-        badgesContainer = originalTitleElement.find('.applecation__quality-badges');
-    }
+    function updateQualityBadges(activity, qualityInfo) {
+        const render = activity.render();
+        
+        // Ищем подходящее место для размещения бейджей
+        // Попробуем разные селекторы
+        let badgesContainer = render.find('.applecation__quality-badges');
+        
+        // Если контейнера нет, создадим его в подходящем месте
+        if (!badgesContainer.length) {
+            // Сначала попробуем найти контейнер с мета-информацией
+            let metaContainer = render.find('.original-title');
+            if (!metaContainer.length) {
+                metaContainer = render.find('.full-start-new__details');
+            }
+            if (!metaContainer.length) {
+                metaContainer = render.find('.full-start__body');
+            }
+            if (!metaContainer.length) {
+                metaContainer = render.find('.full-start-new__body');
+            }
+            
+            if (metaContainer.length) {
+                metaContainer.append('<div class="applecation__quality-badges"></div>');
+                badgesContainer = render.find('.applecation__quality-badges');
+            }
+        }
+        
+        if (!badgesContainer.length) {
+            console.log('Не найден контейнер для бейджей качества');
+            return;
+        }
         
         const badges = [];
         
@@ -3417,19 +3428,41 @@ function updateQualityBadges(activity, qualityInfo) {
                 const render = activity.render();
                 const data = event.data && event.data.movie;
                 
-                // Ждем немного, чтобы плагин оригинального названия успел добавить свой контейнер
-                setTimeout(() => {
-                    // Ищем контейнер с оригинальным названием
-                    let originalTitleElement = render.find('.original-title');
+                // Добавляем контейнер для бейджей качества
+                let badgesContainer = render.find('.applecation__quality-badges');
+                
+                if (!badgesContainer.length) {
+                    // Ищем подходящее место для размещения бейджей
+                    let metaContainer = render.find('.original-title');
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start-new__details');
+                    }
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start__body');
+                    }
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start-new__body');
+                    }
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start__head');
+                    }
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start-new__head');
+                    }
+                    
+                    if (metaContainer.length) {
+                        metaContainer.append('<div class="applecation__quality-badges"></div>');
+                        badgesContainer = render.find('.applecation__quality-badges');
+                    }
+                }
                 
                 // Анализируем качество контента
-                if (data && originalTitleElement.length) {
+                if (data && badgesContainer.length) {
                     analyzeContentQualities(data, activity);
                 }
-            }, 50); // Небольшая задержка
-        }
-    });
-}
+            }
+        });
+    }
 
     // Унифицированный запуск плагина
     (function initAllPlugins() {
