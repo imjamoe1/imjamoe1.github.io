@@ -300,6 +300,9 @@
         "bottom: 0.8em !important;" +
         "margin-bottom: 1.2em !important;" +
         "}" +
+        ".full-start-new__title {" +
+        "bottom: 0.3em !important;" +
+        "}" +
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
         "   position: absolute !important; " +
