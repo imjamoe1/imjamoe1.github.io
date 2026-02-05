@@ -371,17 +371,9 @@
         "    height: 100% !important;" +
         "    transform: translateY(0.45em) translateX(-0.2em) scaleY(1.3) !important;" +
         "}" +
-        ".items-line.layer--visible.layer--render {" +
+        ".full-start-new__reactions {" +
         "    position: relative;" +
-        "    overflow: visible;" +
-        "}" +
-        ".tmdb-networks {" +
-        "    position: relative;" +
-        "    bottom: 9em !important;" +
-        "}" +
-        ".full-start-new__buttons {" +
-        "    position: relative;" +
-        "    top: 7em !important;" +
+        "    margin-bottom: 3em !important;" +
         "}" +
         /* Стили для логотипов качества внутри карточки */
         ".full-start__status.maxsm-quality {" +
