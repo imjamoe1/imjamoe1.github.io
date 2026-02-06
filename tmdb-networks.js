@@ -579,7 +579,7 @@ function renderNetworks() {
             '.tmdb-networks { margin-top: -3em; } ' +
             '.network-btn { height: 4em; } ' +
             '.network-btn.movie { height: 4em; } ' +
-            //'.network-logo { background-color: #fff; position: relative; } ' +
+            '.network-logo { background-color: #fff; position: relative; } ' +
             '.network-logo.movie { background: none; padding: 0; } ' +
             '.network-logo .overlay { ' +
                 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; ' +
