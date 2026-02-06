@@ -591,7 +591,7 @@ function renderNetworks() {
         '.platforms-static { ' +
             'display: inline-block !important; ' +
             'height: 2.94em !important; ' +
-            'background: rgba(255, 255, 255, 0.1) !important; ' +
+            //'background: rgba(255, 255, 255, 0.1) !important; ' +
             'border-radius: 0.6em !important; ' +
             'padding: 0 1em !important; ' +
             'margin-left: 0.3em !important; ' +
