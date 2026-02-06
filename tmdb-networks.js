@@ -577,7 +577,7 @@ function renderNetworks() {
 
         $('<style>').prop('type', 'text/css').html(
             '.tmdb-networks { margin-top: -3em; } ' +
-            '.network-btn { height: 2.94em; } ' +
+            '.network-btn { height: 4em; } ' +
             '.network-btn.movie { height: 4em; } ' +
             '.network-logo { background-color: #fff; position: relative; } ' +
             '.network-logo.movie { background: none; padding: 0; } ' +
