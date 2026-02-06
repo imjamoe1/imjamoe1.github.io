@@ -315,53 +315,61 @@
         }
     }
 
-    function renderNetworks() {
-        var object = Lampa.Activity.active();
-        var render = object.activity.render();
-        $('.tmdb-networks', render).remove();
+function renderNetworks() {
+    var object = Lampa.Activity.active();
+    var render = object.activity.render();
+    $('.tmdb-networks', render).remove();
 
-        getNetworks(object, function(networks) {
-            if (networks.length == 0) return;
+    getNetworks(object, function(networks) {
+        if (networks.length == 0) return;
 
-            var type = object.method;
+        var type = object.method;
 
-            renderExtraBtn(render, networks, type, object);
+        renderExtraBtn(render, networks, type, object);
 
-            var displayMode = settings['platfroms_' + type + '_list_mode'];
+        var displayMode = settings['platfroms_' + type + '_list_mode'];
 
-            if (displayMode == LIST_DISPLAY_MODE.HIDE) return;
-            var displayLimit = settings['platfroms_' + type + '_list_max_visible'];
-            var networksLine = $(
-                '<div class="tmdb-networks">' +
-                    '<div class="items-line__body" style="margin-bottom:3em;">' +
-                        '<div class="full-descr">' +
-                            '<div class="full-descr__left">' +
-                                '<div class="full-descr__tags" style="margin-top:0;"></div>' +
-                            '</div>' +
+        if (displayMode == LIST_DISPLAY_MODE.HIDE) return;
+        var displayLimit = settings['platfroms_' + type + '_list_max_visible'];
+        
+        var networksLine = $(
+            '<div class="tmdb-networks">' +
+                '<div class="items-line__body" style="margin-bottom:3em;">' +
+                    '<div class="full-descr">' +
+                        '<div class="full-descr__left">' +
+                            '<div class="full-descr__tags" style="margin-top:0;"></div>' +
                         '</div>' +
                     '</div>' +
-                '</div>'
-            );
+                '</div>' +
+            '</div>'
+        );
 
-            var container = $('.full-descr__tags', networksLine);
+        var container = $('.full-descr__tags', networksLine);
 
-            var hasMoreBtn = false;
-            networks.forEach(function (network, index) {
-                container.append(createNetworkButton(network, index, type, displayMode, displayLimit));
+        var hasMoreBtn = false;
+        networks.forEach(function (network, index) {
+            container.append(createNetworkButton(network, index, type, displayMode, displayLimit));
 
-                if (networks.length > displayLimit && index === displayLimit - 1) {
-                    container.append(createMoreButton(networks.length - displayLimit, type, container));
-                    hasMoreBtn = true;
-                }
-            });
-
-            if (hasMoreBtn) {
-                container.append(createHideButton(type));
+            if (networks.length > displayLimit && index === displayLimit - 1) {
+                container.append(createMoreButton(networks.length - displayLimit, type, container));
+                hasMoreBtn = true;
             }
-
-            $('.items-line', render).eq(0).prepend(networksLine);
         });
-    }
+
+        // Добавляем статический элемент с надписью
+        var platformsItem = $('<div class="platforms-static">' +
+            '<span class="platforms-static__text">Platforms</span>' +
+        '</div>');
+        
+        container.append(platformsItem);
+
+        if (hasMoreBtn) {
+            container.append(createHideButton(type));
+        }
+
+        $('.items-line', render).eq(0).prepend(networksLine);
+    });
+}
 
     function onNetworkButtonClick(network, element, type, controller) {
         var isTv = type == 'tv';
@@ -579,7 +587,26 @@
             '.network-logo.full-start__button { height: 5em; padding: 0.5em; }' + // Особый размер для кнопки в начале
             '.network-logo.full-start__button .overlay { border-radius: 1.5em; }' +
             '.network-logo.focus .overlay { background: rgba(0, 0, 0, 0.3); } ' +
-            '.network-logo.focus { box-shadow: 0 0 0 0.3em rgb(255, 255, 255); }'
+            '.network-logo.focus { box-shadow: 0 0 0 0.3em rgb(255, 255, 255); }' +
+        '.platforms-static { ' +
+            'display: inline-block !important; ' +
+            'height: 2.94em !important; ' +
+            'background: rgba(255, 255, 255, 0.1) !important; ' +
+            'border-radius: 0.6em !important; ' +
+            'padding: 0 1em !important; ' +
+            'margin-left: 0.3em !important; ' +
+            'vertical-align: middle !important; ' +
+            'line-height: 2.94em !important; ' +
+        '} ' +
+        '.platforms-static__text { ' +
+            'font-size: 1.2em !important; ' +
+            'font-weight: 600 !important; ' +
+            'color: rgba(255, 255, 255, 0.9) !important; ' +
+        '} ' +
+        '.network-btn.movie + .platforms-static { ' +
+            'height: 4em !important; ' +
+            'line-height: 4em !important; ' +
+        '}'
         ).appendTo('head');
 
         initSettings();
