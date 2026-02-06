@@ -594,7 +594,7 @@ function renderNetworks() {
             'height: 2.94em !important; ' +
             //'background: rgba(255, 255, 255, 0.1) !important; ' +
             'border-radius: 0.6em !important; ' +
-            'padding: 0 0.5em !important; ' +
+            'padding: 0 0.3em !important; ' +
             'margin-left: 0.3em !important; ' +
             'vertical-align: middle !important; ' +
             'line-height: 2.94em !important; ' +
