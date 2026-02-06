@@ -579,12 +579,7 @@ function renderNetworks() {
             '.tmdb-networks { margin-top: -3em; } ' +
             '.network-btn { height: 4.5em; } ' +
             '.network-btn.movie { height: 4em; } ' +
-            '.network-logo { 
-                background-color: transparent;
-                position: relative; 
-                border: none;
-                outline: none;
-            } ' +
+            '.network-logo { background-color: transparent; position: relative; border: none; outline: none; } ' +
             '.network-logo.movie { background: none; padding: 0; } ' +
             '.network-logo .overlay { ' +
                 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; ' +
@@ -593,7 +588,7 @@ function renderNetworks() {
             '.network-logo img { border-radius: 0.6em; height: 100%; } ' +
             '.network-logo.full-start__button .overlay, .network-logo.full-start__button.movie * { border-radius: 1em }' + 
             '.network-logo.focus .overlay { background: rgba(0, 0, 0, 0.3); } ' +
-            '.network-logo.focus { box-shadow: 0 0 0 0.3em rgb(255, 255, 255); }' +
+            '.network-logo.focus { box-shadow: 0 0 0 0.2em rgb(255, 255, 255); }'
         '.platforms-static { ' +
             'display: inline-block !important; ' +
             'height: 2.94em !important; ' +
