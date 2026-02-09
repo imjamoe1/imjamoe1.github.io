@@ -602,6 +602,7 @@ function renderNetworks() {
         '.platforms-static__text { ' +
             'font-size: 1.2em !important; ' +
             'font-weight: 600 !important; ' +
+            'padding-right:  2em !important; ' +
             'color: rgba(255, 255, 255, 0.9) !important; ' +
         '} ' +
         '.network-btn.movie + .platforms-static { ' +
