@@ -352,11 +352,11 @@
 
     // Инициализация при готовности приложения
     if (window.appready) {
-        setTimeout(initPlugin, 1000);
+        initPlugin();
     } else {
         Lampa.Listener.follow('app', function(e) {
             if (e.type === 'ready') {
-                setTimeout(initPlugin, 1000);
+                initPlugin();
             }
         });
     }
