@@ -2,145 +2,162 @@
     'use strict';
 
     var network = new Lampa.Reguest();
-    var cache = {
-        data: new Map(),
-        ttl: 3600000, // 1 час в миллисекундах
-        set: function(key, value) {
-            this.data.set(key, {
-                value: value,
-                timestamp: Date.now()
-            });
-        },
-        get: function(key) {
-            var item = this.data.get(key);
-            if (item && Date.now() - item.timestamp < this.ttl) {
-                return item.value;
-            }
-            this.data.delete(key);
-            return null;
-        }
-    };
+    var cache = new Map();
+    var pluginInitialized = false;
 
-    // Функция для проверки типа интерфейса
-    function isNewInterface(render) {
-        return $('.full-start-new', render).length > 0;
-    }
-
+    // Получение провайдеров (по странам) с логотипами
     function getMovieProviders(movie, callback) {
-        var cacheKey = 'providers_' + movie.id;
-        var cachedData = cache.get(cacheKey);
-        if (cachedData) {
-            return callback(cachedData);
+        const cacheKey = `providers_${movie.id}`;
+        if (cache.has(cacheKey)) {
+            return callback(cache.get(cacheKey));
         }
 
-        var url = Lampa.TMDB.api('movie/' + movie.id + '/watch/providers');
+        const url = Lampa.TMDB.api(`movie/${movie.id}/watch/providers`);
         network.silent(url, 
-            function(data) {
-                var providers = [];
-                var allowedCountryCodes = ['US', 'RU'];
+            function (data) {
+                const providers = [];
+                const allowedCountryCodes = ['US', 'RU'];
 
-                allowedCountryCodes.forEach(function(countryCode) {
-                    var countryData = data.results && data.results[countryCode];
-                    if (countryData) {
-                        if (countryData.flatrate) providers = providers.concat(countryData.flatrate);
-                        if (countryData.rent) providers = providers.concat(countryData.rent);
-                        if (countryData.buy) providers = providers.concat(countryData.buy);
+                // Добавление доступных провайдеров
+                allowedCountryCodes.forEach(countryCode => {
+                    if (data.results?.[countryCode]) {
+                        providers.push(
+                            ...(data.results[countryCode].flatrate || []),
+                            ...(data.results[countryCode].rent || []),
+                            ...(data.results[countryCode].buy || [])
+                        );
                     }
                 });
 
-                var filteredProviders = providers.filter(function(p) {
-                    return p.logo_path;
-                });
+                // Фильтрация по наличию логотипа
+                const filteredProviders = providers.filter(p => p.logo_path);
                 cache.set(cacheKey, filteredProviders);
                 callback(filteredProviders);
             },
-            function() {
+            function (error) {
+                console.error('Provider fetch error:', error);
                 callback([]);
             }
         );
     }
 
+    // Получение сетей или студий (в зависимости от типа карточки)
     function getNetworks(object, callback) {
-        if (!object || !object.card || object.card.source !== 'tmdb') {
+        if (!object?.card) {
             return callback([]);
         }
 
-        if (object.card.networks && object.card.networks.length) {
+        if (object.card.networks?.length) {
             return callback(object.card.networks);
         }
-        if (object.card.production_companies && object.card.production_companies.length) {
+        if (object.card.production_companies?.length) {
             return callback(object.card.production_companies);
         }
 
         getMovieProviders(object.card, callback);
     }
 
+    // Меню фильтрации по студии/сети
     function showNetworkMenu(network, type, element) {
-        var isTv = type === 'tv';
-        var controller = Lampa.Controller.enabled().name;
-        var dateField = isTv ? 'first_air_date' : 'primary_release_date';
-        var currentDate = new Date().toISOString().split('T')[0];
-
-        var menuItems = [
-            { 
-                title: 'Популярные', 
-                sort: '', 
-                filter: { 'vote_count.gte': 10 } 
-            },
-            { 
-                title: 'Новые', 
-                sort: dateField + '.desc', 
-                filter: { 
-                    'vote_count.gte': 10
-                } 
-            }
-        ];
-        // Добавляем дату динамически для избежания проблем с ES5
-        menuItems[1].filter[dateField + '.lte'] = currentDate;
+        const isTv = type === 'tv';
+        const controller = Lampa.Controller.enabled().name;
+        const dateField = isTv ? 'first_air_date' : 'primary_release_date';
+        const currentDate = new Date().toISOString().split('T')[0];
 
         Lampa.Select.show({
             title: network.name || 'Network',
-            items: menuItems,
+            items: [
+                { title: 'Популярные', sort: '', filter: { 'vote_count.gte': 10 } },
+                { title: 'Новые', sort: `${dateField}.desc`, filter: { 'vote_count.gte': 10, [`${dateField}.lte`]: currentDate } }
+            ],
             onBack: function() {
                 Lampa.Controller.toggle(controller);
                 if (element) {
-                    Lampa.Controller.collectionFocus(
-                        element, 
-                        Lampa.Activity.active().activity.render()
-                    );
+                    Lampa.Controller.collectionFocus(element, Lampa.Activity.active().activity.render());
                 }
             },
             onSelect: function(action) {
-                var filter = { 'vote_count.gte': action.filter['vote_count.gte'] };
-                filter[isTv ? 'with_networks' : 'with_companies'] = network.id;
-                if (action.filter[dateField + '.lte']) {
-                    filter[dateField + '.lte'] = action.filter[dateField + '.lte'];
-                }
-
+                // Переход к фильтрованной категории
                 Lampa.Activity.push({
-                    url: 'discover/' + type,
-                    title: (network.name || 'Network') + ' ' + action.title,
+                    url: `discover/${type}`,
+                    title: `${network.name || 'Network'} ${action.title}`,
                     component: 'category_full',
                     source: 'tmdb',
                     card_type: true,
                     page: 1,
                     sort_by: action.sort,
-                    filter: filter
+                    filter: {
+                        [isTv ? 'with_networks' : 'with_companies']: network.id,
+                        ...action.filter
+                    }
                 });
             }
         });
     }
 
+    // Функция для перемещения кнопки в правильный контейнер
+    function moveButtonToNetworksContainer(render) {
+        if (!render) return false;
+        
+        const studioButton = $('.button--network', render);
+        const networksContainer = $('.tmdb-networks', render);
+        
+        if (studioButton.length && networksContainer.length) {
+            // Находим контейнер с логотипами платформ
+            const platformsContainer = networksContainer.find('.full-descr__tags');
+            
+            if (platformsContainer.length) {
+                // Проверяем, не находится ли уже кнопка в правильном месте
+                if (!studioButton.closest('.full-descr__tags').length) {
+                    // Удаляем старую надпись Studios, если она уже существует
+                    platformsContainer.find('.studios-static').remove();
+                    
+                    // Создаем элемент с надписью Studios
+                    const studiosStatic = $('<div class="studios-static">' +
+                        '<span class="studios-static__text">Studios</span>' +
+                    '</div>');
+                    
+                    // Добавляем кнопку и надпись в контейнер с платформами
+                    const platformsStatic = platformsContainer.find('.platforms-static');
+                    if (platformsStatic.length) {
+                        // Добавляем логотип студии после платформ, а надпись Studios после логотипа
+                        studioButton.insertAfter(platformsStatic);
+                        studiosStatic.insertAfter(studioButton);
+                    } else {
+                        // Добавляем сначала логотип, потом надпись Studios
+                        platformsContainer.prepend(studioButton);
+                        studioButton.after(studiosStatic);
+                    }
+                    
+                    console.log('Studio button moved to platforms container with Studios label after logo');
+                    return true;
+                } else {
+                    // Если кнопка уже на месте, но нет надписи Studios - добавляем ее
+                    if (!platformsContainer.find('.studios-static').length) {
+                        const studiosStatic = $('<div class="studios-static">' +
+                            '<span class="studios-static__text">Studios</span>' +
+                        '</div>');
+                        
+                        studioButton.after(studiosStatic);
+                        console.log('Added Studios label to existing studio button');
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // Добавление кнопки студии/сети в карточку
     function addNetworkButton(render, networks, type) {
         $('.button--network, .button--studio', render).remove();
 
-        if (!networks || !networks.length || !networks[0] || !networks[0].logo_path) return;
+        if (!networks?.length || !networks[0]?.logo_path) return;
 
-        var network = networks[0];
-        var imgSrc = Lampa.TMDB.image('t/p/w154' + network.logo_path);
-        var imgAlt = (network.name || '').replace(/"/g, '"');
+        const network = networks[0];
+        const imgSrc = Lampa.TMDB.image(`t/p/w154${network.logo_path}`);
+        const imgAlt = (network.name || '').replace(/"/g, '"');
 
-        var $networkButton = $('<div>')
+        const btn = $('<div>')
             .addClass('full-start__button selector button--network')
             .append(
                 $('<div>')
@@ -153,202 +170,194 @@
                                 $(this).parent().parent().remove();
                             })
                     )
-            );
+            )
+            .on('hover:enter', function() {
+                showNetworkMenu(network, type, this);
+            });
 
-        $networkButton.on('hover:enter', function() {
-            showNetworkMenu(network, type, this);
-        });
-
-        // Добавляем кнопку в зависимости от интерфейса
-        if (isNewInterface(render)) {
-            $('.full-start-new__buttons', render).append($networkButton);
-        } else {
-            $('.full-start__buttons', render).append($networkButton);
+        // Сначала добавляем кнопку в стандартное место
+        $('.full-start-new__buttons', render).append(btn);
+        
+        // Пытаемся переместить ее сразу
+        if (!moveButtonToNetworksContainer(render)) {
+            // Если не удалось, запускаем проверку через небольшой таймаут
+            let checkCount = 0;
+            const maxChecks = 10;
+            const checkInterval = setInterval(() => {
+                if (moveButtonToNetworksContainer(render) || checkCount >= maxChecks) {
+                    clearInterval(checkInterval);
+                }
+                checkCount++;
+            }, 500);
         }
     }
 
-    function addOriginalTitle(render, card) {
-        var $titleElement = isNewInterface(render) 
-            ? $('.full-start-new__title', render) 
-            : $('.full-start__title', render);
-            
-        if (!$titleElement.length || !card) return;
-
-        var originalTitle = card.original_title || card.original_name;
-        var currentTitle = card.title || card.name;
-
-        if (originalTitle && originalTitle !== currentTitle) {
-            $titleElement.find('.original-title').remove();
+    // Добавление оригинального названия
+    function addOriginalTitle(card, render) {
+        if (!card || !render) return;
+        
+        const titleElement = $('.full-start-new__title', render);
+        if (!titleElement.length) return;
+        
+        const originalTitle = card.original_title || card.original_name;
+        if (originalTitle && originalTitle !== card.title && originalTitle !== card.name) {
+            titleElement.find('.original-title').remove();
             $('<div>')
                 .addClass('original-title')
                 .text(originalTitle)
-                .appendTo($titleElement);
+                .appendTo(titleElement);
         }
     }
 
-    // Функция для применения логотипа к карточке
-    function applyLogo(render, $poster, logoPath) {
-        var isNew = isNewInterface(render);
-        var $titleElement = isNew 
-            ? $('.full-start-new__title', render) 
-            : $('.full-start__title', render);
-        
-        // Удаляем старый логотип если есть
-        $('.logo-container').remove();
-        
-        // Находим именно название (первый текстовый узел)
-        $titleElement.contents().filter(function() {
-            return this.nodeType === 3;
-        }).wrap('<span class="title-text"></span>');
-        
-        // Скрываем только обёрнутый текст
-        $('.title-text', $titleElement).hide();
-        
-        $poster.css('position', 'relative');
-
-        var $container = $('<div>')
-            .addClass('logo-container')
-            .css({
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                zIndex: '999'
-            });
-
-        $('<img>')
-            .attr('src', Lampa.TMDB.image('/t/p/w300' + logoPath))
-            .css({
-                'max-width': '20em',
-                'max-height': '10em',
-                'object-fit': 'contain',
-                'filter': 'drop-shadow(0px 0px 1em rgba(0,0,0,0.8))'
-            })
-            .appendTo($container);
-
-        $poster.append($container);
-    }
-
-    // Функция добавления логотипа с кэшированием
-    function addLogo(render, movie) {
-        if (!$('body').hasClass('orientation--portrait') || !$('body').hasClass('true--mobile')) return;
-
-        var isNew = isNewInterface(render);
-        var $poster = isNew 
-            ? $('.full-start-new__poster', render) 
-            : $('.full-start__poster', render);
-            
-        if (!$poster.length) return;
-
-        // Проверяем кэш для логотипа
-        var cacheKey = 'logo_' + movie.id;
-        var cachedLogo = cache.get(cacheKey);
-        
-        if (cachedLogo) {
-            if (cachedLogo.logo_path) {
-                applyLogo(render, $poster, cachedLogo.logo_path);
-            }
-            return;
-        }
-
-        var url = Lampa.TMDB.api((movie.name ? 'tv' : 'movie') + '/' + movie.id + '/images?api_key=' + Lampa.TMDB.key() + '&language=' + Lampa.Storage.get('language'));
-        
-        $.get(url, function(response) {
-            var logoData = { logo_path: null };
-            if (response.logos && response.logos[0]) {
-                logoData.logo_path = response.logos[0].file_path;
-            }
-            cache.set(cacheKey, logoData);
-
-            if (logoData.logo_path) {
-                applyLogo(render, $poster, logoData.logo_path);
-            }
-        });
-    }
-
-    // Обработчик изменения ориентации экрана
-    function handleOrientation() {
-        if ($('body').hasClass('orientation--portrait')) {
-            var e = Lampa.Activity.active();
-            if (e && e.activity.render()) {
-                addLogo(e.activity.render(), e.card);
-            }
-        } else {
-            $('.logo-container').remove();
-            $('.title-text').show();
-        }
-    }
-
+    // Инициализация плагина
     function initPlugin() {
+        if (pluginInitialized) return;
+        pluginInitialized = true;
+        
+        console.log('Network plugin initializing...');
+
         // Добавление CSS-стилей (однократно)
         if ($('style#network-plugin').length === 0) {
             $('<style>')
                 .attr('id', 'network-plugin')
-                .html([
-                    '.button--network, .button--studio { padding: .3em; }',
-                    '.network-innie {',
-                    '    background-color: #fff;',
-                    '    width: 100%;',
-                    '    height: 100%;',
-                    '    border-radius: .7em;',
-                    '    display: flex;',
-                    '    align-items: center;',
-                    '    padding: 0 1em;',
-                    '}',
-                    '.button--network img, .button--studio img {',
-                    '    height: 100%;',
-                    '    max-height: 1.5em;',
-                    '    max-width: 4.5em;',
-                    '    object-fit: contain;',
-                    '}',
-                    '.full-start-new__title, .full-start__title {',
-                    '    position: relative;',
-                    '    font-size: 3em !important;',
-                    '    margin-bottom: 0.6em !important;',
-                    '    display: block !important;',
-                    '}',
-                    '.full--tagline {',
-                    '    margin-bottom: 0.6em !important;',
-                    '}',
-                    '.original-title {',
-                    '    font-size: 0.5em;',
-                    '    color: rgba(255, 255, 255, 0.7);',
-                    '    font-weight: normal;',
-                    '}'
-                ].join('\n'))
+                .html(`
+                    .button--network, .button--studio { 
+                        position: relative !important;
+                        top: 1em !important;
+                        padding: .3em;
+                        display: inline-block !important;
+                        margin-right: 0.5em !important;
+                        margin-bottom: 0.5em !important;
+                        vertical-align: middle !important;
+                    }
+                    
+                    .network-innie {
+                        background-color: #fff;
+                        width: 100%;
+                        height: 100%;
+                        border-radius: .7em;
+                        display: flex;
+                        align-items: center;
+                        padding: 0 1em;
+                    }
+                    
+                    .button--network img,
+                    .button--studio img {
+                        height: 100%;
+                        max-height: 1.5em;
+                        max-width: 4.5em;
+                        object-fit: contain;
+                    }
+
+                    .full-start-new__title {
+                        position: relative;
+                        margin-bottom: 0.6em !important;
+                    }
+                    
+                    .full--tagline {
+                        margin-bottom: 0.6em !important;
+                    }
+
+                    .original-title {
+                        font-size: 0.8em;
+                        color: rgba(255, 255, 255, 0.7);
+                        font-weight: normal;
+                        margin-top: 0.2em;
+                    }
+                    
+                    /* Стили для кнопки в контейнере с платформами */
+                    .full-descr__tags .button--network {
+                        position: relative !important;
+                        top: 0.5em !important;
+                        margin: 0 0.5em 0.5em 0 !important;
+                        vertical-align: top !important;
+                    }
+                    
+                    /* Дополнительное выравнивание для логотипа внутри */
+                    .full-descr__tags .button--network .network-innie {
+                        align-items: center !important;
+                        justify-content: center !important;
+                        height: 2.2em !important;
+                        min-width: 3.5em !important;
+                    }
+                    
+                    .full-descr__tags .button--network img {
+                        max-height: 1.3em !important;
+                        max-width: 3.5em !important;
+                    }
+                    
+                    /* Стили для надписи Studios */
+                    .studios-static {
+                        position: relative !important;
+                        display: inline-block !important;
+                        height: 2.94em !important;
+                        border-radius: 0.6em !important;
+                        margin-left: 0.3em !important;
+                        padding: 0 0.3em !important;
+                        top: 0.5em !important; 
+                        vertical-align: middle !important;
+                        line-height: 2.94em !important;
+                    } 
+                    
+                    .studios-static__text { 
+                        font-size: 1.2em !important;
+                        font-weight: 600 !important;
+                        color: rgba(255, 255, 255, 0.9) !important;
+                    } 
+                    
+                    /* Для совместимости с другими элементами */
+                    .full-descr__tags .studios-static {
+                        margin-left: 0 !important;
+                        margin-right: 0.5em !important;
+                    }
+                `)
                 .appendTo('head');
         }
 
+        // Глобальная проверка для уже открытых карточек
+        let globalCheckCount = 0;
+        const globalCheckInterval = setInterval(() => {
+            const activeActivity = Lampa.Activity.active();
+            if (activeActivity && activeActivity.activity && activeActivity.activity.render()) {
+                moveButtonToNetworksContainer(activeActivity.activity.render());
+            }
+            globalCheckCount++;
+            if (globalCheckCount > 10) { // Останавливаем через 10 секунд
+                clearInterval(globalCheckInterval);
+            }
+        }, 1000);
+
+        // Слушаем событие открытия карточки
         Lampa.Listener.follow('full', function(e) {
             if (e.type === 'complite') {
-                var render = e.object.activity.render();
+                const render = e.object.activity.render();
+                const card = e.object.card;
                 
-                addOriginalTitle(render, e.object.card);
-                addLogo(render, e.data.movie);
-                
-                getNetworks(e.object, function(networks) {
+                if (!render || !card) return;
+
+                // Добавление оригинального названия
+                addOriginalTitle(card, render);
+
+                // Добавление кнопки студии или телесети
+                getNetworks(e.object, networks => {
                     if (networks.length) {
                         addNetworkButton(render, networks, e.object.method);
                     }
                 });
             }
         });
-
-        // Слушатель изменения ориентации
-        $('body').on('class', function() {
-            handleOrientation();
-        });
+        
+        console.log('Network plugin initialized');
     }
 
+    // Инициализация при готовности приложения
     if (window.appready) {
-        initPlugin();
+        setTimeout(initPlugin, 1000);
     } else {
         Lampa.Listener.follow('app', function(e) {
             if (e.type === 'ready') {
-                initPlugin();
+                setTimeout(initPlugin, 1000);
             }
         });
     }
-
 })();
-
