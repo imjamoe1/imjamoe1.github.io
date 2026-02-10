@@ -302,7 +302,7 @@
         "}" +
         ".full-start-new__title {" +
         "bottom: 0.3em !important;" +
-        "font-size: 3em !important;" +
+        "font-size: 3.2em !important;" +
         "}" +
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
