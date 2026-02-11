@@ -337,6 +337,7 @@
         "    justify-content: center !important;" +
         "    gap: 0.1em !important;" +
         "    height: 2.9em !important;" +
+        //"    min-width: 4em !important;" +
         "    margin-right: 1.8em !important;" +
         "    top: 0.02em !important;" +
         "    position: relative !important;" +
@@ -350,6 +351,7 @@
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
         "    margin-right: 2.5em !important;" +
+        //"    top: -0.1em !important;" +
         "    font-weight: bold !important;" +
         "    line-height: 1 !important;" +
         "    text-align: center !important;" +
@@ -384,6 +386,7 @@
         "    display: inline-flex !important;" +
         "    align-items: center !important;" +
         "    justify-content: center !important;" +
+        //"    margin: 0 1px !important;" +
         "    background: rgba(0, 0, 0, 0.85) !important;" +
         "    border: 1px solid rgba(255, 255, 255, 1) !important;" +
         "    vertical-align: middle !important;" +
@@ -392,10 +395,16 @@
         ".full-start__status.maxsm-quality img {" +
         "    height: 1.6em !important;" +
         "    width: 2.6em !important;" +
+        //"    max-width: 1.8em !important;" +
         "    object-fit: contain !important;" +
         "}" +  
         ".card__quality img {" +
+        //"    height: 2em !important;" +   // Меньше для карточек
+        //"    width: auto !important;" +
+        //"    object-fit: contain !important;" +
+        //"    vertical-align: middle !important;" +
         "    display: none !important;" +
+        //"    margin: 0 auto !important;" +
         "}" +
         "</style>";
     
