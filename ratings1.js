@@ -502,7 +502,7 @@
     var JACRED_PROTOCOL = 'http://'; // Протокол JacRed
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     //var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
-    var JACRED_URL = 'www.jacred.xyz';
+    var JACRED_URL = '87.120.84.218:9117';
     var JACRED_API_KEY = '';
     //var JACRED_URL = 'parser.ruzha.ru';
     //var JACRED_API_KEY = 'BCqr1JX01ISh';
