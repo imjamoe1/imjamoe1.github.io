@@ -302,7 +302,7 @@
         "}" +
         ".full-start-new__title {" +
         "bottom: 0.3em !important;" +
-        "font-size: 3.3em !important;" +
+        "font-size: 3.2em !important;" +
         "}" +
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
@@ -502,7 +502,7 @@
     var JACRED_PROTOCOL = 'http://'; // Протокол JacRed
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     //var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
-    var JACRED_URL = 'jr.maxvol.pro';
+    var JACRED_URL = 'jacred.xyz';
     var JACRED_API_KEY = '';
     //var JACRED_URL = 'parser.ruzha.ru';
     //var JACRED_API_KEY = 'BCqr1JX01ISh';
@@ -1356,31 +1356,28 @@ function updateQualityElement(quality, localCurrentCard, render) {
             qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
             break;
         default:
-            // Для других значений качества
+            // Для других значений качества (если есть)
             qualityIcon = '';
     }
     
     if (element.length) {
-        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + 
-            ', quality: Updating existing element with quality "' + quality + '"');
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Updating existing element with quality "' + quality + '"');
         
         if (qualityIcon) {
-            element.html('<img src="' + qualityIcon + '" alt="' + quality + 
-                '" style="height: 1.2em; vertical-align: middle;">');
+            // Заменяем текст на иконку
+            element.html('<img src="' + qualityIcon + '" alt="' + quality + '" style="height: 1.2em; vertical-align: middle;">');
         } else {
             element.text(quality);
         }
         element.css('opacity', '1');
     } else {
-        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + 
-            ', quality: Creating new element with quality "' + quality + '"');
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Creating new element with quality "' + quality + '"');
         
         var div = document.createElement('div');
         div.className = 'full-start__status maxsm-quality';
         
         if (qualityIcon) {
-            div.innerHTML = '<img src="' + qualityIcon + '" alt="' + quality + 
-                '" style="height: 1.2em; vertical-align: middle;">';
+            div.innerHTML = '<img src="' + qualityIcon + '" alt="' + quality + '" style="height: 1.2em; vertical-align: middle;">';
         } else {
             div.textContent = quality;
         }
@@ -2269,6 +2266,7 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
     }
     
     card.setAttribute('data-quality-added', 'true');
+    
     var cardView = card.querySelector('.card__view');
     var qualityElements = null;
     
@@ -2277,9 +2275,32 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
         saveQualityCache(qCacheKey, { quality: quality }, card.card_data?.id);
     }
     
+    // Определяем URL иконки на основе качества
+    var qualityIcon = '';
+    var displayText = quality;
+    
+    if (quality && quality !== '...') {
+        switch(quality) {
+            case '4K':
+                qualityIcon = 'https://imjamoe1.github.io/quality/4K.png';
+                break;
+            case 'FHD':
+                qualityIcon = 'https://imjamoe1.github.io/quality/FHD.png';
+                break;
+            case 'HD':
+                qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+                break;
+            case 'TS':
+                qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+                break;
+            default:
+                // Для других значений качества оставляем текст
+                displayText = quality;
+        }
+    }
+    
     if (quality && quality !== 'NO' && quality !== '...') {
-        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + (card.card_data?.id) + 
-            ', CARDLIST: ' + source + ' found quality: ' + quality);
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + (card.card_data?.id) + ', CARDLIST: ' + source + ' found quality: ' + quality);
         
         if (cardView) {
             var hasQuality = false;
@@ -2293,8 +2314,17 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
                 qualityDiv = document.createElement('div');
                 qualityDiv.className = 'card__quality';
                 
-                // НА ПОСТЕРАХ: ТОЛЬКО ТЕКСТ, БЕЗ ЛОГОТИПОВ
-                qualityDiv.textContent = quality;
+                if (qualityIcon) {
+                    // Создаем элемент с иконкой
+                    var img = document.createElement('img');
+                    img.src = qualityIcon;
+                    img.alt = quality;
+                    img.style.cssText = 'height: 1.2em; vertical-align: middle;';
+                    qualityDiv.appendChild(img);
+                } else {
+                    // Или просто текст
+                    qualityDiv.textContent = displayText;
+                }
                 
                 cardView.appendChild(qualityDiv);
             } else {
@@ -2302,10 +2332,35 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
                 innerElement = qualityDiv.firstElementChild;
                 
                 if (innerElement) {
-                    // НА ПОСТЕРАХ: ТОЛЬКО ТЕКСТ, БЕЗ ЛОГОТИПОВ
-                    innerElement.textContent = quality;
+                    if (qualityIcon) {
+                        // Если это img элемент, обновляем src
+                        if (innerElement.tagName === 'IMG') {
+                            innerElement.src = qualityIcon;
+                            innerElement.alt = quality;
+                        } else {
+                            // Если это текстовый элемент, заменяем на img
+                            qualityDiv.innerHTML = '';
+                            var img = document.createElement('img');
+                            img.src = qualityIcon;
+                            img.alt = quality;
+                            img.style.cssText = 'height: 1.2em; vertical-align: middle;';
+                            qualityDiv.appendChild(img);
+                        }
+                    } else {
+                        // Если нет иконки, используем текст
+                        innerElement.textContent = displayText;
+                    }
                 } else {
-                    qualityDiv.textContent = quality;
+                    if (qualityIcon) {
+                        var img = document.createElement('img');
+                        img.src = qualityIcon;
+                        img.alt = quality;
+                        img.style.cssText = 'height: 1.2em; vertical-align: middle;';
+                        qualityDiv.innerHTML = '';
+                        qualityDiv.appendChild(img);
+                    } else {
+                        qualityDiv.textContent = displayText;
+                    }
                 }
             }
         }
