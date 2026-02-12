@@ -1,3 +1,12 @@
+// ==UserScript==
+// @name         Quality Badge Replacer
+// @version      1.0
+// @description  Заменяет текстовые метки качества на изображения
+// @author       You
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
 (function() {    
     'use strict';    
         
@@ -28,8 +37,6 @@
                 background: none !important;
             }       
             .card__quality img {
-               // width: 43px;  
-               // height: 21px;  
                 width: 43px;  
                 height: 23px;
                 border-radius: 0.25em;  
