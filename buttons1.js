@@ -12,8 +12,6 @@
         { name: 'subscribe', patterns: ['subscribe'], label: 'Подписка' },
         { name: 'book', patterns: ['book'], label: 'Закладки' },
         { name: 'reaction', patterns: ['reaction'], label: 'Реакции' },
-        { name: 'network', patterns: ['network'], label: 'Network' },
-        { name: 'plaftorms', patterns: ['plaftorms', 'platforms'], label: 'Платформы' },
         { name: 'other', patterns: [], label: 'Другие' }
     ];
 
@@ -373,8 +371,6 @@
             subscribe: [],
             book: [],
             reaction: [],
-            network: [],
-            plaftorms: [],
             other: []
         };
 
@@ -422,7 +418,7 @@
         
         if (!customOrder.length) {
             regular.sort(function(a, b) {
-                var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'network', 'plaftorms', 'other'];
+                var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
                 var typeA = getButtonType(a);
                 var typeB = getButtonType(b);
                 var indexA = typeOrder.indexOf(typeA);
@@ -593,8 +589,6 @@
                 .concat(categories.subscribe)
                 .concat(categories.book)
                 .concat(categories.reaction)
-                .concat(categories.network)
-                .concat(categories.plaftorms)
                 .concat(categories.other);
             
             allButtons = sortByCustomOrder(allButtons);
@@ -1051,8 +1045,6 @@
                 .concat(categories.subscribe)
                 .concat(categories.book)
                 .concat(categories.reaction)
-                .concat(categories.network)
-                .concat(categories.plaftorms)
                 .concat(categories.other);
         
         allButtons = sortByCustomOrder(allButtons);
@@ -1182,7 +1174,7 @@
                 if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden') && buttonsInColors.indexOf(btnId) === -1) {
                     var insertBefore = null;
                     var btnType = getButtonType(btn);
-                    var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'network', 'plaftorms', 'other'];
+                    var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
                     var btnTypeIndex = typeOrder.indexOf(btnType);
                     if (btnTypeIndex === -1) btnTypeIndex = 999;
                     
@@ -1535,8 +1527,6 @@
                 .concat(categories.subscribe)
                 .concat(categories.book)
                 .concat(categories.reaction)
-                .concat(categories.network)
-                .concat(categories.plaftorms)
                 .concat(categories.other);
 
             allButtons = sortByCustomOrder(allButtons);
@@ -1596,7 +1586,7 @@
                     if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden')) {
                         var insertBefore = null;
                         var btnType = getButtonType(btn);
-                        var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'network', 'plaftorms', 'other'];
+                        var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
                         var btnTypeIndex = typeOrder.indexOf(btnType);
                         if (btnTypeIndex === -1) btnTypeIndex = 999;
                         
