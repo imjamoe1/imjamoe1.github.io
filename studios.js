@@ -3,7 +3,9 @@
 
     var network = new Lampa.Reguest();
     var cache = new Map();
+    var studiosCache = new Map();
     var pluginInitialized = false;
+    var currentCardId = null;
 
     // Получение провайдеров (по странам) с логотипами
     function getMovieProviders(movie, callback) {
@@ -18,7 +20,6 @@
                 const providers = [];
                 const allowedCountryCodes = ['US', 'RU'];
 
-                // Добавление доступных провайдеров
                 allowedCountryCodes.forEach(countryCode => {
                     if (data.results?.[countryCode]) {
                         providers.push(
@@ -29,7 +30,6 @@
                     }
                 });
 
-                // Фильтрация по наличию логотипа
                 const filteredProviders = providers.filter(p => p.logo_path);
                 cache.set(cacheKey, filteredProviders);
                 callback(filteredProviders);
@@ -41,20 +41,29 @@
         );
     }
 
-    // Получение сетей или студий (в зависимости от типа карточки)
+    // Получение сетей или студий с кэшированием
     function getNetworks(object, callback) {
         if (!object?.card) {
             return callback([]);
         }
 
-        if (object.card.networks?.length) {
-            return callback(object.card.networks);
-        }
-        if (object.card.production_companies?.length) {
-            return callback(object.card.production_companies);
+        const cardId = object.card.id;
+        
+        if (studiosCache.has(cardId)) {
+            return callback(studiosCache.get(cardId));
         }
 
-        getMovieProviders(object.card, callback);
+        let studios = [];
+
+        if (object.card.networks?.length) {
+            studios = object.card.networks;
+        } 
+        else if (object.card.production_companies?.length) {
+            studios = object.card.production_companies.filter(studio => studio.logo_path);
+        }
+
+        studiosCache.set(cardId, studios);
+        callback(studios);
     }
 
     // Меню фильтрации по студии/сети
@@ -77,7 +86,6 @@
                 }
             },
             onSelect: function(action) {
-                // Переход к фильтрованной категории
                 Lampa.Activity.push({
                     url: `discover/${type}`,
                     title: `${network.name || 'Network'} ${action.title}`,
@@ -95,77 +103,51 @@
         });
     }
 
-    // Функция для перемещения кнопки в правильный контейнер
-    function moveButtonToNetworksContainer(render) {
-        if (!render) return false;
-        
-        const studioButton = $('.button--network', render);
-        const networksContainer = $('.tmdb-networks', render);
-        
-        if (studioButton.length && networksContainer.length) {
-            // Находим контейнер с логотипами платформ
-            const platformsContainer = networksContainer.find('.full-descr__tags');
-            
-            if (platformsContainer.length) {
-                // Проверяем, не находится ли уже кнопка в правильном месте
-                if (!studioButton.closest('.full-descr__tags').length) {
-                    // Удаляем старую надпись Studios, если она уже существует
-                    platformsContainer.find('.studios-static').remove();
-                    
-                    // Создаем элемент с надписью Studios
-                    const studiosStatic = $('<div class="studios-static">' +
-                        '<span class="studios-static__text">Studios</span>' +
-                    '</div>');
-                    
-                    // Добавляем кнопку и надпись в контейнер с платформами
-                    const platformsStatic = platformsContainer.find('.platforms-static');
-                    if (platformsStatic.length) {
-                        // Добавляем логотип студии после платформ, а надпись Studios после логотипа
-                        studioButton.insertAfter(platformsStatic);
-                        studiosStatic.insertAfter(studioButton);
-                    } else {
-                        // Добавляем сначала логотип, потом надпись Studios
-                        platformsContainer.prepend(studioButton);
-                        studioButton.after(studiosStatic);
-                    }
-                    
-                    console.log('Studio button moved to platforms container with Studios label after logo');
-                    return true;
-                } else {
-                    // Если кнопка уже на месте, но нет надписи Studios - добавляем ее
-                    if (!platformsContainer.find('.studios-static').length) {
-                        const studiosStatic = $('<div class="studios-static">' +
-                            '<span class="studios-static__text">Studios</span>' +
-                        '</div>');
-                        
-                        studioButton.after(studiosStatic);
-                        console.log('Added Studios label to existing studio button');
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    // Добавление кнопки студии/сети в карточку
-    function addNetworkButton(render, networks, type) {
-        $('.button--network, .button--studio', render).remove();
-
-        if (!networks?.length || !networks[0]?.logo_path) return;
-
-        const network = networks[0];
+    // Создание кнопки студии - С ПРИНУДИТЕЛЬНЫМИ СТИЛЯМИ
+    function createStudioButton(network, type, cardId) {
         const imgSrc = Lampa.TMDB.image(`t/p/w154${network.logo_path}`);
         const imgAlt = (network.name || '').replace(/"/g, '"');
 
         const btn = $('<div>')
             .addClass('full-start__button selector button--network')
+            .attr('data-card-id', cardId)
+            .attr('data-studio-id', network.id)
+            .css({
+                'display': 'inline-block !important',
+                'margin': '0 0.5em 0.5em 0 !important',
+                'vertical-align': 'middle !important',
+                'height': '2.94em !important',
+                'padding': '.3em !important',
+                'position': 'relative !important',
+                'background': 'none !important',
+                'border': 'none !important'
+            })
             .append(
                 $('<div>')
                     .addClass('network-innie')
+                    .css({
+                        'background-color': '#fff !important',
+                        'width': '100% !important',
+                        'height': '100% !important',
+                        'border-radius': '.7em !important',
+                        'display': 'flex !important',
+                        'align-items': 'center !important',
+                        'justify-content': 'center !important',
+                        'padding': '0 1em !important',
+                        'min-width': '3.5em !important'
+                    })
                     .append(
                         $('<img>')
                             .attr('src', imgSrc)
                             .attr('alt', imgAlt)
+                            .css({
+                                'height': '100% !important',
+                                'max-height': '1.5em !important',
+                                'max-width': '4.5em !important',
+                                'object-fit': 'contain !important',
+                                'display': 'block !important',
+                                'border-radius': '0 !important'
+                            })
                             .on('error', function() {
                                 $(this).parent().parent().remove();
                             })
@@ -175,21 +157,93 @@
                 showNetworkMenu(network, type, this);
             });
 
-        // Сначала добавляем кнопку в стандартное место
-        $('.full-start-new__buttons', render).append(btn);
+        return btn;
+    }
+
+    // Функция для добавления кнопки в tmdb-networks
+    function addButtonToNetworksContainer(render, btn, cardId) {
+        if (!render || !btn) return false;
         
-        // Пытаемся переместить ее сразу
-        if (!moveButtonToNetworksContainer(render)) {
-            // Если не удалось, запускаем проверку через небольшой таймаут
-            let checkCount = 0;
-            const maxChecks = 10;
-            const checkInterval = setInterval(() => {
-                if (moveButtonToNetworksContainer(render) || checkCount >= maxChecks) {
-                    clearInterval(checkInterval);
-                }
-                checkCount++;
-            }, 500);
+        const networksContainer = $('.tmdb-networks', render);
+        if (!networksContainer.length) return false;
+        
+        const tagsContainer = networksContainer.find('.full-descr__tags');
+        if (!tagsContainer.length) return false;
+        
+        // Удаляем старые элементы
+        tagsContainer.find(`.button--network[data-card-id="${cardId}"]`).remove();
+        tagsContainer.find('.studios-static').remove();
+        
+        // Находим platforms-static
+        const platformsStatic = tagsContainer.find('.platforms-static');
+        
+        if (platformsStatic.length) {
+            btn.insertAfter(platformsStatic);
+        } else {
+            tagsContainer.append(btn);
         }
+        
+        // Добавляем надпись Studios
+        const studiosStatic = $('<div class="studios-static">' +
+            '<span class="studios-static__text">Studios</span>' +
+        '</div>').css({
+            'display': 'inline-block !important',
+            'height': '2.94em !important',
+            'border-radius': '0.6em !important',
+            'padding': '0 0.3em !important',
+            'margin-left': '0.3em !important',
+            'vertical-align': 'middle !important',
+            'line-height': '2.94em !important'
+        });
+        
+        btn.after(studiosStatic);
+        
+        return true;
+    }
+
+    // Добавление кнопки студии
+    function addNetworkButton(render, networks, type, cardId) {
+        if (!networks?.length || !networks[0]?.logo_path) return;
+
+        if ($(`.button--network[data-card-id="${cardId}"]`, render).length) return;
+
+        const network = networks[0];
+        const btn = createStudioButton(network, type, cardId);
+
+        let attempts = 0;
+        const maxAttempts = 30;
+        
+        const checkInterval = setInterval(() => {
+            attempts++;
+            
+            if (addButtonToNetworksContainer(render, btn, cardId)) {
+                clearInterval(checkInterval);
+                console.log('Studio button added');
+                
+                // ПРИНУДИТЕЛЬНО ПРИМЕНЯЕМ СТИЛИ
+                setTimeout(() => {
+                    const addedBtn = $(`.button--network[data-card-id="${cardId}"]`, render);
+                    addedBtn.css({
+                        'display': 'inline-block !important',
+                        'visibility': 'visible !important',
+                        'opacity': '1 !important'
+                    });
+                    addedBtn.find('.network-innie').css({
+                        'background-color': '#fff !important',
+                        'visibility': 'visible !important',
+                        'opacity': '1 !important'
+                    });
+                    addedBtn.find('img').css({
+                        'visibility': 'visible !important',
+                        'opacity': '1 !important'
+                    });
+                }, 50);
+            }
+            
+            if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+            }
+        }, 100);
     }
 
     // Добавление оригинального названия
@@ -214,39 +268,51 @@
         if (pluginInitialized) return;
         pluginInitialized = true;
         
-        console.log('Network plugin initializing...');
+        console.log('Studio plugin initializing...');
 
-        // Добавление CSS-стилей (однократно)
-        if ($('style#network-plugin').length === 0) {
+        //СТИЛИ CSS
+        if ($('style#network-plugin-fixed').length === 0) {
             $('<style>')
-                .attr('id', 'network-plugin')
+                .attr('id', 'network-plugin-fixed')
                 .html(`
-                    .button--network, .button--studio { 
-                        position: relative !important;
-                        top: 1em !important;
-                        padding: .3em;
+                    .tmdb-networks .full-descr__tags .button--network,
+                    .full-descr__tags .button--network {
                         display: inline-block !important;
-                        margin-right: 0.5em !important;
-                        margin-bottom: 0.5em !important;
+                        margin: 0 0.5em 0.5em 0 !important;
                         vertical-align: middle !important;
+                        height: 2.94em !important;
+                        padding: .3em !important;
+                        position: relative !important;
+                        background: none !important;
+                        border: none !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
                     }
                     
-                    .network-innie {
-                        background-color: #fff;
-                        width: 100%;
-                        height: 100%;
-                        border-radius: .7em;
-                        display: flex;
-                        align-items: center;
-                        padding: 0 1em;
+                    .tmdb-networks .full-descr__tags .button--network .network-innie,
+                    .full-descr__tags .button--network .network-innie {
+                        background-color: #fff !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        border-radius: .7em !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        padding: 0 1em !important;
+                        min-width: 3.5em !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
                     }
                     
-                    .button--network img,
-                    .button--studio img {
-                        height: 100%;
-                        max-height: 1.5em;
-                        max-width: 4.5em;
-                        object-fit: contain;
+                    .tmdb-networks .full-descr__tags .button--network img,
+                    .full-descr__tags .button--network img {
+                        height: 100% !important;
+                        max-height: 1.5em !important;
+                        max-width: 4.5em !important;
+                        object-fit: contain !important;
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
                     }
 
                     .full-start-new__title {
@@ -264,93 +330,72 @@
                         font-weight: normal;
                         margin-top: 0.2em;
                     }
-                    
+
                     /* Стили для кнопки в контейнере с платформами */
                     .full-descr__tags .button--network {
-                        position: relative !important;
                         top: 0.5em !important;
                         margin: 0 0.5em 0.5em 0 !important;
-                        vertical-align: top !important;
-                    }
-                    
-                    /* Дополнительное выравнивание для логотипа внутри */
-                    .full-descr__tags .button--network .network-innie {
-                        align-items: center !important;
-                        justify-content: center !important;
-                        height: 2.2em !important;
-                        min-width: 3.5em !important;
-                    }
-                    
-                    .full-descr__tags .button--network img {
-                        max-height: 1.3em !important;
-                        max-width: 3.5em !important;
                     }
                     
                     /* Стили для надписи Studios */
                     .studios-static {
-                        position: relative !important;
                         display: inline-block !important;
                         height: 2.94em !important;
                         border-radius: 0.6em !important;
-                        margin-left: 0.3em !important;
                         padding: 0 0.3em !important;
-                        top: 0.5em !important; 
+                        margin-left: 0.3em !important;
+                        margin-top: 1em !important;
                         vertical-align: middle !important;
                         line-height: 2.94em !important;
-                    } 
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                    }
                     
-                    .studios-static__text { 
+                    .studios-static__text {
                         font-size: 1.2em !important;
                         font-weight: 600 !important;
                         color: rgba(255, 255, 255, 0.9) !important;
-                    } 
+                    }
                     
-                    /* Для совместимости с другими элементами */
-                    .full-descr__tags .studios-static {
-                        margin-left: 0 !important;
-                        margin-right: 0.5em !important;
+                    /* Скрываем кнопки в неправильном месте */
+                    .full-start-new__buttons .button--network {
+                        display: none !important;
                     }
                 `)
                 .appendTo('head');
         }
 
-        // Глобальная проверка для уже открытых карточек
-        let globalCheckCount = 0;
-        const globalCheckInterval = setInterval(() => {
-            const activeActivity = Lampa.Activity.active();
-            if (activeActivity && activeActivity.activity && activeActivity.activity.render()) {
-                moveButtonToNetworksContainer(activeActivity.activity.render());
-            }
-            globalCheckCount++;
-            if (globalCheckCount > 10) { // Останавливаем через 10 секунд
-                clearInterval(globalCheckInterval);
-            }
-        }, 1000);
-
-        // Слушаем событие открытия карточки
         Lampa.Listener.follow('full', function(e) {
             if (e.type === 'complite') {
                 const render = e.object.activity.render();
                 const card = e.object.card;
+                const cardId = card?.id || 'unknown';
                 
                 if (!render || !card) return;
 
-                // Добавление оригинального названия
                 addOriginalTitle(card, render);
 
-                // Добавление кнопки студии или телесети
-                getNetworks(e.object, networks => {
-                    if (networks.length) {
-                        addNetworkButton(render, networks, e.object.method);
-                    }
-                });
+                setTimeout(() => {
+                    getNetworks(e.object, networks => {
+                        if (networks.length) {
+                            addNetworkButton(render, networks, e.object.method, cardId);
+                        }
+                    });
+                }, 500);
+            }
+            
+            if (e.type === 'destroy') {
+                const render = e.object?.activity?.render();
+                if (render) {
+                    $('.button--network, .studios-static', render).remove();
+                }
+                currentCardId = null;
             }
         });
         
-        console.log('Network plugin initialized');
+        console.log('Studio plugin initialized - FORCED VISIBLE STYLES');
     }
 
-    // Инициализация при готовности приложения
     if (window.appready) {
         initPlugin();
     } else {
