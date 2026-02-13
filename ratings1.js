@@ -1326,6 +1326,9 @@ function updateQualityElement(quality, localCurrentCard, render) {
         case 'HD':
             qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
             break;
+        case 'SD':
+            qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+            break;
         case 'TS':
             qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
             break;
