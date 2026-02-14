@@ -7,7 +7,7 @@
             const style = document.createElement('style');
             style.textContent = `
                 .card__quality {      
-                    position: absolute;      
+                    position: relative;      
                     left: 0.3em;
                     bottom: 0.3em;
                     transform: translateX(0.8em) translateY(2.5em);
