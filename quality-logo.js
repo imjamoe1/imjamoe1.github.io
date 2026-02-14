@@ -23,7 +23,7 @@
                     border-radius: 0.25em;
                     border: 1px solid rgba(255, 255, 255, 1);
                     margin: 0 1px;
-                    z-index: 10;
+                    z-index: 20;
                 } 
                 @media screen and (max-width: 480px) {  
                     .card__quality img {  
