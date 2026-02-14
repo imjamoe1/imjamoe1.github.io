@@ -13,14 +13,17 @@
                     background: none !important;
                 }       
                 .card__quality {
-                    width: 2.7em;  
-                    height: 1.7em;
                     border-radius: 0.25em;
                     border: 1px solid rgba(255, 255, 255, 1);
                     display: inline-block;
                     margin: 0 1px;
                     z-index: 10;
-                }           
+                }
+                .card__quality img {
+                    display: inline-block;
+                    width: 2.7em;  
+                    height: 1.7em;
+                } 
                 @media screen and (max-width: 480px) {  
                     .card__quality img {  
                         max-width: 2.5em;  
