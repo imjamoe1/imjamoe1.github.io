@@ -15,7 +15,8 @@
                 .card__quality img {
                     width: 2.7em;  
                     height: 1.5em;
-                    border-radius: 0.25em;  
+                    border-radius: 0.25em;
+                    border: 1px solid rgba(255, 255, 255, 1) !important;
                     display: inline-block;
                     margin: 0 1px;   
                 }           
