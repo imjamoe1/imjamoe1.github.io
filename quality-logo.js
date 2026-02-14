@@ -39,7 +39,7 @@
                 }           
                 @media screen and (max-width: 480px) {  
                     .card__quality img {  
-                        max-width: 40px;  
+                        max-width: 2.5em;  
                     }  
                 }  
             `;
