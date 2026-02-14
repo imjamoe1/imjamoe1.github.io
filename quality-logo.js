@@ -17,7 +17,7 @@
                     color: schema.text;
                 }
                 .card__quality img {
-                    display: inline-block;
+                    //display: inline-block;
                     height: 1.7em;
                     width: 2.7em;
                     border-radius: 0.25em;
