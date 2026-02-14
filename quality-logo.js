@@ -7,20 +7,22 @@
             const style = document.createElement('style');
             style.textContent = `
                 .card__quality {      
-                    position: relative;      
-                    left: 0.3em;
-                    bottom: 0.3em;
-                    transform: translateX(0.8em) translateY(2.5em);
-                    padding: 0.2em 0.3em;      
-                    background: transparent;      
-                    color: #000000;
-                    z-index: 12 !important;      
-                    font-size: 1em;
-                    -webkit-border-radius: 0.3em;
-                    -moz-border-radius: 0.3em;      
-                    border-radius: 0.9em;  
-                    max-width: calc(100% - 0.6em);  
-                    overflow: hidden;  
+                    //position: absolute;      
+                    //left: 0.3em;
+                    //bottom: 0.3em;
+                    //transform: translateX(0.8em) translateY(2.5em);
+                    //padding: 0.2em 0.3em;      
+                    //background: transparent;
+                      background-color: schema.bg;
+                      color: schema.text;
+                    //color: #000000;
+                    //z-index: 12 !important;      
+                    //font-size: 1em;
+                    //-webkit-border-radius: 0.3em;
+                    //-moz-border-radius: 0.3em;      
+                    //border-radius: 0.9em;  
+                    //max-width: calc(100% - 0.6em);  
+                    //overflow: hidden;  
                 }
                 /* Убираем прозрачный фон для определенных качеств */
                 .card__quality:has(img[src*="4K"]),
