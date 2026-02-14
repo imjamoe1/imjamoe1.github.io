@@ -25,11 +25,11 @@
                     //overflow: hidden;  
                 }*/
                 /* Убираем прозрачный фон для определенных качеств */
-                /*.card__quality:has(img[src*="4K"]),
+                .card__quality:has(img[src*="4K"]),
                 .card__quality:has(img[src*="FHD"]),
                 .card__quality:has(img[src*="HD"]) {
                     background: none !important;
-                }*/       
+                }       
                 .card__quality img {
                     width: 2.7em;  
                     height: 1.5em;
