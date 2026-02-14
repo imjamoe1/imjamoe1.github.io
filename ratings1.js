@@ -3460,7 +3460,7 @@ function moveQualityBadgesToTags() {
             //separator.style.cssText = 'margin: 0 0.3em; color: rgba(255,255,255,0.5); font-size: 1.2em;';
             wrapperContainer.appendChild(separator);
             
-            // === ДОБАВЛЯЕМ ТОЛЬКО ОДНУ НАДПИСЬ INFORMATION (БЕЗ РАМКИ) ===
+            //Добавляем надпись
             var infoLabel = document.createElement('div');
             infoLabel.className = 'quality-info-label';
             
