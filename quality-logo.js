@@ -12,7 +12,7 @@
                 .card__quality:has(img[src*="HD"]) {
                     background: none !important;
                 }       
-                .card__quality img {
+                .card__quality {
                     width: 2.7em;  
                     height: 1.7em;
                     border-radius: 0.25em;
