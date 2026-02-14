@@ -3499,7 +3499,7 @@ var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
     "    transform: none !important;" +
     "}" +
     ".quality-tags-wrapper .quality-badge {" +
-    "    height: 1.2em !important;" +
+    "    height: 1.5em !important;" +
     "}" +
     ".quality-tags-wrapper .quality-separator {" +
     "    margin: 0 0.3em !important;" +
