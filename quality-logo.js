@@ -13,17 +13,13 @@
                     background: none !important;
                 }       
                 .card__quality {
-                    background-color: schema.bg;
-                    color: schema.text;
-                }
-                .card__quality img {
                     //display: inline-block;
                     height: 1.7em;
                     width: 2.7em;
                     border-radius: 0.25em;
                     border: 1px solid rgba(255, 255, 255, 1);
                     margin: 0 1px;
-                    z-index: 20;
+                    z-index: 10;
                 } 
                 @media screen and (max-width: 480px) {  
                     .card__quality img {  
