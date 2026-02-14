@@ -377,10 +377,10 @@
         "    margin-bottom: 3em !important;" +
         "}" +
         /* Стили для логотипов качества внутри карточки */
-        ".full-start__status.maxsm-quality {" +
+        ".maxsm-quality {" +
         "    min-width: auto !important;" +
-        "    width: 2.5em !important;" +
-        "    height: 1.5em !important;" +
+        "    height: 1.9em !important;" +
+        "    width: 3em !important;" +
         "    padding: 1px !important;" +
         "    border-radius: 0.2em !important;" +
         "    display: inline-flex !important;" +
@@ -391,9 +391,9 @@
         "    vertical-align: middle !important;" +
         "    overflow: hidden !important;" +
         "}" +    
-        ".full-start__status.maxsm-quality img {" +
-        "    height: 1.6em !important;" +
-        "    width: 2.6em !important;" +
+        ".maxsm-quality img {" +
+        "    height: 2em !important;" +
+        "    width: 3em !important;" +
         "    object-fit: contain !important;" +
         "}" +  
         ".card__quality img {" +
@@ -1273,7 +1273,7 @@
     // Функции работы с качеством
     // Удаляем качество с карточки если есть
     function clearQualityElements(localCurrentCard, render) {
-        if (render) $('.full-start__status.maxsm-quality', render).remove();
+        if (render) $('.maxsm-quality', render).remove();
     }
     // Плейсхолдер качества
     function showQualityPlaceholder(localCurrentCard, render) {
@@ -1283,9 +1283,9 @@
         if (!rateLine.length) return;
         
         // Проверяем, не добавлен ли уже плейсхолдер
-        if (!$('.full-start__status.maxsm-quality', render).length) {
+        if (!$('.maxsm-quality', render).length) {
             var placeholder = document.createElement('div');
-            placeholder.className = 'full-start__status maxsm-quality';
+            placeholder.className = 'maxsm-quality';
             placeholder.textContent = '...';
             placeholder.style.opacity = '0.7';
             rateLine.append(placeholder);
@@ -1310,7 +1310,7 @@
 function updateQualityElement(quality, localCurrentCard, render) {
     if (!render) return;
     
-    var element = $('.full-start__status.maxsm-quality', render);
+    var element = $('.maxsm-quality', render);
     var rateLine = $('.full-start-new__rate-line', render);
     if (!rateLine.length) return;
     
@@ -1353,7 +1353,7 @@ function updateQualityElement(quality, localCurrentCard, render) {
             ', quality: Creating new element with quality "' + quality + '"');
         
         var div = document.createElement('div');
-        div.className = 'full-start__status maxsm-quality';
+        div.className = 'maxsm-quality';
         
         if (qualityIcon) {
             div.innerHTML = '<img src="' + qualityIcon + '" alt="' + quality + 
@@ -3398,4 +3398,179 @@ Lampa.Listener.follow('full', function(e) {
             });
         }
     })();
+// Перенос бейджей качества в блок с тегами после "Studios"
+
+function moveQualityBadgesToTags() {
+    // Находим блок с тегами и надписью Studios
+    var studiosContainer = document.querySelector('.full-descr__tags');
+    if (!studiosContainer) return;
+    
+    // Находим надпись Studios
+    var studiosText = studiosContainer.querySelector('.studios-static');
+    if (!studiosText) return;
+    
+    // Находим все бейджи качества
+    var qualityBadges = document.querySelectorAll('.quality-badges');
+    
+    qualityBadges.forEach(function(badges) {
+        if (badges && badges.classList.contains('show')) {
+            
+            // === УДАЛЯЕМ ВСЕ СТАРЫЕ НАДПИСИ INFORMATION ===
+            var oldInfoLabels = studiosContainer.querySelectorAll('.quality-info-label, .information-after-badges, .information-static, [class*="information"]');
+            oldInfoLabels.forEach(function(el) {
+                if (el.classList && (
+                    el.classList.contains('quality-info-label') || 
+                    el.classList.contains('information-after-badges') || 
+                    el.classList.contains('information-static') ||
+                    el.className.includes('information')
+                )) {
+                    el.remove();
+                }
+            });
+            
+            // Удаляем старые разделители
+            var oldSeparators = studiosContainer.querySelectorAll('.quality-separator, .info-separator');
+            oldSeparators.forEach(function(el) {
+                el.remove();
+            });
+            
+            // Удаляем старый контейнер с бейджами
+            var oldContainer = studiosContainer.querySelector('.quality-tags-wrapper, .quality-tags-container');
+            if (oldContainer) oldContainer.remove();
+            
+            // === СОЗДАЕМ НОВЫЙ КОНТЕЙНЕР ===
+            var wrapperContainer = document.createElement('div');
+            wrapperContainer.className = 'quality-tags-wrapper';
+            wrapperContainer.style.cssText = 'display: inline-flex; align-items: center; margin-left: 0.8em;';
+            
+            // Контейнер для бейджей
+            var qualityTagsContainer = document.createElement('div');
+            qualityTagsContainer.className = 'quality-tags-container';
+            qualityTagsContainer.style.cssText = 'display: inline-flex; align-items: center; gap: 0.3em;';
+            
+            // Копируем бейджи в контейнер
+            var badgesClone = badges.cloneNode(true);
+            qualityTagsContainer.appendChild(badgesClone);
+            wrapperContainer.appendChild(qualityTagsContainer);
+            
+            // Добавляем разделитель (закомментирован)
+            var separator = document.createElement('span');
+            separator.className = 'quality-separator';
+            // separator.textContent = '•';
+            //separator.style.cssText = 'margin: 0 0.3em; color: rgba(255,255,255,0.5); font-size: 1.2em;';
+            wrapperContainer.appendChild(separator);
+            
+            // === ДОБАВЛЯЕМ ТОЛЬКО ОДНУ НАДПИСЬ INFORMATION (БЕЗ РАМКИ) ===
+            var infoLabel = document.createElement('div');
+            infoLabel.className = 'quality-info-label';
+            
+            var infoText = document.createElement('span');
+            infoText.textContent = 'Information';
+            infoLabel.appendChild(infoText);
+            wrapperContainer.appendChild(infoLabel);
+            
+            // Вставляем весь блок после надписи Studios
+            studiosText.parentNode.insertBefore(wrapperContainer, studiosText.nextSibling);
+            
+            // Скрываем оригинальные бейджи
+            badges.style.display = 'none';
+            
+            console.log('MAXSM: Quality badges and ONE Information label added (no border)');
+        }
+    });
+}
+
+// Добавляем CSS стили
+var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
+    ".full-descr__tags {" +
+    "    display: flex !important;" +
+    "    align-items: center !important;" +
+    "    flex-wrap: wrap !important;" +
+    "    gap: 0.5em !important;" +
+    "}" +
+    ".quality-tags-wrapper {" +
+    "    display: inline-flex !important;" +
+    "    align-items: center !important;" +
+    "    margin-left: 0.8em !important;" +
+    "}" +
+    ".quality-tags-wrapper .quality-badges {" +
+    "    display: inline-flex !important;" +
+    "    align-items: center !important;" +
+    "    gap: 0.3em !important;" +
+    "    margin-left: 0 !important;" +
+    "    opacity: 1 !important;" +
+    "    transform: none !important;" +
+    "}" +
+    ".quality-tags-wrapper .quality-badge {" +
+    "    height: 1.2em !important;" +
+    "}" +
+    ".quality-tags-wrapper .quality-separator {" +
+    "    margin: 0 0.3em !important;" +
+    "    color: rgba(255, 255, 255, 0.4) !important;" +
+    "    font-size: 1.2em !important;" +
+    "}" +
+    ".quality-tags-wrapper .quality-info-label {" +
+    "    display: inline-flex !important;" +
+    "    align-items: center !important;" +
+    "    height: 1.8em !important;" +
+    "    border-radius: 0.6em !important;" +
+    "    padding: 0 0.8em !important;" +
+    //"    background: rgba(255, 255, 255, 0.08) !important;" +
+    "    color: rgba(255, 255, 255, 0.9) !important;" +
+    "    font-size: 1.2em !important;" +
+    "    font-weight: 400 !important;" +
+    "    letter-spacing: 0.3px !important;" +
+    "    transition: all 0.2s ease !important;" +
+    "}" +
+    "</style>";
+
+// Добавляем стили
+if (!$('#maxsm-quality-tags').length) {
+    Lampa.Template.add('maxsm_quality_tags_css', qualityTagsStyle);
+    $('body').append(Lampa.Template.get('maxsm_quality_tags_css', {}, true));
+}
+
+// Вызываем функцию при загрузке страницы
+Lampa.Listener.follow('full', function(e) {
+    if (e.type === 'complite') {
+        // Даем время на загрузку бейджей
+        setTimeout(moveQualityBadgesToTags, 500);
+        setTimeout(moveQualityBadgesToTags, 1000);
+        setTimeout(moveQualityBadgesToTags, 1500);
+    }
+});
+
+// Наблюдатель за изменениями DOM
+var qualityObserver = new MutationObserver(function(mutations) {
+    // Проверяем, есть ли смысл запускать
+    var hasQualityBadges = document.querySelector('.quality-badges.show');
+    var hasMultipleInfo = document.querySelectorAll('.quality-info-label').length > 1;
+    
+    if (hasQualityBadges && hasMultipleInfo) {
+        moveQualityBadgesToTags();
+    }
+});
+
+// Запускаем наблюдение
+function initQualityObserver() {
+    if (localStorage.getItem('maxsm_ratings_quality_inlist') === 'true') {
+        setTimeout(function() {
+            qualityObserver.observe(document.body, { 
+                childList: true, 
+                subtree: true
+            });
+            moveQualityBadgesToTags();
+        }, 1000);
+    }
+}
+
+if (window.appready) {
+    initQualityObserver();
+} else {
+    Lampa.Listener.follow('app', function(e) {
+        if (e.type === 'ready') {
+            initQualityObserver();
+        }
+    });
+}
 })();
