@@ -14,13 +14,13 @@
                 }       
                 .card__quality {
                     border-radius: 0.25em;
-                    border: 1px solid rgba(255, 255, 255, 1);
                     display: inline-block;
                     margin: 0 1px;
                     z-index: 10;
                 }
                 .card__quality img {
                     display: inline-block;
+                    border: 1px solid rgba(255, 255, 255, 1);
                     width: 2.7em;  
                     height: 1.7em;
                 } 
