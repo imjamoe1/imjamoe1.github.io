@@ -6,7 +6,7 @@
         function addCustomStyles() {
             const style = document.createElement('style');
             style.textContent = `
-                .card__quality {      
+                /*.card__quality {      
                     //position: absolute;      
                     //left: 0.3em;
                     //bottom: 0.3em;
@@ -23,16 +23,16 @@
                     //border-radius: 0.9em;  
                     //max-width: calc(100% - 0.6em);  
                     //overflow: hidden;  
-                }
+                }*/
                 /* Убираем прозрачный фон для определенных качеств */
-                .card__quality:has(img[src*="4K"]),
+                /*.card__quality:has(img[src*="4K"]),
                 .card__quality:has(img[src*="FHD"]),
                 .card__quality:has(img[src*="HD"]) {
                     background: none !important;
-                }       
+                }*/       
                 .card__quality img {
-                    width: 43px;  
-                    height: 23px;
+                    width: 2.7em;  
+                    height: 1.5em;
                     border-radius: 0.25em;  
                     display: inline-block;
                     margin: 0 1px;   
