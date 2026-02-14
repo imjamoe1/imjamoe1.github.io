@@ -396,9 +396,6 @@
         "    width: 3em !important;" +
         "    object-fit: contain !important;" +
         "}" +  
-        ".card__quality img {" +
-        "    display: none !important;" +
-        "}" +
         "</style>";
     
     Lampa.Template.add('maxsm_ratings_css', style);
