@@ -354,7 +354,7 @@
                     .studios-static__text {
                         font-size: 1.2em !important;
                         font-weight: 400 !important;
-                        color: rgba(255, 255, 255, 0.9) !important;
+                        color: rgba(255, 255, 255, 0.7) !important;
                     }
                     
                     /* Скрываем кнопки в неправильном месте */
@@ -406,4 +406,5 @@
         });
     }
 })();
+
 
