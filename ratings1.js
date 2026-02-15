@@ -3499,9 +3499,9 @@ var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
     "    transform: none !important;" +
     "}" +
     ".quality-tags-wrapper .quality-badge {" +
-    "    height: 1.3em !important;" +
     "    position: relative !important;" +
-    "    top: 0.2em !important;" + 
+    "    height: 1.3em !important;" +
+    "    top: 0.1em !important;" + 
     "}" +
     ".quality-tags-wrapper .quality-separator {" +
     "    margin: 0 0.3em !important;" +
