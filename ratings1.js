@@ -3505,7 +3505,7 @@ var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
     "}" +
     ".quality-tags-wrapper .quality-separator {" +
     "    margin: 0 0.3em !important;" +
-    "    color: rgba(255, 255, 255, 0.4) !important;" +
+    "    color: rgba(255, 255, 255, 0.7) !important;" +
     "    font-size: 1.2em !important;" +
     "}" +
     ".quality-tags-wrapper .quality-info-label {" +
@@ -3515,7 +3515,7 @@ var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
     "    border-radius: 0.6em !important;" +
     "    padding: 0 0.8em !important;" +
     //"    background: rgba(255, 255, 255, 0.08) !important;" +
-    "    color: rgba(255, 255, 255, 0.9) !important;" +
+    "    color: rgba(255, 255, 255, 0.7) !important;" +
     "    font-size: 1.2em !important;" +
     "    font-weight: 400 !important;" +
     "    letter-spacing: 0.3px !important;" +
