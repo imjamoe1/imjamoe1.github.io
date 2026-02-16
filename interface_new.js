@@ -1043,8 +1043,8 @@
                         bottom: 0;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        border: 0.5px solid #FFF;
-                        background-color: rgba(0, 0, 0, 0.7);
+                        border: 0.2px solid #fff;
+                        background-color: rgba(0, 0, 0, 0.5) !important;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
@@ -1269,8 +1269,8 @@
                         bottom: 0;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        border: 0.5px solid #FFF;
-                        background-color: rgba(0, 0, 0, 0.7);
+                        border: 0.2px solid #fff;
+                        background-color: rgba(0, 0, 0, 0.5) !important;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
