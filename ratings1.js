@@ -3474,54 +3474,54 @@ function moveQualityBadgesToTags() {
     });
 }
 
-/**
- * Добавляет CSS стили для тегов качества
- */
-var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
-    ".full-descr__tags {" +
-    "    display: flex !important;" +
-    "    align-items: center !important;" +
-    "    flex-wrap: wrap !important;" +
-    "    gap: 0.5em !important;" +
-    "}" +
-    ".quality-tags-wrapper {" +
-    "    display: inline-flex !important;" +
-    "    height: 1.3em !important;" +
-    "    align-items: center !important;" +
-    "    margin-left: 0.8em !important;" +
-    "}" +
-    ".quality-tags-wrapper .quality-badges {" +
-    "    display: inline-flex !important;" +
-    "    align-items: center !important;" +
-    "    gap: 0.3em !important;" +
-    "    margin-left: 0 !important;" +
-    "    opacity: 1 !important;" +
-    "    transform: none !important;" +
-    "}" +
-    ".quality-tags-wrapper .quality-badge {" +
-    "    position: relative !important;" +
-    "    height: 1.3em !important;" +
-    "    margin-top: 0.5em !important;" +
-    "    margin-bottom: 0.5em !important;" +
-    "}" +
-    ".quality-tags-wrapper .quality-separator {" +
-    "    margin: 0 0.3em !important;" +
-    "    color: rgba(255, 255, 255, 0.7) !important;" +
-    "    font-size: 1.2em !important;" +
-    "}" +
-    ".quality-tags-wrapper .quality-info-label {" +
-    "    display: inline-flex !important;" +
-    "    align-items: center !important;" +
-    "    height: 1.8em !important;" +
-    "    border-radius: 0.6em !important;" +
-    "    padding: 0 0.8em !important;" +
-    "    color: rgba(255, 255, 255, 0.7) !important;" +
-    "    font-size: 1.2em !important;" +
-    "    font-weight: 400 !important;" +
-    "    letter-spacing: 0.3px !important;" +
-    "    transition: all 0.2s ease !important;" +
-    "}" +
-    "</style>";
+    /**
+     * Добавляет CSS стили для тегов качества
+     */
+    var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
+        ".full-descr__tags {" +
+        "    display: flex !important;" +
+        "    align-items: center !important;" +
+        "    flex-wrap: wrap !important;" +
+        "    gap: 0.5em !important;" +
+        "}" +
+        ".quality-tags-wrapper {" +
+        "    display: inline-flex !important;" +
+        "    height: 1.3em !important;" +
+        "    align-items: center !important;" +
+        "    margin-left: 0.8em !important;" +
+        "}" +
+        ".quality-tags-wrapper .quality-badges {" +
+        "    display: inline-flex !important;" +
+        "    align-items: center !important;" +
+        "    gap: 0.3em !important;" +
+        "    margin-left: 0 !important;" +
+        "    opacity: 1 !important;" +
+        "    transform: none !important;" +
+        "}" +
+        ".quality-tags-wrapper .quality-badge {" +
+        "    position: relative !important;" +
+        "    height: 1.3em !important;" +
+        "    margin-top: 0.5em !important;" +
+        "    margin-bottom: 0.5em !important;" +
+        "}" +
+        ".quality-tags-wrapper .quality-separator {" +
+        "    margin: 0 0.3em !important;" +
+        "    color: rgba(255, 255, 255, 0.7) !important;" +
+        "    font-size: 1.2em !important;" +
+        "}" +
+        ".quality-tags-wrapper .quality-info-label {" +
+        "    display: inline-flex !important;" +
+        "    align-items: center !important;" +
+        "    height: 1.8em !important;" +
+        "    border-radius: 0.6em !important;" +
+        "    padding: 0 0.8em !important;" +
+        "    color: rgba(255, 255, 255, 0.7) !important;" +
+        "    font-size: 1.2em !important;" +
+        "    font-weight: 400 !important;" +
+        "    letter-spacing: 0.3px !important;" +
+        "    transition: all 0.2s ease !important;" +
+        "}" +
+        "</style>";
 
 // Добавляем стили
 if (!$('#maxsm-quality-tags').length) {
