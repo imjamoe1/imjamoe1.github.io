@@ -1038,6 +1038,12 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
+                    .card__vote {
+                        right: 0;
+						bottom: 0;
+						padding: 0.2em 0.45em;
+						border-radius: 0.75em 0;
+                    }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
@@ -1255,6 +1261,12 @@
                     }
                     .new-interface .full-start__background.active {
                         opacity: 1;
+                    }
+                    .card__vote {
+                        right: 0;
+						bottom: 0;
+						padding: 0.2em 0.45em;
+						border-radius: 0.75em 0;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
