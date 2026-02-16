@@ -1043,8 +1043,8 @@
                         bottom: 0;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        background: #333 !important;
-                        font-weight: bold;
+                        background: #222 !important;
+                        font-weight: bold !important;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
@@ -1269,8 +1269,8 @@
                         bottom: 0;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        background: #333 !important;
-                        font-weight: bold;
+                        background: #222 !important;
+                        font-weight: bold !important;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
