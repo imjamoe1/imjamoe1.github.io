@@ -3290,7 +3290,7 @@ Lampa.Listener.follow('full', function(e) {
             margin-left: 0.6em;
             padding: 0.3em 0.8em !important;
             background-color: rgba(0, 0, 0, 0.7) !important;
-            border: 1.8px solid #fff !important;
+            border: 1.2px solid #fff !important;
             border-radius: 0.7em !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
             opacity: 0;
@@ -3501,6 +3501,8 @@ var qualityTagsStyle = "<style id='maxsm-quality-tags'>" +
     ".quality-tags-wrapper .quality-badge {" +
     "    position: relative !important;" +
     "    height: 1.3em !important;" +
+    "    margin-top: 0.5em !important;" +
+    "    margin-bottom: 0.5em !important;" +
     "}" +
     ".quality-tags-wrapper .quality-separator {" +
     "    margin: 0 0.3em !important;" +
