@@ -3289,7 +3289,7 @@ Lampa.Listener.follow('full', function(e) {
             gap: 0.4em;
             margin-left: 0.6em;
             padding: 0.3em 0.8em !important;
-            background-color: rgba(0, 0, 0, 0.7) !important;
+            //background-color: rgba(0, 0, 0, 0.7) !important;
             border: 0.8px solid #fff !important;
             border-radius: 0.7em !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
