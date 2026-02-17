@@ -333,8 +333,8 @@
 
                     /* Стили для кнопки в контейнере с платформами */
                     .full-descr__tags .button--network {
-                        top: 0.5em !important;
-                        margin: 0 0.5em 0.5em 0 !important;
+                        top: 0.1em !important;
+                        margin: 0 0.3em !important;
                     }
                     
                     /* Стили для надписи Studios */
@@ -343,8 +343,8 @@
                         height: 2.94em !important;
                         border-radius: 0.6em !important;
                         padding: 0 0.3em !important;
-                        margin-left: 0.3em !important;
-                        margin-top: 1em !important;
+                        margin-left: 0.1em !important;
+                        //margin-top: 1em !important;
                         vertical-align: middle !important;
                         line-height: 2.94em !important;
                         visibility: visible !important;
@@ -407,6 +407,7 @@
         });
     }
 })();
+
 
 
 
