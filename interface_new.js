@@ -1047,7 +1047,7 @@
                         font-weight: bold !important;
                     }
                     .rate--imdb.hide, .rate--kp.hide {
-                        display: flex !important; /* или block, смотря как сверстано */
+                        display: none !important; /* или block, смотря как сверстано */
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
@@ -1276,7 +1276,7 @@
                         font-weight: bold !important;
                     }
                     .rate--imdb.hide, .rate--kp.hide {
-                        display: flex !important; /* или block, смотря как сверстано */
+                        display: none !important; /* или block, смотря как сверстано */
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
