@@ -1046,8 +1046,9 @@
                         background: #222 !important;
                         font-weight: bold !important;
                     }
-                    .rate--imdb, .rate--kp {
-                        display: none !important; /* или block, смотря как сверстано */
+                    .rate--imdb div, .rate--kp div {
+                        color: red !important; /* или block, смотря как сверстано */
+                        font-size: 16px !important;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
@@ -1275,8 +1276,9 @@
                         background: #222 !important;
                         font-weight: bold !important;
                     }
-                    .rate--imdb, .rate--kp {
-                        display: none !important; /* или block, смотря как сверстано */
+                    .rate--imdb div, .rate--kp div {
+                        color: red !important; /* или block, смотря как сверстано */
+                        font-size: 16px !important;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
