@@ -1046,11 +1046,6 @@
                         background: #222 !important;
                         font-weight: bold !important;
                     }
-                    .rate--imdb.hide, .rate--kp.hide {
-                        display: flex !important; /* или block, смотря как сверстано */
-                        color: red !important;
-                        font-size: 16px !important;
-                    }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
@@ -1276,11 +1271,6 @@
                         border-radius: 0.75em 0;
                         background: #222 !important;
                         font-weight: bold !important;
-                    }
-                    .rate--imdb.hide, .rate--kp.hide {
-                        display: flex !important; /* или block, смотря как сверстано */
-                        color: red !important;
-                        font-size: 16px !important;
                     }
                     /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
