@@ -317,12 +317,12 @@
             }
 
             if (activity && activity.applecation_quality === undefined) {
-                activity.applecation_quality = qualityInfo;
+                activity.quality = qualityInfo;
                 updateQualityBadges(activity, qualityInfo);
             }
             
         }, (error) => {
-            console.log('Applecation Quality Badges', { error: error });
+            console.log('Quality Badges', { error: error });
         });
     }
 
@@ -331,7 +331,7 @@
      */
     function updateQualityBadges(activity, qualityInfo) {
         const render = activity.render();
-        let badgesContainer = render.find('.applecation__quality-badges');
+        let badgesContainer = render.find('.quality-badges');
         
         if (!badgesContainer.length) {
             let metaContainer = render.find('.full-start__details');
@@ -352,8 +352,8 @@
             }
             
             if (metaContainer.length) {
-                metaContainer.append('<div class="applecation__quality-badges"></div>');
-                badgesContainer = render.find('.applecation__quality-badges');
+                metaContainer.append('<div class="quality-badges"></div>');
+                badgesContainer = render.find('.quality-badges');
             }
         }
         
@@ -396,8 +396,8 @@
      */
     function addStyles() {
         const styles = `
-        <style data-id="applecation-quality-badges">
-        .applecation__quality-badges {
+        <style data-id="quality-badges">
+        .quality-badges {
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
@@ -407,7 +407,7 @@
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
         
-        .applecation__quality-badges.show {
+        .quality-badges.show {
             opacity: 1;
             transform: translateY(0);
         }
@@ -437,7 +437,7 @@
         }
         </style>`;
         
-        if (!$('style[data-id="applecation-quality-badges"]').length) {
+        if (!$('style[data-id="quality-badges"]').length) {
             $(styles).appendTo('head');
         }
     }
@@ -446,7 +446,7 @@
      * Инициализация плагина
      */
     function initializePlugin() {
-        console.log('Applecation Quality Badges loaded');
+        console.log('Quality Badges loaded');
         
         addStyles();
         
