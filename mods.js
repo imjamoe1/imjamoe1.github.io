@@ -7,7 +7,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		return window.location.protocol == 'https:' ? 'https://' : 'http://';
 	}
 	var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-	var version_modss = '3.2', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '', IP = '', logged = false;
+	var version_modss = '3.3', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '', IP = '', logged = false;
 	console.log('App', 'protocol:', Protocol());
 	console.log('Modss', 'plugin', 'loaded');
 	
@@ -523,7 +523,7 @@ rating_kp_imdb: function (card) {
         var search_date = card.release_date || card.first_air_date || card.last_air_date || "0000";
         var search_year = parseInt((search_date + "").slice(0, 4));
         var orig = card.original_title || card.original_name;
-        var kp_prox = "https://worker-patient-dream-26d7.bdvburik.workers.dev/";
+        var kp_prox = "https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/";
         var params = {
             id: card.id,
             url: kp_prox + "https://kinopoiskapiunofficial.tech/",
@@ -11540,6 +11540,7 @@ rating_kp_imdb: function (card) {
 	if (!window.plugin_modss) startPlugin();
 
 })();
+
 
 
 
