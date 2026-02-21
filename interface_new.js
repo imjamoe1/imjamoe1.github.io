@@ -1,5 +1,3 @@
-var kp_prox = 'https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/';
-
 (function () {
     "use strict";
     Lampa.Platform.tv();
@@ -9,7 +7,8 @@ var kp_prox = 'https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/';
     if (window.plugin_interface_ready_v3) return;
     window.plugin_interface_ready_v3 = true;
 
-    // --- Конфигурация Kinopoisk с прокси ---
+    // --- Конфигурация Kinopoisk ---
+    var kp_prox = 'https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/';
     const KP_CONFIG = {
         api_url: kp_prox + 'https://kinopoiskapiunofficial.tech/',
         rating_url: kp_prox + 'https://rating.kinopoisk.ru/',
