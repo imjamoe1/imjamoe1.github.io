@@ -8,10 +8,12 @@
     window.plugin_interface_ready_v3 = true;
 
     // --- Конфигурация Kinopoisk ---
+    var kp_prox = 'https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/';
     const KP_CONFIG = {
-        proxy: 'https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/',
-        api_url: 'https://kinopoiskapiunofficial.tech/',
-        rating_url: 'https://rating.kinopoisk.ru/',
+        api_url: kp_prox + 'api/v2.2/',
+        rating_url: kp_prox,
+        //api_url: 'https://kinopoiskapiunofficial.tech/',
+        //rating_url: 'https://rating.kinopoisk.ru/',
         api_key: '34abd082-4543-44a2-84fb-2169f49ce93e',
         timeout: 10000,
         xml_timeout: 5000,
