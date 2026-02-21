@@ -1,3 +1,5 @@
+var kp_prox = 'https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/';
+
 (function () {
     "use strict";
     Lampa.Platform.tv();
@@ -7,15 +9,12 @@
     if (window.plugin_interface_ready_v3) return;
     window.plugin_interface_ready_v3 = true;
 
-    // --- Конфигурация Kinopoisk ---
-    var kp_prox = 'https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/';
+    // --- Конфигурация Kinopoisk с прокси ---
     const KP_CONFIG = {
-        api_url: kp_prox + 'api/v2.2/',
-        rating_url: kp_prox,
-        //api_url: 'https://kinopoiskapiunofficial.tech/',
-        //rating_url: 'https://rating.kinopoisk.ru/',
+        api_url: kp_prox + 'https://kinopoiskapiunofficial.tech/',
+        rating_url: kp_prox + 'https://rating.kinopoisk.ru/',
         api_key: '34abd082-4543-44a2-84fb-2169f49ce93e',
-        timeout: 10000,
+        timeout: 15000,
         xml_timeout: 5000,
         cache_time: 60 * 60 * 24 * 1000,
         cache_key: 'kp_ratings_enhanced_cache',
@@ -87,7 +86,6 @@
             },
             onChange: function () {
                 Lampa.Settings.update();
-                // Очищаем кэш при изменении API ключа
                 Lampa.Storage.set(MDB_CONFIG.cache_key, {});
             }
         });
@@ -149,18 +147,19 @@
                 Lampa.Storage.set(item.id, newStateIsChecked);
                 item.checked = newStateIsChecked;
                 
-                // Обновляем отображение текущего контента
                 setTimeout(updateVoteColors, 100);
             }
         });
     }
 
-    // --- Kinopoisk Helper Functions ---
+    // --- Вспомогательные функции для работы с названиями ---
     function cleanTitle(str) {
-        return (str || '').replace(/[\s.,:;'`!?]+/g, ' ').trim();
+        if (!str) return '';
+        return str.replace(/[\s.,:;’'`!?]+/g, ' ').trim();
     }
 
     function kpCleanTitle(str) {
+        if (!str) return '';
         return cleanTitle(str)
             .replace(/^[ \/\\]+/, '')
             .replace(/[ \/\\]+$/, '')
@@ -170,21 +169,23 @@
     }
 
     function normalizeTitle(str) {
-        return cleanTitle((str || '').toLowerCase()
+        if (!str) return '';
+        return cleanTitle(str.toLowerCase()
             .replace(/[\-\u2010-\u2015\u2E3A\u2E3B\uFE58\uFE63\uFF0D]+/g, '-')
             .replace(/ё/g, 'е'));
     }
 
     function equalTitle(t1, t2) {
-        return typeof t1 === 'string' && typeof t2 === 'string' && normalizeTitle(t1) === normalizeTitle(t2);
+        return typeof t1 === 'string' && typeof t2 === 'string' && 
+               normalizeTitle(t1) === normalizeTitle(t2);
     }
 
     function containsTitle(str, title) {
         return typeof str === 'string' && typeof title === 'string' &&
-            normalizeTitle(str).indexOf(normalizeTitle(title)) !== -1;
+               normalizeTitle(str).indexOf(normalizeTitle(title)) !== -1;
     }
 
-    // --- Kinopoisk Caching ---
+    // --- Функции кэширования Kinopoisk ---
     function getKPCache(tmdb_id) {
         if (!window.Lampa || !window.Lampa.Storage) return false;
         var timestamp = new Date().getTime();
@@ -209,7 +210,209 @@
         Lampa.Storage.set(KP_CONFIG.cache_key, cache);
     }
 
-    // --- MDBList Caching ---
+    // --- Улучшенная функция получения рейтингов Кинопоиска ---
+    async function fetchKPRatings(movieData, callback) {
+        if (!Lampa.Reguest) {
+            if (callback) callback({ kp: '0.0', error: "Network unavailable" });
+            return;
+        }
+
+        if (!movieData || !movieData.id || !movieData.title || !callback) {
+            if (callback) callback({ kp: '0.0', error: "Invalid input" });
+            return;
+        }
+
+        var tmdb_id = movieData.id;
+
+        // 1. Проверяем кэш
+        var cached_ratings = getKPCache(tmdb_id);
+        if (cached_ratings && cached_ratings.kp !== '0.0') {
+            callback(cached_ratings);
+            return;
+        }
+
+        // 2. Подготавливаем параметры поиска
+        var title = movieData.title || movieData.name;
+        var orig_title = movieData.original_title || movieData.original_name;
+        var search_date = movieData.release_date || movieData.first_air_date || '0000';
+        var search_year = parseInt((search_date + '').slice(0, 4));
+        var imdb_id_from_tmdb = movieData.imdb_id;
+
+        var clean_title = kpCleanTitle(title);
+        
+        var network = new Lampa.Reguest();
+        
+        try {
+            // Сначала пробуем найти по IMDb ID если есть
+            if (imdb_id_from_tmdb) {
+                var imdbSearchUrl = KP_CONFIG.api_url + 'api/v2.2/films?imdbId=' + encodeURIComponent(imdb_id_from_tmdb);
+                
+                const imdbResponse = await new Promise((resolve, reject) => {
+                    network.clear();
+                    network.timeout(KP_CONFIG.timeout);
+                    network.native(imdbSearchUrl, function(data) {
+                        resolve(data);
+                    }, function(error) {
+                        reject(error);
+                    }, false, { 
+                        headers: { 'X-API-KEY': KP_CONFIG.api_key } 
+                    });
+                });
+
+                if (imdbResponse && imdbResponse.items && imdbResponse.items.length > 0) {
+                    const film = imdbResponse.items[0];
+                    const kpRating = await fetchKpRating(film.kinopoiskId || film.filmId);
+                    const result = { kp: kpRating, filmId: film.kinopoiskId || film.filmId };
+                    setKPCache(tmdb_id, result);
+                    callback(result);
+                    return;
+                }
+            }
+
+            // Если IMDb не нашелся, ищем по названию
+            var searchUrl = KP_CONFIG.api_url + 'api/v2.1/films/search-by-keyword?keyword=' + encodeURIComponent(clean_title) + '&page=1';
+            if (search_year) {
+                searchUrl += '&yearFrom=' + search_year + '&yearTo=' + search_year;
+            }
+
+            const searchResponse = await new Promise((resolve, reject) => {
+                network.clear();
+                network.timeout(KP_CONFIG.timeout);
+                network.native(searchUrl, function(data) {
+                    resolve(data);
+                }, function(error) {
+                    reject(error);
+                }, false, { 
+                    headers: { 'X-API-KEY': KP_CONFIG.api_key } 
+                });
+            });
+
+            if (!searchResponse || !searchResponse.films || searchResponse.films.length === 0) {
+                callback({ kp: '0.0', filmId: null });
+                return;
+            }
+
+            // Ищем лучшее совпадение
+            let bestMatch = null;
+            let bestScore = 0;
+
+            searchResponse.films.forEach(film => {
+                let score = 0;
+                
+                if (orig_title) {
+                    if (equalTitle(film.nameOriginal || film.nameEn, orig_title)) {
+                        score += 3;
+                    }
+                }
+                
+                if (equalTitle(film.nameRu, title)) {
+                    score += 2;
+                }
+                
+                if (equalTitle(film.nameEn || film.nameOriginal, title)) {
+                    score += 1;
+                }
+                
+                if (search_year && film.year === search_year) {
+                    score += 1;
+                } else if (search_year && film.year && Math.abs(film.year - search_year) <= 1) {
+                    score += 0.5;
+                }
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = film;
+                }
+            });
+
+            if (!bestMatch && searchResponse.films.length > 0) {
+                bestMatch = searchResponse.films[0];
+            }
+
+            if (bestMatch) {
+                const kpRating = await fetchKpRating(bestMatch.filmId || bestMatch.kinopoiskId);
+                const result = { 
+                    kp: kpRating, 
+                    filmId: bestMatch.filmId || bestMatch.kinopoiskId 
+                };
+                setKPCache(tmdb_id, result);
+                callback(result);
+            } else {
+                callback({ kp: '0.0', filmId: null });
+            }
+
+        } catch (error) {
+            console.error('Kinopoisk search error:', error);
+            callback({ kp: '0.0', filmId: null, error: error.message });
+        }
+    }
+
+    // --- Получение рейтинга Kinopoisk (сначала пробуем XML, потом API) ---
+    async function fetchKpRating(filmId) {
+        if (!filmId) return '0.0';
+
+        var network = new Lampa.Reguest();
+
+        // Сначала пробуем XML endpoint
+        try {
+            const xmlUrl = KP_CONFIG.rating_url + filmId + '.xml';
+            
+            const xmlResponse = await new Promise((resolve, reject) => {
+                network.clear();
+                network.timeout(KP_CONFIG.xml_timeout);
+                network.native(xmlUrl, function(data) {
+                    resolve(data);
+                }, function(error) {
+                    reject(error);
+                }, false, { dataType: 'text' });
+            });
+
+            if (xmlResponse && typeof xmlResponse === 'string') {
+                var parser = new DOMParser();
+                var xmlDoc = parser.parseFromString(xmlResponse, "text/xml");
+                var kpRatingElement = xmlDoc.querySelector('kp_rating');
+                
+                if (kpRatingElement && kpRatingElement.textContent) {
+                    var rating = parseFloat(kpRatingElement.textContent);
+                    if (!isNaN(rating) && rating > 0) {
+                        return rating.toFixed(1);
+                    }
+                }
+            }
+        } catch (e) {
+            console.log('XML rating failed, trying API');
+        }
+
+        // Если XML не сработал, пробуем API
+        try {
+            const apiUrl = KP_CONFIG.api_url + 'api/v2.2/films/' + filmId;
+            
+            const apiResponse = await new Promise((resolve, reject) => {
+                network.clear();
+                network.timeout(KP_CONFIG.timeout);
+                network.native(apiUrl, function(data) {
+                    resolve(data);
+                }, function(error) {
+                    reject(error);
+                }, false, { 
+                    headers: { 'X-API-KEY': KP_CONFIG.api_key } 
+                });
+            });
+
+            if (apiResponse && apiResponse.ratingKinopoisk) {
+                var rating = parseFloat(apiResponse.ratingKinopoisk);
+                if (!isNaN(rating) && rating > 0) {
+                    return rating.toFixed(1);
+                }
+            }
+        } catch (e) {
+            console.error('Kinopoisk API error:', e);
+        }
+
+        return '0.0';
+    }
+
+    // --- MDBList функции ---
     function getMDBCache(tmdb_id) {
         if (!window.Lampa || !Lampa.Storage) return false;
         var timestamp = new Date().getTime();
@@ -236,169 +439,6 @@
         Lampa.Storage.set(MDB_CONFIG.cache_key, cache);
     }
 
-    // --- Улучшенный поиск фильма на Kinopoisk ---
-    async function searchFilmOnKinopoisk(title, year, imdbId = null, originalTitle = null) {
-        if (!title || title.length < 2) {
-            return { kp: '0.0', filmId: null };
-        }
-
-        try {
-            const network = new Lampa.Reguest();
-            let searchUrl = '';
-            let headers = { 'X-API-KEY': KP_CONFIG.api_key };
-
-            // Сначала ищем по IMDb ID если есть
-            if (imdbId) {
-                searchUrl = `${KP_CONFIG.api_url}api/v2.2/films?imdbId=${encodeURIComponent(imdbId)}`;
-                network.clear();
-                network.timeout(KP_CONFIG.timeout);
-                
-                const response = await new Promise((resolve, reject) => {
-                    network.native(searchUrl, function(data) {
-                        resolve(data);
-                    }, function(error) {
-                        reject(error);
-                    }, false, { headers: headers });
-                });
-                
-                if (response && response.items && response.items.length > 0) {
-                    const film = response.items[0];
-                    const kpRating = await fetchKpRating(film.kinopoiskId || film.filmId);
-                    return {
-                        kp: kpRating,
-                        filmId: film.kinopoiskId || film.filmId
-                    };
-                }
-            }
-
-            // Если IMDb не нашелся или нет IMDb ID, ищем по названию
-            searchUrl = `${KP_CONFIG.api_url}api/v2.1/films/search-by-keyword?keyword=${encodeURIComponent(title)}&page=1`;
-            if (year) {
-                searchUrl += `&yearFrom=${year}&yearTo=${year}`;
-            }
-
-            network.clear();
-            network.timeout(KP_CONFIG.timeout);
-            
-            const response = await new Promise((resolve, reject) => {
-                network.native(searchUrl, function(data) {
-                    resolve(data);
-                }, function(error) {
-                    reject(error);
-                }, false, { headers: headers });
-            });
-
-            if (!response || !response.films || response.films.length === 0) {
-                return { kp: '0.0', filmId: null };
-            }
-
-            let bestMatch = null;
-            let bestScore = 0;
-
-            // Ищем лучшее совпадение
-            response.films.forEach(film => {
-                let score = 0;
-                
-                // Проверка оригинального названия
-                if (originalTitle && equalTitle(film.nameOriginal || film.nameEn, originalTitle)) {
-                    score += 3;
-                }
-                
-                // Проверка русского названия
-                if (equalTitle(film.nameRu, title)) {
-                    score += 2;
-                }
-                
-                // Проверка английского названия
-                if (equalTitle(film.nameEn || film.nameOriginal, title)) {
-                    score += 1;
-                }
-                
-                // Проверка года
-                if (year && film.year === parseInt(year)) {
-                    score += 1;
-                }
-                
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestMatch = film;
-                }
-            });
-
-            if (!bestMatch && response.films.length > 0) {
-                bestMatch = response.films[0];
-            }
-
-            if (bestMatch) {
-                const kpRating = await fetchKpRating(bestMatch.filmId || bestMatch.kinopoiskId);
-                return {
-                    kp: kpRating,
-                    filmId: bestMatch.filmId || bestMatch.kinopoiskId
-                };
-            }
-
-            return { kp: '0.0', filmId: null };
-        } catch (error) {
-            console.error('Kinopoisk search error:', error);
-            return { kp: '0.0', filmId: null };
-        }
-    }
-
-    // --- Получение рейтинга Kinopoisk ---
-    async function fetchKpRating(filmId) {
-        if (!filmId) return '0.0';
-
-        try {
-            // Сначала пробуем XML endpoint (быстрее)
-            const xmlUrl = `${KP_CONFIG.rating_url}${filmId}.xml`;
-            const network = new Lampa.Reguest();
-            
-            const xmlResponse = await new Promise((resolve, reject) => {
-                network.clear();
-                network.timeout(KP_CONFIG.xml_timeout);
-                network.native(xmlUrl, function(data) {
-                    resolve(data);
-                }, function(error) {
-                    reject(error);
-                }, false, { dataType: 'text' });
-            });
-
-            if (xmlResponse && typeof xmlResponse === 'string') {
-                const kpMatch = xmlResponse.match(/<kp_rating[^>]*>([\d.]+)<\/kp_rating>/);
-                if (kpMatch && kpMatch[1]) {
-                    return parseFloat(kpMatch[1]).toFixed(1);
-                }
-            }
-        } catch (e) {
-            // XML не сработал, пробуем API
-        }
-
-        try {
-            const apiUrl = `${KP_CONFIG.api_url}api/v2.2/films/${filmId}`;
-            const headers = { 'X-API-KEY': KP_CONFIG.api_key };
-            const network = new Lampa.Reguest();
-            
-            const apiResponse = await new Promise((resolve, reject) => {
-                network.clear();
-                network.timeout(KP_CONFIG.timeout);
-                network.native(apiUrl, function(data) {
-                    resolve(data);
-                }, function(error) {
-                    reject(error);
-                }, false, { headers: headers });
-            });
-
-            if (apiResponse && apiResponse.ratingKinopoisk) {
-                return parseFloat(apiResponse.ratingKinopoisk).toFixed(1);
-            }
-        } catch (e) {
-            console.error('Kinopoisk API error:', e);
-        }
-
-        return '0.0';
-    }
-
-    // --- Core Fetching Logic ---
     function fetchRatings(movieData, callback) {
         if (!Lampa.Reguest) {
             if (callback) callback({ error: "Network component unavailable" });
@@ -465,65 +505,6 @@
             }
             callback(errorResult);
         });
-    }
-
-    // --- Kinopoisk Fetching Logic ---
-    async function fetchKPRatings(movieData, callback) {
-        if (!Lampa.Reguest) {
-            console.error("KinopoiskFetcher: Lampa.Reguest not available.");
-            if (callback) callback({ kp: '0.0', error: "Network unavailable" });
-            return;
-        }
-
-        // Basic validation of input
-        if (!movieData || !movieData.id || !movieData.title || !callback) {
-            console.error("KinopoiskFetcher: Invalid input data or missing callback.");
-            if (callback) callback({ kp: '0.0', error: "Invalid input" });
-            return;
-        }
-
-        var tmdb_id = movieData.id;
-
-        // 1. Check Cache
-        var cached_ratings = getKPCache(tmdb_id);
-        if (cached_ratings && cached_ratings.kp !== '0.0') {
-            callback(cached_ratings);
-            return;
-        }
-
-        // 2. Prepare Search Parameters
-        var title = movieData.title || movieData.name;
-        var orig_title = movieData.original_title || movieData.original_name;
-        var search_date = movieData.release_date || movieData.first_air_date || '0000';
-        var search_year = parseInt((search_date + '').slice(0, 4));
-        var imdb_id_from_tmdb = movieData.imdb_id;
-
-        try {
-            // Используем улучшенный поиск
-            const result = await searchFilmOnKinopoisk(title, search_year, imdb_id_from_tmdb, orig_title);
-            
-            // Если не нашли или рейтинг 0.0, пробуем поискать по оригинальному названию
-            if ((!result || result.kp === '0.0') && orig_title && orig_title !== title) {
-                const altResult = await searchFilmOnKinopoisk(orig_title, search_year);
-                if (altResult && altResult.kp !== '0.0') {
-                    result.kp = altResult.kp;
-                    result.filmId = altResult.filmId;
-                }
-            }
-
-            const finalResult = {
-                kp: result.kp || '0.0',
-                filmId: result.filmId || null
-            };
-
-            setKPCache(tmdb_id, finalResult);
-            callback(finalResult);
-        } catch (error) {
-            console.error('Error fetching Kinopoisk rating:', error);
-            const errorResult = { kp: '0.0', filmId: null, error: error.message };
-            setKPCache(tmdb_id, errorResult);
-            callback(errorResult);
-        }
     }
 
     // --- MDBList Fetcher State ---
@@ -1049,7 +1030,6 @@
                         background: #222 !important;
                         font-weight: bold !important;
                     }
-                    /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
                         margin-right: 0;
@@ -1089,6 +1069,7 @@
                     }
                     .tmdb-logo { height: 0.7em; }
                     .rt-logo { height: 1.1em; }
+                    .kp-logo { height: 1.1em; }
                     .new-interface-logo {
                         margin-top: 0.3em;
                         margin-bottom: 0.3em;
@@ -1275,7 +1256,6 @@
                         background: #222 !important;
                         font-weight: bold !important;
                     }
-                    /* --- Rating Box Styles --- */
                     .new-interface .full-start__rate {
                         font-size: 1.2em;
                         margin-right: 0;
@@ -1315,6 +1295,7 @@
                     }
                     .tmdb-logo { height: 0.7em; }
                     .rt-logo { height: 1.1em; }
+                    .kp-logo { height: 1.1em; }
                     .new-interface-logo {
                         margin-top: 0.3em;
                         margin-bottom: 0.3em;
@@ -1478,7 +1459,6 @@
 		var title = this.html.find(".new-interface-info__title");
 		var desc = this.html.find(".new-interface-info__description");
 
-		// Проверяем настройку desc перед отображением описания
 		if (Lampa.Storage.get("desc", true) !== false) {
 			desc.text(data.overview || Lampa.Lang.translate("full_notext"));
 			desc.removeClass("hidden");
@@ -1491,33 +1471,28 @@
 
 		Lampa.Background.change(Lampa.Api.img(data.backdrop_path, "original"));
 
-		// Запускаем загрузку дополнительных рейтингов
 		if (data.id) {
 			var tmdb_id = data.id;
 			var method = data.name ? 'tv' : 'movie';
 			
-			// Загружаем рейтинги MDBList
 			if (!mdblistRatingsPending[tmdb_id]) {
 				mdblistRatingsPending[tmdb_id] = true;
 				fetchRatings({id: tmdb_id, method: method, title: data.title || data.name}, function(mdblistResult) {
 					mdblistRatingsCache[tmdb_id] = mdblistResult;
 					delete mdblistRatingsPending[tmdb_id];
 					
-					// Обновляем отображение если это тот же фильм
 					if (this.currentData && this.currentData.id === tmdb_id) {
 						this.forceRedraw();
 					}
 				}.bind(this));
 			}
 
-			// Загружаем рейтинги Kinopoisk
 			if (!kpRatingsPending[tmdb_id] && (data.title || data.name)) {
 				kpRatingsPending[tmdb_id] = true;
-				fetchKPRatings({id: tmdb_id, title: data.title || data.name}, function(kpResult) {
+				fetchKPRatings({id: tmdb_id, title: data.title || data.name, original_title: data.original_title || data.original_name, release_date: data.release_date, first_air_date: data.first_air_date, imdb_id: data.imdb_id}, function(kpResult) {
 					kpRatingsCache[tmdb_id] = kpResult;
 					delete kpRatingsPending[tmdb_id];
 					
-					// Обновляем отображение если это тот же фильм
 					if (this.currentData && this.currentData.id === tmdb_id) {
 						this.forceRedraw();
 					}
@@ -1631,10 +1606,8 @@
 	InfoPanel.prototype.draw = function (data) {
 		if (!data || !this.html) return;
 
-		// Очищаем перемещенные элементы из details
 		this.html.find(".new-interface-info__details .logo-moved-head, .new-interface-info__details .logo-moved-separator").remove();
 
-		// Проверяем настройку desc перед отображением описания
 		if (Lampa.Storage.get("desc", true) !== false && data.overview) {
 			this.html.find(".new-interface-info__description").text(data.overview);
 		}
@@ -1651,7 +1624,6 @@
 
 		var ageRating = Lampa.Api.sources.tmdb.parsePG(data);
 
-		// Год и страны переносим в верхний блок (headInfo)
 		if (year !== "0000") {
 			headInfo.push("<span>" + year + "</span>");
 		}
@@ -1659,12 +1631,10 @@
 			headInfo.push(countries.join(", "));
 		}
 
-		// Получаем дополнительные рейтинги из кэша
 		var tmdb_id = data.id;
 		var mdblistResult = mdblistRatingsCache[tmdb_id] || {};
 		var kpResult = kpRatingsCache[tmdb_id] || {};
 
-		// Logo URLs для рейтингов
 		const tmdbLogoUrl = 'https://psahx.github.io/ps_plug/TMDB.svg';
 		const imdbLogoUrl = 'https://psahx.github.io/ps_plug/IMDb_3_2_Logo_GOLD.png';
 		const kpLogoUrl = 'https://psahx.github.io/ps_plug/kinopoisk-icon-main.svg';
@@ -1677,7 +1647,6 @@
 		const letterboxdLogoUrl = 'https://psahx.github.io/ps_plug/letterboxd-decal-dots-pos-rgb.svg';
 		const rogerEbertLogoUrl = 'https://psahx.github.io/ps_plug/Roger_Ebert.jpeg';
 
-		// Проверяем какие рейтинги показывать
 		const showTmdb = Lampa.Storage.get('show_rating_tmdb', true) !== false;
 		const showImdb = Lampa.Storage.get('show_rating_imdb', true) !== false;
 		const showKp = Lampa.Storage.get('show_rating_kp', true) !== false;
@@ -1688,8 +1657,6 @@
 		const showLetterboxd = Lampa.Storage.get('show_rating_letterboxd', false) !== false;
 		const showRogerebert = Lampa.Storage.get('show_rating_rogerebert', false) !== false;
 
-		// ========== РЕЙТИНГИ (первая строка под названием) ==========
-		// TMDB рейтинг
 		if (Lampa.Storage.get("rat", true) !== false && showTmdb && rating > 0) {
 			var rate_style = "";
 
@@ -1715,19 +1682,16 @@
 			ratingsInfo.push('<div class="full-start__rate tmdb-rating-item"' + rate_style + '><div>' + rating + '</div><img src="' + tmdbLogoUrl + '" class="rating-logo tmdb-logo" alt="TMDB" draggable="false"></div>');
 		}
 
-		// IMDb рейтинг
 		if (showImdb && mdblistResult && mdblistResult.imdb !== null && typeof mdblistResult.imdb === 'number' && mdblistResult.imdb > 0) {
 			var imdbRating = parseFloat(mdblistResult.imdb || 0).toFixed(1);
 			ratingsInfo.push('<div class="full-start__rate imdb-rating-item"><div>' + imdbRating + '</div><img src="' + imdbLogoUrl + '" class="rating-logo imdb-logo" alt="IMDB" draggable="false"></div>');
 		}
 
-		// Kinopoisk рейтинг
 		if (showKp && kpResult && kpResult.kp !== null && typeof kpResult.kp === 'string' && kpResult.kp !== '0.0') {
 			var kpRating = parseFloat(kpResult.kp || 0).toFixed(1);
 			ratingsInfo.push('<div class="full-start__rate kp-rating-item"><div>' + kpRating + '</div><img src="' + kpLogoUrl + '" class="rating-logo kp-logo" alt="Kinopoisk" draggable="false"></div>');
 		}
 
-		// Rotten Tomatoes (Critics)
 		if (showTomatoes && mdblistResult && typeof mdblistResult.tomatoes === 'number' && mdblistResult.tomatoes !== null && mdblistResult.tomatoes > 0) { 
 			let score = mdblistResult.tomatoes; 
 			let logoUrl = ''; 
@@ -1738,7 +1702,6 @@
 			} 
 		}
 
-		// Rotten Tomatoes (Audience)
 		if (showAudience && mdblistResult && mdblistResult.popcorn != null) { 
 			let parsedScore = parseFloat(mdblistResult.popcorn); 
 			if (!isNaN(parsedScore) && parsedScore > 0) { 
@@ -1752,13 +1715,11 @@
 			} 
 		}
 
-		// Metacritic
 		if (showMetacritic && mdblistResult && typeof mdblistResult.metacritic === 'number' && mdblistResult.metacritic !== null && mdblistResult.metacritic > 0) { 
 			let score = mdblistResult.metacritic; 
 			ratingsInfo.push('<div class="full-start__rate metacritic-rating-item"><div class="metacritic-score">' + score + '</div><img src="' + metacriticLogoUrl + '" class="rating-logo metacritic-logo" alt="Metacritic" draggable="false"></div>'); 
 		}
 
-		// Trakt
 		if (showTrakt && mdblistResult && mdblistResult.trakt != null) { 
 			let parsedScore = parseFloat(mdblistResult.trakt); 
 			if (!isNaN(parsedScore) && parsedScore > 0) { 
@@ -1767,7 +1728,6 @@
 			} 
 		}
 
-		// Letterboxd
 		if (showLetterboxd && mdblistResult && mdblistResult.letterboxd != null) { 
 			let parsedScore = parseFloat(mdblistResult.letterboxd); 
 			if (!isNaN(parsedScore) && parsedScore > 0) { 
@@ -1776,7 +1736,6 @@
 			} 
 		}
 
-		// Roger Ebert
 		if (showRogerebert && mdblistResult && mdblistResult.rogerebert != null) { 
 			let parsedScore = parseFloat(mdblistResult.rogerebert); 
 			if (!isNaN(parsedScore) && parsedScore > 0) { 
@@ -1785,7 +1744,6 @@
 			} 
 		}
 
-		// ========== ДЕТАЛИ (вторая строка под рейтингами) ==========
 		if (Lampa.Storage.get("ganr", true) !== false) {
 			if (data.genres && data.genres.length > 0) {
 				detailsInfo.push(
@@ -1861,7 +1819,6 @@
 			}
 		}
 
-		// Отображаем все блоки
 		this.html
 			.find(".new-interface-info__head")
 			.empty()
@@ -1878,14 +1835,12 @@
 			.html(detailsInfo.join(''))
 			.toggleClass("visible", detailsInfo.length > 0);
 			
-		// Обновляем цвета рейтингов
 		setTimeout(updateVoteColors, 100);
 	};
 
 	InfoPanel.prototype.empty = function () {
 		if (!this.html) return;
 		this.html.find(".new-interface-info__head,.new-interface-info__ratings,.new-interface-info__details").text("").removeClass("visible");
-		// Очищаем перемещенные элементы
 		this.html.find(".new-interface-info__details .logo-moved-head, .new-interface-info__details .logo-moved-separator").remove();
 	};
 
@@ -1927,7 +1882,6 @@
 		if (color && Lampa.Storage.get("colored_ratings", true)) {
 			$el.css("color", color);
 
-			// Применяем обводку только к элементам страницы деталей
 			if (Lampa.Storage.get("rating_border", false) && !$el.hasClass("card__vote")) {
 				if ($el.parent().hasClass("full-start__rate")) {
 					$el.parent().css("border", "1px solid " + color);
@@ -2292,7 +2246,6 @@
 			Lampa.Storage.set("rating_border", "false");
 			Lampa.Storage.set("interface_size", "small");
 			
-			// Default rating settings
 			Lampa.Storage.set("show_rating_tmdb", "true");
 			Lampa.Storage.set("show_rating_imdb", "true");
 			Lampa.Storage.set("show_rating_kp", "true");
