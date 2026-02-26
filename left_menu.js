@@ -22,7 +22,7 @@
                 <style id="menu_always_style">
                     /* Режим "Всегда показывать меню" */
                     body.menu--always .wrap__left {
-                        width: 5.4% !important;
+                        width: 5% !important;
                         margin-left: 0 !important;
                         transform: translate3d(0, 0, 0) !important;
                         visibility: visible !important;
@@ -31,7 +31,7 @@
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
-                        margin-left: -6% !important;
+                        margin-left: -6.5% !important;
                         padding-left: 6% !important;
                     }
 
