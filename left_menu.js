@@ -31,7 +31,7 @@
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
-                        margin-left: -6.5% !important;
+                        margin-left: -6% !important;
                         padding-left: 6% !important;
                     }
 
