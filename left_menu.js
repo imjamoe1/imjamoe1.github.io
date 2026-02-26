@@ -23,7 +23,7 @@
                     /* Режим "Всегда показывать меню" */
                     body.menu--always .wrap__left {
                         width: 5.3% !important;
-                        margin-left: 0 !important;
+                        margin-left: -1% !important;
                         transform: translate3d(0, 0, 0) !important;
                         visibility: visible !important;
                         display: flex !important;
