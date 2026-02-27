@@ -1284,6 +1284,9 @@
                         align-items: center;
                         flex-shrink: 0;
                     }
+                    .full-start__rate.rate--lampa {
+                        display: none !important;
+                    }
                     .rating-logo {
                         height: 1.1em;
                         width: auto;
