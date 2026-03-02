@@ -237,26 +237,28 @@
     function updateQualityBadges(activity, qualityInfo) {
         const render = activity.render();
         
-        // Ищем целевой контейнер .full-start-new__details
-        let targetContainer = render.find('.full-start-new__details');
-        
-        // Если не нашли, пробуем другие варианты
-        if (!targetContainer.length) {
-            targetContainer = render.find('.full-start__details');
-        }
-        
-        if (!targetContainer.length) {
-            console.log('Quality Badges: Target container not found');
-            return;
-        }
-        
-        // Ищем или создаем контейнер для бейджей
+        // Ищем подходящее место для размещения бейджей
+        // Попробуем разные селекторы
         let badgesContainer = render.find('.quality-badges');
         
+        // Если контейнера нет, создадим его в подходящем месте
         if (!badgesContainer.length) {
-            // Вставляем бейджи перед целевым контейнером
-            targetContainer.before('<div class="quality-badges"></div>');
-            badgesContainer = render.find('.quality-badges');
+            // Сначала попробуем найти контейнер с мета-информацией
+            let metaContainer = render.find('.full-start__details');
+            if (!metaContainer.length) {
+                metaContainer = render.find('.full-start-new__details');
+            }
+            if (!metaContainer.length) {
+                metaContainer = render.find('.full-start__body');
+            }
+            if (!metaContainer.length) {
+                metaContainer = render.find('.full-start-new__body');
+            }
+            
+            if (metaContainer.length) {
+                metaContainer.before('<div class="quality-badges"></div>');
+                badgesContainer = render.find('.quality-badges');
+            }
         }
         
         if (!badgesContainer.length) {
