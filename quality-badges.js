@@ -3,24 +3,27 @@
 
     /**
      * Анализирует качество контента из данных ffprobe
+     * Извлекает информацию о разрешении, HDR, Dolby Vision, аудио каналах
      */
     function analyzeContentQuality(ffprobe) {
         if (!ffprobe || !Array.isArray(ffprobe)) return null;
 
         const quality = {
             resolution: null,
-            resolutionLabel: null,
             hdr: false,
             dolbyVision: false,
             audio: null
         };
 
+        // Анализ видео потока
         const video = ffprobe.find(stream => stream.codec_type === 'video');
         if (video) {
             // Разрешение
             if (video.width && video.height) {
                 quality.resolution = `${video.width}x${video.height}`;
                 
+                // Определяем метки качества
+                // Проверяем и ширину для широкоформатного контента (2.35:1, 2.39:1 и т.д.)
                 if (video.height >= 2160 || video.width >= 3840) {
                     quality.resolutionLabel = '4K';
                 } else if (video.height >= 1440 || video.width >= 2560) {
@@ -32,8 +35,14 @@
                 }
             }
 
-            // HDR/Dolby Vision
+            // HDR определяется через side_data_list или color_transfer
             if (video.side_data_list) {
+                const hasMasteringDisplay = video.side_data_list.some(data => 
+                    data.side_data_type === 'Mastering display metadata'
+                );
+                const hasContentLight = video.side_data_list.some(data => 
+                    data.side_data_type === 'Content light level metadata'
+                );
                 const hasDolbyVision = video.side_data_list.some(data => 
                     data.side_data_type === 'DOVI configuration record' ||
                     data.side_data_type === 'Dolby Vision RPU'
@@ -41,30 +50,31 @@
 
                 if (hasDolbyVision) {
                     quality.dolbyVision = true;
+                    quality.hdr = true; // DV всегда включает HDR
+                } else if (hasMasteringDisplay || hasContentLight) {
                     quality.hdr = true;
-                } else {
-                    const hasMasteringDisplay = video.side_data_list.some(data => 
-                        data.side_data_type === 'Mastering display metadata'
-                    );
-                    const hasContentLight = video.side_data_list.some(data => 
-                        data.side_data_type === 'Content light level metadata'
-                    );
-                    
-                    if (hasMasteringDisplay || hasContentLight) {
-                        quality.hdr = true;
-                    }
                 }
             }
 
+            // Альтернативная проверка HDR через color_transfer
             if (!quality.hdr && video.color_transfer) {
                 const hdrTransfers = ['smpte2084', 'arib-std-b67'];
                 if (hdrTransfers.includes(video.color_transfer.toLowerCase())) {
                     quality.hdr = true;
                 }
             }
+
+            // Проверка через codec_name для Dolby Vision
+            if (!quality.dolbyVision && video.codec_name) {
+                if (video.codec_name.toLowerCase().includes('dovi') || 
+                    video.codec_name.toLowerCase().includes('dolby')) {
+                    quality.dolbyVision = true;
+                    quality.hdr = true;
+                }
+            }
         }
 
-        // Анализ аудио
+        // Анализ аудио потоков
         const audioStreams = ffprobe.filter(stream => stream.codec_type === 'audio');
         let maxChannels = 0;
         
@@ -74,6 +84,7 @@
             }
         });
 
+        // Определяем аудио формат
         if (maxChannels >= 8) {
             quality.audio = '7.1';
         } else if (maxChannels >= 6) {
@@ -88,18 +99,20 @@
     }
 
     /**
-     * Анализирует качество контента
+     * Анализирует качество контента при переходе на страницу full
      */
     function analyzeContentQualities(movie, activity) {
         if (!movie || !Lampa.Storage.field('parser_use')) return;
 
+        // Получаем данные от парсера самостоятельно
         if (!Lampa.Parser || typeof Lampa.Parser.get !== 'function') {
             return;
         }
 
         const title = movie.title || movie.name || 'Неизвестно';
-        const year = ((movie.first_air_date || movie.release_date || '0000') + '').slice(0,4);
         
+        // Формируем параметры для парсера
+        const year = ((movie.first_air_date || movie.release_date || '0000') + '').slice(0,4);
         const combinations = {
             'df': movie.original_title,
             'df_year': movie.original_title + ' ' + year,
@@ -113,14 +126,18 @@
 
         const searchQuery = combinations[Lampa.Storage.field('parse_lang')] || movie.title;
 
+        // Вызываем парсер
         Lampa.Parser.get({
             search: searchQuery,
             movie: movie,
             page: 1
         }, (results) => {
             if (!activity || activity.__destroyed) return;
+
+            // Получили результаты парсера
             if (!results || !results.Results || results.Results.length === 0) return;
 
+            // Собираем итоговую информацию о доступных качествах
             const availableQualities = {
                 resolutions: new Set(),
                 hdr: new Set(),
@@ -128,26 +145,34 @@
                 hasDub: false
             };
 
+            // Анализируем каждый торрент
             results.Results.forEach((torrent) => {
+                // Анализируем ffprobe если есть
                 if (torrent.ffprobe && Array.isArray(torrent.ffprobe)) {
                     const quality = analyzeContentQuality(torrent.ffprobe);
                     
                     if (quality) {
+                        // Разрешение
                         if (quality.resolutionLabel) {
                             availableQualities.resolutions.add(quality.resolutionLabel);
                         }
+                        
+                        // Аудио
                         if (quality.audio) {
                             availableQualities.audio.add(quality.audio);
                         }
                     }
 
+                    // Проверяем наличие русского дубляжа
                     if (!availableQualities.hasDub) {
                         const audioStreams = torrent.ffprobe.filter(stream => stream.codec_type === 'audio' && stream.tags);
                         audioStreams.forEach(audio => {
                             const lang = (audio.tags.language || '').toLowerCase();
                             const title = (audio.tags.title || audio.tags.handler_name || '').toLowerCase();
                             
+                            // Проверяем русский язык
                             if (lang === 'rus' || lang === 'ru' || lang === 'russian') {
+                                // Проверяем что это дубляж
                                 if (title.includes('dub') || title.includes('дубляж') || 
                                     title.includes('дублир') || title === 'd') {
                                     availableQualities.hasDub = true;
@@ -157,6 +182,7 @@
                     }
                 }
 
+                // Анализируем название торрента для HDR/DV
                 const titleLower = torrent.Title.toLowerCase();
                 
                 if (titleLower.includes('dolby vision') || titleLower.includes('dovi') || titleLower.match(/\bdv\b/)) {
@@ -173,6 +199,7 @@
                 }
             });
 
+            // Формируем структурированный объект с качеством
             const qualityInfo = {
                 title: title,
                 torrents_found: results.Results.length,
@@ -184,6 +211,7 @@
                 dub: availableQualities.hasDub
             };
 
+            // Разрешение - берем только максимальное
             if (availableQualities.resolutions.size > 0) {
                 const resOrder = ['8K', '4K', '2K', 'FULL HD', 'HD'];
                 for (const res of resOrder) {
@@ -194,11 +222,13 @@
                 }
             }
             
+            // Dolby Vision
             if (availableQualities.hdr.has('Dolby Vision')) {
                 qualityInfo.dv = true;
                 qualityInfo.hdr = true;
             }
             
+            // HDR - берем максимальный тип
             if (availableQualities.hdr.size > 0) {
                 qualityInfo.hdr = true;
                 
@@ -211,6 +241,7 @@
                 }
             }
             
+            // Аудио - берем только максимальное
             if (availableQualities.audio.size > 0) {
                 const audioOrder = ['7.1', '5.1', '4.0', '2.0'];
                 for (const audio of audioOrder) {
@@ -221,13 +252,15 @@
                 }
             }
 
+            // Сохраняем данные для отображения бейджей
             if (activity && activity.quality === undefined) {
                 activity.quality_info = qualityInfo;
+                // Обновляем бейджи качества
                 updateQualityBadges(activity, qualityInfo);
             }
             
         }, (error) => {
-            console.log('Quality Badges Error:', error);
+            console.log('Quality Badges', { error: error });
         });
     }
 
