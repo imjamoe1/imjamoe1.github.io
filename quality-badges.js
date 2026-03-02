@@ -255,7 +255,7 @@
         
         if (!badgesContainer.length) {
             // Вставляем бейджи после целевого контейнера
-            targetContainer.after('<div class="quality-badges"></div>');
+            targetContainer.before('<div class="quality-badges"></div>');
             badgesContainer = render.find('.quality-badges');
         }
         
