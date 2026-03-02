@@ -232,7 +232,7 @@
     }
 
     /**
-     * Обновляет бейджи качества - ИСПРАВЛЕННАЯ ВЕРСИЯ
+     * Обновляет бейджи качества
      */
     function updateQualityBadges(activity, qualityInfo) {
         const render = activity.render();
@@ -327,7 +327,7 @@
         /* Бейджи качества */
         .quality-badges {
             position: relative;
-            top: 2em;
+            top: 1em;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
@@ -366,11 +366,12 @@
         }
         
         /* Сдвиг для контейнера с деталями */
-        /*.full-start-new__details,
+        .full-start-new__details,
         .full-start__details {
-            position: relative;
-            right: 8em !important;
-        }*/
+            //position: relative;
+            margin-top: 1em !important;
+            //right: 8em !important;
+        }
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
