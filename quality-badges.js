@@ -269,9 +269,6 @@
      */
     function updateQualityBadges(activity, qualityInfo) {
         const render = activity.render();
-    
-    function updateQualityBadges(activity, qualityInfo) {
-        const render = activity.render();
         
         // Ищем подходящее место для размещения бейджей
         let badgesContainer = render.find('.quality-badges');
