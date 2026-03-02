@@ -369,8 +369,8 @@
         .full-start-new__details,
         .full-start__details {
             position: relative;
-            bottom: 2em !important;
-            right: 8em !important;
+            bottom: 1em !important;
+            right: 10em !important;
         }
         </style>`;
         
