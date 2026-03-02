@@ -369,7 +369,7 @@
         .full-start-new__details,
         .full-start__details {
             position: relative;
-            right: 2em !important;
+            right: 6em !important;
         }
         </style>`;
         
