@@ -332,7 +332,7 @@
             gap: 0.4em;
             margin-bottom: 0.5em;
             opacity: 0;
-            transform: translateX(10px);
+            transform: translateX(50px);
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
