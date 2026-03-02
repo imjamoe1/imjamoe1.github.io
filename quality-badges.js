@@ -376,7 +376,7 @@
         
         .quality-badge {
             display: inline-flex;
-            height: 1em;
+            height: 1.2em;
         }
         
         .quality-badge svg {
@@ -398,11 +398,11 @@
         }
         
         /* Отступ для контейнера с деталями */
-        /*.full-start-new__details,
+        .full-start-new__details,
         .full-start__details {
             position: relative;
-            bottom: 1em !important;
-        }*/
+            bottom: 1.5em !important;
+        }
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
