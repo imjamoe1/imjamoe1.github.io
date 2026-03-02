@@ -3,27 +3,24 @@
 
     /**
      * Анализирует качество контента из данных ffprobe
-     * Извлекает информацию о разрешении, HDR, Dolby Vision, аудио каналах
      */
     function analyzeContentQuality(ffprobe) {
         if (!ffprobe || !Array.isArray(ffprobe)) return null;
 
         const quality = {
             resolution: null,
+            resolutionLabel: null,
             hdr: false,
             dolbyVision: false,
             audio: null
         };
 
-        // Анализ видео потока
         const video = ffprobe.find(stream => stream.codec_type === 'video');
         if (video) {
             // Разрешение
             if (video.width && video.height) {
                 quality.resolution = `${video.width}x${video.height}`;
                 
-                // Определяем метки качества
-                // Проверяем и ширину для широкоформатного контента (2.35:1, 2.39:1 и т.д.)
                 if (video.height >= 2160 || video.width >= 3840) {
                     quality.resolutionLabel = '4K';
                 } else if (video.height >= 1440 || video.width >= 2560) {
@@ -35,14 +32,8 @@
                 }
             }
 
-            // HDR определяется через side_data_list или color_transfer
+            // HDR/Dolby Vision
             if (video.side_data_list) {
-                const hasMasteringDisplay = video.side_data_list.some(data => 
-                    data.side_data_type === 'Mastering display metadata'
-                );
-                const hasContentLight = video.side_data_list.some(data => 
-                    data.side_data_type === 'Content light level metadata'
-                );
                 const hasDolbyVision = video.side_data_list.some(data => 
                     data.side_data_type === 'DOVI configuration record' ||
                     data.side_data_type === 'Dolby Vision RPU'
@@ -50,31 +41,30 @@
 
                 if (hasDolbyVision) {
                     quality.dolbyVision = true;
-                    quality.hdr = true; // DV всегда включает HDR
-                } else if (hasMasteringDisplay || hasContentLight) {
                     quality.hdr = true;
+                } else {
+                    const hasMasteringDisplay = video.side_data_list.some(data => 
+                        data.side_data_type === 'Mastering display metadata'
+                    );
+                    const hasContentLight = video.side_data_list.some(data => 
+                        data.side_data_type === 'Content light level metadata'
+                    );
+                    
+                    if (hasMasteringDisplay || hasContentLight) {
+                        quality.hdr = true;
+                    }
                 }
             }
 
-            // Альтернативная проверка HDR через color_transfer
             if (!quality.hdr && video.color_transfer) {
                 const hdrTransfers = ['smpte2084', 'arib-std-b67'];
                 if (hdrTransfers.includes(video.color_transfer.toLowerCase())) {
                     quality.hdr = true;
                 }
             }
-
-            // Проверка через codec_name для Dolby Vision
-            if (!quality.dolbyVision && video.codec_name) {
-                if (video.codec_name.toLowerCase().includes('dovi') || 
-                    video.codec_name.toLowerCase().includes('dolby')) {
-                    quality.dolbyVision = true;
-                    quality.hdr = true;
-                }
-            }
         }
 
-        // Анализ аудио потоков
+        // Анализ аудио
         const audioStreams = ffprobe.filter(stream => stream.codec_type === 'audio');
         let maxChannels = 0;
         
@@ -84,7 +74,6 @@
             }
         });
 
-        // Определяем аудио формат
         if (maxChannels >= 8) {
             quality.audio = '7.1';
         } else if (maxChannels >= 6) {
@@ -99,20 +88,18 @@
     }
 
     /**
-     * Анализирует качество контента при переходе на страницу full
+     * Анализирует качество контента
      */
     function analyzeContentQualities(movie, activity) {
         if (!movie || !Lampa.Storage.field('parser_use')) return;
 
-        // Получаем данные от парсера самостоятельно
         if (!Lampa.Parser || typeof Lampa.Parser.get !== 'function') {
             return;
         }
 
         const title = movie.title || movie.name || 'Неизвестно';
-        
-        // Формируем параметры для парсера
         const year = ((movie.first_air_date || movie.release_date || '0000') + '').slice(0,4);
+        
         const combinations = {
             'df': movie.original_title,
             'df_year': movie.original_title + ' ' + year,
@@ -126,18 +113,14 @@
 
         const searchQuery = combinations[Lampa.Storage.field('parse_lang')] || movie.title;
 
-        // Вызываем парсер
         Lampa.Parser.get({
             search: searchQuery,
             movie: movie,
             page: 1
         }, (results) => {
             if (!activity || activity.__destroyed) return;
-
-            // Получили результаты парсера
             if (!results || !results.Results || results.Results.length === 0) return;
 
-            // Собираем итоговую информацию о доступных качествах
             const availableQualities = {
                 resolutions: new Set(),
                 hdr: new Set(),
@@ -145,34 +128,26 @@
                 hasDub: false
             };
 
-            // Анализируем каждый торрент
             results.Results.forEach((torrent) => {
-                // Анализируем ffprobe если есть
                 if (torrent.ffprobe && Array.isArray(torrent.ffprobe)) {
                     const quality = analyzeContentQuality(torrent.ffprobe);
                     
                     if (quality) {
-                        // Разрешение
                         if (quality.resolutionLabel) {
                             availableQualities.resolutions.add(quality.resolutionLabel);
                         }
-                        
-                        // Аудио
                         if (quality.audio) {
                             availableQualities.audio.add(quality.audio);
                         }
                     }
 
-                    // Проверяем наличие русского дубляжа
                     if (!availableQualities.hasDub) {
                         const audioStreams = torrent.ffprobe.filter(stream => stream.codec_type === 'audio' && stream.tags);
                         audioStreams.forEach(audio => {
                             const lang = (audio.tags.language || '').toLowerCase();
                             const title = (audio.tags.title || audio.tags.handler_name || '').toLowerCase();
                             
-                            // Проверяем русский язык
                             if (lang === 'rus' || lang === 'ru' || lang === 'russian') {
-                                // Проверяем что это дубляж
                                 if (title.includes('dub') || title.includes('дубляж') || 
                                     title.includes('дублир') || title === 'd') {
                                     availableQualities.hasDub = true;
@@ -182,7 +157,6 @@
                     }
                 }
 
-                // Анализируем название торрента для HDR/DV
                 const titleLower = torrent.Title.toLowerCase();
                 
                 if (titleLower.includes('dolby vision') || titleLower.includes('dovi') || titleLower.match(/\bdv\b/)) {
@@ -199,7 +173,6 @@
                 }
             });
 
-            // Формируем структурированный объект с качеством
             const qualityInfo = {
                 title: title,
                 torrents_found: results.Results.length,
@@ -211,7 +184,6 @@
                 dub: availableQualities.hasDub
             };
 
-            // Разрешение - берем только максимальное
             if (availableQualities.resolutions.size > 0) {
                 const resOrder = ['8K', '4K', '2K', 'FULL HD', 'HD'];
                 for (const res of resOrder) {
@@ -222,13 +194,11 @@
                 }
             }
             
-            // Dolby Vision
             if (availableQualities.hdr.has('Dolby Vision')) {
                 qualityInfo.dv = true;
                 qualityInfo.hdr = true;
             }
             
-            // HDR - берем максимальный тип
             if (availableQualities.hdr.size > 0) {
                 qualityInfo.hdr = true;
                 
@@ -241,7 +211,6 @@
                 }
             }
             
-            // Аудио - берем только максимальное
             if (availableQualities.audio.size > 0) {
                 const audioOrder = ['7.1', '5.1', '4.0', '2.0'];
                 for (const audio of audioOrder) {
@@ -252,58 +221,52 @@
                 }
             }
 
-            // Сохраняем данные для отображения бейджей
             if (activity && activity.quality === undefined) {
                 activity.quality_info = qualityInfo;
-                // Обновляем бейджи качества
                 updateQualityBadges(activity, qualityInfo);
             }
             
         }, (error) => {
-            console.log('Quality Badges', { error: error });
+            console.log('Quality Badges Error:', error);
         });
     }
 
     /**
-     * Обновляет бейджи качества
+     * Обновляет бейджи качества - ИСПРАВЛЕННАЯ ВЕРСИЯ
      */
     function updateQualityBadges(activity, qualityInfo) {
         const render = activity.render();
         
-        // Ищем подходящее место для размещения бейджей
-        // Попробуем разные селекторы
+        // Ищем целевой контейнер .full-start-new__details
+        let targetContainer = render.find('.full-start-new__details');
+        
+        // Если не нашли, пробуем другие варианты
+        if (!targetContainer.length) {
+            targetContainer = render.find('.full-start__details');
+        }
+        
+        if (!targetContainer.length) {
+            console.log('Quality Badges: Target container not found');
+            return;
+        }
+        
+        // Ищем или создаем контейнер для бейджей
         let badgesContainer = render.find('.quality-badges');
         
-        // Если контейнера нет, создадим его в подходящем месте
         if (!badgesContainer.length) {
-            // Сначала попробуем найти контейнер с мета-информацией
-            let metaContainer = render.find('.full-start__details');
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start-new__details');
-            }
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start__body');
-            }
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start-new__body');
-            }
-            
-            if (metaContainer.length) {
-                metaContainer.append('<div class="quality-badges"></div>');
-                badgesContainer = render.find('.quality-badges');
-            }
+            // Вставляем бейджи ПЕРЕД целевым контейнером
+            targetContainer.before('<div class="quality-badges"></div>');
+            badgesContainer = render.find('.quality-badges');
         }
         
         if (!badgesContainer.length) {
-            console.log('Не найден контейнер для бейджей качества');
+            console.log('Quality Badges: Cannot create badges container');
             return;
         }
         
         const badges = [];
         
-        // Порядок: Quality, Dolby Vision, HDR, Sound, DUB
-        
-        // 1. Quality (4K/2K/FHD/HD)
+        // 1. Quality
         if (qualityInfo.quality) {
             let qualitySvg = '';
             if (qualityInfo.quality === '4K') {
@@ -326,11 +289,11 @@
         }
         
         // 3. HDR
-        if (qualityInfo.hdr && qualityInfo.hdr_type) {
+        if (qualityInfo.hdr && qualityInfo.hdr_type && !qualityInfo.dv) {
             badges.push('<div class="quality-badge quality-badge--hdr"><svg viewBox="-1 178 313 136" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="181.5" width="306" height="129" rx="17.5" stroke="currentColor" stroke-width="5" fill="none"/><path d="M27.2784 293V199.909H46.9602V238.318H86.9148V199.909H106.551V293H86.9148V254.545H46.9602V293H27.2784ZM155.778 293H122.778V199.909H156.051C165.415 199.909 173.475 201.773 180.233 205.5C186.991 209.197 192.188 214.515 195.824 221.455C199.491 228.394 201.324 236.697 201.324 246.364C201.324 256.061 199.491 264.394 195.824 271.364C192.188 278.333 186.96 283.682 180.142 287.409C173.354 291.136 165.233 293 155.778 293ZM142.46 276.136H154.96C160.778 276.136 165.672 275.106 169.642 273.045C173.642 270.955 176.642 267.727 178.642 263.364C180.672 258.97 181.688 253.303 181.688 246.364C181.688 239.485 180.672 233.864 178.642 229.5C176.642 225.136 173.657 221.924 169.688 219.864C165.718 217.803 160.824 216.773 155.006 216.773H142.46V276.136ZM215.903 293V199.909H252.631C259.661 199.909 265.661 201.167 270.631 203.682C275.631 206.167 279.434 209.697 282.04 214.273C284.676 218.818 285.994 224.167 285.994 230.318C285.994 236.5 284.661 241.818 281.994 246.273C279.328 250.697 275.464 254.091 270.403 256.455C265.373 258.818 259.282 260 252.131 260H227.54V244.182H248.949C252.706 244.182 255.828 243.667 258.312 242.636C260.797 241.606 262.646 240.061 263.858 238C265.1 235.939 265.722 233.379 265.722 230.318C265.722 227.227 265.1 224.621 263.858 222.5C262.646 220.379 260.782 218.773 258.267 217.682C255.782 216.561 252.646 216 248.858 216H235.585V293H215.903ZM266.176 250.636L289.312 293H267.585L244.949 250.636H266.176Z" fill="currentColor"/></svg></div>');
         }
         
-        // 4. Sound (7.1/5.1/2.0)
+        // 4. Sound
         if (qualityInfo.sound) {
             let soundSvg = '';
             if (qualityInfo.sound === '7.1') {
@@ -353,6 +316,9 @@
         if (badges.length > 0) {
             badgesContainer.html(badges.join(''));
             badgesContainer.addClass('show');
+            
+            // Добавляем отступ сверху для .full-start-new__details
+            targetContainer.css('margin-top', '2em');
         }
     }
 
@@ -360,13 +326,13 @@
      * Добавляет CSS стили
      */
     function addStyles() {
-        const styles = `<style>
+        const styles = `<style data-id="quality-badges">
         /* Бейджи качества */
         .quality-badges {
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
-            margin-left: 0.6em;
+            margin-bottom: 0.5em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -399,11 +365,16 @@
             color: rgba(255, 255, 255, 0.85);
             filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
         }
+        
+        /* Отступ для контейнера с деталями */
+        .full-start-new__details,
+        .full-start__details {
+            margin-top: 2em !important;
+        }
         </style>`;
         
-        // Добавляем стили в DOM
         if (!$('style[data-id="quality-badges"]').length) {
-            $(styles).attr('data-id', 'quality-badges').appendTo('head');
+            $(styles).appendTo('head');
         }
     }
 
@@ -413,53 +384,24 @@
     function initializePlugin() {
         console.log('Quality Badges loaded');
         
-        // Добавляем стили
         addStyles();
         
-        // Добавляем слушатель для карточки фильма
         Lampa.Listener.follow('full', (event) => {
             if (event.type === 'complite') {
                 const activity = event.object.activity;
                 const render = activity.render();
                 const data = event.data && event.data.movie;
                 
-                // Добавляем контейнер для бейджей качества
-                let badgesContainer = render.find('.quality-badges');
-                
-                if (!badgesContainer.length) {
-                    // Ищем подходящее место для размещения бейджей
-                    let metaContainer = render.find('.full-start__details');
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__details');
+                // Даем время на отрисовку DOM
+                setTimeout(() => {
+                    if (data) {
+                        analyzeContentQualities(data, activity);
                     }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__body');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__body');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__head');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__head');
-                    }
-                    
-                    if (metaContainer.length) {
-                        metaContainer.append('<div class="quality-badges"></div>');
-                        badgesContainer = render.find('.quality-badges');
-                    }
-                }
-                
-                // Анализируем качество контента
-                if (data && badgesContainer.length) {
-                    analyzeContentQualities(data, activity);
-                }
+                }, 100);
             }
         });
     }
 
-    // Запуск плагина
     if (window.appready) {
         initializePlugin();
     } else {
