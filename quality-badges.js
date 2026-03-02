@@ -256,7 +256,7 @@
             }
             
             if (metaContainer.length) {
-                metaContainer.before('<div class="quality-badges"></div>');
+                metaContainer.prepend('<div class="quality-badges"></div>');
                 badgesContainer = render.find('.quality-badges');
             }
         }
@@ -328,12 +328,12 @@
         const styles = `<style data-id="quality-badges">
         /* Бейджи качества */
         .quality-badges {
-            position: relative;
+            //position: relative;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
-            margin-bottom: 0.5em;
-            //margin-left: -15em;
+            //margin-bottom: 0.5em;
+            //margin-left: 0.6em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -368,12 +368,12 @@
         }
         
         /* Отступ для контейнера с деталями */
-        .full-start-new__details,
+        /*.full-start-new__details,
         .full-start__details {
             position: relative;
             bottom: 1em !important;
             right: 9.8em !important;
-        }
+        }*/
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
@@ -387,20 +387,48 @@
     function initializePlugin() {
         console.log('Quality Badges loaded');
         
+        // Добавляем стили
         addStyles();
         
+        // Добавляем слушатель для карточки фильма
         Lampa.Listener.follow('full', (event) => {
             if (event.type === 'complite') {
                 const activity = event.object.activity;
                 const render = activity.render();
                 const data = event.data && event.data.movie;
                 
-                // Даем время на отрисовку DOM
-                setTimeout(() => {
-                    if (data) {
-                        analyzeContentQualities(data, activity);
+                // Добавляем контейнер для бейджей качества
+                let badgesContainer = render.find('.quality-badges');
+                
+                if (!badgesContainer.length) {
+                    // Ищем подходящее место для размещения бейджей
+                    let metaContainer = render.find('.full-start__details');
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start-new__details');
                     }
-                }, 100);
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start__body');
+                    }
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start-new__body');
+                    }
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start__head');
+                    }
+                    if (!metaContainer.length) {
+                        metaContainer = render.find('.full-start-new__head');
+                    }
+                    
+                    if (metaContainer.length) {
+                        metaContainer.prepend('<div class="quality-badges"></div>');
+                        badgesContainer = render.find('.quality-badges');
+                    }
+                }
+                
+                // Анализируем качество контента
+                if (data && badgesContainer.length) {
+                    analyzeContentQualities(data, activity);
+                }
             }
         });
     }
