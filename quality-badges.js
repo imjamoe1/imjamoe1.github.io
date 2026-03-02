@@ -368,7 +368,7 @@
         /* Сдвиг для контейнера с деталями */
         .full-start-new__details,
         .full-start__details {
-            margin-right: 3em !important;
+            margin-right: 8em !important;
         }
         </style>`;
         
