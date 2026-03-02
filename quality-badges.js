@@ -318,7 +318,7 @@
             badgesContainer.addClass('show');
             
             // Добавляем отступ сверху для .full-start-new__details
-            targetContainer.css('margin-top', '2em');
+            targetContainer.css('top', '2em');
         }
     }
 
