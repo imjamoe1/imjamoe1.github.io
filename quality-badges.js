@@ -244,19 +244,19 @@
         // Если контейнера нет, создадим его в подходящем месте
         if (!badgesContainer.length) {
             // Сначала попробуем найти контейнер с мета-информацией
-            let metaContainer = render.find('.full-start__details');
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start-new__details');
+            let targetContainer = render.find('.full-start__details');
+            if (!targetContainer.length) {
+                targetContainer = render.find('.full-start-new__details');
             }
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start__body');
+            if (!targetContainer.length) {
+                targetContainer = render.find('.full-start__body');
             }
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start-new__body');
+            if (!targetContainer.length) {
+                targetContainer = render.find('.full-start-new__body');
             }
             
-            if (metaContainer.length) {
-                metaContainer.after('<div class="quality-badges"></div>');
+            if (targetContainer.length) {
+                targetContainer.after('<div class="quality-badges"></div>');
                 badgesContainer = render.find('.quality-badges');
             }
         }
@@ -399,25 +399,25 @@
                 
                 if (!badgesContainer.length) {
                     // Ищем подходящее место для размещения бейджей
-                    let metaContainer = render.find('.full-start__details');
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__details');
+                    let targetContainer = render.find('.full-start__details');
+                    if (!targetContainer.length) {
+                        targetContainer = render.find('.full-start-new__details');
                     }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__body');
+                    if (!targetContainer.length) {
+                        targetContainer = render.find('.full-start__body');
                     }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__body');
+                    if (!targetContainer.length) {
+                        targetContainer = render.find('.full-start-new__body');
                     }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__head');
+                    if (!targetContainer.length) {
+                        targetContainer = render.find('.full-start__head');
                     }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__head');
+                    if (!targetContainer.length) {
+                        targetContainer = render.find('.full-start-new__head');
                     }
                     
-                    if (metaContainer.length) {
-                        metaContainer.after('<div class="quality-badges"></div>');
+                    if (targetContainer.length) {
+                        targetContainer.after('<div class="quality-badges"></div>');
                         badgesContainer = render.find('.quality-badges');
                     }
                 }
