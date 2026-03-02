@@ -370,7 +370,7 @@
         .full-start__details {
             position: relative;
             bottom: 1em !important;
-            right: 9.5em !important;
+            right: 9.7em !important;
         }
         </style>`;
         
