@@ -327,7 +327,7 @@
         /* Бейджи качества */
         .quality-badges {
             position: relative;
-            top: 1em;
+            bottom: 1em;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
@@ -366,10 +366,10 @@
         }
         
         /* Отступ для контейнера с деталями */
-        .full-start-new__details,
+        /*.full-start-new__details,
         .full-start__details {
             margin-top: 1em !important;
-        }
+        }*/
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
