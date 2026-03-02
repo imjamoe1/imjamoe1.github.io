@@ -328,10 +328,19 @@ function updateQualityBadges(activity, qualityInfo) {
         const styles = `<style data-id="quality-badges">
         /* Бейджи качества */
         .quality-badges {
-            display: flex;
-            align-items: center;
-            gap: 0.4em;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.4em !important;
             justify-content: flex-start !important;
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+            text-align: left !important;
+            float: left !important;
+            clear: both !important;
+            width: 100% !important;
+            position: relative !important;
+            left: 0 !important;
+            right: auto !important;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
