@@ -358,22 +358,13 @@ function updateQualityBadges(activity, qualityInfo) {
      * Добавляет CSS стили
      */
     function addStyles() {
-        const styles = `<style data-id="quality-badges">
+        const styles = `<style>
         /* Бейджи качества */
         .quality-badges {
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.4em !important;
-            justify-content: flex-start !important;
-            margin-left: 0 !important;
-            padding-left: 0 !important;
-            text-align: left !important;
-            float: left !important;
-            clear: both !important;
-            width: 100% !important;
-            position: relative !important;
-            left: 0 !important;
-            right: auto !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4em;
+            margin-left: 0.6em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
