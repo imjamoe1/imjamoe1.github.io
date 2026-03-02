@@ -327,11 +327,11 @@
         /* Бейджи качества */
         .quality-badges {
             position: relative;
-            //top: 33em;
+            top: 1em;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
-            margin-bottom: 0.5em;
+            //margin-bottom: 0.5em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
