@@ -364,7 +364,7 @@ function updateQualityBadges(activity, qualityInfo) {
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
-            margin-left: 0.6em;
+            right: 6em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
