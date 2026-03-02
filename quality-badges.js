@@ -327,7 +327,7 @@
         /* Бейджи качества */
         .quality-badges {
             position: relative;
-            top: 1em;
+            //top: 1em;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
