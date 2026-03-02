@@ -361,6 +361,7 @@ function updateQualityBadges(activity, qualityInfo) {
         const styles = `<style>
         /* Бейджи качества */
         .quality-badges {
+            position: relative;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
