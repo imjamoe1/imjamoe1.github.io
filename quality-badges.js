@@ -365,11 +365,11 @@
             filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
         }
         
-        /* Отступ для контейнера с деталями */
-        /*.full-start-new__details,
+        /* Сдвиг для контейнера с деталями */
+        .full-start-new__details,
         .full-start__details {
-            margin-top: 1em !important;
-        }*/
+            margin-right: 3em !important;
+        }
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
