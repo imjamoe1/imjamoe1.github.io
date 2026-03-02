@@ -366,11 +366,11 @@
         }
         
         /* Сдвиг для контейнера с деталями */
-        .full-start-new__details,
+        /*.full-start-new__details,
         .full-start__details {
             position: relative;
             right: 8em !important;
-        }
+        }*/
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
