@@ -405,7 +405,7 @@
         .full-start-new__details,
         .full-start__details {
             position: relative;
-            bottom: 2em !important;
+            bottom: 1em !important;
             //right: 9.8em !important;
         }
         </style>`;
