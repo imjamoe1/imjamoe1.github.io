@@ -316,9 +316,6 @@
         if (badges.length > 0) {
             badgesContainer.html(badges.join(''));
             badgesContainer.addClass('show');
-            
-            // Добавляем отступ сверху для .full-start-new__details
-            //targetContainer.css('margin-top', '6em');
         }
     }
 
@@ -329,12 +326,12 @@
         const styles = `<style data-id="quality-badges">
         /* Бейджи качества */
         .quality-badges {
-            position: absolute;
-            top: 33em;
+            position: relative;
+            //top: 33em;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
-           // margin-bottom: 0.5em;
+            margin-bottom: 0.5em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
