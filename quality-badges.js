@@ -366,10 +366,10 @@
         }
         
         /* Отступ для контейнера с деталями */
-        /*.full-start-new__details,
+        .full-start-new__details,
         .full-start__details {
-            margin-top: 2em !important;
-        }*/
+            margin-top: 1em !important;
+        }
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
