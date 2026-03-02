@@ -331,7 +331,7 @@
             align-items: center;
             gap: 0.4em;
             margin-bottom: 0.5em;
-            left: -8em !important;
+            left: -15em !important;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
