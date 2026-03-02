@@ -400,12 +400,12 @@ function updateQualityBadges(activity, qualityInfo) {
         }
         
         /* Отступ для контейнера с деталями */
-        /*.full-start-new__details,
+        .full-start-new__details,
         .full-start__details {
             position: relative;
-            bottom: 1em !important;
-            right: 9.8em !important;
-        }*/
+            bottom: 2em !important;
+            //right: 9.8em !important;
+        }
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
