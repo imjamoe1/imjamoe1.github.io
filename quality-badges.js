@@ -330,7 +330,7 @@
         /* Бейджи качества */
         .quality-badges {
             position: absolute;
-            top: 15em;
+            top: 25em;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
