@@ -331,7 +331,7 @@
             align-items: center;
             gap: 0.4em;
             margin-bottom: 0.5em;
-            margin-left: -15em;
+            //margin-left: -15em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -369,8 +369,8 @@
         .full-start-new__details,
         .full-start__details {
             position: relative;
-            bottom: 1em !important;
-            //right: 8em !important;
+            margin-top: 1em !important;
+            right: 8em !important;
         }
         </style>`;
         
