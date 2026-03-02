@@ -256,7 +256,7 @@
             }
             
             if (metaContainer.length) {
-                targetContainer.after('<div class="quality-badges"></div>');
+                metaContainer.after('<div class="quality-badges"></div>');
                 badgesContainer = render.find('.quality-badges');
             }
         }
@@ -420,7 +420,7 @@
                     }
                     
                     if (metaContainer.length) {
-                        targetContainer.after('<div class="quality-badges"></div>');
+                        metaContainer.after('<div class="quality-badges"></div>');
                         badgesContainer = render.find('.quality-badges');
                     }
                 }
