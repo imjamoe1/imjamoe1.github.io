@@ -329,6 +329,8 @@
         const styles = `<style data-id="quality-badges">
         /* Бейджи качества */
         .quality-badges {
+            position: absolute;
+            top: -1.5em;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
