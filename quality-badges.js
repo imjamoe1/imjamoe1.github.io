@@ -326,7 +326,7 @@
         const styles = `<style data-id="quality-badges">
         /* Бейджи качества */
         .quality-badges {
-            //position: relative;
+            position: relative;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
