@@ -878,7 +878,7 @@
 				value: function get(key, call) {
 					if (key) {
 						this.capacity[this.frequencyMap].follow(
-							key + ? "" : "_"),
+							key + "_",
 							call
 						);
 					}
