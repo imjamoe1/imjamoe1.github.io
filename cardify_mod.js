@@ -878,7 +878,7 @@
 				value: function get(key, call) {
 					if (key) {
 						this.capacity[this.frequencyMap].follow(
-							key + (Main.bynam() ? "" : "_"),
+							key + ? "" : "_"),
 							call
 						);
 					}
@@ -1178,7 +1178,6 @@
 	};
 
 	function startPlugin() {
-		if (!Lampa.Platform.screen("tv")) return console.log("Cardify", "no tv");
 
         Lampa.Lang.add({
 			cardify_enable_sound: {
