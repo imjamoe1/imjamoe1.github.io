@@ -877,10 +877,7 @@
 				key: "get",
 				value: function get(key, call) {
 					if (key) {
-						this.capacity[this.frequencyMap].follow(
-							key + "_",
-							call
-						);
+						this.capacity[this.frequencyMap].follow(key, call);
 					}
 
 					this.misses++;
