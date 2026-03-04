@@ -33,16 +33,8 @@
                 
                 // Компоненты, где компактное меню должно быть скрыто
                 const hideCompactIn = [
-                    'player',        // Плеер
-                    'card',          // Карточка фильма
-                    'full',          // Полная информация
-                    'settings',      // Настройки
-                    'search',        // Поиск
-                    'modal',         // Модальные окна
-                    'explorer',      // Онлайн просмотр
-                    'online',        // Онлайн
-                    'torrent',       // Торренты
-                    'watch'          // Просмотр
+                    'player', 'card', 'full', 'settings', 'search',
+                    'modal', 'explorer', 'online', 'torrent', 'watch'
                 ];
                 
                 // Проверяем компонент
