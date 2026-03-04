@@ -38,6 +38,15 @@
                 return false;
             }
 
+            function recalculateSizes() {
+                if (!Lampa.Activity.active()) return;
+                
+                let render = Lampa.Activity.active().activity?.render(true);
+                if (!render) return;
+                
+                $(window).trigger('resize');
+            }
+
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
                     body.menu--always .wrap__left {
@@ -49,14 +58,14 @@
                         visibility: visible !important;
                         position: relative;
                         z-index: 10;
-                        transition: opacity 0.2s, width 0.2s, transform 0.2s;
+                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0);
                         width: calc(100% - 6%);
                         flex: 1;
-                        margin-left: -2%;
+                        margin-left: -1.5%;
                         padding-left: 0;
                         transition: width 0.2s, transform 0.2s;
                     }
@@ -76,6 +85,7 @@
                         opacity: 0 !important;
                         pointer-events: none !important;
                         visibility: hidden !important;
+                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always.hide-compact .wrap__content {
@@ -92,6 +102,7 @@
                         opacity: 1 !important;
                         pointer-events: auto !important;
                         visibility: visible !important;
+                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__content {
@@ -101,7 +112,6 @@
 
                     body.menu--always .explorer {
                         width: 100% !important;
-                        max-width: 100% !important;
                     }
 
                     body.menu--always.menu--open .wrap__left {
@@ -122,6 +132,14 @@
                 </style>
             `);
 
+            let applyTimeout;
+            function debouncedApplyMenuAlways() {
+                clearTimeout(applyTimeout);
+                applyTimeout = setTimeout(() => {
+                    applyMenuAlways();
+                }, 20);
+            }
+
             function applyMenuAlways() {
                 let enabled = Lampa.Storage.field('menu_always') === true;
                 let isTv = Lampa.Platform.screen('tv');
@@ -134,7 +152,12 @@
                     let hideCompact = shouldHideCompactMenu();
                     
                     $('body').addClass('menu--always');
-                    $('body').toggleClass('hide-compact', hideCompact);
+                    
+                    if (hideCompact) {
+                        $('body').addClass('hide-compact');
+                    } else {
+                        $('body').removeClass('hide-compact');
+                    }
                 } else {
                     $('body').removeClass('menu--always hide-compact');
                     
@@ -149,8 +172,7 @@
                     Lampa.Lang.translate(enabled ? 'settings_param_yes' : 'settings_param_no')
                 );
                 
-                $(window).trigger('resize');
-                Lampa.Layer?.update?.();
+                recalculateSizes();
             }
 
             if (Lampa.SettingsApi?.addParam) {
@@ -184,22 +206,70 @@
                         let boolValue = value === 'true' || value === true;
                         Lampa.Storage.set('menu_always', boolValue);
                         applyMenuAlways();
-                        
-                        if (Lampa.Platform.screen('tv')) {
-                            $('body').toggleClass('menu--always', boolValue);
-                        }
                     }
                 });
             }
 
-            Lampa.Storage.listener.follow('change', (e) => {
-                if (e.name === 'menu_always') applyMenuAlways();
+            Lampa.Listener.follow('full', (e) => {
+                if (e.type === 'start') {
+                    $('body').addClass('hide-compact');
+                    recalculateSizes();
+                }
+                if (e.type === 'close') {
+                    setTimeout(applyMenuAlways, 100);
+                }
             });
 
-            // Основной обработчик изменений - минимальная задержка
+            Lampa.Listener.follow('router', (e) => {
+                if (e.to === 'main' || e.to === 'category') {
+                    setTimeout(() => {
+                        $('body').removeClass('hide-compact');
+                        recalculateSizes();
+                    }, 100);
+                } else if (e.to && e.to.includes('sisi')) {
+                    setTimeout(() => {
+                        $('body').addClass('hide-compact');
+                        recalculateSizes();
+                    }, 50);
+                } else {
+                    setTimeout(applyMenuAlways, 100);
+                }
+            });
+
+            new MutationObserver((mutations) => {
+                mutations.forEach(m => {
+                    m.addedNodes.forEach(node => {
+                        if (node.nodeType === 1 && (node.classList?.contains('explorer') || node.querySelector?.('.explorer'))) {
+                            $('body').addClass('hide-compact');
+                            recalculateSizes();
+                        }
+                    });
+                });
+            }).observe(document.body, { childList: true, subtree: true });
+
+            Lampa.Storage.listener.follow('change', (e) => {
+                if (e.name === 'menu_always') {
+                    applyMenuAlways();
+                    $('.settings-param[data-name="menu_always"] .settings-param__value').text(
+                        Lampa.Lang.translate(e.value ? 'settings_param_yes' : 'settings_param_no')
+                    );
+                }
+            });
+
+            Lampa.Listener.follow('app', (e) => {
+                if (e.type === 'ready') {
+                    setTimeout(applyMenuAlways, 200);
+                    
+                    $(window).on('resize', () => {
+                        clearTimeout(window.menu_always_resize);
+                        window.menu_always_resize = setTimeout(recalculateSizes, 150);
+                    });
+                }
+            });
+
             if (Lampa.Activity?.listener) {
                 Lampa.Activity.listener.follow('change', () => {
-                    setTimeout(applyMenuAlways, 50);
+                    debouncedApplyMenuAlways();
                 });
             }
 
@@ -209,31 +279,13 @@
                     let isHidden = $('body').hasClass('hide-compact');
                     if (shouldHide !== isHidden) applyMenuAlways();
                 }
-            }, 3000);
+            }, 5000);
 
-            if (window.appready) {
-                applyMenuAlways();
-            } else {
-                Lampa.Listener.follow('app', (e) => {
-                    if (e.type === 'ready') applyMenuAlways();
-                });
-            }
-
-            $(window).on('resize', () => {
-                clearTimeout(window.menu_always_resize);
-                window.menu_always_resize = setTimeout(() => {
-                    $(window).trigger('resize');
-                }, 100);
-            });
+            setTimeout(applyMenuAlways, 200);
         }
 
-        if (window.appready) {
-            initialize();
-        } else {
-            Lampa.Listener.follow('app', (e) => {
-                if (e.type === 'ready') initialize();
-            });
-        }
+        if (window.appready) initialize();
+        else Lampa.Listener.follow('app', (e) => { if (e.type === 'ready') initialize(); });
     }
 
     startPlugin();
