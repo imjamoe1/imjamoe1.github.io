@@ -70,45 +70,91 @@
             Lampa.Template.add('menu_always_style', `
                     /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
-                        width: 6% !important;
-                        margin-left: 0 !important;
-                        transform: translate3d(0, 0, 0) !important;
+                        width: 6%;
+                        min-width: 70px;
+                        max-width: 100px;
+                        margin-left: 0;
+                        transform: translate3d(0, 0, 0);
                         visibility: visible !important;
-                        display: flex !important;
-                        flex-shrink: 0 !important;
+                        position: relative;
+                        z-index: 10;
+                        transition: opacity 0.2s, width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always .wrap__content {
-                        transform: translate3d(0, 0, 0) !important;
-                        margin-left: -6% !important;
-                        padding-left: 6% !important;
+                        transform: translate3d(0, 0, 0);
+                        width: calc(100% - 6%);
+                        flex: 1;
+                        margin-left: -1%;
+                        padding-left: 0;
+                        transition: width 0.2s, transform 0.2s;
+                    }
+
+                    body.menu--always .wrap__content > * {
                         width: 100% !important;
-                        box-sizing: border-box !important;
+                        max-width: 100% !important;
                     }
 
-                    /* Когда меню открыто поверх всегда видимого - как в оригинале */
-                    body.menu--always.menu--open .wrap__left {
-                        width: 15em !important;
-                        margin-left: -15em !important;
-                        transform: translate3d(15em, 0, 0) !important;
+                    body.menu--always .menu__text {
+                        display: none;
                     }
 
-                    body.menu--always.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0) !important;
+                    /* СКРЫВАЕМ ТОЛЬКО КОМПАКТНОЕ МЕНЮ, НО НЕ ПОЛНОЕ */
+                    body.menu--always.hide-compact .wrap__left:not(.menu--open) {
+                        width: 0 !important;
+                        min-width: 0 !important;
+                        opacity: 0 !important;
+                        pointer-events: none !important;
+                        visibility: hidden !important;
+                    }
+
+                    body.menu--always.hide-compact .wrap__content {
+                        width: 100% !important;
                         margin-left: 0 !important;
                         padding-left: 0 !important;
+                    }
+
+                    /* ПОЛНОЕ МЕНЮ ВСЕГДА МОЖЕТ ОТКРЫТЬСЯ */
+                    body.menu--always.hide-compact.menu--open .wrap__left {
+                        width: 15em !important;
+                        min-width: 15em !important;
+                        margin-left: -15em !important;
+                        transform: translate3d(15em, 0, 0) !important;
+                        opacity: 1 !important;
+                        pointer-events: auto !important;
+                        visibility: visible !important;
+                    }
+
+                    body.menu--always.hide-compact.menu--open .wrap__content {
+                        transform: translate3d(15em, 0, 0) !important;
                         width: calc(100% - 15em) !important;
                     }
 
-                    /* Скрываем меню когда оно не нужно */
-                    body:not(.menu--always) .wrap__left.wrap__left--hidden {
-                        visibility: hidden !important;
-                    }
-                    
-                    /* Для правильного позиционирования контента */
-                    body.menu--always .wrap__content .scroll__content,
-                    body.menu--always .wrap__content .content__main {
+                    /* Для explorer - занимаем всю ширину */
+                    body.menu--always .explorer {
                         width: 100% !important;
+                        max-width: 100% !important;
+                    }
+
+                    /* Когда меню открыто */
+                    body.menu--always.menu--open .wrap__left {
+                        width: 15em;
+                        min-width: 15em;
+                        margin-left: -15em;
+                        transform: translate3d(15em, 0, 0);
+                    }
+
+                    body.menu--always.menu--open .wrap__left .menu__text {
+                        display: block;
+                    }
+
+                    body.menu--always.menu--open .wrap__content {
+                        transform: translate3d(15em, 0, 0);
+                        width: calc(100% - 15em);
+                    }
+
+                    body.light--version .wrap__left {
+                        visibility: visible;
                     }
                 </style>
             `);
