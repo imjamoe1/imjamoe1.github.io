@@ -40,7 +40,7 @@
                     'search',        // Поиск
                     'modal',         // Модальные окна
                     'explorer',      // Онлайн просмотр
-                    'online',        // Онлайн просмотр
+                    'online',        // Онлайн
                     'torrent',       // Торренты
                     'watch'          // Просмотр
                 ];
@@ -87,7 +87,7 @@
                         width: calc(100% - 6%);
                         flex: 1;
                         margin-left: -1%;
-                        padding-left: 0;
+                        padding-left: -1%;
                         transition: width 0.2s, transform 0.2s;
                     }
 
