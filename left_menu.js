@@ -71,22 +71,19 @@
                 <style id="menu_always_style">
                     /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
-                        width: 6%;
-                        min-width: 70px;
-                        max-width: 100px;
-                        margin-left: 0;
-                        transform: translate3d(0, 0, 0);
+                        width: 5.5% !important;
+                        margin-left: 0 !important;
+                        transform: translate3d(0, 0, 0) !important;
                         visibility: visible !important;
-                        position: relative;
-                        z-index: 10;
-                        transition: opacity 0.2s, width 0.2s, transform 0.2s;
+                        display: flex !important;
+                        flex-shrink: 0 !important;
                     }
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0);
-                        width: calc(100% - 6%);
+                        //width: calc(100% - 6%);
                         //flex: 1;
-                        margin-left: -2%;
+                        margin-left: -3%;
                         padding-left: 0;
                         //transition: width 0.2s, transform 0.2s;
                     }
