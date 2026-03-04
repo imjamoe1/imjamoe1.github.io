@@ -31,43 +31,31 @@
                 let active = Lampa.Activity.active();
                 let component = active.component;
                 
-                // Компоненты, где компактное меню должно быть скрыто
                 const hideCompactIn = [
-                    'player',        // Плеер
-                    'card',          // Карточка фильма
-                    'full',          // Полная информация
-                    'settings',      // Настройки
-                    'search',        // Поиск
-                    'modal',         // Модальные окна
-                    'explorer',      // Онлайн просмотр
-                    'online',        // Онлайн
-                    'torrent',       // Торренты
-                    'watch'          // Просмотр
+                    'player', 'card', 'full', 'settings', 'search',
+                    'modal', 'explorer', 'online', 'torrent', 'watch'
                 ];
                 
-                // Проверяем компонент
                 if (component && hideCompactIn.includes(component)) {
-                    console.log('Menu Always: hiding compact menu because component =', component);
                     return true;
                 }
                 
-                // Проверяем наличие explorer в DOM
-                if ($('.explorer').length > 0) {
-                    console.log('Menu Always: hiding compact menu because explorer found');
-                    return true;
-                }
-                
-                // Проверяем наличие full-screen элементов
-                if ($('.full-start, .full-start__buttons, .full-info, .player-wrapper, .online-player, .torrents-box').length > 0) {
-                    console.log('Menu Always: hiding compact menu because full-screen element');
+                if ($('.explorer, .full-start, .full-start__buttons, .full-info, .player-wrapper, .online-player, .torrents-box').length > 0) {
                     return true;
                 }
                 
                 return false;
             }
 
+            // Функция получения текущего компонента
+            function getCurrentComponent() {
+                if (!Lampa.Activity || !Lampa.Activity.active()) return null;
+                return Lampa.Activity.active().component;
+            }
+
             // Исправленные стили
             Lampa.Template.add('menu_always_style', `
+                <style id="menu_always_style">
                     /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
                         width: 6%;
@@ -85,7 +73,7 @@
                         transform: translate3d(0, 0, 0);
                         width: calc(100% - 6%);
                         flex: 1;
-                        margin-left: -1%;
+                        margin-left: -2%;
                         padding-left: 0;
                         transition: width 0.2s, transform 0.2s;
                     }
@@ -99,7 +87,7 @@
                         display: none;
                     }
 
-                    /* СКРЫВАЕМ ТОЛЬКО КОМПАКТНОЕ МЕНЮ, НО НЕ ПОЛНОЕ */
+                    /* СКРЫВАЕМ ТОЛЬКО КОМПАКТНОЕ МЕНЮ */
                     body.menu--always.hide-compact .wrap__left:not(.menu--open) {
                         width: 0 !important;
                         min-width: 0 !important;
@@ -114,7 +102,7 @@
                         padding-left: 0 !important;
                     }
 
-                    /* ПОЛНОЕ МЕНЮ ВСЕГДА МОЖЕТ ОТКРЫТЬСЯ */
+                    /* ПОЛНОЕ МЕНЮ МОЖЕТ ОТКРЫТЬСЯ */
                     body.menu--always.hide-compact.menu--open .wrap__left {
                         width: 15em !important;
                         min-width: 15em !important;
@@ -134,6 +122,15 @@
                     body.menu--always .explorer {
                         width: 100% !important;
                         max-width: 100% !important;
+                    }
+
+                    /* Исправление для постеров и контента */
+                    body.menu--always .category__grid,
+                    body.menu--always .scroll__content,
+                    body.menu--always .layer--width {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        box-sizing: border-box !important;
                     }
 
                     /* Когда меню открыто */
@@ -159,7 +156,7 @@
                 </style>
             `);
 
-            // Функция добавления параметра вручную
+            // Функция добавления параметра в настройки
             function addSettingManually() {
                 if ($('.settings-param[data-name="menu_always"]').length) return;
 
@@ -169,8 +166,6 @@
                         clearInterval(checkExist);
                         
                         const menuText = Lampa.Lang.translate('menu_always');
-                        
-                        console.log('Menu Always: перевод =', menuText);
                         
                         const menuItem = $(`
                             <div class="settings-param selector is--tv" data-type="toggle" data-name="menu_always">
@@ -183,10 +178,8 @@
                         
                         if (sizeParam.length) {
                             menuItem.insertAfter(sizeParam);
-                            console.log('Menu Always: пункт добавлен после размера интерфейса');
                         } else {
                             settingsInterface.prepend(menuItem);
-                            console.log('Menu Always: пункт добавлен в начало');
                         }
                         
                         if (!Lampa.Platform.screen('tv')) {
@@ -213,7 +206,7 @@
                 }, 500);
             }
 
-            // Также пробуем через SettingsApi
+            // Регистрация через SettingsApi
             if (Lampa.SettingsApi && Lampa.SettingsApi.addParam) {
                 Lampa.SettingsApi.addParam({
                     component: 'interface',
@@ -226,21 +219,18 @@
                         name: Lampa.Lang.translate('menu_always')
                     },
                     onChange: function(value) {
-                        console.log('Menu Always: onChange', value);
                         let boolValue = value === true || value === 'true';
                         Lampa.Storage.set('menu_always', boolValue);
                         applyMenuAlways();
                     }
                 });
                 
-                console.log('Menu Always: параметр зарегистрирован через SettingsApi');
-                
                 setTimeout(moveParamToCorrectPosition, 1000);
                 setTimeout(moveParamToCorrectPosition, 2000);
                 setTimeout(moveParamToCorrectPosition, 3000);
             }
             
-            // Функция перемещения параметра в правильное место
+            // Функция перемещения параметра
             function moveParamToCorrectPosition() {
                 let menuParam = $('.settings-param[data-name="menu_always"]');
                 let sizeParam = $('div[data-name="interface_size"]').closest('.settings-param');
@@ -248,13 +238,11 @@
                 if (menuParam.length && sizeParam.length) {
                     if (menuParam.prev().find('div[data-name="interface_size"]').length === 0) {
                         menuParam.insertAfter(sizeParam);
-                        console.log('Menu Always: параметр перемещен после размера интерфейса');
                     }
                     
                     let nameElem = menuParam.find('.settings-param__name');
                     if (nameElem.text() === 'menu_always') {
                         nameElem.text(Lampa.Lang.translate('menu_always'));
-                        console.log('Menu Always: обновлен текст параметра');
                     }
                 }
                 
@@ -265,12 +253,12 @@
                 }
             }
 
-            // Функция пересчета размеров
+            // Функция пересчета размеров - ИСПРАВЛЕННАЯ
             function recalculateSizes() {
-                if (!Lampa.Activity.active()) return;
+                if (!Lampa.Activity || !Lampa.Activity.active()) return;
                 
                 let active = Lampa.Activity.active();
-                if (!active.activity) return;
+                if (!active || !active.activity) return;
                 
                 let render = active.activity.render(true);
                 if (!render) return;
@@ -283,66 +271,92 @@
                 let navi = document.querySelector('.navigation-bar');
                 
                 let landscape = window.innerWidth > window.innerHeight && window.innerHeight < 768;
-                let menu_width = wrap ? wrap.getBoundingClientRect().width : 0;
                 let head_height = head ? head.getBoundingClientRect().height : 0;
                 let navi_height = navi && !landscape ? navi.getBoundingClientRect().height : 0;
                 let navi_width = navi && landscape ? navi.getBoundingClientRect().width : 0;
                 
-                let layer_width = [];
-                let layer_height = [];
-                let layer_wheight = [];
+                // Собираем все элементы с классами ширины/высоты
+                let elements = [];
                 
-                if (target.classList.contains('layer--width')) layer_width.push(target);
-                if (target.classList.contains('layer--height')) layer_height.push(target);
-                if (target.classList.contains('layer--wheight')) layer_wheight.push(target);
-                
-                target.querySelectorAll('.layer--width, .layer--height, .layer--wheight').forEach(elem => {
-                    if (elem.classList.contains('layer--width')) layer_width.push(elem);
-                    if (elem.classList.contains('layer--height')) layer_height.push(elem);
-                    if (elem.classList.contains('layer--wheight')) layer_wheight.push(elem);
-                });
-                
-                // Определяем offset для меню
-                let menuOffset = 0;
-                if (menuAlwaysVisible() && !shouldHideCompactMenu()) {
-                    menuOffset = menu_width;
+                // Добавляем сам target если он имеет нужные классы
+                if (target.classList.contains('layer--width') || 
+                    target.classList.contains('layer--height') || 
+                    target.classList.contains('layer--wheight')) {
+                    elements.push(target);
                 }
                 
-                layer_width.forEach(elem => {
-                    let newWidth = window.innerWidth - (Lampa.Platform.screen('light') ? menu_width : menuOffset) - navi_width;
-                    elem.style.width = newWidth + 'px';
+                // Добавляем все дочерние элементы с этими классами
+                target.querySelectorAll('.layer--width, .layer--height, .layer--wheight').forEach(elem => {
+                    elements.push(elem);
                 });
                 
-                layer_wheight.forEach(elem => {
-                    let heig = window.innerHeight - head_height - navi_height;
-                    let mheight = elem.getAttribute('mheight');
-                    if (mheight) {
-                        let mheightElem = document.querySelector(mheight);
-                        if (mheightElem) {
-                            heig -= mheightElem.getBoundingClientRect().height;
+                // Определяем текущее состояние меню
+                let menuAlways = menuAlwaysVisible();
+                let hideCompact = shouldHideCompactMenu();
+                let menuOpen = document.body.classList.contains('menu--open');
+                let component = getCurrentComponent();
+                
+                // Вычисляем offset для контента
+                let menuOffset = 0;
+                
+                if (menuAlways) {
+                    if (menuOpen) {
+                        // Если меню открыто - контент сдвигается на ширину полного меню
+                        menuOffset = 15 * parseFloat(getComputedStyle(document.body).fontSize); // 15em в пикселях
+                    } else if (!hideCompact) {
+                        // Если компактное меню видимо - контент сдвигается на ширину компактного меню
+                        menuOffset = wrap ? wrap.getBoundingClientRect().width : 0;
+                    }
+                    // Если hideCompact=true и menuOpen=false - offset = 0
+                }
+                
+                // Применяем размеры к каждому элементу
+                elements.forEach(elem => {
+                    if (elem.classList.contains('layer--width')) {
+                        // Ширина: вся ширина окна минус offset меню и ширина навигации
+                        let newWidth = window.innerWidth - menuOffset - navi_width;
+                        elem.style.width = newWidth + 'px';
+                        
+                        // Для отладки
+                        if (elem.classList.contains('explorer')) {
+                            console.log('Menu Always: explorer width =', newWidth, 'menuOffset =', menuOffset, 'menuOpen =', menuOpen, 'hideCompact =', hideCompact);
                         }
                     }
-                    elem.style.height = heig + 'px';
+                    
+                    if (elem.classList.contains('layer--wheight')) {
+                        let heig = window.innerHeight - head_height - navi_height;
+                        let mheight = elem.getAttribute('mheight');
+                        if (mheight) {
+                            let mheightElem = document.querySelector(mheight);
+                            if (mheightElem) {
+                                heig -= mheightElem.getBoundingClientRect().height;
+                            }
+                        }
+                        elem.style.height = heig + 'px';
+                    }
+                    
+                    if (elem.classList.contains('layer--height')) {
+                        let heig = window.innerHeight;
+                        let mheight = elem.getAttribute('mheight');
+                        if (mheight) {
+                            let mheightElem = document.querySelector(mheight);
+                            if (mheightElem) {
+                                heig -= mheightElem.getBoundingClientRect().height;
+                            }
+                        }
+                        elem.style.height = heig + 'px';
+                    }
                 });
                 
-                layer_height.forEach(elem => {
-                    let heig = window.innerHeight;
-                    let mheight = elem.getAttribute('mheight');
-                    if (mheight) {
-                        let mheightElem = document.querySelector(mheight);
-                        if (mheightElem) {
-                            heig -= mheightElem.getBoundingClientRect().height;
-                        }
-                    }
-                    elem.style.height = heig + 'px';
+                // Специальная обработка для гридов с постерами
+                target.querySelectorAll('.category__grid, .scroll__content, .content__main').forEach(elem => {
+                    elem.style.width = '100%';
                 });
             }
 
             // Функция скрытия компактного меню
             function hideCompactMenu() {
                 if (!menuAlwaysVisible()) return;
-                
-                console.log('Menu Always: hiding compact menu');
                 
                 $('body').addClass('menu--always hide-compact');
                 
@@ -359,8 +373,6 @@
             // Функция показа компактного меню
             function showCompactMenu() {
                 if (!menuAlwaysVisible()) return;
-                
-                console.log('Menu Always: showing compact menu');
                 
                 $('body').addClass('menu--always');
                 $('body').removeClass('hide-compact');
@@ -380,8 +392,6 @@
                 let enabled = Lampa.Storage.field('menu_always') === true;
                 let isTv = Lampa.Platform.screen('tv');
                 
-                console.log('Menu Always: applying, enabled =', enabled, 'isTv =', isTv);
-                
                 if (!document.querySelector('#menu_always_style')) {
                     $('body').append(Lampa.Template.get('menu_always_style', {}, true));
                 }
@@ -392,14 +402,11 @@
                     $('body').addClass('menu--always');
                     
                     if (hideCompact) {
-                        console.log('Menu Always: hiding compact menu');
                         $('body').addClass('hide-compact');
                     } else {
-                        console.log('Menu Always: showing compact menu');
                         $('body').removeClass('hide-compact');
                     }
                 } else {
-                    console.log('Menu Always: disabled');
                     $('body').removeClass('menu--always hide-compact');
                     
                     if (!$('body').hasClass('menu--open')) {
@@ -437,53 +444,46 @@
             Lampa.Listener.follow('menu', (e) => {
                 if (e.type === 'toggle') {
                     setTimeout(applyMenuAlways, 50);
+                    setTimeout(recalculateSizes, 100); // Дополнительный пересчет после анимации
                 }
             });
 
             Lampa.Listener.follow('router', (e) => {
-                console.log('Route changed:', e.from, '->', e.to);
-                
                 if (e.to === 'main' || e.to === 'category' || e.to === 'home') {
                     setTimeout(showCompactMenu, 100);
                     setTimeout(showCompactMenu, 300);
-                    setTimeout(showCompactMenu, 500);
+                    setTimeout(recalculateSizes, 400);
                 } else if (e.to && (e.to.includes('online') || e.to.includes('watch') || e.to.includes('torrent') || e.to.includes('explorer'))) {
-                    // При переходе на онлайн режим - скрываем компактное меню
                     setTimeout(hideCompactMenu, 50);
                     setTimeout(hideCompactMenu, 100);
-                    setTimeout(hideCompactMenu, 200);
+                    setTimeout(recalculateSizes, 200);
                 } else {
                     setTimeout(applyMenuAlways, 100);
-                    setTimeout(applyMenuAlways, 300);
+                    setTimeout(recalculateSizes, 200);
                 }
             });
 
             Lampa.Listener.follow('full', (e) => {
-                console.log('Full event:', e.type);
                 if (e.type === 'start') {
                     setTimeout(hideCompactMenu, 50);
-                    setTimeout(hideCompactMenu, 100);
-                    setTimeout(hideCompactMenu, 200);
+                    setTimeout(recalculateSizes, 100);
                 } else if (e.type === 'close') {
                     setTimeout(applyMenuAlways, 100);
-                    setTimeout(applyMenuAlways, 300);
+                    setTimeout(recalculateSizes, 200);
                 }
             });
 
             Lampa.Listener.follow('player', (e) => {
-                console.log('Player event:', e.type);
                 if (e.type === 'start') {
                     setTimeout(hideCompactMenu, 50);
-                    setTimeout(hideCompactMenu, 100);
-                    setTimeout(hideCompactMenu, 200);
+                    setTimeout(recalculateSizes, 100);
                 } else if (e.type === 'stop' || e.type === 'close') {
                     setTimeout(applyMenuAlways, 100);
-                    setTimeout(applyMenuAlways, 300);
+                    setTimeout(recalculateSizes, 200);
                 }
             });
 
             Lampa.Listener.follow('modal', (e) => {
-                console.log('Modal event:', e.type);
                 if (e.type === 'open') {
                     setTimeout(hideCompactMenu, 50);
                 } else if (e.type === 'close') {
@@ -492,23 +492,20 @@
             });
 
             Lampa.Listener.follow('back', () => {
-                console.log('Back event');
                 setTimeout(applyMenuAlways, 100);
-                setTimeout(applyMenuAlways, 300);
+                setTimeout(recalculateSizes, 200);
             });
 
-            // Следим за добавлением explorer в DOM
+            // Следим за добавлением explorer
             const observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.addedNodes.length) {
                         mutation.addedNodes.forEach(function(node) {
-                            if (node.nodeType === 1) { // Element node
+                            if (node.nodeType === 1) {
                                 let $node = $(node);
                                 if ($node.hasClass('explorer') || $node.find('.explorer').length > 0) {
-                                    console.log('Menu Always: explorer detected in DOM');
                                     setTimeout(hideCompactMenu, 10);
-                                    setTimeout(hideCompactMenu, 50);
-                                    setTimeout(hideCompactMenu, 100);
+                                    setTimeout(recalculateSizes, 50);
                                 }
                             }
                         });
@@ -523,7 +520,6 @@
 
             Lampa.Storage.listener.follow('change', (e) => {
                 if (e.name === 'menu_always') {
-                    console.log('Menu Always: storage change', e.value);
                     applyMenuAlways();
                     updateSettingValue();
                 }
@@ -548,32 +544,45 @@
                         clearTimeout(window.menu_always_resize);
                         window.menu_always_resize = setTimeout(recalculateSizes, 150);
                     });
+                    
+                    // Дополнительный пересчет после загрузки контента
+                    setTimeout(recalculateSizes, 1000);
+                    setTimeout(recalculateSizes, 2000);
+                    setTimeout(recalculateSizes, 3000);
                 }
             });
 
             if (Lampa.Activity && Lampa.Activity.listener) {
-                Lampa.Activity.listener.follow('change', (e) => {
-                    console.log('Activity changed:', e);
+                Lampa.Activity.listener.follow('change', () => {
                     setTimeout(applyMenuAlways, 100);
-                    setTimeout(applyMenuAlways, 300);
+                    setTimeout(recalculateSizes, 200);
+                    setTimeout(recalculateSizes, 500); // Дополнительный пересчет после рендера
                 });
             }
 
-            // Периодическая проверка
+            // Периодическая проверка и пересчет
             setInterval(() => {
                 if (menuAlwaysVisible()) {
                     let hideCompact = shouldHideCompactMenu();
                     let currentHideCompact = $('body').hasClass('hide-compact');
                     
                     if (hideCompact !== currentHideCompact) {
-                        console.log('Menu Always: fixing state mismatch');
                         applyMenuAlways();
                     }
+                    
+                    // Всегда пересчитываем размеры для корректного отображения
+                    recalculateSizes();
                 }
                 
                 moveParamToCorrectPosition();
                 updateSettingValue();
             }, 1000);
+
+            // Пересчет при скролле
+            $(window).on('scroll', () => {
+                clearTimeout(window.menu_always_scroll);
+                window.menu_always_scroll = setTimeout(recalculateSizes, 50);
+            });
 
             // Первоначальное применение
             addSettingManually();
@@ -582,6 +591,7 @@
             setTimeout(applyMenuAlways, 1000);
             setTimeout(applyMenuAlways, 2000);
             setTimeout(applyMenuAlways, 3000);
+            setTimeout(recalculateSizes, 4000);
         }
 
         // Запуск
