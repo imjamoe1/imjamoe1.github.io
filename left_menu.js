@@ -129,7 +129,7 @@
 
                     body.menu--always.hide-compact.menu--open .wrap__content {
                         transform: translate3d(15em, 0, 0) !important;
-                        width: calc(100% - 15em) !important;
+                        width: calc(100% - 12em) !important;
                     }
 
                     /* Для explorer - занимаем всю ширину */
@@ -140,7 +140,7 @@
 
                     /* Когда меню открыто */
                     body.menu--always.menu--open .wrap__left {
-                        width: 15em;
+                        width: 12em;
                         min-width: 15em;
                         margin-left: -15em;
                         transform: translate3d(15em, 0, 0);
@@ -152,7 +152,7 @@
 
                     body.menu--always.menu--open .wrap__content {
                         transform: translate3d(15em, 0, 0);
-                        width: calc(100% - 15em);
+                        width: calc(100% - 12em);
                     }
 
                     body.light--version .wrap__left {
