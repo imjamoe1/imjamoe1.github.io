@@ -141,8 +141,8 @@
 
                     /* Когда меню открыто */
                     body.menu--always.menu--open .wrap__left {
-                        width: 15em;
-                        min-width: 15em;
+                        width: 17em;
+                        min-width: 17em;
                         margin-left: -15em;
                         padding-right: 2em;
                         transform: translate3d(15em, 0, 0);
