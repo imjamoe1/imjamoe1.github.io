@@ -119,8 +119,8 @@
                     /* ПОЛНОЕ МЕНЮ ВСЕГДА МОЖЕТ ОТКРЫТЬСЯ */
                     body.menu--always.hide-compact.menu--open .wrap__left {
                         width: 12em !important;
-                        min-width: 15em !important;
-                        margin-left: -15em !important;
+                        min-width: 12em !important;
+                        margin-left: -12em !important;
                         transform: translate3d(15em, 0, 0) !important;
                         opacity: 1 !important;
                         pointer-events: auto !important;
@@ -128,7 +128,7 @@
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0) !important;
+                        transform: translate3d(12em, 0, 0) !important;
                         width: calc(100% - 12em) !important;
                     }
 
@@ -141,9 +141,9 @@
                     /* Когда меню открыто */
                     body.menu--always.menu--open .wrap__left {
                         width: 12em;
-                        min-width: 15em;
-                        margin-left: -15em;
-                        transform: translate3d(15em, 0, 0);
+                        min-width: 12em;
+                        margin-left: -12em;
+                        transform: translate3d(12em, 0, 0);
                     }
 
                     body.menu--always.menu--open .wrap__left .menu__text {
@@ -151,7 +151,7 @@
                     }
 
                     body.menu--always.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0);
+                        transform: translate3d(12em, 0, 0);
                         width: calc(100% - 12em);
                     }
 
