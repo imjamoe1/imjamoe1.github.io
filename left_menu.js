@@ -99,7 +99,7 @@
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item.focus {
                         position: relative !important;
-                        width: 57% !important;
+                        width: 50% !important;
                         border-radius: 0.8em;
                     }
 
