@@ -90,6 +90,17 @@
                         display: none;
                     }
 
+                    /* Уменьшаем расстояние между пунктами меню */
+                    body.menu--always .menu__list .menu__item {
+                        padding: 0.5em !important;
+                    }
+
+                    /* Уменьшаем размер иконок */
+                    body.menu--always .menu__list .menu__ico {
+                        width: 1.5em !important;
+                        height: 1.5em !important;
+                    }
+
                     /* СКРЫВАЕМ ТОЛЬКО КОМПАКТНОЕ МЕНЮ, НО НЕ ПОЛНОЕ */
                     body.menu--always.hide-compact .wrap__left:not(.menu--open) {
                         width: 0 !important;
