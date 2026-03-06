@@ -118,7 +118,7 @@
 
                     /* ПОЛНОЕ МЕНЮ ВСЕГДА МОЖЕТ ОТКРЫТЬСЯ */
                     body.menu--always.hide-compact.menu--open .wrap__left {
-                        width: 15em !important;
+                        width: 12em !important;
                         min-width: 15em !important;
                         margin-left: -15em !important;
                         transform: translate3d(15em, 0, 0) !important;
