@@ -90,6 +90,19 @@
                         display: none;
                     }
 
+                    /* УМЕНЬШАЕМ ПРАВУЮ СТОРОНУ ФОНОВОЙ ПОДЛОЖКИ - ДЛЯ ЭЛЕМЕНТА С FOCUS */
+                    body.menu--always .menu__list .menu__item.focus {
+                        position: relative !important;
+                        width: 85% !important;
+                        border-radius: 0.8em;
+                    }
+
+                    body.menu--always:not(.menu--open) .menu__list .menu__item.focus {
+                        position: relative !important;
+                        width: 57% !important;
+                        border-radius: 0.8em;
+                    }
+
                     /* Уменьшаем расстояние между пунктами меню */
                     body.menu--always .menu__list .menu__item {
                         padding: 0.5em !important;
