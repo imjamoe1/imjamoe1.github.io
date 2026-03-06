@@ -141,10 +141,10 @@
 
                     /* Когда меню открыто */
                     body.menu--always.menu--open .wrap__left {
-                        width: 17em;
-                        min-width: 17em;
+                        width: 18em;
+                        min-width: 18em;
                         margin-left: -15em;
-                        padding-right: 2em;
+                        padding-right: 2.5em;
                         transform: translate3d(15em, 0, 0);
                     }
 
