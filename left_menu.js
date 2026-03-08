@@ -64,7 +64,8 @@
                     /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
                         width: 6%;
-                        margin-left: 0;
+                        margin-left: -2%;
+                        padding-left: 2%;
                         transform: translate3d(0, 0, 0);
                         visibility: visible !important;
                         position: relative;
@@ -76,7 +77,7 @@
                         transform: translate3d(0, 0, 0);
                         width: calc(100% - 6%);
                         flex: 1;
-                        margin-left: -3%;
+                        margin-left: 0;
                         padding-left: 0;
                         transition: width 0.2s, transform 0.2s;
                     }
@@ -84,14 +85,6 @@
                     body.menu--always .wrap__content > * {
                         width: 100% !important;
                         max-width: 100% !important;
-                    }
-
-                    /* Дополнительная защита для карточек фильмов */
-                    body.menu--always .row--card,
-                    body.menu--always .card,
-                    body.menu--always .card__cover,
-                    body.menu--always .explorer__content {
-                        transition: transform 0.2s, padding-left 0.2s;
                     }
 
                     body.menu--always .menu__text {
