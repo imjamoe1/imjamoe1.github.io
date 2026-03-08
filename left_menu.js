@@ -86,6 +86,13 @@
                         max-width: 100% !important;
                     }
 
+                    /* Добавляем внутренний отступ для explorer и карточек */
+                    body.menu--always .explorer {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        padding-left: 1%;
+                    }
+
                     body.menu--always .menu__text {
                         display: none;
                     }
@@ -114,7 +121,7 @@
                     body.menu--always.hide-compact .wrap__content {
                         width: 100% !important;
                         margin-left: 0 !important;
-                        padding-left: 1% !important;
+                        padding-left: 0 !important;
                     }
 
                     /* ПОЛНОЕ МЕНЮ ВСЕГДА МОЖЕТ ОТКРЫТЬСЯ */
