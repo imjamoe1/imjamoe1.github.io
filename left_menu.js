@@ -93,7 +93,6 @@
                     /* Уменьшаем расстояние между пунктами меню */
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         padding: 0.5em !important;
-                        padding-left: -2em !important;
                         width: 50% !important;
                     }
 
@@ -101,6 +100,7 @@
                     body.menu--always:not(.menu--open) .menu__list .menu__ico {
                         width: 1.5em !important;
                         height: 1.5em !important;
+                        padding-left: 2em !important;
                     }
 
                     /* СКРЫВАЕМ ТОЛЬКО КОМПАКТНОЕ МЕНЮ, НО НЕ ПОЛНОЕ */
