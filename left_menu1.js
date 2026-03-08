@@ -54,6 +54,7 @@
             // Исправленные стили с уменьшенным расстоянием между значками
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
+                    /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
                         width: 6%;
                         margin-left: 0;
@@ -78,39 +79,22 @@
                         max-width: 100% !important;
                     }
 
+                    body.menu--always .menu__text {
+                        display: none;
+                    }
+
                     /* Уменьшаем расстояние между пунктами меню */
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         padding: 0.5em !important;
-                        width: 57% !important;
-                        margin-left: -2% !important;
-                       // height: auto !important;
-                       // min-height: auto !important;
+                        width: 50% !important;
                     }
 
                     /* Уменьшаем размер иконок */
                     body.menu--always:not(.menu--open) .menu__list .menu__ico {
                         width: 1.5em !important;
                         height: 1.5em !important;
-                       // margin: 0 auto !important;
                     }
-
-                    /* УМЕНЬШАЕМ ПРАВУЮ СТОРОНУ ФОНОВОЙ ПОДЛОЖКИ - ДЛЯ ЭЛЕМЕНТА С FOCUS */
-                    /* body.menu--always .menu__list .menu__item.focus {
-                        position: relative !important;
-                        width: 85% !important;
-                        border-radius: 0.8em;
-                    } */
-
-                    /* body.menu--always:not(.menu--open) .menu__list .menu__item.focus {
-                        position: relative !important;
-                        width: 57% !important;
-                        border-radius: 0.8em;
-                    } */
-
-                    body.menu--always .menu__text {
-                        display: none;
-                    }
-
+                    /* Скрываем только компактное меню, но не полное */
                     body.menu--always.hide-compact .wrap__left:not(.menu--open) {
                         width: 0 !important;
                         min-width: 0 !important;
@@ -124,7 +108,8 @@
                         margin-left: 0 !important;
                         padding-left: 0 !important;
                     }
-
+                    
+                    /* Полнще меню всегда может открыться */
                     body.menu--always.hide-compact.menu--open .wrap__left {
                         width: 15em !important;
                         min-width: 15em !important;
@@ -144,7 +129,8 @@
                         width: 100% !important;
                         max-width: 100% !important;
                     }
-
+                    
+                    /* Когда меню открыто */
                     body.menu--always.menu--open .wrap__left {
                         width: 15em;
                         min-width: 15em;
