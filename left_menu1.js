@@ -23,41 +23,56 @@
                 return Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always');
             }
 
-            function shouldShowCompactMenu() {
-                if (!Lampa.Activity.active()) return false;
+            // Функция проверки - нужно ли скрывать компактное меню
+            function shouldHideCompactMenu() {
+                if (!Lampa.Activity.active()) return true; // По умолчанию скрываем
                 
                 let active = Lampa.Activity.active();
                 let component = active.component;
-                let url = active.url || '';
                 
-                // ПОКАЗЫВАЕМ компактное меню ТОЛЬКО на главной странице
-                const isMainPage = component === 'main' || url === '/' || url === '';
+                console.log('Menu Always: current component =', component);
                 
-                // Добавляем проверку для главной страницы в Lampa
-                // Иногда главная может быть с другими параметрами
-                const isMainByClass = $('.main').length > 0 || $('.home').length > 0;
+                // ПОКАЗЫВАЕМ ТОЛЬКО НА ГЛАВНОЙ СТРАНИЦЕ (main)
+                if (component === 'main') {
+                    return false; // НЕ скрываем - показываем меню
+                }
                 
-                return isMainPage || isMainByClass;
+                // Для всех остальных компонентов - скрываем
+                return true;
             }
 
+            // Функция пересчета размеров
+            function recalculateSizes() {
+                if (!Lampa.Activity.active()) return;
+                
+                let render = Lampa.Activity.active().activity?.render(true);
+                if (!render) return;
+                
+                $(window).trigger('resize');
+            }
+
+            // Исправленные стили с уменьшенным расстоянием между значками
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
+                    /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
-                        width: 6%;
+                        width: 5%;
+                        min-width: 60px;
+                        max-width: 80px;
                         margin-left: 0;
                         transform: translate3d(0, 0, 0);
                         visibility: visible !important;
                         position: relative;
                         z-index: 10;
-                        transition: opacity 0.2s, width 0.2s, transform 0.2s;
+                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0);
-                        width: calc(100% - 6%);
+                        width: calc(100% - 5%);
                         flex: 1;
-                        margin-left: -3%;
-                        padding-left: 1%;
+                        margin-left: -1%;
+                        padding-left: 0;
                         transition: width 0.2s, transform 0.2s;
                     }
 
@@ -66,25 +81,44 @@
                         max-width: 100% !important;
                     }
 
-                    /* Уменьшаем расстояние между пунктами меню */
-                    body.menu--always:not(.menu--open) .menu__list .menu__item {
-                        padding: 0.5em !important;
-                        width: 57% !important;
-                        margin-left: -2% !important;
-                    }
-
-                    /* Уменьшаем размер иконок */
-                    body.menu--always:not(.menu--open) .menu__list .menu__ico {
-                        width: 1.5em !important;
-                        height: 1.5em !important;
-                    }
-
                     body.menu--always .menu__text {
                         display: none;
                     }
 
-                    /* По умолчанию скрываем меню (на всех страницах) */
-                    body.menu--always .wrap__left:not(.menu--open) {
+                    /* Уменьшаем расстояние между пунктами меню */
+                    body.menu--always .menu__list .menu__item {
+                        padding: 0.5em 0 !important;
+                        margin: 0 !important;
+                    }
+
+                    /* Уменьшаем размер иконок */
+                    body.menu--always .menu__list .menu__ico {
+                        width: 1.5em !important;
+                        height: 1.5em !important;
+                        margin: 0 auto !important;
+                    }
+
+                    body.menu--always .menu__list .menu__ico svg {
+                        width: 1.5em !important;
+                        height: 1.5em !important;
+                    }
+
+                    /* Уменьшаем подложку ТОЛЬКО когда меню закрыто */
+                    body.menu--always:not(.menu--open) .menu__list .menu__item.focus:after {
+                        content: '' !important;
+                        position: absolute !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        width: 70% !important;
+                        height: 100% !important;
+                        background: rgba(255, 255, 255, 0.15) !important;
+                        border-radius: 0 0.8em 0.8em 0 !important;
+                        pointer-events: none !important;
+                        z-index: -1 !important;
+                    }
+
+                    /* СКРЫВАЕМ КОМПАКТНОЕ МЕНЮ КОГДА ОНО НЕ НУЖНО */
+                    body.menu--always.hide-compact .wrap__left:not(.menu--open) {
                         width: 0 !important;
                         min-width: 0 !important;
                         opacity: 0 !important;
@@ -92,34 +126,40 @@
                         visibility: hidden !important;
                     }
 
-                    body.menu--always .wrap__content {
+                    body.menu--always.hide-compact .wrap__content {
                         width: 100% !important;
                         margin-left: 0 !important;
                         padding-left: 0 !important;
                     }
 
-                    /* Показываем меню ТОЛЬКО на главной странице */
-                    body.menu--always.show-compact .wrap__left:not(.menu--open) {
-                        width: 6% !important;
+                    /* ПОЛНОЕ МЕНЮ КОГДА ОТКРЫТО */
+                    body.menu--always.hide-compact.menu--open .wrap__left {
+                        width: 12em !important;
+                        min-width: 12em !important;
+                        margin-left: -12em !important;
+                        transform: translate3d(12em, 0, 0) !important;
                         opacity: 1 !important;
                         pointer-events: auto !important;
                         visibility: visible !important;
                     }
 
-                    body.menu--always.show-compact .wrap__content {
-                        width: calc(100% - 6%) !important;
-                        margin-left: -3% !important;
-                        padding-left: 1% !important;
+                    body.menu--always.hide-compact.menu--open .wrap__content {
+                        transform: translate3d(12em, 0, 0) !important;
+                        width: calc(100% - 12em) !important;
                     }
 
+                    /* Для explorer - занимаем всю ширину */
+                    body.menu--always .explorer {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                    }
+
+                    /* Когда меню открыто */
                     body.menu--always.menu--open .wrap__left {
-                        width: 18em !important;
-                        min-width: 18em !important;
-                        margin-left: -15em !important;
-                        transform: translate3d(15em, 0, 0) !important;
-                        opacity: 1 !important;
-                        pointer-events: auto !important;
-                        visibility: visible !important;
+                        width: 12em;
+                        min-width: 12em;
+                        margin-left: -12em;
+                        transform: translate3d(12em, 0, 0);
                     }
 
                     body.menu--always.menu--open .wrap__left .menu__text {
@@ -127,78 +167,63 @@
                     }
 
                     body.menu--always.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0) !important;
-                        width: calc(100% - 15em) !important;
+                        transform: translate3d(12em, 0, 0);
+                        width: calc(100% - 12em);
                     }
 
-                    body.menu--always .explorer {
+                    /* В открытом меню подложка на всю ширину */
+                    body.menu--always.menu--open .menu__list .menu__item.focus:after {
                         width: 100% !important;
-                        max-width: 100% !important;
+                        border-radius: 0 !important;
                     }
                 </style>
             `);
 
-            // Флаг для предотвращения множественных вызовов
-            let updateTimeout = null;
-            let lastState = { enabled: null, showCompact: null };
+            // Добавляем debounce для applyMenuAlways
+            let applyTimeout;
+            function debouncedApplyMenuAlways() {
+                clearTimeout(applyTimeout);
+                applyTimeout = setTimeout(() => {
+                    applyMenuAlways();
+                }, 20);
+            }
 
-            function applyMenuAlways(force = false) {
-                let enabled = Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always') === true;
-                let showCompact = enabled ? shouldShowCompactMenu() : false;
+            function applyMenuAlways() {
+                let enabled = Lampa.Storage.field('menu_always') === true;
+                let isTv = Lampa.Platform.screen('tv');
                 
-                // Проверяем, нужно ли обновлять
-                if (!force && 
-                    lastState.enabled === enabled && 
-                    lastState.showCompact === showCompact) {
-                    return;
+                if (!document.querySelector('#menu_always_style')) {
+                    $('body').append(Lampa.Template.get('menu_always_style', {}, true));
                 }
-
-                // Сохраняем новое состояние
-                lastState.enabled = enabled;
-                lastState.showCompact = showCompact;
-
-                if (updateTimeout) {
-                    clearTimeout(updateTimeout);
-                }
-
-                updateTimeout = setTimeout(() => {
-                    if (!document.querySelector('#menu_always_style')) {
-                        $('body').append(Lampa.Template.get('menu_always_style', {}, true));
-                    }
+                
+                if (isTv && enabled) {
+                    let hideCompact = shouldHideCompactMenu();
                     
-                    if (enabled) {
-                        $('body').addClass('menu--always');
-                        $('body').toggleClass('show-compact', showCompact);
-                        
-                        // Логируем для отладки
-                        let active = Lampa.Activity.active();
-                        console.log('Menu Always:', {
-                            enabled: enabled,
-                            showCompact: showCompact,
-                            component: active?.component,
-                            url: active?.url,
-                            isMain: active?.component === 'main'
-                        });
+                    $('body').addClass('menu--always');
+                    
+                    if (hideCompact) {
+                        $('body').addClass('hide-compact');
                     } else {
-                        $('body').removeClass('menu--always show-compact');
-                        
-                        if (!$('body').hasClass('menu--open')) {
-                            $('.wrap__left').addClass('wrap__left--hidden');
-                        } else {
-                            $('.wrap__left').removeClass('wrap__left--hidden');
-                        }
+                        $('body').removeClass('hide-compact');
                     }
                     
-                    // Обновляем текст в настройках
-                    $('.settings-param[data-name="menu_always"] .settings-param__value').text(
-                        Lampa.Lang.translate(enabled ? 'settings_param_yes' : 'settings_param_no')
-                    );
+                    console.log('Menu Always: hideCompact =', hideCompact, 'component =', Lampa.Activity.active()?.component);
+                } else {
+                    $('body').removeClass('menu--always hide-compact');
                     
-                    $(window).trigger('resize');
-                    Lampa.Layer?.update?.();
-                    
-                    updateTimeout = null;
-                }, 10);
+                    if (!$('body').hasClass('menu--open')) {
+                        $('.wrap__left').addClass('wrap__left--hidden');
+                    } else {
+                        $('.wrap__left').removeClass('wrap__left--hidden');
+                    }
+                }
+                
+                // Обновляем текст в настройках
+                $('.settings-param[data-name="menu_always"] .settings-param__value').text(
+                    Lampa.Lang.translate(enabled ? 'settings_param_yes' : 'settings_param_no')
+                );
+                
+                recalculateSizes();
             }
 
             // Добавляем параметр в настройки
@@ -232,68 +257,96 @@
                     onChange: function(value) {
                         let boolValue = value === 'true' || value === true;
                         Lampa.Storage.set('menu_always', boolValue);
-                        applyMenuAlways(true);
+                        applyMenuAlways();
                     }
                 });
             }
 
-            // Обработчик изменений хранилища
+            // Специализированные обработчики событий
+            Lampa.Listener.follow('full', (e) => {
+                if (e.type === 'start') {
+                    $('body').addClass('hide-compact');
+                    recalculateSizes();
+                }
+                if (e.type === 'close') {
+                    setTimeout(applyMenuAlways, 100);
+                }
+            });
+
+            Lampa.Listener.follow('router', (e) => {
+                console.log('Router changed:', e.from, '->', e.to);
+                
+                // При переходе на главную - показываем меню
+                if (e.to === 'main') {
+                    setTimeout(() => {
+                        $('body').removeClass('hide-compact');
+                        recalculateSizes();
+                    }, 50);
+                } else {
+                    // На всех остальных страницах - скрываем
+                    setTimeout(() => {
+                        $('body').addClass('hide-compact');
+                        recalculateSizes();
+                    }, 50);
+                }
+            });
+
+            // Следим за добавлением explorer
+            new MutationObserver((mutations) => {
+                mutations.forEach(m => {
+                    m.addedNodes.forEach(node => {
+                        if (node.nodeType === 1 && (node.classList?.contains('explorer') || node.querySelector?.('.explorer'))) {
+                            $('body').addClass('hide-compact');
+                            recalculateSizes();
+                        }
+                    });
+                });
+            }).observe(document.body, { childList: true, subtree: true });
+
             Lampa.Storage.listener.follow('change', (e) => {
                 if (e.name === 'menu_always') {
-                    applyMenuAlways(true);
+                    applyMenuAlways();
+                    $('.settings-param[data-name="menu_always"] .settings-param__value').text(
+                        Lampa.Lang.translate(e.value ? 'settings_param_yes' : 'settings_param_no')
+                    );
                 }
             });
 
-            // Обработчик активности
+            Lampa.Listener.follow('app', (e) => {
+                if (e.type === 'ready') {
+                    setTimeout(applyMenuAlways, 200);
+                    
+                    $(window).on('resize', () => {
+                        clearTimeout(window.menu_always_resize);
+                        window.menu_always_resize = setTimeout(recalculateSizes, 150);
+                    });
+                }
+            });
+
             if (Lampa.Activity?.listener) {
-                Lampa.Activity.listener.follow('change', () => {
-                    applyMenuAlways();
+                Lampa.Activity.listener.follow('change', (e) => {
+                    console.log('Activity changed:', e);
+                    debouncedApplyMenuAlways();
                 });
             }
 
-            // Используем MutationObserver для отслеживания изменений
-            const observer = new MutationObserver((mutations) => {
-                for (let mutation of mutations) {
-                    if (mutation.type === 'childList' && 
-                        mutation.target.classList?.contains('explorer')) {
+            // Периодическая проверка
+            setInterval(() => {
+                if (menuAlwaysVisible()) {
+                    let shouldHide = shouldHideCompactMenu();
+                    let isHidden = $('body').hasClass('hide-compact');
+                    if (shouldHide !== isHidden) {
+                        console.log('Menu Always: fixing state mismatch');
                         applyMenuAlways();
-                        break;
                     }
                 }
-            });
+            }, 3000);
 
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-
-            // Инициализация
-            if (window.appready) {
-                applyMenuAlways(true);
-            } else {
-                Lampa.Listener.follow('app', (e) => {
-                    if (e.type === 'ready') applyMenuAlways(true);
-                });
-            }
-
-            // Обработчик ресайза
-            let resizeTimeout;
-            $(window).on('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    applyMenuAlways();
-                }, 100);
-            });
+            setTimeout(applyMenuAlways, 200);
         }
 
-        // Старт
-        if (window.appready) {
-            initialize();
-        } else {
-            Lampa.Listener.follow('app', (e) => {
-                if (e.type === 'ready') initialize();
-            });
-        }
+        if (window.appready) initialize();
+        else Lampa.Listener.follow('app', (e) => { if (e.type === 'ready') initialize(); });
     }
 
     startPlugin();
