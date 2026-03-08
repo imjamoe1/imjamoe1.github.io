@@ -77,7 +77,7 @@
                         width: calc(100% - 6%);
                         flex: 1;
                         margin-left: -3%;
-                        padding-left: 2%;
+                        padding-left: 0;
                         transition: width 0.2s, transform 0.2s;
                     }
 
@@ -93,6 +93,7 @@
                     /* Уменьшаем расстояние между пунктами меню */
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         padding: 0.5em !important;
+                        padding-left: 1em !important;
                         width: 50% !important;
                     }
 
