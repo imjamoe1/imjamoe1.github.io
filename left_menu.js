@@ -86,9 +86,12 @@
                         max-width: 100% !important;
                     }
 
-                    /* Сохраняем отступ при скролле */
-                    body.menu--always .card__scroll {
-                        padding-left: 1%;
+                    /* Дополнительная защита для карточек фильмов */
+                    body.menu--always .row--card,
+                    body.menu--always .card,
+                    body.menu--always .card__cover,
+                    body.menu--always .explorer__content {
+                        transition: transform 0.2s, padding-left 0.2s;
                     }
 
                     body.menu--always .menu__text {
