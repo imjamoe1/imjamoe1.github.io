@@ -28,7 +28,17 @@
                 
                 let active = Lampa.Activity.active();
                 let component = active.component;
+                let url = active.url || '';
                 
+                // Проверяем, что это главная страница
+                // Главная страница имеет компонент 'main' или url '/'
+                const isMainPage = component === 'main' || url === '/' || url === '';
+                
+                // Скрываем компактное меню ТОЛЬКО если это НЕ главная страница
+                // То есть на главной оставляем меню видимым, на всех остальных страницах скрываем
+                if (!isMainPage) return true;
+                
+                // Дополнительные проверки для специфичных компонентов
                 const hideCompactIn = [
                     'full', 'sisi_view_lampac', 'sisi_view_AdultJS'
                 ];
@@ -65,12 +75,14 @@
                         max-width: 100% !important;
                     }
 
+                    /* Уменьшаем расстояние между пунктами меню */
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         padding: 0.5em !important;
                         width: 57% !important;
                         margin-left: -2% !important;
                     }
 
+                    /* Уменьшаем размер иконок */
                     body.menu--always:not(.menu--open) .menu__list .menu__ico {
                         width: 1.5em !important;
                         height: 1.5em !important;
@@ -80,6 +92,7 @@
                         display: none;
                     }
 
+                    /* Скрываем компактное меню везде, кроме главной */
                     body.menu--always.hide-compact .wrap__left:not(.menu--open) {
                         width: 0 !important;
                         min-width: 0 !important;
@@ -92,6 +105,14 @@
                         width: 100% !important;
                         margin-left: 0 !important;
                         padding-left: 0 !important;
+                    }
+
+                    /* На главной странице всегда показываем компактное меню */
+                    body.menu--always:not(.hide-compact) .wrap__left:not(.menu--open) {
+                        width: 6% !important;
+                        opacity: 1 !important;
+                        pointer-events: auto !important;
+                        visibility: visible !important;
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__left {
@@ -164,6 +185,16 @@
                     if (enabled) {
                         $('body').addClass('menu--always');
                         $('body').toggleClass('hide-compact', hideCompact);
+                        
+                        // Логируем для отладки
+                        let active = Lampa.Activity.active();
+                        console.log('Menu Always:', {
+                            enabled: enabled,
+                            hideCompact: hideCompact,
+                            component: active?.component,
+                            url: active?.url,
+                            isMain: active?.component === 'main'
+                        });
                     } else {
                         $('body').removeClass('menu--always hide-compact');
                         
@@ -183,7 +214,7 @@
                     Lampa.Layer?.update?.();
                     
                     updateTimeout = null;
-                }, 10); // Минимальная задержка для группировки событий
+                }, 10);
             }
 
             // Добавляем параметр в настройки
@@ -229,19 +260,18 @@
                 }
             });
 
-            // Обработчик активности - используем debounce
+            // Обработчик активности
             if (Lampa.Activity?.listener) {
                 Lampa.Activity.listener.follow('change', () => {
                     applyMenuAlways();
                 });
             }
 
-            // Убираем setInterval, заменяем на более эффективный механизм
-            // Используем MutationObserver для отслеживания изменений в DOM
+            // Используем MutationObserver для отслеживания изменений
             const observer = new MutationObserver((mutations) => {
                 for (let mutation of mutations) {
                     if (mutation.type === 'childList' && 
-                        mutation.target.classList.contains('explorer')) {
+                        mutation.target.classList?.contains('explorer')) {
                         applyMenuAlways();
                         break;
                     }
@@ -262,7 +292,7 @@
                 });
             }
 
-            // Обработчик ресайза с debounce
+            // Обработчик ресайза
             let resizeTimeout;
             $(window).on('resize', () => {
                 clearTimeout(resizeTimeout);
