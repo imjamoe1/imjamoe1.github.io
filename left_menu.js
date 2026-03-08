@@ -75,7 +75,6 @@
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0);
                         width: calc(100% - 6%);
-                        flex: 1;
                         margin-left: -1%;
                         padding-left: 1;
                         transition: width 0.2s, transform 0.2s;
