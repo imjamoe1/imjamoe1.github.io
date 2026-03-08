@@ -86,10 +86,8 @@
                         max-width: 100% !important;
                     }
 
-                    /* Добавляем внутренний отступ для explorer и карточек */
-                    body.menu--always .explorer {
-                        width: 100% !important;
-                        max-width: 100% !important;
+                    /* Сохраняем отступ при скролле */
+                    body.menu--always .explorer__scroll {
                         padding-left: 1%;
                     }
 
