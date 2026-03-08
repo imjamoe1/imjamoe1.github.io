@@ -77,7 +77,7 @@
                         width: calc(100% - 6%);
                         flex: 1;
                         margin-left: -3%;
-                        padding-left: 0;
+                        padding-left: 1%;
                         transition: width 0.2s, transform 0.2s;
                     }
 
