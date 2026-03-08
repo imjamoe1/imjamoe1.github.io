@@ -93,7 +93,7 @@
                     /* Уменьшаем расстояние между пунктами меню */
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         padding: 0.5em !important;
-                        padding-left: 1em !important;
+                        padding-left: 2em !important;
                         width: 50% !important;
                     }
 
