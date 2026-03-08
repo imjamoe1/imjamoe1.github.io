@@ -54,25 +54,22 @@
             // Исправленные стили с уменьшенным расстоянием между значками
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
-                    /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
-                        width: 5%;
-                        min-width: 60px;
-                        max-width: 80px;
+                        width: 6%;
                         margin-left: 0;
                         transform: translate3d(0, 0, 0);
                         visibility: visible !important;
                         position: relative;
                         z-index: 10;
-                        transition: width 0.2s, transform 0.2s;
+                        transition: opacity 0.2s, width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0);
-                        width: calc(100% - 5%);
+                        width: calc(100% - 6%);
                         flex: 1;
-                        margin-left: -1%;
-                        padding-left: 0;
+                        margin-left: -3%;
+                        padding-left: 1%;
                         transition: width 0.2s, transform 0.2s;
                     }
 
@@ -81,43 +78,39 @@
                         max-width: 100% !important;
                     }
 
+                    /* Уменьшаем расстояние между пунктами меню */
+                    body.menu--always:not(.menu--open) .menu__list .menu__item {
+                        padding: 0.5em !important;
+                        width: 57% !important;
+                        margin-left: -2% !important;
+                       // height: auto !important;
+                       // min-height: auto !important;
+                    }
+
+                    /* Уменьшаем размер иконок */
+                    body.menu--always:not(.menu--open) .menu__list .menu__ico {
+                        width: 1.5em !important;
+                        height: 1.5em !important;
+                       // margin: 0 auto !important;
+                    }
+
+                    /* УМЕНЬШАЕМ ПРАВУЮ СТОРОНУ ФОНОВОЙ ПОДЛОЖКИ - ДЛЯ ЭЛЕМЕНТА С FOCUS */
+                    /* body.menu--always .menu__list .menu__item.focus {
+                        position: relative !important;
+                        width: 85% !important;
+                        border-radius: 0.8em;
+                    } */
+
+                    /* body.menu--always:not(.menu--open) .menu__list .menu__item.focus {
+                        position: relative !important;
+                        width: 57% !important;
+                        border-radius: 0.8em;
+                    } */
+
                     body.menu--always .menu__text {
                         display: none;
                     }
 
-                    /* Уменьшаем расстояние между пунктами меню */
-                    body.menu--always .menu__list .menu__item {
-                        padding: 0.5em 0 !important;
-                        margin: 0 !important;
-                    }
-
-                    /* Уменьшаем размер иконок */
-                    body.menu--always .menu__list .menu__ico {
-                        width: 1.5em !important;
-                        height: 1.5em !important;
-                        margin: 0 auto !important;
-                    }
-
-                    body.menu--always .menu__list .menu__ico svg {
-                        width: 1.5em !important;
-                        height: 1.5em !important;
-                    }
-
-                    /* Уменьшаем подложку ТОЛЬКО когда меню закрыто */
-                    body.menu--always:not(.menu--open) .menu__list .menu__item.focus:after {
-                        content: '' !important;
-                        position: absolute !important;
-                        top: 0 !important;
-                        left: 0 !important;
-                        width: 70% !important;
-                        height: 100% !important;
-                        background: rgba(255, 255, 255, 0.15) !important;
-                        border-radius: 0 0.8em 0.8em 0 !important;
-                        pointer-events: none !important;
-                        z-index: -1 !important;
-                    }
-
-                    /* СКРЫВАЕМ КОМПАКТНОЕ МЕНЮ КОГДА ОНО НЕ НУЖНО */
                     body.menu--always.hide-compact .wrap__left:not(.menu--open) {
                         width: 0 !important;
                         min-width: 0 !important;
@@ -132,34 +125,32 @@
                         padding-left: 0 !important;
                     }
 
-                    /* ПОЛНОЕ МЕНЮ КОГДА ОТКРЫТО */
                     body.menu--always.hide-compact.menu--open .wrap__left {
-                        width: 12em !important;
-                        min-width: 12em !important;
-                        margin-left: -12em !important;
-                        transform: translate3d(12em, 0, 0) !important;
+                        width: 15em !important;
+                        min-width: 15em !important;
+                        margin-left: -15em !important;
+                        transform: translate3d(15em, 0, 0) !important;
                         opacity: 1 !important;
                         pointer-events: auto !important;
                         visibility: visible !important;
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__content {
-                        transform: translate3d(12em, 0, 0) !important;
-                        width: calc(100% - 12em) !important;
+                        transform: translate3d(15em, 0, 0) !important;
+                        width: calc(100% - 15em) !important;
                     }
 
-                    /* Для explorer - занимаем всю ширину */
                     body.menu--always .explorer {
                         width: 100% !important;
                         max-width: 100% !important;
                     }
 
-                    /* Когда меню открыто */
                     body.menu--always.menu--open .wrap__left {
-                        width: 12em;
-                        min-width: 12em;
-                        margin-left: -12em;
-                        transform: translate3d(12em, 0, 0);
+                        width: 18em;
+                        min-width: 18em;
+                        margin-left: -15em;
+                        padding-right: 2.5em;
+                        transform: translate3d(15em, 0, 0);
                     }
 
                     body.menu--always.menu--open .wrap__left .menu__text {
@@ -167,14 +158,8 @@
                     }
 
                     body.menu--always.menu--open .wrap__content {
-                        transform: translate3d(12em, 0, 0);
-                        width: calc(100% - 12em);
-                    }
-
-                    /* В открытом меню подложка на всю ширину */
-                    body.menu--always.menu--open .menu__list .menu__item.focus:after {
-                        width: 100% !important;
-                        border-radius: 0 !important;
+                        transform: translate3d(15em, 0, 0);
+                        width: calc(100% - 15em);
                     }
                 </style>
             `);
