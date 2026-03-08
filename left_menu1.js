@@ -65,34 +65,16 @@
                         max-width: 100% !important;
                     }
 
-                    /* Уменьшаем расстояние между пунктами меню */
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         padding: 0.5em !important;
                         width: 57% !important;
                         margin-left: -2% !important;
-                       // height: auto !important;
-                       // min-height: auto !important;
                     }
 
-                    /* Уменьшаем размер иконок */
                     body.menu--always:not(.menu--open) .menu__list .menu__ico {
                         width: 1.5em !important;
                         height: 1.5em !important;
-                       // margin: 0 auto !important;
                     }
-
-                    /* УМЕНЬШАЕМ ПРАВУЮ СТОРОНУ ФОНОВОЙ ПОДЛОЖКИ - ДЛЯ ЭЛЕМЕНТА С FOCUS */
-                    /* body.menu--always .menu__list .menu__item.focus {
-                        position: relative !important;
-                        width: 85% !important;
-                        border-radius: 0.8em;
-                    } */
-
-                    /* body.menu--always:not(.menu--open) .menu__list .menu__item.focus {
-                        position: relative !important;
-                        width: 57% !important;
-                        border-radius: 0.8em;
-                    } */
 
                     body.menu--always .menu__text {
                         display: none;
@@ -151,37 +133,57 @@
                 </style>
             `);
 
-            function applyMenuAlways() {
-                let enabled = Lampa.Storage.field('menu_always') === true;
-                let isTv = Lampa.Platform.screen('tv');
+            // Флаг для предотвращения множественных вызовов
+            let updateTimeout = null;
+            let lastState = { enabled: null, hideCompact: null };
+
+            function applyMenuAlways(force = false) {
+                let enabled = Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always') === true;
+                let hideCompact = enabled ? shouldHideCompactMenu() : false;
                 
-                if (!document.querySelector('#menu_always_style')) {
-                    $('body').append(Lampa.Template.get('menu_always_style', {}, true));
+                // Проверяем, нужно ли обновлять
+                if (!force && 
+                    lastState.enabled === enabled && 
+                    lastState.hideCompact === hideCompact) {
+                    return;
                 }
-                
-                if (isTv && enabled) {
-                    let hideCompact = shouldHideCompactMenu();
-                    
-                    $('body').addClass('menu--always');
-                    $('body').toggleClass('hide-compact', hideCompact);
-                } else {
-                    $('body').removeClass('menu--always hide-compact');
-                    
-                    if (!$('body').hasClass('menu--open')) {
-                        $('.wrap__left').addClass('wrap__left--hidden');
-                    } else {
-                        $('.wrap__left').removeClass('wrap__left--hidden');
+
+                // Сохраняем новое состояние
+                lastState.enabled = enabled;
+                lastState.hideCompact = hideCompact;
+
+                if (updateTimeout) {
+                    clearTimeout(updateTimeout);
+                }
+
+                updateTimeout = setTimeout(() => {
+                    if (!document.querySelector('#menu_always_style')) {
+                        $('body').append(Lampa.Template.get('menu_always_style', {}, true));
                     }
-                }
-                
-                // Обновляем текст в настройках
-                $('.settings-param[data-name="menu_always"] .settings-param__value').text(
-                    Lampa.Lang.translate(enabled ? 'settings_param_yes' : 'settings_param_no')
-                );
-                
-                // Мгновенное обновление
-                $(window).trigger('resize');
-                Lampa.Layer?.update?.();
+                    
+                    if (enabled) {
+                        $('body').addClass('menu--always');
+                        $('body').toggleClass('hide-compact', hideCompact);
+                    } else {
+                        $('body').removeClass('menu--always hide-compact');
+                        
+                        if (!$('body').hasClass('menu--open')) {
+                            $('.wrap__left').addClass('wrap__left--hidden');
+                        } else {
+                            $('.wrap__left').removeClass('wrap__left--hidden');
+                        }
+                    }
+                    
+                    // Обновляем текст в настройках
+                    $('.settings-param[data-name="menu_always"] .settings-param__value').text(
+                        Lampa.Lang.translate(enabled ? 'settings_param_yes' : 'settings_param_no')
+                    );
+                    
+                    $(window).trigger('resize');
+                    Lampa.Layer?.update?.();
+                    
+                    updateTimeout = null;
+                }, 10); // Минимальная задержка для группировки событий
             }
 
             // Добавляем параметр в настройки
@@ -215,50 +217,57 @@
                     onChange: function(value) {
                         let boolValue = value === 'true' || value === true;
                         Lampa.Storage.set('menu_always', boolValue);
-                        applyMenuAlways();
-                        
-                        if (Lampa.Platform.screen('tv')) {
-                            $('body').toggleClass('menu--always', boolValue);
-                        }
+                        applyMenuAlways(true);
                     }
                 });
             }
 
-            // Следим за изменениями
+            // Обработчик изменений хранилища
             Lampa.Storage.listener.follow('change', (e) => {
-                if (e.name === 'menu_always') applyMenuAlways();
+                if (e.name === 'menu_always') {
+                    applyMenuAlways(true);
+                }
             });
 
-            // Основной обработчик изменений - минимальная задержка
+            // Обработчик активности - используем debounce
             if (Lampa.Activity?.listener) {
                 Lampa.Activity.listener.follow('change', () => {
-                    setTimeout(applyMenuAlways, 50);
+                    applyMenuAlways();
                 });
             }
 
-            // Защита от сбоев
-            setInterval(() => {
-                if (menuAlwaysVisible()) {
-                    let shouldHide = shouldHideCompactMenu();
-                    let isHidden = $('body').hasClass('hide-compact');
-                    if (shouldHide !== isHidden) applyMenuAlways();
+            // Убираем setInterval, заменяем на более эффективный механизм
+            // Используем MutationObserver для отслеживания изменений в DOM
+            const observer = new MutationObserver((mutations) => {
+                for (let mutation of mutations) {
+                    if (mutation.type === 'childList' && 
+                        mutation.target.classList.contains('explorer')) {
+                        applyMenuAlways();
+                        break;
+                    }
                 }
-            }, 3000);
+            });
 
-            // Инициализация приложения
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+
+            // Инициализация
             if (window.appready) {
-                applyMenuAlways();
+                applyMenuAlways(true);
             } else {
                 Lampa.Listener.follow('app', (e) => {
-                    if (e.type === 'ready') applyMenuAlways();
+                    if (e.type === 'ready') applyMenuAlways(true);
                 });
             }
 
-            // Обработчик ресайза
+            // Обработчик ресайза с debounce
+            let resizeTimeout;
             $(window).on('resize', () => {
-                clearTimeout(window.menu_always_resize);
-                window.menu_always_resize = setTimeout(() => {
-                    $(window).trigger('resize');
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    applyMenuAlways();
                 }, 100);
             });
         }
