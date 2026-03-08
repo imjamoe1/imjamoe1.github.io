@@ -23,30 +23,21 @@
                 return Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always');
             }
 
-            function shouldHideCompactMenu() {
+            function shouldShowCompactMenu() {
                 if (!Lampa.Activity.active()) return false;
                 
                 let active = Lampa.Activity.active();
                 let component = active.component;
                 let url = active.url || '';
                 
-                // Проверяем, что это главная страница
-                // Главная страница имеет компонент 'main' или url '/'
+                // ПОКАЗЫВАЕМ компактное меню ТОЛЬКО на главной странице
                 const isMainPage = component === 'main' || url === '/' || url === '';
                 
-                // Скрываем компактное меню ТОЛЬКО если это НЕ главная страница
-                // То есть на главной оставляем меню видимым, на всех остальных страницах скрываем
-                if (!isMainPage) return true;
+                // Добавляем проверку для главной страницы в Lampa
+                // Иногда главная может быть с другими параметрами
+                const isMainByClass = $('.main').length > 0 || $('.home').length > 0;
                 
-                // Дополнительные проверки для специфичных компонентов
-                const hideCompactIn = [
-                    'full', 'sisi_view_lampac', 'sisi_view_AdultJS'
-                ];
-
-                if (component && hideCompactIn.includes(component)) return true;
-                if ($('.explorer').length > 0) return true;
-                
-                return false;
+                return isMainPage || isMainByClass;
             }
 
             Lampa.Template.add('menu_always_style', `
@@ -92,8 +83,8 @@
                         display: none;
                     }
 
-                    /* Скрываем компактное меню везде, кроме главной */
-                    body.menu--always.hide-compact .wrap__left:not(.menu--open) {
+                    /* По умолчанию скрываем меню (на всех страницах) */
+                    body.menu--always .wrap__left:not(.menu--open) {
                         width: 0 !important;
                         min-width: 0 !important;
                         opacity: 0 !important;
@@ -101,23 +92,29 @@
                         visibility: hidden !important;
                     }
 
-                    body.menu--always.hide-compact .wrap__content {
+                    body.menu--always .wrap__content {
                         width: 100% !important;
                         margin-left: 0 !important;
                         padding-left: 0 !important;
                     }
 
-                    /* На главной странице всегда показываем компактное меню */
-                    body.menu--always:not(.hide-compact) .wrap__left:not(.menu--open) {
+                    /* Показываем меню ТОЛЬКО на главной странице */
+                    body.menu--always.show-compact .wrap__left:not(.menu--open) {
                         width: 6% !important;
                         opacity: 1 !important;
                         pointer-events: auto !important;
                         visibility: visible !important;
                     }
 
-                    body.menu--always.hide-compact.menu--open .wrap__left {
-                        width: 15em !important;
-                        min-width: 15em !important;
+                    body.menu--always.show-compact .wrap__content {
+                        width: calc(100% - 6%) !important;
+                        margin-left: -3% !important;
+                        padding-left: 1% !important;
+                    }
+
+                    body.menu--always.menu--open .wrap__left {
+                        width: 18em !important;
+                        min-width: 18em !important;
                         margin-left: -15em !important;
                         transform: translate3d(15em, 0, 0) !important;
                         opacity: 1 !important;
@@ -125,7 +122,11 @@
                         visibility: visible !important;
                     }
 
-                    body.menu--always.hide-compact.menu--open .wrap__content {
+                    body.menu--always.menu--open .wrap__left .menu__text {
+                        display: block;
+                    }
+
+                    body.menu--always.menu--open .wrap__content {
                         transform: translate3d(15em, 0, 0) !important;
                         width: calc(100% - 15em) !important;
                     }
@@ -134,44 +135,27 @@
                         width: 100% !important;
                         max-width: 100% !important;
                     }
-
-                    body.menu--always.menu--open .wrap__left {
-                        width: 18em;
-                        min-width: 18em;
-                        margin-left: -15em;
-                        padding-right: 2.5em;
-                        transform: translate3d(15em, 0, 0);
-                    }
-
-                    body.menu--always.menu--open .wrap__left .menu__text {
-                        display: block;
-                    }
-
-                    body.menu--always.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0);
-                        width: calc(100% - 15em);
-                    }
                 </style>
             `);
 
             // Флаг для предотвращения множественных вызовов
             let updateTimeout = null;
-            let lastState = { enabled: null, hideCompact: null };
+            let lastState = { enabled: null, showCompact: null };
 
             function applyMenuAlways(force = false) {
                 let enabled = Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always') === true;
-                let hideCompact = enabled ? shouldHideCompactMenu() : false;
+                let showCompact = enabled ? shouldShowCompactMenu() : false;
                 
                 // Проверяем, нужно ли обновлять
                 if (!force && 
                     lastState.enabled === enabled && 
-                    lastState.hideCompact === hideCompact) {
+                    lastState.showCompact === showCompact) {
                     return;
                 }
 
                 // Сохраняем новое состояние
                 lastState.enabled = enabled;
-                lastState.hideCompact = hideCompact;
+                lastState.showCompact = showCompact;
 
                 if (updateTimeout) {
                     clearTimeout(updateTimeout);
@@ -184,19 +168,19 @@
                     
                     if (enabled) {
                         $('body').addClass('menu--always');
-                        $('body').toggleClass('hide-compact', hideCompact);
+                        $('body').toggleClass('show-compact', showCompact);
                         
                         // Логируем для отладки
                         let active = Lampa.Activity.active();
                         console.log('Menu Always:', {
                             enabled: enabled,
-                            hideCompact: hideCompact,
+                            showCompact: showCompact,
                             component: active?.component,
                             url: active?.url,
                             isMain: active?.component === 'main'
                         });
                     } else {
-                        $('body').removeClass('menu--always hide-compact');
+                        $('body').removeClass('menu--always show-compact');
                         
                         if (!$('body').hasClass('menu--open')) {
                             $('.wrap__left').addClass('wrap__left--hidden');
