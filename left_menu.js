@@ -143,7 +143,7 @@
                         width: 17.5em;
                         min-width: 17.5em;
                         margin-left: -15em;
-                        padding-right: 2.5em;
+                        //padding-right: 2.5em;
                         transform: translate3d(15em, 0, 0);
                     }
 
