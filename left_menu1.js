@@ -63,8 +63,8 @@
                         transform: translate3d(0, 0, 0);
                         width: calc(100% - 6%);
                         flex: 1;
-                        margin-left: 4%;
-                        padding-left: 0;
+                        margin-left: -6%;
+                        padding-left: 6%;
                         transition: width 0.2s, transform 0.2s;
                     }
 
