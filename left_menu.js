@@ -64,8 +64,7 @@
                     /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
                         width: 6%;
-                        margin-left: -2%;
-                        padding-left: 2%;
+                        margin-left: 0;
                         transform: translate3d(0, 0, 0);
                         visibility: visible !important;
                         position: relative;
@@ -77,8 +76,8 @@
                         transform: translate3d(0, 0, 0);
                         width: calc(100% - 6%);
                         flex: 1;
-                        margin-left: 0;
-                        padding-left: 0;
+                        margin-left: -1%;
+                        padding-left: 1;
                         transition: width 0.2s, transform 0.2s;
                     }
 
