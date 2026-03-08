@@ -51,10 +51,9 @@
                 $(window).trigger('resize');
             }
 
-            // Исправленные стили с уменьшенным расстоянием между значками
+            // Стили для меню
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
-                    /* Режим "Всегда показывать меню" - компактный режим */
                     body.menu--always .wrap__left {
                         width: 6%;
                         margin-left: 0;
@@ -62,15 +61,15 @@
                         visibility: visible !important;
                         position: relative;
                         z-index: 10;
-                        transition: opacity 0.2s, width 0.2s, transform 0.2s;
+                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0);
                         width: calc(100% - 6%);
                         flex: 1;
-                        margin-left: -1%;
-                        padding-left: 0;
+                        margin-left: -6%;
+                        padding-left: 6%;
                         transition: width 0.2s, transform 0.2s;
                     }
 
@@ -83,24 +82,13 @@
                         display: none;
                     }
 
-                    /* Уменьшаем расстояние между пунктами меню */
-                    body.menu--always:not(.menu--open) .menu__list .menu__item {
-                        padding: 0.5em !important;
-                        width: 50% !important;
-                    }
-
-                    /* Уменьшаем размер иконок */
-                    body.menu--always:not(.menu--open) .menu__list .menu__ico {
-                        width: 1.5em !important;
-                        height: 1.5em !important;
-                    }
-                    /* Скрываем только компактное меню, но не полное */
                     body.menu--always.hide-compact .wrap__left:not(.menu--open) {
                         width: 0 !important;
                         min-width: 0 !important;
                         opacity: 0 !important;
                         pointer-events: none !important;
                         visibility: hidden !important;
+                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always.hide-compact .wrap__content {
@@ -108,8 +96,7 @@
                         margin-left: 0 !important;
                         padding-left: 0 !important;
                     }
-                    
-                    /* Полнще меню всегда может открыться */
+
                     body.menu--always.hide-compact.menu--open .wrap__left {
                         width: 15em !important;
                         min-width: 15em !important;
@@ -118,6 +105,7 @@
                         opacity: 1 !important;
                         pointer-events: auto !important;
                         visibility: visible !important;
+                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__content {
@@ -127,10 +115,8 @@
 
                     body.menu--always .explorer {
                         width: 100% !important;
-                        max-width: 100% !important;
                     }
-                    
-                    /* Когда меню открыто */
+
                     body.menu--always.menu--open .wrap__left {
                         width: 15em;
                         min-width: 15em;
