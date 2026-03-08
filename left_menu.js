@@ -87,7 +87,7 @@
                     }
 
                     /* Сохраняем отступ при скролле */
-                    body.menu--always .explorer__scroll {
+                    body.menu--always .card__scroll {
                         padding-left: 1%;
                     }
 
