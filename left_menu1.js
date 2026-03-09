@@ -72,7 +72,7 @@
                     }
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
-                        padding-left:-2em !important;
+                        margin-left:-2em !important;
                         width: 50% !important;
                     }
 
