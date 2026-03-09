@@ -65,7 +65,7 @@
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
-                        margin-left: -1.5em !important;
+                        margin-left: -2.5em !important;
                         padding-left: 0 !important;
                         //width: 100% !important;
                         //box-sizing: border-box !important;
@@ -120,9 +120,10 @@
                     }
 
                     body.menu--always.menu--open .wrap__left {
-                        width: 15em;
-                        min-width: 15em;
+                        width: 17em;
+                        min-width: 17em;
                         margin-left: -15em;
+                        padding-right: 2em;
                         transform: translate3d(15em, 0, 0);
                     }
 
