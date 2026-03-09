@@ -74,7 +74,7 @@
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         margin-left: -0.5em !important;
                         //padding-left: 1em !important;
-                        width: 60% !important;
+                        width: 80% !important;
                     }
 
                     body.menu--always .wrap__content > * {
