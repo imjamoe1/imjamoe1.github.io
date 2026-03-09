@@ -73,7 +73,7 @@
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         margin-left:-1em !important;
-                        padding-left: 2em !important;
+                        padding-left: 1em !important;
                         width: 50% !important;
                     }
 
