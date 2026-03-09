@@ -55,7 +55,7 @@
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
                     body.menu--always .wrap__left {
-                        width: 6% !important;
+                        width: 6em !important;
                         margin-left: 0 !important;
                         transform: translate3d(0, 0, 0) !important;
                         visibility: visible !important;
@@ -65,10 +65,10 @@
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
-                        margin-left: -5% !important;
-                        padding-left: 6% !important;
-                        width: 100% !important;
-                        box-sizing: border-box !important;
+                        margin-left: -5em !important;
+                        padding-left: 6em !important;
+                        //width: 100% !important;
+                        //box-sizing: border-box !important;
                     }
 
                     body.menu--always .wrap__content > * {
