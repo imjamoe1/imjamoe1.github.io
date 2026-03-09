@@ -151,11 +151,6 @@
         .full-descr__info-body {
             text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9) !important;
         }
-        
-        /* Комментарии */
-        .full-review__text {
-            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9) !important;
-        }
         </style>
         `;
         
