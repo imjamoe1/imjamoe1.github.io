@@ -55,22 +55,20 @@
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
                     body.menu--always .wrap__left {
-                        width: 6%;
-                        margin-left: 0;
-                        transform: translate3d(0, 0, 0);
+                        width: 5.5% !important;
+                        margin-left: -1% !important;
+                        transform: translate3d(0, 0, 0) !important;
                         visibility: visible !important;
-                        position: relative;
-                        z-index: 10;
-                        transition: width 0.2s, transform 0.2s;
+                        display: flex !important;
+                        flex-shrink: 0 !important;
                     }
 
                     body.menu--always .wrap__content {
-                        transform: translate3d(0, 0, 0);
-                        //width: calc(100% - 6%);
-                        //flex: 1;
-                        margin-left: -6%;
-                        padding-left: 6%;
-                        transition: width 0.2s, transform 0.2s;
+                        transform: translate3d(0, 0, 0) !important;
+                        margin-left: -6.5% !important;
+                        padding-left: 6% !important;
+                        width: 100% !important;
+                        box-sizing: border-box !important;
                     }
 
                     body.menu--always .wrap__content > * {
@@ -88,7 +86,6 @@
                         opacity: 0 !important;
                         pointer-events: none !important;
                         visibility: hidden !important;
-                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always.hide-compact .wrap__content {
@@ -105,7 +102,6 @@
                         opacity: 1 !important;
                         pointer-events: auto !important;
                         visibility: visible !important;
-                        transition: width 0.2s, transform 0.2s;
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__content {
