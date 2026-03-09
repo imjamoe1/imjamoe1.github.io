@@ -56,7 +56,7 @@
                 <style id="menu_always_style">
                     body.menu--always .wrap__left {
                         width: 6em !important;
-                        margin-left: -1em !important;
+                        margin-right: 0.5em !important;
                         transform: translate3d(0, 0, 0) !important;
                         visibility: visible !important;
                         display: flex !important;
