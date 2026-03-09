@@ -140,12 +140,6 @@
         /* ===== ТЕНИ ДЛЯ ТЕКСТА ===== */
         /* Чтобы текст был читаем на размытом фоне */
         
-        /* Заголовки секций */
-        .items-line__title {
-            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9) !important;
-            font-weight: 900 !important;
-        }
-        
         /* Основной текст описания */
         .full-descr__text {
             text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9) !important;
@@ -177,31 +171,6 @@
         .full-review__text {
             text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7) !important;
         }
-        
-        .full-review__user-email {
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
-        }
-        
-        /* Названия похожих фильмов */
-        .card__title {
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
-        }
-        
-        .card__age {
-            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7) !important;
-        }
-        
-        /* Рейтинги */
-        .card__vote {
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
-            font-weight: 600 !important;
-        }
-        
-        /* Бонус: улучшаем читаемость кнопок */
-        .full-start__button span {
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7) !important;
-        }
-        /* ========================= */
         </style>
         `;
         
