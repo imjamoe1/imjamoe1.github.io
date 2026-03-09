@@ -56,7 +56,7 @@
                 <style id="menu_always_style">
                     body.menu--always .wrap__left {
                         width: 6em !important;
-                        margin-left: -0.5em !important;
+                        margin-left: 0 !important;
                         transform: translate3d(0, 0, 0) !important;
                         visibility: visible !important;
                         display: flex !important;
@@ -65,10 +65,15 @@
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
-                        margin-left: -1.2em !important;
+                        margin-left: 0 !important;
                         padding-left: 0 !important;
                         //width: 100% !important;
                         //box-sizing: border-box !important;
+                    }
+
+                    body.menu--always:not(.menu--open) .menu__list .menu__item {
+                        padding-left:-2em !important;
+                        width: 50% !important;
                     }
 
                     body.menu--always .wrap__content > * {
