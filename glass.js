@@ -152,24 +152,9 @@
             text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9) !important;
         }
         
-        /* Теги (жанр, производство и т.д.) */
-        .tag-count__name,
-        .tag-count__count {
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7) !important;
-        }
-        
-        /* Имена актеров и роли */
-        .full-person__name {
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
-        }
-        
-        .full-person__role {
-            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7) !important;
-        }
-        
         /* Комментарии */
         .full-review__text {
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7) !important;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9) !important;
         }
         </style>
         `;
