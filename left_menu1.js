@@ -72,7 +72,7 @@
                     }
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
-                        margin-left:-0.5em !important;
+                        margin-left: -0.5em !important;
                         //padding-left: 1em !important;
                         width: 50% !important;
                     }
