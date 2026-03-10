@@ -37,6 +37,16 @@
                 return true;
             }
 
+            // Функция пересчета размеров
+            function recalculateSizes() {
+                if (!Lampa.Activity.active()) return;
+                
+                let render = Lampa.Activity.active().activity?.render(true);
+                if (!render) return;
+                
+                $(window).trigger('resize');
+            }
+
             // Стили для меню
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
@@ -241,6 +251,24 @@
                     );
                 }
             });
+
+            Lampa.Listener.follow('app', (e) => {
+                if (e.type === 'ready') {
+                    setTimeout(applyMenuAlways, 200);
+                    
+                    $(window).on('resize', () => {
+                        clearTimeout(window.menu_always_resize);
+                        window.menu_always_resize = setTimeout(recalculateSizes, 150);
+                    });
+                }
+            });
+
+            if (Lampa.Activity?.listener) {
+                Lampa.Activity.listener.follow('change', (e) => {
+                    console.log('Activity changed:', e);
+                    debouncedApplyMenuAlways();
+                });
+            }
 
             // Периодическая проверка
             setInterval(() => {
