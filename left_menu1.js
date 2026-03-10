@@ -37,16 +37,6 @@
                 return true;
             }
 
-            // Функция пересчета размеров
-            function recalculateSizes() {
-                if (!Lampa.Activity.active()) return;
-                
-                let render = Lampa.Activity.active().activity?.render(true);
-                if (!render) return;
-                
-                $(window).trigger('resize');
-            }
-
             // Стили для меню
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
