@@ -123,7 +123,7 @@
                         width: 15em;
                         min-width: 15em;
                         margin-left: -15em;
-                        //padding-right: 2em;
+                        padding-right: 1em;
                         transform: translate3d(15em, 0, 0);
                     }
 
