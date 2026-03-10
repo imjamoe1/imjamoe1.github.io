@@ -273,11 +273,11 @@
 
             Lampa.Listener.follow('app', (e) => {
                 if (e.type === 'ready') {
-                    setTimeout(applyMenuAlways, 200);
+                    setTimeout(applyMenuAlways, 100);
                     
                     $(window).on('resize', () => {
                         clearTimeout(window.menu_always_resize);
-                        window.menu_always_resize = setTimeout(recalculateSizes, 150);
+                        window.menu_always_resize = setTimeout(recalculateSizes, 50);
                     });
                 }
             });
@@ -301,7 +301,7 @@
                 }
             }, 3000);
 
-            setTimeout(applyMenuAlways, 200);
+            setTimeout(applyMenuAlways, 100);
         }
 
         if (window.appready) initialize();
