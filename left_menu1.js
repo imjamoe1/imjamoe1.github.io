@@ -19,10 +19,6 @@
                 }
             });
 
-            function menuAlwaysVisible() {
-                return Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always');
-            }
-
             // Функция проверки - нужно ли скрывать компактное меню
             function shouldHideCompactMenu() {
                 if (!Lampa.Activity.active()) return true; // По умолчанию скрываем
@@ -67,13 +63,10 @@
                         transform: translate3d(0, 0, 0) !important;
                         margin-left: -2.5em !important;
                         padding-left: 1em !important;
-                        //width: 100% !important;
-                        //box-sizing: border-box !important;
                     }
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         margin-left: -1em !important;
-                        //padding-left: 1em !important;
                         width: 80% !important;
                     }
 
@@ -258,18 +251,6 @@
                     );
                 }
             });
-
-            // Периодическая проверка
-            setInterval(() => {
-                if (menuAlwaysVisible()) {
-                    let shouldHide = shouldHideCompactMenu();
-                    let isHidden = $('body').hasClass('hide-compact');
-                    if (shouldHide !== isHidden) {
-                        console.log('Menu Always: fixing state mismatch');
-                        applyMenuAlways();
-                    }
-                }
-            }, 3000);
 
             setTimeout(applyMenuAlways, 100);
         }
