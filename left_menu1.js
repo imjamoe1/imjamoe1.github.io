@@ -250,18 +250,6 @@
                 }
             });
 
-            // Следим за добавлением explorer
-            new MutationObserver((mutations) => {
-                mutations.forEach(m => {
-                    m.addedNodes.forEach(node => {
-                        if (node.nodeType === 1 && (node.classList?.contains('explorer') || node.querySelector?.('.explorer'))) {
-                            $('body').addClass('hide-compact');
-                            recalculateSizes();
-                        }
-                    });
-                });
-            }).observe(document.body, { childList: true, subtree: true });
-
             Lampa.Storage.listener.follow('change', (e) => {
                 if (e.name === 'menu_always') {
                     applyMenuAlways();
