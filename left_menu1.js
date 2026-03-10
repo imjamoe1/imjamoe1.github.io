@@ -20,7 +20,7 @@
             });
 
             function menuAlwaysVisible() {
-                return Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always');
+                return Lampa.Storage.field('menu_always') === true;
             }
 
             // Функция проверки - нужно ли скрывать компактное меню
