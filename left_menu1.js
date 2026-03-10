@@ -66,7 +66,7 @@
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
                         margin-left: -2em !important;
-                        padding-left: 1em !important;
+                        padding-left: 0 !important;
                         //width: 100% !important;
                         //box-sizing: border-box !important;
                     }
