@@ -30,7 +30,7 @@
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
                         margin-left: -2.5em !important;
-                        padding-left: 2em !important;
+                        padding-left: 1em !important;
                     }
 
                     body.menu--always .menu__text {
@@ -51,17 +51,41 @@
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__left {
-                        width: 15em !important;
-                        min-width: 15em !important;
-                        margin-left: -15em !important;
-                        transform: translate3d(15em, 0, 0) !important;
+                        width: 16em !important;
+                        min-width: 16em !important;
+                        margin-left: -16em !important;
+                        transform: translate3d(16em, 0, 0) !important;
                         opacity: 1 !important;
                         visibility: visible !important;
                     }
 
+                    body.menu--always.hide-compact.menu--open .wrap__left .menu__text {
+                        display: block !important;
+                    }
+
                     body.menu--always.hide-compact.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0) !important;
-                        width: calc(100% - 15em) !important;
+                        transform: translate3d(16em, 0, 0) !important;
+                        width: calc(100% - 16em) !important;
+                    }
+
+                    body.menu--always:not(.hide-compact) .wrap__left {
+                        width: 6em !important;
+                    }
+
+                    body.menu--always.menu--open .wrap__left {
+                        width: 16em !important;
+                        min-width: 16em !important;
+                        margin-left: -16em !important;
+                        transform: translate3d(16em, 0, 0) !important;
+                    }
+
+                    body.menu--always.menu--open .wrap__left .menu__text {
+                        display: block !important;
+                    }
+
+                    body.menu--always.menu--open .wrap__content {
+                        transform: translate3d(16em, 0, 0) !important;
+                        width: calc(100% - 16em) !important;
                     }
                 </style>
             `);
