@@ -137,13 +137,12 @@
 
             function applyMenuAlways() {
                 let enabled = Lampa.Storage.field('menu_always') === true;
-                let isTv = Lampa.Platform.screen('tv');
                 
                 if (!document.querySelector('#menu_always_style')) {
                     $('body').append(Lampa.Template.get('menu_always_style', {}, true));
                 }
                 
-                if (isTv && enabled) {
+                if (enabled) {
                     let hideCompact = shouldHideCompactMenu();
                     
                     $('body').addClass('menu--always');
