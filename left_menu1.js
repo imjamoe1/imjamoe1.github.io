@@ -66,13 +66,13 @@
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
                         margin-left: 0 !important;
-                        padding-left: 2em !important;
+                        padding-left: 1em !important;
                         //width: 100% !important;
                         //box-sizing: border-box !important;
                     }
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
-                        margin-left: -0.5em !important;
+                        margin-left: -1em !important;
                         //padding-left: 1em !important;
                         width: 80% !important;
                     }
