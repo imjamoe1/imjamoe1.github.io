@@ -257,25 +257,7 @@
                         Lampa.Lang.translate(e.value ? 'settings_param_yes' : 'settings_param_no')
                     );
                 }
-            });}
-
-            Lampa.Listener.follow('app', (e) => {
-                if (e.type === 'ready') {
-                    setTimeout(applyMenuAlways, 100);
-                    
-                    $(window).on('resize', () => {
-                        clearTimeout(window.menu_always_resize);
-                        window.menu_always_resize = setTimeout(recalculateSizes, 50);
-                    });
-                }
             });
-
-            if (Lampa.Activity?.listener) {
-                Lampa.Activity.listener.follow('change', (e) => {
-                    console.log('Activity changed:', e);
-                    debouncedApplyMenuAlways();
-                });
-            }
 
             // Периодическая проверка
             setInterval(() => {
