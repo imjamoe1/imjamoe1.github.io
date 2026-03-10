@@ -19,94 +19,36 @@
         // Кешируем состояние
         let isBlurred = false;
         
-        // Сохраняем оригинальный стиль transform
-        const originalStyle = scrollBody.style;
-        
         // Перехватываем изменение transform
-        const transformDescriptor = Object.getOwnPropertyDescriptor(originalStyle, 'transform') || 
-                                    Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'transform');
-        
-        const webkitTransformDescriptor = Object.getOwnPropertyDescriptor(originalStyle, 'webkitTransform') || 
-                                          Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'webkitTransform');
-        
-        // Функция для парсинга translateY из transform матрицы
-        function getTranslateYFromTransform(transformValue) {
-            if (!transformValue || transformValue === 'none') return 0;
-            
-            if (transformValue.indexOf('matrix') !== -1) {
-                const parts = transformValue.match(/matrix.*?\((.+)\)/);
-                if (parts && parts[1]) {
-                    const values = parts[1].split(',').map(v => parseFloat(v.trim()));
-                    return values[5] || 0;
-                }
-            }
-            
-            if (transformValue.indexOf('translate3d') !== -1) {
-                const parts = transformValue.match(/translate3d\(([^,]+),([^,]+),([^)]+)\)/);
-                if (parts && parts[2]) {
-                    return parseFloat(parts[2]);
-                }
-            }
-            
-            if (transformValue.indexOf('translate(') !== -1) {
-                const parts = transformValue.match(/translate\(([^,]+),([^)]+)\)/);
-                if (parts && parts[2]) {
-                    return parseFloat(parts[2]);
-                }
-            }
-            
-            return 0;
-        }
-        
+        const originalDescriptor = Object.getOwnPropertyDescriptor(scrollBody.style, '-webkit-transform') || 
+                                   Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'webkitTransform');
+              
         // Перехватываем установку transform
-        Object.defineProperty(originalStyle, 'transform', {
+        Object.defineProperty(scrollBody.style, '-webkit-transform', {
             set: function(value) {
-                if (transformDescriptor && transformDescriptor.set) {
-                    transformDescriptor.set.call(this, value);
-                } else {
-                    this.setProperty('transform', value);
-                }
-                
                 if (value) {
-                    const yValue = getTranslateYFromTransform(value);
-                    const shouldBlur = yValue < 0;
-                    
-                    if (shouldBlur !== isBlurred) {
-                        isBlurred = shouldBlur;
-                        background.classList.toggle('dim', shouldBlur);
+                    const yStart = value.indexOf(',') + 1;
+                    const yEnd = value.indexOf(',', yStart);
+                    if (yStart > 0 && yEnd > yStart) {
+                        const yValue = parseFloat(value.substring(yStart, yEnd));
+                        const shouldBlur = yValue < 0;
+                        
+                        if (shouldBlur !== isBlurred) {
+                            isBlurred = shouldBlur;
+                            background.classList.toggle('dim', shouldBlur);
+                        }
                     }
                 }
-            },
-            get: function() {
-                if (transformDescriptor && transformDescriptor.get) {
-                    return transformDescriptor.get.call(this);
-                }
-                return this.getPropertyValue('transform');
-            },
-            configurable: true
-        });
-        
-        Object.defineProperty(originalStyle, 'webkitTransform', {
-            set: function(value) {
-                if (webkitTransformDescriptor && webkitTransformDescriptor.set) {
-                    webkitTransformDescriptor.set.call(this, value);
+                
+                if (originalDescriptor && originalDescriptor.set) {
+                    originalDescriptor.set.call(this, value);
                 } else {
                     this.setProperty('-webkit-transform', value);
                 }
-                
-                if (value) {
-                    const yValue = getTranslateYFromTransform(value);
-                    const shouldBlur = yValue < 0;
-                    
-                    if (shouldBlur !== isBlurred) {
-                        isBlurred = shouldBlur;
-                        background.classList.toggle('dim', shouldBlur);
-                    }
-                }
             },
             get: function() {
-                if (webkitTransformDescriptor && webkitTransformDescriptor.get) {
-                    return webkitTransformDescriptor.get.call(this);
+                if (originalDescriptor && originalDescriptor.get) {
+                    return originalDescriptor.get.call(this);
                 }
                 return this.getPropertyValue('-webkit-transform');
             },
