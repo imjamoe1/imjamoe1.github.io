@@ -120,10 +120,10 @@
                     }
 
                     body.menu--always.menu--open .wrap__left {
-                        width: 17em;
-                        min-width: 17em;
+                        width: 15em;
+                        min-width: 15em;
                         margin-left: -15em;
-                        padding-right: 2em;
+                        //padding-right: 2em;
                         transform: translate3d(15em, 0, 0);
                     }
 
