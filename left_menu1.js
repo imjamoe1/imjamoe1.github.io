@@ -243,19 +243,6 @@
                 }
             });
 
-            // Добавляем обработчик завершения активности
-            Lampa.Listener.follow('activity', (e) => {
-                if (e.type === 'destroy') {
-                    // Проверяем, не вернулись ли на главную
-                    setTimeout(() => {
-                        if (Lampa.Activity.active()?.component === 'main') {
-                            $('body').removeClass('hide-compact');
-                            recalculateSizes();
-                        }
-                    }, 150);
-                }
-            });
-
             Lampa.Storage.listener.follow('change', (e) => {
                 if (e.name === 'menu_always') {
                     applyMenuAlways();
@@ -264,6 +251,18 @@
                     );
                 }
             });
+
+            // Периодическая проверка
+            setInterval(() => {
+                if (menuAlwaysVisible()) {
+                    let shouldHide = shouldHideCompactMenu();
+                    let isHidden = $('body').hasClass('hide-compact');
+                    if (shouldHide !== isHidden) {
+                        console.log('Menu Always: fixing state mismatch');
+                        applyMenuAlways();
+                    }
+                }
+            }, 5000);
 
             setTimeout(applyMenuAlways, 100);
         }
