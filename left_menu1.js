@@ -19,6 +19,10 @@
                 }
             });
 
+            function menuAlwaysVisible() {
+                return Lampa.Platform.screen('tv') && Lampa.Storage.field('menu_always');
+            }
+
             // Функция проверки - нужно ли скрывать компактное меню
             function shouldHideCompactMenu() {
                 if (!Lampa.Activity.active()) return true; // По умолчанию скрываем
