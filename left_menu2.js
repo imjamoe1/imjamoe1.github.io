@@ -29,7 +29,7 @@
 
                     body.menu--always .wrap__content {
                         transform: translate3d(0, 0, 0) !important;
-                        margin-left: -3em !important;
+                        margin-left: -4em !important;
                         padding-left: 2em !important;
                     }
 
