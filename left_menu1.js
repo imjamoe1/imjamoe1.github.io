@@ -243,6 +243,19 @@
                 }
             });
 
+            // Добавляем обработчик завершения активности
+            Lampa.Listener.follow('activity', (e) => {
+                if (e.type === 'destroy') {
+                    // Проверяем, не вернулись ли на главную
+                    setTimeout(() => {
+                        if (Lampa.Activity.active()?.component === 'main') {
+                            $('body').removeClass('hide-compact');
+                            recalculateSizes();
+                        }
+                    }, 150);
+                }
+            });
+
             Lampa.Storage.listener.follow('change', (e) => {
                 if (e.name === 'menu_always') {
                     applyMenuAlways();
