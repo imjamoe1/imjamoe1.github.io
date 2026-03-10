@@ -135,15 +135,6 @@
                 </style>
             `);
 
-            // Добавляем debounce для applyMenuAlways
-            let applyTimeout;
-            function debouncedApplyMenuAlways() {
-                clearTimeout(applyTimeout);
-                applyTimeout = setTimeout(() => {
-                    applyMenuAlways();
-                }, 20);
-            }
-
             function applyMenuAlways() {
                 let enabled = Lampa.Storage.field('menu_always') === true;
                 let isTv = Lampa.Platform.screen('tv');
@@ -255,24 +246,6 @@
                     );
                 }
             });
-
-            Lampa.Listener.follow('app', (e) => {
-                if (e.type === 'ready') {
-                    setTimeout(applyMenuAlways, 200);
-                    
-                    $(window).on('resize', () => {
-                        clearTimeout(window.menu_always_resize);
-                        window.menu_always_resize = setTimeout(recalculateSizes, 150);
-                    });
-                }
-            });
-
-            if (Lampa.Activity?.listener) {
-                Lampa.Activity.listener.follow('change', (e) => {
-                    console.log('Activity changed:', e);
-                    debouncedApplyMenuAlways();
-                });
-            }
 
             // Периодическая проверка
             setInterval(() => {
