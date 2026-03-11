@@ -56,9 +56,9 @@
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__left {
-                        width: 16em !important;
-                        min-width: 16em !important;
-                        margin-left: -16em !important;
+                        width: 17em !important;
+                        min-width: 17em !important;
+                        margin-left: -15em !important;
                         transform: translate3d(16em, 0, 0) !important;
                         opacity: 1 !important;
                         visibility: visible !important;
