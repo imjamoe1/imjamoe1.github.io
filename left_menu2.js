@@ -59,7 +59,6 @@
                         width: 15em !important;
                         min-width: 15em !important;
                         margin-left: -15em !important;
-                        padding-right: 1em !important;
                         transform: translate3d(15em, 0, 0) !important;
                         opacity: 1 !important;
                         visibility: visible !important;
@@ -82,6 +81,7 @@
                         width: 15em !important;
                         min-width: 15em !important;
                         margin-left: -15em !important;
+                        padding-right: 1em !important;
                         transform: translate3d(15em, 0, 0) !important;
                     }
 
