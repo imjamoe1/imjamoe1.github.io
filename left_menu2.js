@@ -56,9 +56,10 @@
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__left {
-                        width: 17em !important;
-                        min-width: 17em !important;
+                        width: 15em !important;
+                        min-width: 15em !important;
                         margin-left: -15em !important;
+                        padding-right: 1em !important;
                         transform: translate3d(16em, 0, 0) !important;
                         opacity: 1 !important;
                         visibility: visible !important;
@@ -69,8 +70,8 @@
                     }
 
                     body.menu--always.hide-compact.menu--open .wrap__content {
-                        transform: translate3d(16em, 0, 0) !important;
-                        width: calc(100% - 16em) !important;
+                        transform: translate3d(15em, 0, 0) !important;
+                        width: calc(100% - 15em) !important;
                     }
 
                     body.menu--always:not(.hide-compact) .wrap__left {
