@@ -64,7 +64,6 @@
                         width: 16em !important;
                         min-width: 16em !important;
                         margin-left: 0 !important;
-                        padding-right: 1.5em !important;
                         transform: none !important;
                         opacity: 1 !important;
                         visibility: visible !important;
