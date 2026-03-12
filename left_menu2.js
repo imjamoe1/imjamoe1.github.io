@@ -18,6 +18,10 @@
 
             Lampa.Template.add('menu_always_style', `
                 <style id="menu_always_style">
+                    .wrap__left, .wrap__content {
+                        transition: none !important;
+                    }
+                    
                     body.menu--always .wrap__left {
                         width: 6em !important;
                         margin-left: 0 !important;
@@ -55,43 +59,32 @@
                         padding-left: 0 !important;
                     }
 
-                    body.menu--always.hide-compact.menu--open .wrap__left {
-                        width: 15em !important;
-                        min-width: 15em !important;
-                        margin-left: -15em !important;
-                        transform: translate3d(15em, 0, 0) !important;
+                    body.menu--always.hide-compact.menu--open .wrap__left,
+                    body.menu--always.menu--open .wrap__left {
+                        width: 16em !important;
+                        min-width: 16em !important;
+                        margin-left: 0 !important;
+                        padding-right: 1.5em !important;
+                        transform: none !important;
                         opacity: 1 !important;
                         visibility: visible !important;
                     }
 
-                    body.menu--always.hide-compact.menu--open .wrap__left .menu__text {
-                        display: block !important;
-                    }
-
-                    body.menu--always.hide-compact.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0) !important;
-                        width: calc(100% - 15em) !important;
-                    }
-
-                    body.menu--always:not(.hide-compact) .wrap__left {
-                        width: 6em !important;
-                    }
-
-                    body.menu--always.menu--open .wrap__left {
-                        width: 16em !important;
-                        min-width: 16em !important;
-                        margin-left: -15em !important;
-                        padding-right: 1.5em !important;
-                        transform: translate3d(15em, 0, 0) !important;
-                    }
-
+                    body.menu--always.hide-compact.menu--open .wrap__left .menu__text,
                     body.menu--always.menu--open .wrap__left .menu__text {
                         display: block !important;
                     }
 
+                    body.menu--always.hide-compact.menu--open .wrap__content,
                     body.menu--always.menu--open .wrap__content {
-                        transform: translate3d(15em, 0, 0) !important;
+                        transform: none !important;
                         width: calc(100% - 15em) !important;
+                        margin-left: 0 !important;
+                        padding-left: 0 !important;
+                    }
+
+                    body.menu--always:not(.hide-compact) .wrap__left {
+                        width: 6em !important;
                     }
                 </style>
             `);
