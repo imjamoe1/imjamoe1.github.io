@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      3.1
-// @description  Добавляет блоки "Избранное", "Мои", "Онлайн" и "ByLampa" после установленных расширений
+// @version      1.0
+// @description  Добавляет блоки "Избранное", "Мои", "Онлайн", "ByLampa"
 // @author       Custom
 // @match        *://lampa.*/*
 // @grant        none
@@ -10,7 +10,7 @@
 (function() {
     if (typeof Lampa === 'undefined') return;
 
-    console.log('Плагин Мои с категориями запущен');
+    console.log('Плагин с категориями запущен');
 
     // Хранилища для разных категорий
     function getList(category) {
