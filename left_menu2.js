@@ -61,8 +61,8 @@
 
                     body.menu--always.hide-compact.menu--open .wrap__left,
                     body.menu--always.menu--open .wrap__left {
-                        width: 16em !important;
-                        min-width: 16em !important;
+                        width: 15em !important;
+                        min-width: 15em !important;
                         margin-left: 0 !important;
                         transform: none !important;
                         opacity: 1 !important;
