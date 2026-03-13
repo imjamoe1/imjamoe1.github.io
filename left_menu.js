@@ -39,12 +39,12 @@
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         margin-left: -1em !important;
-                        width: 90% !important;
+                        //width: 90% !important;
                     }
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item:hover,
                     body.menu--always:not(.menu--open) .menu__list .menu__item:focus {
-                        margin-left: 1em !important;
+                        margin-left: 0 !important;
                         width: 90% !important;
                     }
 
