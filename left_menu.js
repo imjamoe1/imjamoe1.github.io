@@ -39,7 +39,7 @@
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         margin-left: -1em !important;
-                        width: 100% !important;
+                        width: 90% !important;
                     }
 
                     body.menu--always .menu__text {
