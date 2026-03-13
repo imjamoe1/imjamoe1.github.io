@@ -44,8 +44,8 @@
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item:hover,
                     body.menu--always:not(.menu--open) .menu__list .menu__item:focus {
-                        margin-left: -0.5em !important;
-                        width: 60% !important;
+                        outline-offset: 0.5em !important;
+                        width: 80% !important;
                     }
 
                     body.menu--always .menu__text {
