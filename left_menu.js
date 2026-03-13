@@ -40,13 +40,13 @@
                     body.menu--always:not(.menu--open) .menu__list .menu__item {
                         position: relative;
                         margin-left: -1em !important;
-                        //width: 90% !important;
+                        //width: 80% !important;
                     }
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item:hover,
                     body.menu--always:not(.menu--open) .menu__list .menu__item:focus {
                         padding-left: -0.5em !important;
-                        width: 60% !important;
+                        //width: 60% !important;
                     }
 
                     body.menu--always .menu__text {
