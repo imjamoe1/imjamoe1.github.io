@@ -44,7 +44,7 @@
 
                     body.menu--always:not(.menu--open) .menu__list .menu__item:hover,
                     body.menu--always:not(.menu--open) .menu__list .menu__item:focus {
-                        padding-left: -0.5em !important;
+                        margin-right: -1em !important;
                         width: 60% !important;
                     }
 
