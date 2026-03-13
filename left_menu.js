@@ -45,7 +45,7 @@
                     body.menu--always:not(.menu--open) .menu__list .menu__item:hover,
                     body.menu--always:not(.menu--open) .menu__list .menu__item:focus {
                         border: 1em !important;
-                        transform: translateX(10px) !important;
+                        transform: translateX(0) !important;
                         width: 80% !important;
                     }
 
