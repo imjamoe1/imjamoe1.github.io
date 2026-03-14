@@ -1932,10 +1932,10 @@ Lampa.SettingsApi.addParam({
         zh: '按住“确定”键调出上下文菜单'
       },
       title_online: { //
-        ru: 'Онлайн',
-        uk: 'Онлайн',
-        en: 'Online',
-        zh: '在线的'
+        ru: 'Skaz',
+        uk: 'Skaz',
+        en: 'Skaz',
+        zh: 'Skaz'
       },
       skaz_voice_subscribe: { //
         ru: 'Подписаться на перевод',
