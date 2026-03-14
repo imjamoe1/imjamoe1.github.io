@@ -1797,8 +1797,8 @@ Lampa.SettingsApi.addParam({
         default: false
     },
     field: {
-        name: 'Кнопка Онлайн первой',
-        description: 'Показывать кнопку онлайн перед остальными'
+        name: 'Кнопка Skaz первой',
+        description: 'Показывать кнопку skaz перед остальными'
     }
 });
 
@@ -1826,7 +1826,7 @@ Lampa.SettingsApi.addParam({
         },
         field: {
           name: 'Отображать Skaz',
-		  description: 'Онлайн с автовыбором источника, управление в плеере'
+		  description: 'Skaz с автовыбором источника, управление в плеере'
         }
 	  });
 	  	  	  Lampa.SettingsApi.addParam({
