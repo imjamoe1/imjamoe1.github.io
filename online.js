@@ -1810,7 +1810,7 @@ Lampa.SettingsApi.addParam({
 					default: true
 				},
 				field: {
-					name: 'Онлайн'
+					name: 'Skaz'
 				}
 			});
 	  	  Lampa.SettingsApi.addParam({
