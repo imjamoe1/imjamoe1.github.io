@@ -1753,8 +1753,8 @@ else if (element.url) {
 
         Lampa.Activity.push({
           url: params.element.url,
-          title: 'Onlyskaz - ' + params.element.title,
-          component: 'lampacskaz',
+          title: 'Skaz - ' + params.element.title,
+          component: 'skaz',
           movie: params.element,
           page: 1,
           search: params.element.title,
