@@ -147,7 +147,7 @@
                     onChange: function(value) {
                         let boolValue = value === 'true' || value === true;
                         Lampa.Storage.set('menu_always', boolValue);
-                        applyMenuAlways();
+                        updateMenuState();
                     }
                 });
             }
