@@ -142,8 +142,7 @@
                             item.find('.settings-param__value').text(
                                 Lampa.Lang.translate(value ? 'settings_param_yes' : 'settings_param_no')
                             );
-                        }, 50);
-                    },
+                        },
                     onChange: function(value) {
                         let boolValue = value === 'true' || value === true;
                         Lampa.Storage.set('menu_always', boolValue);
