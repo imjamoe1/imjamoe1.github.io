@@ -130,10 +130,24 @@
                     field: {
                         name: Lampa.Lang.translate('menu_always')
                     },
+                    onRender: function(item) {
+                        setTimeout(function() {
+                            let target = $('div[data-name="interface_size"]');
+                            if (target.length) {
+                                let parent = target.closest('.settings-param');
+                                if (parent.length) item.insertAfter(parent);
+                            }
+                            
+                            let value = Lampa.Storage.field('menu_always');
+                            item.find('.settings-param__value').text(
+                                Lampa.Lang.translate(value ? 'settings_param_yes' : 'settings_param_no')
+                            );
+                        }, 50);
+                    },
                     onChange: function(value) {
                         let boolValue = value === 'true' || value === true;
                         Lampa.Storage.set('menu_always', boolValue);
-                        updateMenuState();
+                        applyMenuAlways();
                     }
                 });
             }
