@@ -1012,7 +1012,7 @@
                         position: absolute;
                         height: calc(100% + 6em);
                         width: 100%;
-                        top: -5em;
+                        top: -4em;
                         left: -4em;
                         opacity: 0;
                         object-fit: cover;
@@ -1242,7 +1242,7 @@
                         position: absolute;
                         height: calc(100% + 6em);
                         width: 100%;
-                        top: -5em;
+                        top: -4em;
                         left: -4em;
                         opacity: 0;
                         object-fit: cover;
