@@ -697,7 +697,7 @@
 						setTimeout(function () {
 							if (backdropUrl !== self.backgroundLast) return;
 							prevLayer.classList.remove("active");
-						}, 0);
+						}, 50);
 					};
 
 					self.backgroundLast = backdropUrl;
