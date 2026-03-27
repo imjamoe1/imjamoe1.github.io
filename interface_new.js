@@ -1021,6 +1021,9 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
+                    .card__quality {
+                        font-weight: bold !important;
+                    } 
                     .card__vote {
                         right: 0;
                         bottom: 0;
@@ -1250,6 +1253,9 @@
                     }
                     .new-interface .full-start__background.active {
                         opacity: 1;
+                    }
+                    .card__quality {
+                        font-weight: bold !important;
                     }
                     .card__vote {
                         right: 0;
