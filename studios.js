@@ -333,7 +333,7 @@
 
                     /* Стили для кнопки в контейнере с платформами */
                     .full-descr__tags .button--network {
-                        top: 0.1em !important;
+                        top: -0.1em !important;
                         margin: 0 0.3em !important;
                     }
                     
