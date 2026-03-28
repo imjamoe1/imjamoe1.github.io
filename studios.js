@@ -353,7 +353,6 @@
                     .studios-static__text {
                         font-size: 1.2em !important;
                         font-weight: 400 !important;
-                        margin-left: -1em !important;
                         padding-right: 2em !important;
                         color: rgba(255, 255, 255, 0.7) !important;
                     }
