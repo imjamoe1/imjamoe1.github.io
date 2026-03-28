@@ -304,6 +304,9 @@
         "bottom: 0.3em !important;" +
         "font-size: 3.3em !important;" +
         "}" +
+        ".full-start-new__reactions {" +
+        "padding-bottom: 2em !important;" +
+        "}" +
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
         "   position: absolute !important; " +
