@@ -343,7 +343,7 @@
                         height: 2.94em !important;
                         border-radius: 0.6em !important;
                         padding: 0 0.3em !important;
-                        margin-left: 0.1em !important;
+                        margin-left: -0.2em !important;
                         //margin-top: 1em !important;
                         vertical-align: middle !important;
                         line-height: 2.94em !important;
