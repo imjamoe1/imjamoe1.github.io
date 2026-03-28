@@ -333,8 +333,7 @@
 
                     /* Стили для кнопки в контейнере с платформами */
                     .full-descr__tags .button--network {
-                        top: -0.1em !important;
-                        margin: 0 0.3em !important;
+                        top: 0.3em !important;
                     }
                     
                     /* Стили для надписи Studios */
@@ -354,6 +353,7 @@
                     .studios-static__text {
                         font-size: 1.2em !important;
                         font-weight: 400 !important;
+                        margin-left: -0.7em !important;
                         padding-right: 2em !important;
                         color: rgba(255, 255, 255, 0.7) !important;
                     }
