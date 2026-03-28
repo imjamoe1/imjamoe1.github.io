@@ -335,6 +335,10 @@
                     .full-descr__tags .button--network {
                         top: 0.3em !important;
                     }
+
+                    .full-descr__tags .button--network.focus {
+                        box-shadow: 0 0 0 0.1em rgb(255, 255, 255); 
+                     }
                     
                     /* Стили для надписи Studios */
                     .studios-static {
