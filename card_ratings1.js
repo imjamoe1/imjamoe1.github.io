@@ -390,7 +390,7 @@ function createCountryFlagElement(flagUrl) {
     flagEl.alt = 'country';
     flagEl.style.cssText = `
         position: absolute;
-        top: 2.8em;
+        top: 2.85em;
         left: -0.5em;
         width: 1.6em;
         height: 1.1em;
