@@ -1530,82 +1530,150 @@
 		}
 	};
 
+// Сохраняем оригинальную функцию
+var originalShowLogo = InfoPanel.prototype.showLogo;
+
 InfoPanel.prototype.showLogo = function (data, renderId) {
     var _this = this;
-
+    
     if (data.id) {
         var type = data.name ? "tv" : "movie";
-        var language = Lampa.Storage.get("language");
-        var cache_key = "logo_cache_v2_" + type + "_" + data.id + "_" + language;
+        var apiPath = type + "/" + data.id;
+        var cache_key = "logo_cache_v3_" + type + "_" + data.id;
         var cached_url = Lampa.Storage.get(cache_key);
-
+        
         if (cached_url && cached_url !== "none") {
             this.html.find(".new-interface-info__title").html('<img src="' + cached_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
-        } else {
-            // Запрашиваем изображения для ru, uk, en и без языка
-            var url = Lampa.TMDB.api(type + "/" + data.id + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=" + language + ",ru,uk,en,null");
-
-            $.get(url, function (data_api) {
-                if (renderId && renderId !== _this.lastRenderId) return;
-
-                var final_logo = null;
-                
-                // Приоритет: текущий язык -> ru -> uk -> en -> любой другой
-                if (data_api.logos && data_api.logos.length > 0) {
-                    // Сначала ищем логотип на текущем языке
-                    for (var i = 0; i < data_api.logos.length; i++) {
-                        if (data_api.logos[i].iso_639_1 == language) {
-                            final_logo = data_api.logos[i].file_path;
-                            break;
-                        }
-                    }
-                    
-                    // Если не нашли, ищем на русском (ru)
-                    if (!final_logo) {
-                        for (var j = 0; j < data_api.logos.length; j++) {
-                            if (data_api.logos[j].iso_639_1 == "ru") {
-                                final_logo = data_api.logos[j].file_path;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // Если не нашли, ищем на украинском (uk)
-                    if (!final_logo) {
-                        for (var k = 0; k < data_api.logos.length; k++) {
-                            if (data_api.logos[k].iso_639_1 == "uk") {
-                                final_logo = data_api.logos[k].file_path;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // Если не нашли, ищем на английском (en)
-                    if (!final_logo) {
-                        for (var l = 0; l < data_api.logos.length; l++) {
-                            if (data_api.logos[l].iso_639_1 == "en") {
-                                final_logo = data_api.logos[l].file_path;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // Если всё ещё не нашли, берём первый доступный
-                    if (!final_logo) final_logo = data_api.logos[0].file_path;
+            return;
+        }
+        
+        // Сначала получаем переводы для русского и украинского названий
+        var translationsUrl = Lampa.TMDB.api(apiPath + "/translations?api_key=" + Lampa.TMDB.key());
+        
+        $.get(translationsUrl, (function(translationsData) {
+            var russianTitle = null;
+            var ukrainianTitle = null;
+            
+            // Ищем русский и украинский переводы
+            if (translationsData.translations) {
+                var ruTranslation = translationsData.translations.find(function(t) { 
+                    return t.iso_639_1 === "ru"; 
+                });
+                if (ruTranslation && ruTranslation.data) {
+                    russianTitle = type === "tv" ? ruTranslation.data.name : ruTranslation.data.title;
                 }
-
+                
+                var ukTranslation = translationsData.translations.find(function(t) { 
+                    return t.iso_639_1 === "uk"; 
+                });
+                if (ukTranslation && ukTranslation.data) {
+                    ukrainianTitle = type === "tv" ? ukTranslation.data.name : ukTranslation.data.title;
+                }
+            }
+            
+            // Если не нашли в переводах, берём из основного объекта
+            if (!russianTitle) {
+                russianTitle = type === "tv" ? data.name : data.title;
+            }
+            if (!ukrainianTitle) {
+                ukrainianTitle = type === "tv" ? data.name : data.title;
+            }
+            
+            // Запрашиваем логотипы
+            var logosUrl = Lampa.TMDB.api(apiPath + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=ru,uk,en,null");
+            
+            $.get(logosUrl, function(data_api) {
+                if (renderId && renderId !== _this.lastRenderId) return;
+                
+                var final_logo = null;
+                var logo_language = null;
+                var current_language = Lampa.Storage.get("language");
+                
+                console.log("Текущий язык Lampa:", current_language);
+                console.log("Доступные логотипы:", data_api.logos);
+                
+                if (data_api.logos && data_api.logos.length > 0) {
+                    // Приоритет: текущий язык Lampa -> русский -> украинский -> английский -> любой
+                    var priorityLanguages = [current_language, "ru", "uk", "en"];
+                    
+                    for (var p = 0; p < priorityLanguages.length; p++) {
+                        for (var i = 0; i < data_api.logos.length; i++) {
+                            if (data_api.logos[i].iso_639_1 === priorityLanguages[p]) {
+                                final_logo = data_api.logos[i].file_path;
+                                logo_language = priorityLanguages[p];
+                                break;
+                            }
+                        }
+                        if (final_logo) break;
+                    }
+                    
+                    // Если не нашли по приоритетным языкам, берём первый
+                    if (!final_logo && data_api.logos[0]) {
+                        final_logo = data_api.logos[0].file_path;
+                        logo_language = data_api.logos[0].iso_639_1;
+                    }
+                }
+                
                 if (final_logo) {
                     var img_url = Lampa.TMDB.image("/t/p/original" + final_logo.replace(".svg", ".png"));
                     Lampa.Storage.set(cache_key, img_url);
-                    _this.html.find(".new-interface-info__title").html('<img src="' + img_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
+                    
+                    // Проверяем, совпадает ли язык логотипа с текущим языком Lampa
+                    var isMatchLanguage = (logo_language === current_language);
+                    
+                    // Определяем название для отображения
+                    var displayTitle = null;
+                    if (current_language === "ru" && russianTitle) {
+                        displayTitle = russianTitle;
+                    } else if (current_language === "uk" && ukrainianTitle) {
+                        displayTitle = ukrainianTitle;
+                    } else {
+                        displayTitle = type === "tv" ? data.name : data.title;
+                    }
+                    
+                    // Создаем HTML с учетом мобильных устройств
+                    var isMobile = window.innerWidth <= 768;
+                    var alignItems = isMobile ? "center" : "flex-start";
+                    var logoHeight = isMobile ? "auto" : "1.2em";
+                    var fontSize = isMobile ? "0.7em" : "0.5em";
+                    var marginTop = isMobile ? "8px" : "4px";
+                    
+                    if (!isMatchLanguage && displayTitle) {
+                        // Показываем логотип + текст названия
+                        _this.html.find(".new-interface-info__title").html(
+                            '<div style="display: flex; flex-direction: column; align-items: ' + alignItems + ';">' +
+                                '<img src="' + img_url + '" class="new-interface-logo logo-fade-in" style="max-height: ' + logoHeight + ' !important; max-width: none !important; width: auto !important; height: ' + logoHeight + ' !important;" alt="' + (data.title || data.name) + '">' +
+                                '<span style="margin-top: ' + marginTop + '; font-size: ' + fontSize + '; color: #fff; opacity: 0.9;">' + displayTitle + '</span>' +
+                            '</div>'
+                        );
+                    } else {
+                        // Показываем только логотип
+                        _this.html.find(".new-interface-info__title").html(
+                            '<div style="display: flex; flex-direction: column; align-items: ' + alignItems + ';">' +
+                                '<img src="' + img_url + '" class="new-interface-logo logo-fade-in" style="max-height: ' + logoHeight + ' !important; max-width: none !important; width: auto !important; height: ' + logoHeight + ' !important;" alt="' + (data.title || data.name) + '">' +
+                            '</div>'
+                        );
+                    }
                 } else {
                     Lampa.Storage.set(cache_key, "none");
-                    _this.html.find(".new-interface-info__title").text(data.title || data.name || "");
+                    // Если логотипа нет, показываем название на текущем языке
+                    var titleText = null;
+                    if (current_language === "ru" && russianTitle) {
+                        titleText = russianTitle;
+                    } else if (current_language === "uk" && ukrainianTitle) {
+                        titleText = ukrainianTitle;
+                    } else {
+                        titleText = data.title || data.name || "";
+                    }
+                    _this.html.find(".new-interface-info__title").text(titleText);
                 }
-            }).fail(function () {
+            }).fail(function() {
                 _this.html.find(".new-interface-info__title").text(data.title || data.name || "");
             });
-        }
+        })).fail(function() {
+            // Если не удалось получить переводы, используем оригинальный метод
+            originalShowLogo.call(_this, data, renderId);
+        });
     }
 };
 
