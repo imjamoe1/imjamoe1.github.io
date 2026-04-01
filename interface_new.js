@@ -1555,6 +1555,30 @@
 								break;
 							}
 						}
+                        if (!final_logo) {
+                            for (var j = 0; j < data_api.logos.length; j++) {
+                                if (data_api.logos[j].iso_639_1 == "uk") {
+                                    final_logo = data_api.logos[j].file_path;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!final_logo) {
+                            for (var k = 0; k < data_api.logos.length; k++) {
+                                 if (data_api.logos[k].iso_639_1 == "en") {
+                                    final_logo = data_api.logos[k].file_path;
+                                    break;
+                                 }
+                            }
+                        }
+                        if (!final_logo) {
+                            for (var l = 0; l < data_api.logos.length; l++) {
+                                if (data_api.logos[l].iso_639_1 == "ru") {
+                                    final_logo = data_api.logos[l].file_path;
+                                    break;
+                                }
+                            }
+                        }
 						if (!final_logo) final_logo = data_api.logos[0].file_path;
 					}
 
