@@ -1542,7 +1542,7 @@
 			if (cached_url && cached_url !== "none") {
 				this.html.find(".new-interface-info__title").html('<img src="' + cached_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
 			} else {
-				var url = Lampa.TMDB.api(type + "/" + data.id + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=" + language + ",uk,en,ru,null");
+				var url = Lampa.TMDB.api(type + "/" + data.id + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=" + language + ",ru,uk,en,null");
 
 				$.get(url, function (data_api) {
 					if (renderId && renderId !== _this.lastRenderId) return;
@@ -1557,7 +1557,7 @@
 						}
 						if (!final_logo) {
 							for (var j = 0; j < data_api.logos.length; j++) {
-								if (data_api.logos[j].iso_639_1 == "uk") {
+								if (data_api.logos[j].iso_639_1 == "ru") {
 									final_logo = data_api.logos[j].file_path;
 									break;
 								}
@@ -1565,7 +1565,7 @@
 						}
 						if (!final_logo) {
 							for (var k = 0; k < data_api.logos.length; k++) {
-								if (data_api.logos[k].iso_639_1 == "ru") {
+								if (data_api.logos[k].iso_639_1 == "uk") {
 									final_logo = data_api.logos[k].file_path;
 									break;
 								}
