@@ -1530,55 +1530,84 @@
 		}
 	};
 
-	InfoPanel.prototype.showLogo = function (data, renderId) {
-        var _this = this;
+InfoPanel.prototype.showLogo = function (data, renderId) {
+    var _this = this;
 
-        if (data.id) {
-            var type = data.name ? "tv" : "movie";
-            var language = Lampa.Storage.get("language");
-            var cache_key = "logo_cache_v2_" + type + "_" + data.id + "_" + language;
-            var cached_url = Lampa.Storage.get(cache_key);
+    if (data.id) {
+        var type = data.name ? "tv" : "movie";
+        var language = Lampa.Storage.get("language");
+        var cache_key = "logo_cache_v2_" + type + "_" + data.id + "_" + language;
+        var cached_url = Lampa.Storage.get(cache_key);
 
-            if (cached_url && cached_url !== "none") {
-                this.html.find(".new-interface-info__title").html('<img src="' + cached_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
+        if (cached_url && cached_url !== "none") {
+            this.html.find(".new-interface-info__title").html('<img src="' + cached_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
         } else {
-                var url = Lampa.TMDB.api(type + "/" + data.id + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=" + language + ",ru,uk,en,null");
+            // Запрашиваем изображения для ru, uk, en и без языка
+            var url = Lampa.TMDB.api(type + "/" + data.id + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=" + language + ",ru,uk,en,null");
 
-                $.get(url, function (data_api) {
-                    if (renderId && renderId !== _this.lastRenderId) return;
+            $.get(url, function (data_api) {
+                if (renderId && renderId !== _this.lastRenderId) return;
 
-                    var final_logo = null;
+                var final_logo = null;
                 
-                    var priorityLanguages = [language, "ru", "uk", "en"];
-                
-                    if (data_api.logos && data_api.logos.length > 0) {
-                        for (var p = 0; p < priorityLanguages.length; p++) {
-                            for (var i = 0; i < data_api.logos.length; i++) {
-                                if (data_api.logos[i].iso_639_1 == priorityLanguages[p]) {
-                                    final_logo = data_api.logos[i].file_path;
-                                    break;
-                                }
-                            }
-                            if (final_logo) break;
+                // Приоритет: текущий язык -> ru -> uk -> en -> любой другой
+                if (data_api.logos && data_api.logos.length > 0) {
+                    // Сначала ищем логотип на текущем языке
+                    for (var i = 0; i < data_api.logos.length; i++) {
+                        if (data_api.logos[i].iso_639_1 == language) {
+                            final_logo = data_api.logos[i].file_path;
+                            break;
                         }
+                    }
                     
-                        if (!final_logo) final_logo = data_api.logos[0].file_path;
+                    // Если не нашли, ищем на русском (ru)
+                    if (!final_logo) {
+                        for (var j = 0; j < data_api.logos.length; j++) {
+                            if (data_api.logos[j].iso_639_1 == "ru") {
+                                final_logo = data_api.logos[j].file_path;
+                                break;
+                            }
+                        }
                     }
+                    
+                    // Если не нашли, ищем на украинском (uk)
+                    if (!final_logo) {
+                        for (var k = 0; k < data_api.logos.length; k++) {
+                            if (data_api.logos[k].iso_639_1 == "uk") {
+                                final_logo = data_api.logos[k].file_path;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Если не нашли, ищем на английском (en)
+                    if (!final_logo) {
+                        for (var l = 0; l < data_api.logos.length; l++) {
+                            if (data_api.logos[l].iso_639_1 == "en") {
+                                final_logo = data_api.logos[l].file_path;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Если всё ещё не нашли, берём первый доступный
+                    if (!final_logo) final_logo = data_api.logos[0].file_path;
+                }
 
-                    if (final_logo) {
-                        var img_url = Lampa.TMDB.image("/t/p/original" + final_logo.replace(".svg", ".png"));
-                        Lampa.Storage.set(cache_key, img_url);
-                        _this.html.find(".new-interface-info__title").html('<img src="' + img_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
+                if (final_logo) {
+                    var img_url = Lampa.TMDB.image("/t/p/original" + final_logo.replace(".svg", ".png"));
+                    Lampa.Storage.set(cache_key, img_url);
+                    _this.html.find(".new-interface-info__title").html('<img src="' + img_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
                 } else {
-                        Lampa.Storage.set(cache_key, "none");
-                        _this.html.find(".new-interface-info__title").text(data.title || data.name || "");
-                    }
-                }).fail(function () {
+                    Lampa.Storage.set(cache_key, "none");
                     _this.html.find(".new-interface-info__title").text(data.title || data.name || "");
-                });
-            }
+                }
+            }).fail(function () {
+                _this.html.find(".new-interface-info__title").text(data.title || data.name || "");
+            });
         }
-    };
+    }
+};
 
 	InfoPanel.prototype.load = function (data) {
 		if (!data || !data.id) return;
