@@ -1530,65 +1530,70 @@
 		}
 	};
 
-// Сохраняем оригинальную функцию
-var originalShowLogo = InfoPanel.prototype.showLogo;
+	InfoPanel.prototype.showLogo = function (data, renderId) {
+		var _this = this;
 
-InfoPanel.prototype.showLogo = function (data, renderId) {
-    var _this = this;
-    
-    if (data.id) {
-        var type = data.name ? "tv" : "movie";
-        var apiPath = type + "/" + data.id;
-        var cache_key = "logo_cache_v3_" + type + "_" + data.id;
-        var cached_url = Lampa.Storage.get(cache_key);
-        
-        if (cached_url && cached_url !== "none") {
-            this.html.find(".new-interface-info__title").html('<img src="' + cached_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
-            return;
-        }
-        
-        // Запрашиваем логотипы
-        var logosUrl = Lampa.TMDB.api(apiPath + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=ru,uk,en,null");
-        
-        $.get(logosUrl, function(data_api) {
-            if (renderId && renderId !== _this.lastRenderId) return;
-            
-            var final_logo = null;
-            var current_language = Lampa.Storage.get("language");
-            
-            if (data_api.logos && data_api.logos.length > 0) {
-                // Приоритет: текущий язык Lampa -> русский -> украинский -> английский -> любой
-                var priorityLanguages = [current_language, "ru", "uk", "en"];
-                
-                for (var p = 0; p < priorityLanguages.length; p++) {
-                    for (var i = 0; i < data_api.logos.length; i++) {
-                        if (data_api.logos[i].iso_639_1 === priorityLanguages[p]) {
-                            final_logo = data_api.logos[i].file_path;
-                            break;
-                        }
-                    }
-                    if (final_logo) break;
-                }
-                
-                // Если не нашли по приоритетным языкам, берём первый
-                if (!final_logo && data_api.logos[0]) {
-                    final_logo = data_api.logos[0].file_path;
-                }
-            }
-            
-            if (final_logo) {
-                var img_url = Lampa.TMDB.image("/t/p/original" + final_logo.replace(".svg", ".png"));
-                Lampa.Storage.set(cache_key, img_url);
-                _this.html.find(".new-interface-info__title").html('<img src="' + img_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
-            } else {
-                Lampa.Storage.set(cache_key, "none");
-                _this.html.find(".new-interface-info__title").text(data.title || data.name || "");
-            }
-        }).fail(function() {
-            _this.html.find(".new-interface-info__title").text(data.title || data.name || "");
-        });
-    }
-};
+		if (data.id) {
+			var type = data.name ? "tv" : "movie";
+			var language = Lampa.Storage.get("language");
+			var cache_key = "logo_cache_v2_" + type + "_" + data.id + "_" + language;
+			var cached_url = Lampa.Storage.get(cache_key);
+
+			if (cached_url && cached_url !== "none") {
+				this.html.find(".new-interface-info__title").html('<img src="' + cached_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
+			} else {
+				var url = Lampa.TMDB.api(type + "/" + data.id + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=" + language + ",uk,en,ru,null");
+
+				$.get(url, function (data_api) {
+					if (renderId && renderId !== _this.lastRenderId) return;
+
+					var final_logo = null;
+					if (data_api.logos && data_api.logos.length > 0) {
+						for (var i = 0; i < data_api.logos.length; i++) {
+							if (data_api.logos[i].iso_639_1 == language) {
+								final_logo = data_api.logos[i].file_path;
+								break;
+							}
+						}
+						if (!final_logo) {
+							for (var j = 0; j < data_api.logos.length; j++) {
+								if (data_api.logos[j].iso_639_1 == "uk") {
+									final_logo = data_api.logos[j].file_path;
+									break;
+								}
+							}
+						}
+							for (var k = 0; k < data_api.logos.length; k++) {
+								if (data_api.logos[k].iso_639_1 == "en") {
+									final_logo = data_api.logos[k].file_path;
+									break;
+								}
+							}
+						}
+							for (var l = 0; l < data_api.logos.length; l++) {
+								if (data_api.logos[l].iso_639_1 == "ru") {
+									final_logo = data_api.logos[l].file_path;
+									break;
+								}
+							}
+						}
+						if (!final_logo) final_logo = data_api.logos[0].file_path;
+					}
+
+					if (final_logo) {
+						var img_url = Lampa.TMDB.image("/t/p/original" + final_logo.replace(".svg", ".png"));
+						Lampa.Storage.set(cache_key, img_url);
+						_this.html.find(".new-interface-info__title").html('<img src="' + img_url + '" class="new-interface-logo logo-fade-in" alt="' + (data.title || data.name) + '">');
+					} else {
+						Lampa.Storage.set(cache_key, "none");
+						_this.html.find(".new-interface-info__title").text(data.title || data.name || "");
+					}
+				}).fail(function () {
+					_this.html.find(".new-interface-info__title").text(data.title || data.name || "");
+				});
+			}
+		}
+	};
 
 	InfoPanel.prototype.load = function (data) {
 		if (!data || !data.id) return;
