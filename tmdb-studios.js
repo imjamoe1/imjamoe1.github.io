@@ -719,7 +719,7 @@
             param: {
                 name: 'hide_tmdb_networks',
                 type: 'trigger',
-                default: false
+                default: true
             },
             field: {
                 name: Lampa.Lang.translate('tmdb_networks_plugin_hide'),
@@ -781,16 +781,16 @@
         settings.platfroms_movie_list_max_visible = Lampa.Storage.get('platfroms_movie_list_max_visible', 3);
         settings.platfroms_movie_extra_btn_mode = Lampa.Storage.get('platfroms_movie_extra_btn_mode', EXTRA_BTN_DISPLAY_MODE.LIST_BTN);
 
-        settings.hide_tmdb_networks = Lampa.Storage.get('hide_tmdb_networks', false);
+        settings.hide_tmdb_networks = Lampa.Storage.get('hide_tmdb_networks', true);
     }
 
         function toggleTmdbNetworks() {
             var tmdbNetworks = document.querySelectorAll('.tmdb-networks');
             tmdbNetworks.forEach(function(container) {
                 if (settings.hide_tmdb_networks) {
-                    container.style.display = 'none';
-                } else {
                     container.style.display = '';
+                } else {
+                    container.style.display = 'none';
                 }
             });
         }
