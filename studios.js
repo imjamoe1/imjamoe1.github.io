@@ -302,90 +302,80 @@
         if (!document.querySelector('#network-plugin-fixed')) {
             var style = document.createElement('style');
             style.id = 'network-plugin-fixed';
-            style.textContent = '\n' +
-                '.tmdb-networks .full-descr__tags .button--network,\n' +
-                '.full-descr__tags .button--network {\n' +
-                '    display: inline-block !important;\n' +
-                '    margin: 0 0.5em 0.5em 0 !important;\n' +
-                '    vertical-align: middle !important;\n' +
-                '    height: 2.94em !important;\n' +
-                '    padding: .3em !important;\n' +
-                '    position: relative !important;\n' +
-                '    background: none !important;\n' +
-                '    border: none !important;\n' +
-                '    visibility: visible !important;\n' +
-                '    opacity: 1 !important;\n' +
-                '    cursor: pointer !important;\n' +
-                '}\n' +
-                '\n' +
-                '.tmdb-networks .full-descr__tags .button--network .network-innie,\n' +
-                '.full-descr__tags .button--network .network-innie {\n' +
-                '    background-color: #fff !important;\n' +
-                '    width: 100% !important;\n' +
-                '    height: 100% !important;\n' +
-                '    border-radius: .7em !important;\n' +
-                '    display: flex !important;\n' +
-                '    align-items: center !important;\n' +
-                '    justify-content: center !important;\n' +
-                '    padding: 0 1em !important;\n' +
-                '    min-width: 3.5em !important;\n' +
-                '    visibility: visible !important;\n' +
-                '    opacity: 1 !important;\n' +
-                '}\n' +
-                '\n' +
-                '.tmdb-networks .full-descr__tags .button--network img,\n' +
-                '.full-descr__tags .button--network img {\n' +
-                '    height: 100% !important;\n' +
-                '    max-height: 1.5em !important;\n' +
-                '    max-width: 4.5em !important;\n' +
-                '    object-fit: contain !important;\n' +
-                '    display: block !important;\n' +
-                '    visibility: visible !important;\n' +
-                '    opacity: 1 !important;\n' +
-                '}\n' +
-                '\n' +
-                '.full-start-new__title {\n' +
-                '    position: relative;\n' +
-                '    margin-bottom: 0.6em !important;\n' +
-                '}\n' +
-                '\n' +
-                '.full--tagline {\n' +
-                '    margin-bottom: 0.6em !important;\n' +
-                '}\n' +
-                '\n' +
-                '.original-title {\n' +
-                '    font-size: 0.8em;\n' +
-                '    color: rgba(255, 255, 255, 0.7);\n' +
-                '    font-weight: normal;\n' +
-                '    margin-top: 0.2em;\n' +
-                '}\n' +
-                '\n' +
-                '.full-descr__tags .button--network.focus {\n' +
-                '    box-shadow: 0 0 0 0.1em rgb(255, 255, 255); \n' +
-                '}\n' +
-                '\n' +
-                '.studios-static {\n' +
-                '    display: inline-block !important;\n' +
-                '    height: 2.94em !important;\n' +
-                '    border-radius: 0.6em !important;\n' +
-                '    padding: 0 0.3em !important;\n' +
-                '    margin-left: 0.3em !important;\n' +
-                '    vertical-align: middle !important;\n' +
-                '    line-height: 2.94em !important;\n' +
-                '    visibility: visible !important;\n' +
-                '    opacity: 1 !important;\n' +
-                '}\n' +
-                '\n' +
-                '.studios-static__text {\n' +
-                '    font-size: 1.2em !important;\n' +
-                '    font-weight: 400 !important;\n' +
-                '    padding-right: 2em !important;\n' +
-                '    color: rgba(255, 255, 255, 0.7) !important;\n' +
-                '}\n' +
-                '\n' +
-                '.full-start-new__buttons .button--network {\n' +
-                '    display: none !important;\n' +
-                '}\n';
+                '.tmdb-networks .full-descr__tags .button--network,' +
+                '.full-descr__tags .button--network {' +
+                '    display: inline-block !important;' +
+                '    margin: 0 0.5em 0.5em 0 !important;' +
+                '    vertical-align: middle !important;' +
+                '    height: 2.94em !important;' +
+                '    padding: .3em !important;' +
+                '    position: relative !important;' +
+                '    background: none !important;' +
+                '    border: none !important;' +
+                '    visibility: visible !important;' +
+                '    opacity: 1 !important;' +
+                '    cursor: pointer !important;' +
+                '}' +
+                '.tmdb-networks .full-descr__tags .button--network .network-innie,' +
+                '.full-descr__tags .button--network .network-innie {' +
+                '    background-color: #fff !important;' +
+                '    width: 100% !important;' +
+                '    height: 100% !important;' +
+                '    border-radius: .7em !important;' +
+                '    display: flex !important;' +
+                '    align-items: center !important;' +
+                '    justify-content: center !important;' +
+                '    padding: 0 1em !important;' +
+                '    min-width: 3.5em !important;' +
+                '    visibility: visible !important;' +
+                '    opacity: 1 !important;' +
+                '}' +
+                '.tmdb-networks .full-descr__tags .button--network img,' +
+                '.full-descr__tags .button--network img {' +
+                '    height: 100% !important;' +
+                '    max-height: 1.5em !important;' +
+                '    max-width: 4.5em !important;' +
+                '    object-fit: contain !important;' +
+                '    display: block !important;' +
+                '    visibility: visible !important;' +
+                '    opacity: 1 !important;' +
+                '}' +
+                '.full-start-new__title {' +
+                '    position: relative;' +
+                '    margin-bottom: 0.6em !important;' +
+                '}' +
+                '.full--tagline {' +
+                '    margin-bottom: 0.6em !important;' +
+                '}' +
+                '.original-title {' +
+                '    font-size: 0.8em;' +
+                '    color: rgba(255, 255, 255, 0.7);' +
+                '    font-weight: normal;' +
+                '    margin-top: 0.2em;' +
+                '}' +
+                '.full-descr__tags .button--network.focus {' +
+                '    box-shadow: 0 0 0 0.1em rgb(255, 255, 255); ' +
+                '}' +
+                '.studios-static {' +
+                '    display: inline-block !important;' +
+                '    height: 2.94em !important;' +
+                '    border-radius: 0.6em !important;' +
+                '    padding: 0 0.3em !important;' +
+                '    margin-left: 0.3em !important;' +
+                '    vertical-align: middle !important;' +
+                '    line-height: 2.94em !important;' +
+                '    visibility: visible !important;' +
+                '    opacity: 1 !important;' +
+                '}' +
+                '.studios-static__text {' +
+                '    font-size: 1.2em !important;' +
+                '    font-weight: 400 !important;' +
+                '    padding-right: 2em !important;' +
+                '    color: rgba(255, 255, 255, 0.7) !important;' +
+                '}' +
+                '.full-start-new__buttons .button--network {' +
+                '    display: none !important;' +
+                '}'
             document.head.appendChild(style);
         }
 
