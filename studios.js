@@ -9,32 +9,28 @@
 
     // Получение провайдеров (по странам) с логотипами
     function getMovieProviders(movie, callback) {
-        var cacheKey = 'providers_' + movie.id;
+        const cacheKey = `providers_${movie.id}`;
         if (cache.has(cacheKey)) {
             return callback(cache.get(cacheKey));
         }
 
-        var url = Lampa.TMDB.api('movie/' + movie.id + '/watch/providers');
+        const url = Lampa.TMDB.api(`movie/${movie.id}/watch/providers`);
         network.silent(url, 
             function (data) {
-                var providers = [];
-                var allowedCountryCodes = ['US', 'RU'];
+                const providers = [];
+                const allowedCountryCodes = ['US', 'RU'];
 
-                allowedCountryCodes.forEach(function(countryCode) {
-                    if (data.results && data.results[countryCode]) {
-                        if (data.results[countryCode].flatrate) {
-                            providers.push.apply(providers, data.results[countryCode].flatrate);
-                        }
-                        if (data.results[countryCode].rent) {
-                            providers.push.apply(providers, data.results[countryCode].rent);
-                        }
-                        if (data.results[countryCode].buy) {
-                            providers.push.apply(providers, data.results[countryCode].buy);
-                        }
+                allowedCountryCodes.forEach(countryCode => {
+                    if (data.results?.[countryCode]) {
+                        providers.push(
+                            ...(data.results[countryCode].flatrate || []),
+                            ...(data.results[countryCode].rent || []),
+                            ...(data.results[countryCode].buy || [])
+                        );
                     }
                 });
 
-                var filteredProviders = providers.filter(function(p) { return p.logo_path; });
+                const filteredProviders = providers.filter(p => p.logo_path);
                 cache.set(cacheKey, filteredProviders);
                 callback(filteredProviders);
             },
@@ -47,23 +43,23 @@
 
     // Получение сетей или студий с кэшированием
     function getNetworks(object, callback) {
-        if (!object || !object.card) {
+        if (!object?.card) {
             return callback([]);
         }
 
-        var cardId = object.card.id;
+        const cardId = object.card.id;
         
         if (studiosCache.has(cardId)) {
             return callback(studiosCache.get(cardId));
         }
 
-        var studios = [];
+        let studios = [];
 
-        if (object.card.networks && object.card.networks.length) {
+        if (object.card.networks?.length) {
             studios = object.card.networks;
         } 
-        else if (object.card.production_companies && object.card.production_companies.length) {
-            studios = object.card.production_companies.filter(function(studio) { return studio.logo_path; });
+        else if (object.card.production_companies?.length) {
+            studios = object.card.production_companies.filter(studio => studio.logo_path);
         }
 
         studiosCache.set(cardId, studios);
@@ -71,17 +67,17 @@
     }
 
     // Меню фильтрации по студии/сети
-    function showNetworkMenu(networkItem, type, element) {
-        var isTv = type === 'tv';
-        var controller = Lampa.Controller.enabled().name;
-        var dateField = isTv ? 'first_air_date' : 'primary_release_date';
-        var currentDate = new Date().toISOString().split('T')[0];
+    function showNetworkMenu(network, type, element) {
+        const isTv = type === 'tv';
+        const controller = Lampa.Controller.enabled().name;
+        const dateField = isTv ? 'first_air_date' : 'primary_release_date';
+        const currentDate = new Date().toISOString().split('T')[0];
 
         Lampa.Select.show({
-            title: networkItem.name || 'Network',
+            title: network.name || 'Network',
             items: [
                 { title: 'Популярные', sort: '', filter: { 'vote_count.gte': 10 } },
-                { title: 'Новые', sort: dateField + '.desc', filter: { 'vote_count.gte': 10 } }
+                { title: 'Новые', sort: `${dateField}.desc`, filter: { 'vote_count.gte': 10, [`${dateField}.lte`]: currentDate } }
             ],
             onBack: function() {
                 Lampa.Controller.toggle(controller);
@@ -90,181 +86,162 @@
                 }
             },
             onSelect: function(action) {
-                var filter = {};
-                filter[isTv ? 'with_networks' : 'with_companies'] = networkItem.id;
-                
-                // Копируем фильтры
-                if (action.filter) {
-                    for (var key in action.filter) {
-                        if (action.filter.hasOwnProperty(key)) {
-                            filter[key] = action.filter[key];
-                        }
-                    }
-                }
-                
                 Lampa.Activity.push({
-                    url: 'discover/' + type,
-                    title: (networkItem.name || 'Network') + ' ' + action.title,
+                    url: `discover/${type}`,
+                    title: `${network.name || 'Network'} ${action.title}`,
                     component: 'category_full',
                     source: 'tmdb',
                     card_type: true,
                     page: 1,
                     sort_by: action.sort,
-                    filter: filter
+                    filter: {
+                        [isTv ? 'with_networks' : 'with_companies']: network.id,
+                        ...action.filter
+                    }
                 });
             }
         });
     }
 
-    // Создание кнопки студии (чистый JS, без jQuery)
-    function createStudioButton(networkItem, type, cardId) {
-        var imgSrc = Lampa.TMDB.image('t/p/w154' + networkItem.logo_path);
-        var imgAlt = (networkItem.name || '').replace(/"/g, '&quot;');
-        
-        // Основная кнопка
-        var btn = document.createElement('div');
-        btn.className = 'full-start__button selector button--network';
-        btn.setAttribute('data-card-id', cardId);
-        btn.setAttribute('data-studio-id', networkItem.id);
-        btn.style.cssText = 'display: inline-block; margin: 0 0.5em 0.5em 0; vertical-align: middle; height: 2.94em; padding: .3em; position: relative; background: none; border: none; cursor: pointer;';
-        
-        // Внутренний блок
-        var innerDiv = document.createElement('div');
-        innerDiv.className = 'network-innie';
-        innerDiv.style.cssText = 'background-color: #fff; width: 100%; height: 100%; border-radius: .7em; display: flex; align-items: center; justify-content: center; padding: 0 1em; min-width: 3.5em;';
-        
-        // Изображение
-        var img = document.createElement('img');
-        img.src = imgSrc;
-        img.alt = imgAlt;
-        img.style.cssText = 'height: 100%; max-height: 1.5em; max-width: 4.5em; object-fit: contain; display: block; border-radius: 0;';
-        
-        img.onerror = function() {
-            console.log('Logo failed to load:', networkItem.name);
-            if (btn.parentNode) {
-                btn.parentNode.removeChild(btn);
-            }
-        };
-        
-        innerDiv.appendChild(img);
-        btn.appendChild(innerDiv);
-        
-        // Обработчик клика
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            showNetworkMenu(networkItem, type, this);
-        });
-        
+    // Создание кнопки студии - С ПРИНУДИТЕЛЬНЫМИ СТИЛЯМИ
+    function createStudioButton(network, type, cardId) {
+        const imgSrc = Lampa.TMDB.image(`t/p/w154${network.logo_path}`);
+        const imgAlt = (network.name || '').replace(/"/g, '"');
+
+        const btn = $('<div>')
+            .addClass('full-start__button selector button--network')
+            .attr('data-card-id', cardId)
+            .attr('data-studio-id', network.id)
+            .css({
+                'display': 'inline-block !important',
+                'margin': '0 0.5em 0.5em 0 !important',
+                'vertical-align': 'middle !important',
+                'height': '2.94em !important',
+                'padding': '.3em !important',
+                'position': 'relative !important',
+                'background': 'none !important',
+                'border': 'none !important'
+            })
+            .append(
+                $('<div>')
+                    .addClass('network-innie')
+                    .css({
+                        'background-color': '#fff !important',
+                        'width': '100% !important',
+                        'height': '100% !important',
+                        'border-radius': '.7em !important',
+                        'display': 'flex !important',
+                        'align-items': 'center !important',
+                        'justify-content': 'center !important',
+                        'padding': '0 1em !important',
+                        'min-width': '3.5em !important'
+                    })
+                    .append(
+                        $('<img>')
+                            .attr('src', imgSrc)
+                            .attr('alt', imgAlt)
+                            .css({
+                                'height': '100% !important',
+                                'max-height': '1.5em !important',
+                                'max-width': '4.5em !important',
+                                'object-fit': 'contain !important',
+                                'display': 'block !important',
+                                'border-radius': '0 !important'
+                            })
+                            .on('error', function() {
+                                $(this).parent().parent().remove();
+                            })
+                    )
+            )
+            .on('hover:enter', function() {
+                showNetworkMenu(network, type, this);
+            });
+
         return btn;
     }
 
-    // Функция для добавления кнопки в контейнер (чистый JS)
+    // Функция для добавления кнопки в tmdb-networks
     function addButtonToNetworksContainer(render, btn, cardId) {
         if (!render || !btn) return false;
         
-        // Ищем контейнер разными способами
-        var tagsContainer = null;
+        const networksContainer = $('.tmdb-networks', render);
+        if (!networksContainer.length) return false;
         
-        // Способ 1: через tmdb-networks
-        var networksContainer = render.querySelector('.tmdb-networks');
-        if (networksContainer) {
-            tagsContainer = networksContainer.querySelector('.full-descr__tags');
-        }
-        
-        // Способ 2: прямой поиск
-        if (!tagsContainer) {
-            tagsContainer = render.querySelector('.full-descr__tags');
-        }
-        
-        // Способ 3: поиск по всему документу
-        if (!tagsContainer) {
-            tagsContainer = document.querySelector('.full-descr__tags');
-        }
-        
-        if (!tagsContainer) {
-            console.log('Container .full-descr__tags not found');
-            return false;
-        }
-        
-        console.log('Container found, adding button...');
+        const tagsContainer = networksContainer.find('.full-descr__tags');
+        if (!tagsContainer.length) return false;
         
         // Удаляем старые элементы
-        var oldButtons = tagsContainer.querySelectorAll('.button--network[data-card-id="' + cardId + '"]');
-        for (var i = 0; i < oldButtons.length; i++) {
-            oldButtons[i].parentNode.removeChild(oldButtons[i]);
-        }
-        
-        var oldStudios = tagsContainer.querySelectorAll('.studios-static');
-        for (var i = 0; i < oldStudios.length; i++) {
-            oldStudios[i].parentNode.removeChild(oldStudios[i]);
-        }
+        tagsContainer.find(`.button--network[data-card-id="${cardId}"]`).remove();
+        tagsContainer.find('.studios-static').remove();
         
         // Находим platforms-static
-        var platformsStatic = tagsContainer.querySelector('.platforms-static');
+        const platformsStatic = tagsContainer.find('.platforms-static');
         
-        if (platformsStatic && platformsStatic.nextSibling) {
-            tagsContainer.insertBefore(btn, platformsStatic.nextSibling);
+        if (platformsStatic.length) {
+            btn.insertAfter(platformsStatic);
         } else {
-            tagsContainer.appendChild(btn);
+            tagsContainer.append(btn);
         }
         
         // Добавляем надпись Studios
-        var studiosStatic = document.createElement('div');
-        studiosStatic.className = 'studios-static';
-        studiosStatic.style.cssText = 'display: inline-block; height: 2.94em; border-radius: 0.6em; padding: 0 0.3em; margin-left: 0.3em; vertical-align: middle; line-height: 2.94em;';
+        const studiosStatic = $('<div class="studios-static">' +
+            '<span class="studios-static__text">Studios</span>' +
+        '</div>').css({
+            'display': 'inline-block !important',
+            'height': '2.94em !important',
+            'border-radius': '0.6em !important',
+            'padding': '0 0.3em !important',
+            'margin-left': '0.3em !important',
+            'vertical-align': 'middle !important',
+            'line-height': '2.94em !important'
+        });
         
-        var studiosText = document.createElement('span');
-        studiosText.className = 'studios-static__text';
-        studiosText.textContent = 'Studios';
-        studiosText.style.cssText = 'font-size: 1.2em; font-weight: 400; padding-right: 2em; color: rgba(255, 255, 255, 0.7);';
-        
-        studiosStatic.appendChild(studiosText);
-        
-        if (btn.nextSibling) {
-            tagsContainer.insertBefore(studiosStatic, btn.nextSibling);
-        } else {
-            tagsContainer.appendChild(studiosStatic);
-        }
+        btn.after(studiosStatic);
         
         return true;
     }
 
     // Добавление кнопки студии
     function addNetworkButton(render, networks, type, cardId) {
-        if (!networks || !networks.length) {
-            console.log('No networks found');
-            return;
-        }
-        
-        if (!networks[0] || !networks[0].logo_path) {
-            console.log('Network has no logo_path');
-            return;
-        }
+        if (!networks?.length || !networks[0]?.logo_path) return;
 
-        if (render.querySelector('.button--network[data-card-id="' + cardId + '"]')) {
-            console.log('Button already exists');
-            return;
-        }
+        if ($(`.button--network[data-card-id="${cardId}"]`, render).length) return;
 
-        var networkItem = networks[0];
-        console.log('Adding button for:', networkItem.name);
-        
-        var btn = createStudioButton(networkItem, type, cardId);
+        const network = networks[0];
+        const btn = createStudioButton(network, type, cardId);
 
-        var attempts = 0;
-        var maxAttempts = 50;
+        let attempts = 0;
+        const maxAttempts = 30;
         
-        var checkInterval = setInterval(function() {
+        const checkInterval = setInterval(() => {
             attempts++;
             
             if (addButtonToNetworksContainer(render, btn, cardId)) {
                 clearInterval(checkInterval);
-                console.log('Studio button added successfully:', networkItem.name);
+                console.log('Studio button added');
+                
+                // ПРИНУДИТЕЛЬНО ПРИМЕНЯЕМ СТИЛИ
+                setTimeout(() => {
+                    const addedBtn = $(`.button--network[data-card-id="${cardId}"]`, render);
+                    addedBtn.css({
+                        'display': 'inline-block !important',
+                        'visibility': 'visible !important',
+                        'opacity': '1 !important'
+                    });
+                    addedBtn.find('.network-innie').css({
+                        'background-color': '#fff !important',
+                        'visibility': 'visible !important',
+                        'opacity': '1 !important'
+                    });
+                    addedBtn.find('img').css({
+                        'visibility': 'visible !important',
+                        'opacity': '1 !important'
+                    });
+                }, 50);
             }
             
             if (attempts >= maxAttempts) {
                 clearInterval(checkInterval);
-                console.log('Failed to add studio button after', maxAttempts, 'attempts');
             }
         }, 100);
     }
@@ -273,21 +250,16 @@
     function addOriginalTitle(card, render) {
         if (!card || !render) return;
         
-        var titleElement = render.querySelector('.full-start-new__title');
-        if (!titleElement) return;
+        const titleElement = $('.full-start-new__title', render);
+        if (!titleElement.length) return;
         
-        var originalTitle = card.original_title || card.original_name;
+        const originalTitle = card.original_title || card.original_name;
         if (originalTitle && originalTitle !== card.title && originalTitle !== card.name) {
-            var existingOriginal = titleElement.querySelector('.original-title');
-            if (existingOriginal) {
-                existingOriginal.parentNode.removeChild(existingOriginal);
-            }
-            
-            var originalDiv = document.createElement('div');
-            originalDiv.className = 'original-title';
-            originalDiv.textContent = originalTitle;
-            originalDiv.style.cssText = 'font-size: 0.8em; color: rgba(255, 255, 255, 0.7); font-weight: normal; margin-top: 0.2em;';
-            titleElement.appendChild(originalDiv);
+            titleElement.find('.original-title').remove();
+            $('<div>')
+                .addClass('original-title')
+                .text(originalTitle)
+                .appendTo(titleElement);
         }
     }
 
@@ -298,144 +270,136 @@
         
         console.log('Studio plugin initializing...');
 
-        // Добавляем стили
-        if (!document.querySelector('#network-plugin-fixed')) {
-            var style = document.createElement('style');
-            style.id = 'network-plugin-fixed';
-                '.tmdb-networks .full-descr__tags .button--network,' +
-                '.full-descr__tags .button--network {' +
-                '    display: inline-block !important;' +
-                '    margin: 0 0.5em 0.5em 0 !important;' +
-                '    vertical-align: middle !important;' +
-                '    height: 2.94em !important;' +
-                '    padding: .3em !important;' +
-                '    position: relative !important;' +
-                '    background: none !important;' +
-                '    border: none !important;' +
-                '    visibility: visible !important;' +
-                '    opacity: 1 !important;' +
-                '    cursor: pointer !important;' +
-                '}' +
-                '.tmdb-networks .full-descr__tags .button--network .network-innie,' +
-                '.full-descr__tags .button--network .network-innie {' +
-                '    background-color: #fff !important;' +
-                '    width: 100% !important;' +
-                '    height: 100% !important;' +
-                '    border-radius: .7em !important;' +
-                '    display: flex !important;' +
-                '    align-items: center !important;' +
-                '    justify-content: center !important;' +
-                '    padding: 0 1em !important;' +
-                '    min-width: 3.5em !important;' +
-                '    visibility: visible !important;' +
-                '    opacity: 1 !important;' +
-                '}' +
-                '.tmdb-networks .full-descr__tags .button--network img,' +
-                '.full-descr__tags .button--network img {' +
-                '    height: 100% !important;' +
-                '    max-height: 1.5em !important;' +
-                '    max-width: 4.5em !important;' +
-                '    object-fit: contain !important;' +
-                '    display: block !important;' +
-                '    visibility: visible !important;' +
-                '    opacity: 1 !important;' +
-                '}' +
-                '.full-start-new__title {' +
-                '    position: relative;' +
-                '    margin-bottom: 0.6em !important;' +
-                '}' +
-                '.full--tagline {' +
-                '    margin-bottom: 0.6em !important;' +
-                '}' +
-                '.original-title {' +
-                '    font-size: 0.8em;' +
-                '    color: rgba(255, 255, 255, 0.7);' +
-                '    font-weight: normal;' +
-                '    margin-top: 0.2em;' +
-                '}' +
-                '.full-descr__tags .button--network.focus {' +
-                '    box-shadow: 0 0 0 0.1em rgb(255, 255, 255); ' +
-                '}' +
-                '.studios-static {' +
-                '    display: inline-block !important;' +
-                '    height: 2.94em !important;' +
-                '    border-radius: 0.6em !important;' +
-                '    padding: 0 0.3em !important;' +
-                '    margin-left: 0.3em !important;' +
-                '    vertical-align: middle !important;' +
-                '    line-height: 2.94em !important;' +
-                '    visibility: visible !important;' +
-                '    opacity: 1 !important;' +
-                '}' +
-                '.studios-static__text {' +
-                '    font-size: 1.2em !important;' +
-                '    font-weight: 400 !important;' +
-                '    padding-right: 2em !important;' +
-                '    color: rgba(255, 255, 255, 0.7) !important;' +
-                '}' +
-                '.full-start-new__buttons .button--network {' +
-                '    display: none !important;' +
-                '}'
-            document.head.appendChild(style);
+        //СТИЛИ CSS
+        if ($('style#network-plugin-fixed').length === 0) {
+            $('<style>')
+                .attr('id', 'network-plugin-fixed')
+                .html(`
+                    .tmdb-networks .full-descr__tags .button--network,
+                    .full-descr__tags .button--network {
+                        display: inline-block !important;
+                        margin: 0 0.5em 0.5em 0 !important;
+                        vertical-align: middle !important;
+                        height: 2.94em !important;
+                        padding: .3em !important;
+                        position: relative !important;
+                        background: none !important;
+                        border: none !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                    }
+                    
+                    .tmdb-networks .full-descr__tags .button--network .network-innie,
+                    .full-descr__tags .button--network .network-innie {
+                        background-color: #fff !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        border-radius: .7em !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        padding: 0 1em !important;
+                        min-width: 3.5em !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                    }
+                    
+                    .tmdb-networks .full-descr__tags .button--network img,
+                    .full-descr__tags .button--network img {
+                        height: 100% !important;
+                        max-height: 1.5em !important;
+                        max-width: 4.5em !important;
+                        object-fit: contain !important;
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                    }
+
+                    .full-start-new__title {
+                        position: relative;
+                        margin-bottom: 0.6em !important;
+                    }
+                    
+                    .full--tagline {
+                        margin-bottom: 0.6em !important;
+                    }
+
+                    .original-title {
+                        font-size: 0.8em;
+                        color: rgba(255, 255, 255, 0.7);
+                        font-weight: normal;
+                        margin-top: 0.2em;
+                    }
+
+                    /* Стили для кнопки в контейнере с платформами */
+                    .full-descr__tags .button--network {
+                        top: 0.3em !important;
+                    }
+
+                    .full-descr__tags .button--network.focus {
+                        box-shadow: 0 0 0 0.1em rgb(255, 255, 255); 
+                     }
+                    
+                    /* Стили для надписи Studios */
+                    .studios-static {
+                        display: inline-block !important;
+                        height: 2.94em !important;
+                        border-radius: 0.6em !important;
+                        padding: 0 0.3em !important;
+                        margin-left: -0.2em !important;
+                        //margin-top: 1em !important;
+                        vertical-align: middle !important;
+                        line-height: 2.94em !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                    }
+                    
+                    .studios-static__text {
+                        font-size: 1.2em !important;
+                        font-weight: 400 !important;
+                        padding-right: 2em !important;
+                        color: rgba(255, 255, 255, 0.7) !important;
+                    }
+                    
+                    /* Скрываем кнопки в неправильном месте */
+                    .full-start-new__buttons .button--network {
+                        display: none !important;
+                    }
+                `)
+                .appendTo('head');
         }
 
-        // Слушаем события
         Lampa.Listener.follow('full', function(e) {
-            console.log('Full event:', e.type);
-            
             if (e.type === 'complite') {
-                var render = e.object.activity ? e.object.activity.render() : null;
-                var card = e.object.card;
-                var cardId = card ? (card.id || 'unknown') : 'unknown';
+                const render = e.object.activity.render();
+                const card = e.object.card;
+                const cardId = card?.id || 'unknown';
                 
-                if (!render || !card) {
-                    console.log('No render or card');
-                    return;
-                }
+                if (!render || !card) return;
 
-                console.log('Card loaded:', card.title || card.name);
                 addOriginalTitle(card, render);
 
-                // Пробуем добавить кнопку несколько раз
-                setTimeout(function() {
-                    getNetworks(e.object, function(networks) {
-                        console.log('Networks found:', networks.length);
+                setTimeout(() => {
+                    getNetworks(e.object, networks => {
                         if (networks.length) {
                             addNetworkButton(render, networks, e.object.method, cardId);
-                        } else {
-                            console.log('No networks with logo found');
                         }
                     });
                 }, 500);
-                
-                setTimeout(function() {
-                    getNetworks(e.object, function(networks) {
-                        if (networks.length && !render.querySelector('.button--network')) {
-                            console.log('Retry adding button...');
-                            addNetworkButton(render, networks, e.object.method, cardId);
-                        }
-                    });
-                }, 1500);
             }
             
             if (e.type === 'destroy') {
-                var render = e.object && e.object.activity ? e.object.activity.render() : null;
+                const render = e.object?.activity?.render();
                 if (render) {
-                    var buttons = render.querySelectorAll('.button--network, .studios-static');
-                    for (var i = 0; i < buttons.length; i++) {
-                        if (buttons[i].parentNode) {
-                            buttons[i].parentNode.removeChild(buttons[i]);
-                        }
-                    }
+                    $('.button--network, .studios-static', render).remove();
                 }
                 currentCardId = null;
             }
         });
         
-        console.log('Studio plugin initialized');
+        console.log('Studio plugin initialized - FORCED VISIBLE STYLES');
     }
 
-    // Запуск плагина
     if (window.appready) {
         initPlugin();
     } else {
