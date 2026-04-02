@@ -2,7 +2,7 @@
     'use strict';
 
     var pluginManifest = {
-        version: '2.0.5',
+        version: '2.0.3',
         author: 'levende',
         docs: 'https://levende.github.io/lampa-plugins/docs/tmdb-networks',
         contact: 'https://t.me/levende'
@@ -30,7 +30,7 @@
         platfroms_movie_list_max_visible: -1,
         platfroms_movie_extra_btn_mode: -1,
 
-        hide_tmdb_networks: false
+        hide_tmdb_networks: true
     };
 
     var network = new Lampa.Reguest();
