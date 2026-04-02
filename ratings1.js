@@ -2925,4 +2925,8 @@ Lampa.Listener.follow('full', function(e) {
             }
         }, 100);
     }
-});
+    });
+    
+    startPlugin();
+    
+})();
