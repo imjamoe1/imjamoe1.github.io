@@ -1,212 +1,156 @@
 (function () {
     'use strict';
     
-    console.log('Studio plugin loading...');
+    console.log('=== STUDIO PLUGIN DEBUG ===');
     
-    // Функция получения студий из карточки
-    function getStudioFromCard() {
+    // Функция для отображения отладочной информации
+    function showDebugInfo(studio, container) {
+        var debugDiv = document.createElement('div');
+        debugDiv.style.cssText = 'background: yellow; color: black; padding: 10px; margin: 10px; font-size: 12px; z-index: 9999; position: relative;';
+        debugDiv.innerHTML = '<b>DEBUG INFO:</b><br>' +
+            'Studio found: ' + (studio ? studio.name : 'NO') + '<br>' +
+            'Has logo: ' + (studio && studio.logo_path ? 'YES (' + studio.logo_path + ')' : 'NO') + '<br>' +
+            'Container: ' + (container ? 'FOUND' : 'NOT FOUND');
+        
+        var tagsContainer = document.querySelector('.full-descr__tags');
+        if (tagsContainer) {
+            tagsContainer.insertBefore(debugDiv, tagsContainer.firstChild);
+            
+            // Удаляем через 5 секунд
+            setTimeout(function() {
+                if (debugDiv.parentNode) debugDiv.parentNode.removeChild(debugDiv);
+            }, 5000);
+        }
+    }
+    
+    // Получаем все данные из карточки
+    function dumpCardData() {
         try {
             var activity = Lampa.Activity.active();
-            if (!activity || !activity.activity) return null;
+            if (!activity || !activity.activity) {
+                console.log('No active activity');
+                return null;
+            }
             
             var card = activity.activity.card;
-            if (!card) return null;
+            if (!card) {
+                console.log('No card in activity');
+                return null;
+            }
             
-            console.log('Card data:', card);
+            console.log('=== CARD DATA DUMP ===');
+            console.log('Title:', card.title || card.name);
+            console.log('Type:', activity.activity.method);
+            console.log('production_companies:', card.production_companies);
+            console.log('networks:', card.networks);
+            console.log('All card keys:', Object.keys(card));
             
-            // Ищем студии
-            var studios = card.production_companies || card.networks || [];
-            console.log('Found studios:', studios);
+            // Проверяем разные возможные места хранения студий
+            var possibleStudioFields = [
+                'production_companies',
+                'networks', 
+                'studios',
+                'production_companies_data',
+                'studio'
+            ];
             
-            // Ищем студию с логотипом
-            var studio = null;
-            for (var i = 0; i < studios.length; i++) {
-                if (studios[i].logo_path) {
-                    studio = studios[i];
-                    break;
+            var found = false;
+            for (var i = 0; i < possibleStudioFields.length; i++) {
+                var field = possibleStudioFields[i];
+                if (card[field] && card[field].length) {
+                    console.log('Found studios in field "' + field + '":', card[field]);
+                    found = true;
                 }
             }
             
-            return studio;
+            if (!found) {
+                console.log('No studios found in any known field');
+                console.log('Full card object:', JSON.stringify(card, null, 2));
+            }
+            
+            return card;
         } catch(e) {
-            console.error('Error getting studio:', e);
+            console.error('Error dumping card:', e);
             return null;
         }
     }
     
-    // Создание кнопки студии
-    function createStudioButton(studio, isTv) {
-        var btn = document.createElement('div');
-        btn.className = 'full-start__button selector';
-        btn.style.cssText = 'display: inline-block; margin: 0 0.5em 0.5em 0; vertical-align: middle; height: 2.94em; padding: .3em; cursor: pointer;';
-        
-        var inner = document.createElement('div');
-        inner.style.cssText = 'background-color: #fff; border-radius: .7em; display: flex; align-items: center; justify-content: center; padding: 0 1em; min-width: 3.5em; height: 100%;';
-        
-        var img = document.createElement('img');
-        img.src = Lampa.TMDB.image('t/p/w154' + studio.logo_path);
-        img.style.cssText = 'max-height: 1.5em; max-width: 4.5em; object-fit: contain; display: block;';
-        img.alt = studio.name;
-        
-        img.onerror = function() {
-            console.log('Logo failed to load');
-            if (btn.parentNode) btn.parentNode.removeChild(btn);
-        };
-        
-        inner.appendChild(img);
-        btn.appendChild(inner);
-        
-        // Обработчик клика
-        btn.onclick = function(e) {
-            e.stopPropagation();
-            
-            var dateField = isTv ? 'first_air_date' : 'primary_release_date';
-            var currentDate = new Date().toISOString().split('T')[0];
-            
-            Lampa.Select.show({
-                title: studio.name,
-                items: [
-                    { title: 'Популярные', sort: 'popularity.desc' },
-                    { title: 'Новые', sort: dateField + '.desc' }
-                ],
-                onSelect: function(item) {
-                    var filter = {};
-                    filter[isTv ? 'with_networks' : 'with_companies'] = studio.id;
-                    
-                    if (item.title === 'Новые') {
-                        filter[dateField + '.lte'] = currentDate;
-                        filter.vote_count = { gte: 10 };
-                    }
-                    
-                    Lampa.Activity.push({
-                        url: 'discover/' + (isTv ? 'tv' : 'movie'),
-                        title: studio.name + ' ' + item.title,
-                        component: 'category_full',
-                        source: 'tmdb',
-                        sort_by: item.sort,
-                        filter: filter
-                    });
-                }
-            });
-        };
-        
-        return btn;
-    }
-    
-    // Добавление надписи Studios
-    function createStudiosLabel() {
-        var label = document.createElement('span');
-        label.textContent = 'Studios';
-        label.style.cssText = 'display: inline-block; height: 2.94em; line-height: 2.94em; margin-left: 0.5em; padding-right: 1em; color: rgba(255,255,255,0.7); font-size: 1.1em; vertical-align: middle;';
-        return label;
-    }
-    
-    // Главная функция добавления
-    function addStudioToContainer() {
-        console.log('addStudioToContainer called');
-        
-        // Ищем контейнер
+    // Создаем простую кнопку с любым текстом
+    function addSimpleButton(text, color) {
         var container = document.querySelector('.full-descr__tags');
         if (!container) {
-            console.log('Container .full-descr__tags not found');
+            console.log('Container not found');
             return false;
         }
         
-        // Получаем студию
-        var studio = getStudioFromCard();
-        if (!studio) {
-            console.log('No studio with logo found');
-            return false;
-        }
+        var btn = document.createElement('div');
+        btn.textContent = text;
+        btn.style.cssText = 'background: ' + color + '; color: white; padding: 5px 10px; margin: 5px; display: inline-block; border-radius: 5px; cursor: pointer;';
+        btn.onclick = function() { 
+            dumpCardData();
+            alert('Check console (F12) for card data');
+        };
         
-        console.log('Adding studio:', studio.name);
-        
-        // Определяем тип (фильм или сериал)
-        var activity = Lampa.Activity.active();
-        var isTv = activity && activity.activity && activity.activity.method === 'tv';
-        
-        // Удаляем старые кнопки
-        var oldButtons = container.querySelectorAll('.studio-plugin-btn, .studio-plugin-label');
-        for (var i = 0; i < oldButtons.length; i++) {
-            oldButtons[i].parentNode.removeChild(oldButtons[i]);
-        }
-        
-        // Создаем новые элементы
-        var btn = createStudioButton(studio, isTv);
-        btn.classList.add('studio-plugin-btn');
-        
-        var label = createStudiosLabel();
-        label.classList.add('studio-plugin-label');
-        
-        // Вставляем после platforms-static
-        var platformsStatic = container.querySelector('.platforms-static');
-        if (platformsStatic && platformsStatic.nextSibling) {
-            container.insertBefore(btn, platformsStatic.nextSibling);
-            container.insertBefore(label, btn.nextSibling);
-        } else {
-            container.appendChild(btn);
-            container.appendChild(label);
-        }
-        
-        console.log('Studio button added successfully!');
+        container.appendChild(btn);
+        console.log('Added button:', text);
         return true;
     }
     
-    // Следим за открытием карточки
+    // Главная функция
+    function addDebugButtons() {
+        console.log('Adding debug buttons...');
+        
+        var container = document.querySelector('.full-descr__tags');
+        if (!container) {
+            console.log('Container .full-descr__tags not found');
+            return;
+        }
+        
+        // Удаляем старые кнопки
+        var oldBtns = container.querySelectorAll('.debug-btn');
+        for (var i = 0; i < oldBtns.length; i++) {
+            oldBtns[i].parentNode.removeChild(oldBtns[i]);
+        }
+        
+        // Добавляем кнопки
+        addSimpleButton('🔍 SHOW CARD DATA', '#3498db');
+        addSimpleButton('📀 TEST STUDIO (рабочая)', '#2ecc71');
+        
+        // Автоматически показываем данные карточки
+        setTimeout(function() {
+            dumpCardData();
+        }, 500);
+    }
+    
+    // Следим за карточкой
     var lastCardId = null;
     
-    function checkAndAdd() {
+    function checkCard() {
         var activity = Lampa.Activity.active();
         if (!activity || !activity.activity) return;
         
         var card = activity.activity.card;
         if (!card) return;
         
-        var currentCardId = card.id;
-        
-        // Если новая карточка
-        if (lastCardId !== currentCardId) {
-            lastCardId = currentCardId;
-            console.log('New card detected:', card.title || card.name);
+        var currentId = card.id;
+        if (lastCardId !== currentId) {
+            lastCardId = currentId;
+            console.log('New card opened, ID:', currentId);
             
-            // Ждем загрузки интерфейса
             setTimeout(function() {
-                addStudioToContainer();
+                addDebugButtons();
             }, 1000);
-            
-            // Повторяем попытку через 2 секунды если не добавилось
-            setTimeout(function() {
-                addStudioToContainer();
-            }, 2000);
         }
     }
     
-    // Запуск слежения
-    function init() {
-        console.log('Studio plugin init');
-        
-        // Проверяем каждую секунду
-        setInterval(checkAndAdd, 1000);
-        
-        // Также следим за событием full
-        Lampa.Listener.follow('full', function(e) {
-            if (e.type === 'complite') {
-                console.log('Full event complite');
-                setTimeout(function() {
-                    addStudioToContainer();
-                }, 1000);
-            }
-        });
-    }
+    // Запуск
+    setInterval(checkCard, 1000);
     
-    // Старт
-    if (window.appready) {
-        init();
-    } else {
-        Lampa.Listener.follow('app', function(e) {
-            if (e.type === 'ready') {
-                init();
-            }
-        });
-    }
+    Lampa.Listener.follow('full', function(e) {
+        if (e.type === 'complite') {
+            setTimeout(addDebugButtons, 1000);
+        }
+    });
+    
+    console.log('Debug plugin loaded - look for colored buttons near "Studios"');
 })();
