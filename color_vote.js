@@ -1,4 +1,3 @@
-
 (function () {
   var _0x3b736d = function () {
     var _0xd424a0 = true;
