@@ -1054,7 +1054,7 @@
                     .card__vote {
                         right: 0;
                         bottom: 0;
-                        color: #000;
+                        color: #fff;
                         font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
@@ -1287,7 +1287,7 @@
                     .card__vote {
                         right: 0;
                         bottom: 0;
-                        color: #000;
+                        color: #fff;
                         font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
