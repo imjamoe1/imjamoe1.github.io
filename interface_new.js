@@ -886,6 +886,33 @@
 		};
 	}
 
+        function getColor(rating, alpha) {
+            var rgb = '';
+
+            if (rating >= 0 && rating <= 3) rgb = '231, 76, 60';
+            else if (rating > 3 && rating <= 5) rgb = '230, 126, 34'
+            else if (rating > 5 && rating <= 6.5) rgb = '241, 196, 15';
+            else if (rating > 6.5 && rating < 8) rgb = '52, 152, 219';
+            else if (rating >= 8 && rating <= 10) rgb = '46, 204, 113';
+
+            if (rgb) {
+                return 'rgba(' + rgb + ', ' + alpha + ')'
+            }
+
+            return null;
+       	} 
+
+        var originalOnVisible = Lampa.Maker.map('Card').Card.onVisible;
+        Lampa.Maker.map('Card').Card.onVisible = function () {
+            originalOnVisible.apply(this, arguments);
+            var vote = this.html.getElementsByClassName('card__vote');
+            if (vote.length > 0) {
+                var voteValue = parseFloat(vote[0].textContent.trim());
+                var color = getColor(voteValue, 0.7);
+                if (color) vote[0].style.backgroundColor = color;
+            }
+        };
+
 	function addStyles() {
 		if (addStyles.added) return;
 		addStyles.added = true;
@@ -1258,12 +1285,15 @@
                         font-weight: bold !important;
                     }
                     .card__vote {
+                        position: absolute;
                         right: 0;
                         bottom: 0;
+                        //background: rgba(0, 0, 0, 0.5) !important;
+                        //color: #fff;
+                        font-size: 1.2em;
+                        font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        background: #222 !important;
-                        font-weight: bold !important;
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.2em;
