@@ -1289,7 +1289,7 @@
                         right: 0;
                         bottom: 0;
                         //background: rgba(0, 0, 0, 0.5) !important;
-                        //color: #fff;
+                        color: #000;
                         font-size: 1.2em;
                         font-weight: bold;
                         padding: 0.2em 0.45em;
