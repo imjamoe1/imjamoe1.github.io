@@ -1054,10 +1054,10 @@
                     .card__vote {
                         right: 0;
                         bottom: 0;
+                        color: #000;
+                        font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        background: #222 !important;
-                        font-weight: bold !important;
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
@@ -1285,12 +1285,9 @@
                         font-weight: bold !important;
                     }
                     .card__vote {
-                        position: absolute;
                         right: 0;
                         bottom: 0;
-                        //background: rgba(0, 0, 0, 0.5) !important;
                         color: #000;
-                        font-size: 1.2em;
                         font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
