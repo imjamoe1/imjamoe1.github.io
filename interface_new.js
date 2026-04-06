@@ -1064,6 +1064,7 @@
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
+                        font-weight: bold;
                         margin-right: 0;
                         display: inline-flex;
                         align-items: center;
@@ -1295,6 +1296,7 @@
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.2em;
+                        font-weight: bold;
                         margin-right: 0;
                         display: inline-flex;
                         align-items: center;
