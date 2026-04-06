@@ -1064,7 +1064,6 @@
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
-                        font-weight: bold;
                         margin-right: 0;
                         display: inline-flex;
                         align-items: center;
@@ -1079,7 +1078,7 @@
                         margin-right: 0.5em;
                     }
                     .new-interface .full-start__rate > div {
-                        font-weight: bold;
+                        font-weight: bold !important;
                         font-size: 0.9em;
                         justify-content: center;
                         background-color: rgba(0, 0, 0, 0.4);
@@ -1296,7 +1295,6 @@
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.2em;
-                        font-weight: bold;
                         margin-right: 0;
                         display: inline-flex;
                         align-items: center;
@@ -1311,7 +1309,7 @@
                         margin-right: 0.5em;
                     }
                     .new-interface .full-start__rate > div {
-                        font-weight: bold;
+                        font-weight: bold !important;
                         font-size: 0.9em;
                         justify-content: center;
                         background-color: rgba(0, 0, 0, 0.4);
