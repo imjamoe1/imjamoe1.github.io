@@ -897,23 +897,13 @@
         return null;
     }
 
-    var originalOnVisible = Lampa.Maker.map('Card').Card.onVisible;
-    Lampa.Maker.map('Card').Card.onVisible = function () {
-        originalOnVisible.apply(this, arguments);
-        var vote = this.html.getElementsByClassName('card__vote');
-        if (vote.length > 0) {
-            var voteValue = parseFloat(vote[0].textContent.trim());
-            var color = getColor(voteValue, 0.7);
-            if (color) vote[0].style.backgroundColor = color;
-        }
-    };
-
     var observer = new MutationObserver(function() {
         document.querySelectorAll('.card__vote').forEach(function(vote) {
             var voteValue = parseFloat(vote.textContent.trim());
             var color = getColor(voteValue, 0.7);
             if (color && vote.style.backgroundColor !== color) {
                 vote.style.setProperty('background-color', color, 'important');
+                vote.style.setProperty('color', '#ffffff', 'important');
                 vote.style.setProperty('background', color, 'important');
             }
         });
