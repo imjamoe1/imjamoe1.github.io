@@ -889,7 +889,7 @@
 	function getColor(rating, alpha) {
 		var rgb = '';
 		if (rating >= 0 && rating <= 3) rgb = '231, 76, 60';
-		else if (rating > 3 && rating <= 5) rgb = '230, 126, 34'
+		else if (rating > 3 && rating <= 5) rgb = '230, 126, 34';
 		else if (rating > 5 && rating <= 6.5) rgb = '241, 196, 15';
 		else if (rating > 6.5 && rating < 8) rgb = '52, 152, 219';
 		else if (rating >= 8 && rating <= 10) rgb = '46, 204, 113';
