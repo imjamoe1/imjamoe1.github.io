@@ -886,7 +886,7 @@
 		};
 	}
 
-    function getColor(rating, alpha) {
+	function getColor(rating, alpha) {
         var rgb = '';
         if (rating >= 0 && rating <= 3) rgb = '231, 76, 60';
         else if (rating > 3 && rating <= 5) rgb = '230, 126, 34'
@@ -902,9 +902,11 @@
             var voteValue = parseFloat(vote.textContent.trim());
             var color = getColor(voteValue, 0.7);
             if (color && vote.style.backgroundColor !== color) {
-                vote.style.setProperty('background-color', color, 'important');
-                vote.style.setProperty('color', '#ffffff', 'important');
-                vote.style.setProperty('background', color, 'important');
+                vote[0].style.setProperty('background-color', color, 'important');
+                vote[0].style.setProperty('color', '#ffffff', 'important');
+                vote[0].style.setProperty('font-weight', 'bold', 'important');
+                vote[0].style.setProperty('text-shadow', '0 0 2px rgba(0,0,0,0.5)', 'important');
+                vote[0].style.setProperty('background', color, 'important');
             }
         });
     });
@@ -1057,11 +1059,8 @@
                     .card__vote {
                         right: 0;
                         bottom: 0;
-                        color: #fff;
-                        font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        z-index: 10;
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
@@ -1291,11 +1290,8 @@
                     .card__vote {
                         right: 0;
                         bottom: 0;
-                        color: #fff;
-                        font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
-                        z-index: 10;
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.2em;
