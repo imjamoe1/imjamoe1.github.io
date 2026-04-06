@@ -910,6 +910,7 @@
                 var voteValue = parseFloat(vote[0].textContent.trim());
                 var color = getColor(voteValue, 0.7);
             if (color) {
+                vote[0].style.zIndex = '9999';
                 vote[0].style.setProperty('background-color', color, 'important');
             }
         }
