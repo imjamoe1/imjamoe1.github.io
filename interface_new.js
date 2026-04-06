@@ -908,6 +908,24 @@
         }
     };
 
+    var observer = new MutationObserver(function() {
+        document.querySelectorAll('.card__vote').forEach(function(vote) {
+            var voteValue = parseFloat(vote.textContent.trim());
+            var color = getColor(voteValue, 0.7);
+            if (color && vote.style.backgroundColor !== color) {
+                vote.style.setProperty('background-color', color, 'important');
+                vote.style.setProperty('background', color, 'important');
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class']
+    });
+
 	function addStyles() {
 		if (addStyles.added) return;
 		addStyles.added = true;
