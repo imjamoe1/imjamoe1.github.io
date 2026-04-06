@@ -1058,6 +1058,7 @@
                         font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
+                        z-index: 10;
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.3em;
@@ -1291,6 +1292,7 @@
                         font-weight: bold;
                         padding: 0.2em 0.45em;
                         border-radius: 0.75em 0;
+                        z-index: 10;
                     }
                     .new-interface .full-start__rate {
                         font-size: 1.2em;
