@@ -911,12 +911,12 @@
 		});
 	});
     
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['style', 'class']
-    });
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true,
+		attributes: true,
+		attributeFilter: ['style', 'class']
+	});
 
 	function addStyles() {
 		if (addStyles.added) return;
