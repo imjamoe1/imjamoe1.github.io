@@ -1063,6 +1063,7 @@
                         border-radius: 0.75em 0;
                     }
                     .new-interface .full-start__rate {
+                        font-weight: bold !important;
                         font-size: 1.3em;
                         margin-right: 0;
                         display: inline-flex;
@@ -1294,6 +1295,7 @@
                         border-radius: 0.75em 0;
                     }
                     .new-interface .full-start__rate {
+                        font-weight: bold !important;
                         font-size: 1.2em;
                         margin-right: 0;
                         display: inline-flex;
