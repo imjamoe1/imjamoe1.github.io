@@ -886,35 +886,57 @@
 		};
 	}
 
-        function getColor(rating, alpha) {
-            var rgb = '';
+    function getColor(rating, alpha) {
+        var rgb = '';
+        if (rating >= 0 && rating <= 3) rgb = '231, 76, 60';
+        else if (rating > 3 && rating <= 5) rgb = '230, 126, 34'
+        else if (rating > 5 && rating <= 6.5) rgb = '241, 196, 15';
+        else if (rating > 6.5 && rating < 8) rgb = '52, 152, 219';
+        else if (rating >= 8 && rating <= 10) rgb = '46, 204, 113';
+        return rgb ? 'rgba(' + rgb + ', ' + alpha + ')' : null;
+    }
 
-            if (rating >= 0 && rating <= 3) rgb = '231, 76, 60';
-            else if (rating > 3 && rating <= 5) rgb = '230, 126, 34'
-            else if (rating > 5 && rating <= 6.5) rgb = '241, 196, 15';
-            else if (rating > 6.5 && rating < 8) rgb = '52, 152, 219';
-            else if (rating >= 8 && rating <= 10) rgb = '46, 204, 113';
-
-            if (rgb) {
-                return 'rgba(' + rgb + ', ' + alpha + ')'
-            }
-
-            return null;
-       	} 
-
-        var originalOnVisible = Lampa.Maker.map('Card').Card.onVisible;
-        Lampa.Maker.map('Card').Card.onVisible = function () {
-            originalOnVisible.apply(this, arguments);
-            var vote = this.html.getElementsByClassName('card__vote');
-            if (vote.length > 0) {
-                var voteValue = parseFloat(vote[0].textContent.trim());
-                var color = getColor(voteValue, 0.7);
+    // Перехватываем и перебиваем
+    var originalOnVisible = Lampa.Maker.map('Card').Card.onVisible;
+    Lampa.Maker.map('Card').Card.onVisible = function () {
+        originalOnVisible.apply(this, arguments);
+        
+        var vote = this.html.getElementsByClassName('card__vote');
+        if (vote.length > 0) {
+            var voteValue = parseFloat(vote[0].textContent.trim());
+            var color = getColor(voteValue, 0.85);
             if (color) {
-                vote[0].style.zIndex = '9999';
+                // Перебиваем !important везде
+                vote[0].style.setProperty('background-color', color, 'important');
+                vote[0].style.setProperty('color', '#ffffff', 'important');
+                vote[0].style.setProperty('font-weight', 'bold', 'important');
+                vote[0].style.setProperty('text-shadow', '0 0 2px rgba(0,0,0,0.5)', 'important');
+                // Убираем черный фон который ставит другой плагин
                 vote[0].style.setProperty('background', color, 'important');
             }
         }
     };
+
+    // Дополнительно: MutationObserver для постоянной победы
+    var observer = new MutationObserver(function() {
+        document.querySelectorAll('.card__vote').forEach(function(vote) {
+            var voteValue = parseFloat(vote.textContent.trim());
+            var color = getColor(voteValue, 0.85);
+            if (color && vote.style.backgroundColor !== color) {
+                vote.style.setProperty('background-color', color, 'important');
+                vote.style.setProperty('color', '#ffffff', 'important');
+                vote.style.setProperty('background', color, 'important');
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class']
+    });
+})()
 
 	function addStyles() {
 		if (addStyles.added) return;
