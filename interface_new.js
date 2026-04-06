@@ -936,7 +936,6 @@
         attributes: true,
         attributeFilter: ['style', 'class']
     });
-})()
 
 	function addStyles() {
 		if (addStyles.added) return;
