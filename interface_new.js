@@ -906,7 +906,7 @@
 				vote.style.setProperty('color', '#ffffff', 'important');
 				vote.style.setProperty('font-weight', 'bold', 'important');
 				vote.style.setProperty('text-shadow', '0 0 2px rgba(0,0,0,0.5)', 'important');
-				vote.style.setProperty('background', color, 'important');
+				//vote.style.setProperty('background', color, 'important');
 			}
 		});
 	});
