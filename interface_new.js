@@ -902,7 +902,7 @@
 			var voteValue = parseFloat(vote.textContent.trim());
 			var color = getColor(voteValue, 0.7);
 			if (color && vote.style.backgroundColor !== color) {
-				vote.style.setProperty('background-color', color, 'important');
+				//vote.style.setProperty('background-color', color, 'important');
 				vote.style.setProperty('color', '#ffffff', 'important');
 				vote.style.setProperty('font-weight', 'bold', 'important');
 				vote.style.setProperty('text-shadow', '0 0 2px rgba(0,0,0,0.5)', 'important');
@@ -1925,9 +1925,6 @@
 		var vote = parseFloat(match[0]);
 		var color = getColorByRating(vote);
 
-		if (color && Lampa.Storage.get("colored_ratings", true)) {
-			$el.css("color", color);
-
 			if (Lampa.Storage.get("rating_border", false) && !$el.hasClass("card__vote")) {
 				if ($el.parent().hasClass("full-start__rate")) {
 					$el.parent().css("border", "1px solid " + color);
@@ -1937,12 +1934,6 @@
 				} else {
 					$el.css("border", "");
 				}
-			} else {
-				$el.css("border", "");
-				if ($el.parent().hasClass("full-start__rate")) {
-					$el.parent().css("border", "");
-				}
-			}
 		} else {
 			$el.css("color", "");
 			$el.css("border", "");
@@ -1953,7 +1944,6 @@
 	}
 
 	function updateVoteColors() {
-		if (!Lampa.Storage.get("colored_ratings", true)) return;
 
 		$(".card__vote").each(function () {
 			applyColorByRating(this);
