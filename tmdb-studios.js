@@ -1203,10 +1203,6 @@
         // Находим блок с тэгами
         const tagsContainer = render.find('.full-descr__tags');
         if (!tagsContainer.length) {
-            // Если блок еще не создался, ждем немного
-            setTimeout(function() {
-                createQualityBadgesInTags(activity, qualityInfo);
-            }, 300);
             return;
         }
         
@@ -1216,13 +1212,9 @@
             // Если Studios еще нет, ждем
             setTimeout(function() {
                 createQualityBadgesInTags(activity, qualityInfo);
-            }, 300);
+            }, 100);
             return;
         }
-        
-        // Удаляем старые бейджи, если они есть
-        tagsContainer.find('.quality-tags-wrapper').remove();
-        tagsContainer.find('.quality-badges').remove();
         
         // Создаем бейджи
         const badges = [];
