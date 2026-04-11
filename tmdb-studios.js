@@ -119,14 +119,14 @@
                 ru: 'Дополнительная кнопка'
             },
             tmdb_networks_studios: {
-                en: 'Studios',
-                uk: 'Studios',
-                ru: 'Студии'
+                en: 'Studio',
+                uk: 'Студія',
+                ru: 'Студия'
             },
             badges_quality: {
                 en: 'Quality',
-                uk: 'Якість',
-                ru: 'Качество'
+                uk: 'Quality',
+                ru: 'Quality'
             }
         });
     }
@@ -1324,6 +1324,9 @@
                 display: inline-flex !important;
                 align-items: center !important;
                 gap: 0.3em !important;
+                border: 1px solid rgba(255, 255, 255, 0.7) !important;
+                border-radius: 0.7em !important;
+                padding: 0.5em 0.5em !important;
             }
             .quality-tags-container .quality-badge {
                 position: relative !important;
