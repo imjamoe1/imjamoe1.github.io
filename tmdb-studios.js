@@ -1042,7 +1042,7 @@
     function analyzeContentQualities(movie, activity) {
         if (!movie || !Lampa.Storage.field('parser_use')) return;
 
-        // Получаем данные от парсера самостоятельно
+        // Получаем данные от парсера
         if (!Lampa.Parser || typeof Lampa.Parser.get !== 'function') {
             return;
         }
@@ -1072,10 +1072,9 @@
         }, (results) => {
             if (!activity || activity.__destroyed) return;
 
-            // Получили результаты парсера
             if (!results || !results.Results || results.Results.length === 0) return;
 
-            // Собираем итоговую информацию о доступных качествах
+            // Собираем информацию о доступных качествах
             const availableQualities = {
                 resolutions: new Set(),
                 hdr: new Set(),
@@ -1085,32 +1084,26 @@
 
             // Анализируем каждый торрент
             results.Results.forEach((torrent) => {
-                // Анализируем ffprobe если есть
                 if (torrent.ffprobe && Array.isArray(torrent.ffprobe)) {
                     const quality = analyzeContentQuality(torrent.ffprobe);
                     
                     if (quality) {
-                        // Разрешение
                         if (quality.resolutionLabel) {
                             availableQualities.resolutions.add(quality.resolutionLabel);
                         }
-                        
-                        // Аудио
                         if (quality.audio) {
                             availableQualities.audio.add(quality.audio);
                         }
                     }
 
-                    // Проверяем наличие русского дубляжа
+                    // Проверяем наличие дубляжа
                     if (!availableQualities.hasDub) {
                         const audioStreams = torrent.ffprobe.filter(stream => stream.codec_type === 'audio' && stream.tags);
                         audioStreams.forEach(audio => {
                             const lang = (audio.tags.language || '').toLowerCase();
                             const title = (audio.tags.title || audio.tags.handler_name || '').toLowerCase();
                             
-                            // Проверяем русский язык
                             if (lang === 'rus' || lang === 'ru' || lang === 'russian') {
-                                // Проверяем что это дубляж
                                 if (title.includes('dub') || title.includes('дубляж') || 
                                     title.includes('дублир') || title === 'd') {
                                     availableQualities.hasDub = true;
@@ -1149,7 +1142,7 @@
                 dub: availableQualities.hasDub
             };
 
-            // Разрешение - берем только максимальное
+            // Разрешение
             if (availableQualities.resolutions.size > 0) {
                 const resOrder = ['8K', '4K', '2K', 'FULL HD', 'HD'];
                 for (const res of resOrder) {
@@ -1166,10 +1159,9 @@
                 qualityInfo.hdr = true;
             }
             
-            // HDR - берем максимальный тип
+            // HDR
             if (availableQualities.hdr.size > 0) {
                 qualityInfo.hdr = true;
-                
                 const hdrOrder = ['HDR10+', 'HDR10', 'HDR'];
                 for (const hdr of hdrOrder) {
                     if (availableQualities.hdr.has(hdr)) {
@@ -1179,7 +1171,7 @@
                 }
             }
             
-            // Аудио - берем только максимальное
+            // Аудио
             if (availableQualities.audio.size > 0) {
                 const audioOrder = ['7.1', '5.1', '4.0', '2.0'];
                 for (const audio of audioOrder) {
@@ -1190,11 +1182,11 @@
                 }
             }
 
-            // Сохраняем данные для отображения бейджей
+            // СОХРАНЯЕМ ДАННЫЕ И СОЗДАЕМ БЕЙДЖИ НЕПОСРЕДСТВЕННО В БЛОКЕ С ТЕГАМИ
             if (activity && activity.quality_info === undefined) {
                 activity.quality_info = qualityInfo;
-                // Обновляем бейджи качества
-                updateQualityBadges(activity, qualityInfo);
+                // ВЫЗЫВАЕМ ФУНКЦИЮ СОЗДАНИЯ БЕЙДЖОВ ПРЯМО В БЛОКЕ ТЕГОВ
+                createQualityBadgesInTags(activity, qualityInfo);
             }
             
         }, (error) => {
@@ -1203,40 +1195,36 @@
     }
 
     /**
-     * Обновляет бейджи качества
+     * СОЗДАЕТ БЕЙДЖИ КАЧЕСТВА НЕПОСРЕДСТВЕННО В БЛОКЕ С ТЕГАМИ (ПОСЛЕ STUDIOS)
      */
-    function updateQualityBadges(activity, qualityInfo) {
+    function createQualityBadgesInTags(activity, qualityInfo) {
         const render = activity.render();
         
-        // Ищем подходящее место для размещения бейджей
-        // Попробуем разные селекторы
-        let badgesContainer = render.find('.quality-badges');
-        
-        // Если контейнера нет, создадим его в подходящем месте
-        if (!badgesContainer.length) {
-            // Сначала попробуем найти контейнер с мета-информацией
-            let metaContainer = render.find('.original-title');
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start-new__details');
-            }
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start__body');
-            }
-            if (!metaContainer.length) {
-                metaContainer = render.find('.full-start-new__body');
-            }
-            
-            if (metaContainer.length) {
-                metaContainer.append('<div class="quality-badges"></div>');
-                badgesContainer = render.find('.quality-badges');
-            }
-        }
-        
-        if (!badgesContainer.length) {
-            console.log('Не найден контейнер для бейджей качества');
+        // Находим блок с тэгами
+        const tagsContainer = render.find('.full-descr__tags');
+        if (!tagsContainer.length) {
+            // Если блок еще не создался, ждем немного
+            setTimeout(function() {
+                createQualityBadgesInTags(activity, qualityInfo);
+            }, 300);
             return;
         }
         
+        // Находим надпись Studios
+        const studiosStatic = tagsContainer.find('.studios-static');
+        if (!studiosStatic.length) {
+            // Если Studios еще нет, ждем
+            setTimeout(function() {
+                createQualityBadgesInTags(activity, qualityInfo);
+            }, 300);
+            return;
+        }
+        
+        // Удаляем старые бейджи, если они есть
+        tagsContainer.find('.quality-tags-wrapper').remove();
+        tagsContainer.find('.quality-badges').remove();
+        
+        // Создаем бейджи
         const badges = [];
         
         // Порядок: Quality, Dolby Vision, HDR, Sound, DUB
@@ -1268,7 +1256,7 @@
             badges.push('<div class="quality-badge quality-badge--hdr"><svg viewBox="-1 178 313 136" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="181.5" width="306" height="129" rx="17.5" stroke="white" stroke-width="5" fill="none"/><path d="M27.2784 293V199.909H46.9602V238.318H86.9148V199.909H106.551V293H86.9148V254.545H46.9602V293H27.2784ZM155.778 293H122.778V199.909H156.051C165.415 199.909 173.475 201.773 180.233 205.5C186.991 209.197 192.188 214.515 195.824 221.455C199.491 228.394 201.324 236.697 201.324 246.364C201.324 256.061 199.491 264.394 195.824 271.364C192.188 278.333 186.96 283.682 180.142 287.409C173.354 291.136 165.233 293 155.778 293ZM142.46 276.136H154.96C160.778 276.136 165.672 275.106 169.642 273.045C173.642 270.955 176.642 267.727 178.642 263.364C180.672 258.97 181.688 253.303 181.688 246.364C181.688 239.485 180.672 233.864 178.642 229.5C176.642 225.136 173.657 221.924 169.688 219.864C165.718 217.803 160.824 216.773 155.006 216.773H142.46V276.136ZM215.903 293V199.909H252.631C259.661 199.909 265.661 201.167 270.631 203.682C275.631 206.167 279.434 209.697 282.04 214.273C284.676 218.818 285.994 224.167 285.994 230.318C285.994 236.5 284.661 241.818 281.994 246.273C279.328 250.697 275.464 254.091 270.403 256.455C265.373 258.818 259.282 260 252.131 260H227.54V244.182H248.949C252.706 244.182 255.828 243.667 258.312 242.636C260.797 241.606 262.646 240.061 263.858 238C265.1 235.939 265.722 233.379 265.722 230.318C265.722 227.227 265.1 224.621 263.858 222.5C262.646 220.379 260.782 218.773 258.267 217.682C255.782 216.561 252.646 216 248.858 216H235.585V293H215.903ZM266.176 250.636L289.312 293H267.585L244.949 250.636H266.176Z" fill="white"/></svg></div>');
         }
         
-        // 4. Sound (7.1/5.1/2.0)
+        // 4. Sound
         if (qualityInfo.sound) {
             let soundSvg = '';
             if (qualityInfo.sound === '7.1') {
@@ -1288,57 +1276,83 @@
             badges.push('<div class="quality-badge quality-badge--dub"><svg viewBox="-1 558 313 136" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="561.5" width="306" height="129" rx="17.5" stroke="white" stroke-width="5" fill="none"/><path d="M60.5284 673H27.5284V579.909H60.8011C70.1648 579.909 78.2254 581.773 84.983 585.5C91.7405 589.197 96.9375 594.515 100.574 601.455C104.241 608.394 106.074 616.697 106.074 626.364C106.074 636.061 104.241 644.394 100.574 651.364C96.9375 658.333 91.7102 663.682 84.892 667.409C78.1042 671.136 69.983 673 60.5284 673ZM47.2102 656.136H59.7102C65.5284 656.136 70.4223 655.106 74.392 653.045C78.392 650.955 81.392 647.727 83.392 643.364C85.4223 638.97 86.4375 633.303 86.4375 626.364C86.4375 619.485 85.4223 613.864 83.392 609.5C81.392 605.136 78.4072 601.924 74.4375 599.864C70.4678 597.803 65.5739 596.773 59.7557 596.773H47.2102V656.136ZM178.153 579.909H197.835V640.364C197.835 647.152 196.214 653.091 192.972 658.182C189.759 663.273 185.259 667.242 179.472 670.091C173.684 672.909 166.941 674.318 159.244 674.318C151.517 674.318 144.759 672.909 138.972 670.091C133.184 667.242 128.684 663.273 125.472 658.182C122.259 653.091 120.653 647.152 120.653 640.364V579.909H140.335V638.682C140.335 642.227 141.108 645.379 142.653 648.136C144.229 650.894 146.441 653.061 149.29 654.636C152.138 656.212 155.456 657 159.244 657C163.063 657 166.381 656.212 169.199 654.636C172.047 653.061 174.244 650.894 175.79 648.136C177.366 645.379 178.153 642.227 178.153 638.682V579.909ZM214.028 673V579.909H251.301C258.15 579.909 263.862 580.924 268.438 582.955C273.013 584.985 276.453 587.803 278.756 591.409C281.059 594.985 282.21 599.106 282.21 603.773C282.21 607.409 281.483 610.606 280.028 613.364C278.574 616.091 276.574 618.333 274.028 620.091C271.513 621.818 268.634 623.045 265.392 623.773V624.682C268.938 624.833 272.256 625.833 275.347 627.682C278.468 629.53 280.998 632.121 282.938 635.455C284.877 638.758 285.847 642.697 285.847 647.273C285.847 652.212 284.619 656.621 282.165 660.5C279.741 664.348 276.15 667.394 271.392 669.636C266.634 671.879 260.771 673 253.801 673H214.028ZM233.71 656.909H249.756C255.241 656.909 259.241 655.864 261.756 653.773C264.271 651.652 265.528 648.833 265.528 645.318C265.528 642.742 264.907 640.47 263.665 638.5C262.422 636.53 260.65 634.985 258.347 633.864C256.074 632.742 253.362 632.182 250.21 632.182H233.71V656.909ZM233.71 618.864H248.301C250.998 618.864 253.392 618.394 255.483 617.455C257.604 616.485 259.271 615.121 260.483 613.364C261.725 611.606 262.347 609.5 262.347 607.045C262.347 603.682 261.15 600.97 258.756 598.909C256.392 596.848 253.028 595.818 248.665 595.818H233.71V618.864Z" fill="white"/></svg></div>');
         }
         
-        if (badges.length > 0) {
-            badgesContainer.html(badges.join(''));
-            badgesContainer.addClass('show');
-        }
+        if (badges.length === 0) return;
+        
+        // СОЗДАЕМ КОНТЕЙНЕР ДЛЯ БЕЙДЖОВ
+        const wrapperContainer = $('<div class="quality-tags-wrapper"></div>');
+        const qualityTagsContainer = $('<div class="quality-tags-container"></div>');
+        
+        // Добавляем бейджи
+        badges.forEach(badgeHtml => {
+            qualityTagsContainer.append(badgeHtml);
+        });
+        
+        wrapperContainer.append(qualityTagsContainer);
+        
+        // Добавляем разделитель
+        //const separator = $('<span class="quality-separator">•</span>');
+        //wrapperContainer.append(separator);
+        
+        // Добавляем надпись "Качество"
+        const infoLabel = $('<div class="quality-info-label"><span>' + Lampa.Lang.translate('badges_quality') + '</span></div>');
+        wrapperContainer.append(infoLabel);
+        
+        // ВСТАВЛЯЕМ ПОСЛЕ STUDIOS
+        studiosStatic.after(wrapperContainer);
+        
+        console.log('Quality badges created directly in tags container');
     }
 
     /**
-     * Добавляет CSS стили
+     * Добавляет CSS стили для тегов качества
      */
-    function addStyles() {
-        const styles = `<style>
-        /* Бейджи качества */
-        .quality-badges {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4em;
-            margin-left: 0.6em;
-            padding: 0.3em 0.8em !important;
-            //background-color: rgba(0, 0, 0, 0.7) !important;
-            border: 0.8px solid #fff !important;
-            border-radius: 0.7em !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-        }
-
-        .quality-badges.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .quality-badge {
-            display: inline-flex;
-            height: 0.8em;
-        }
-
-        .quality-badge svg {
-            position: relative;
-            height: 100%;
-            width: auto;
-            display: block;
-            color: #000; /* или любой темный цвет */
-            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
-        }
+    function addQualityTagsStyles() {
+        const qualityTagsStyle = `<style id='quality-tags'>
+            .full-descr__tags {
+                display: flex !important;
+                align-items: center !important;
+                flex-wrap: wrap !important;
+                gap: 0.5em !important;
+            }
+            .quality-tags-wrapper {
+                display: inline-flex !important;
+                align-items: center !important;
+                margin-left: 0.8em !important;
+                height: 2.94em !important;
+            }
+            .quality-tags-container {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 0.3em !important;
+            }
+            .quality-tags-container .quality-badge {
+                position: relative !important;
+                height: 1.3em !important;
+            }
+            .quality-tags-container .quality-badge svg {
+                height: 100% !important;
+                width: auto !important;
+            }
+            .quality-separator {
+                margin: 0 0.3em !important;
+                color: rgba(255, 255, 255, 0.7) !important;
+                font-size: 1.2em !important;
+            }
+            .quality-info-label {
+                display: inline-flex !important;
+                align-items: center !important;
+                height: 1.8em !important;
+                border-radius: 0.6em !important;
+                padding: 0 1.2em !important;
+                color: rgba(255, 255, 255, 0.7) !important;
+                font-size: 1.2em !important;
+                font-weight: 400 !important;
+                letter-spacing: 0.3px !important;
+            }
         </style>`;
         
-        // Добавляем стили в DOM
-        if (!$('style[data-id="quality-badges"]').length) {
-            $(styles).attr('data-id', 'quality-badges').appendTo('head');
+        if (!$('#quality-tags').length) {
+            $('head').append(qualityTagsStyle);
         }
     }
 
@@ -1349,221 +1363,21 @@
         console.log('Quality Badges loaded');
         
         // Добавляем стили
-        addStyles();
+        addQualityTagsStyles();
         
-        // Добавляем слушатель для карточки фильма
+        // Добавляем слушатель для карты фильма
         Lampa.Listener.follow('full', (event) => {
             if (event.type === 'complite') {
                 const activity = event.object.activity;
-                const render = activity.render();
                 const data = event.data && event.data.movie;
                 
-                // Добавляем контейнер для бейджей качества
-                let badgesContainer = render.find('.quality-badges');
-                
-                if (!badgesContainer.length) {
-                    // Ищем подходящее место для размещения бейджей
-                    let metaContainer = render.find('.original-title');
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__details');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__body');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__body');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start__head');
-                    }
-                    if (!metaContainer.length) {
-                        metaContainer = render.find('.full-start-new__head');
-                    }
-                    
-                    if (metaContainer.length) {
-                        metaContainer.append('<div class="quality-badges"></div>');
-                        badgesContainer = render.find('.quality-badges');
-                    }
-                }
-                
                 // Анализируем качество контента
-                if (data && badgesContainer.length) {
+                if (data) {
                     analyzeContentQualities(data, activity);
                 }
             }
         });
     }
-
-// Перенос бейджей качества в блок с тегами после "Studios"
-
-function moveQualityBadgesToTags() {
-    // Находим блок с тегами и надписью Studios
-    var studiosContainer = document.querySelector('.full-descr__tags');
-    if (!studiosContainer) return;
-    
-    // Находим надпись Studios
-    var studiosText = studiosContainer.querySelector('.studios-static');
-    if (!studiosText) return;
-    
-    // Находим все бейджи качества
-    var qualityBadges = document.querySelectorAll('.quality-badges');
-    
-    qualityBadges.forEach(function(badges) {
-        if (badges && badges.classList.contains('show')) {
-            
-            // === УДАЛЯЕМ ВСЕ СТАРЫЕ НАДПИСИ INFORMATION ===
-            var oldInfoLabels = studiosContainer.querySelectorAll('.quality-info-label, .information-after-badges, .information-static, [class*="information"]');
-            oldInfoLabels.forEach(function(el) {
-                if (el.classList && (
-                    el.classList.contains('quality-info-label') || 
-                    el.classList.contains('information-after-badges') || 
-                    el.classList.contains('information-static') ||
-                    el.className.includes('information')
-                )) {
-                    el.remove();
-                }
-            });
-            
-            // Удаляем старые разделители
-            var oldSeparators = studiosContainer.querySelectorAll('.quality-separator, .info-separator');
-            oldSeparators.forEach(function(el) {
-                el.remove();
-            });
-            
-            // Удаляем старый контейнер с бейджами
-            var oldContainer = studiosContainer.querySelector('.quality-tags-wrapper, .quality-tags-container');
-            if (oldContainer) oldContainer.remove();
-            
-            // === СОЗДАЕМ НОВЫЙ КОНТЕЙНЕР ===
-            var wrapperContainer = document.createElement('div');
-            wrapperContainer.className = 'quality-tags-wrapper';
-            wrapperContainer.style.cssText = 'display: inline-flex; align-items: center; margin-left: 0.8em;';
-            
-            // Контейнер для бейджей
-            var qualityTagsContainer = document.createElement('div');
-            qualityTagsContainer.className = 'quality-tags-container';
-            qualityTagsContainer.style.cssText = 'display: inline-flex; align-items: center; gap: 0.3em;';
-            
-            // Копируем бейджи в контейнер
-            var badgesClone = badges.cloneNode(true);
-            qualityTagsContainer.appendChild(badgesClone);
-            wrapperContainer.appendChild(qualityTagsContainer);
-            
-            // Добавляем разделитель (закомментирован)
-            var separator = document.createElement('span');
-            separator.className = 'quality-separator';
-            // separator.textContent = '•';
-            //separator.style.cssText = 'margin: 0 0.3em; color: rgba(255,255,255,0.5); font-size: 1.2em;';
-            wrapperContainer.appendChild(separator);
-            
-            //Добавляем надпись
-            var infoLabel = document.createElement('div');
-            infoLabel.className = 'quality-info-label';
-            
-            var infoText = document.createElement('span');
-            infoText.textContent = Lampa.Lang.translate('badges_quality');
-            infoLabel.appendChild(infoText);
-            wrapperContainer.appendChild(infoLabel);
-            
-            // Вставляем весь блок после надписи Studios
-            studiosText.parentNode.insertBefore(wrapperContainer, studiosText.nextSibling);
-            
-            // Скрываем оригинальные бейджи
-            badges.style.display = 'none';
-            
-            console.log('Quality: badges and ONE Information label added');
-        }
-    });
-}
-
-    /**
-     * Добавляет CSS стили для тегов качества
-     */
-    var qualityTagsStyle = "<style id='quality-tags'>" +
-        ".full-descr__tags {" +
-        "    display: flex !important;" +
-        "    align-items: center !important;" +
-        "    flex-wrap: wrap !important;" +
-        "    gap: 0.5em !important;" +
-        "}" +
-        ".quality-tags-wrapper {" +
-        "    display: inline-flex !important;" +
-        "    height: 1.3em !important;" +
-        "    align-items: center !important;" +
-        "    margin-left: 0.8em !important;" +
-        "}" +
-        ".quality-tags-wrapper .quality-badges {" +
-        "    display: inline-flex !important;" +
-        "    align-items: center !important;" +
-        "    gap: 0.3em !important;" +
-        "    margin-left: 0 !important;" +
-        "    opacity: 1 !important;" +
-        "    transform: none !important;" +
-        "}" +
-        ".quality-tags-wrapper .quality-badge {" +
-        "    position: relative !important;" +
-        "    height: 1.3em !important;" +
-        "    margin-top: 0.5em !important;" +
-        "    margin-bottom: 0.5em !important;" +
-        "}" +
-        ".quality-tags-wrapper .quality-separator {" +
-        "    margin: 0 0.3em !important;" +
-        "    color: rgba(255, 255, 255, 0.7) !important;" +
-        "    font-size: 1.2em !important;" +
-        "}" +
-        ".quality-tags-wrapper .quality-info-label {" +
-        "    display: inline-flex !important;" +
-        "    align-items: center !important;" +
-        "    height: 1.8em !important;" +
-        "    border-radius: 0.6em !important;" +
-        "    padding: 0 0.8em !important;" +
-        "    color: rgba(255, 255, 255, 0.7) !important;" +
-        "    font-size: 1.2em !important;" +
-        "    font-weight: 400 !important;" +
-        "    letter-spacing: 0.3px !important;" +
-        "    transition: all 0.2s ease !important;" +
-        "}" +
-        "</style>";
-
-// Добавляем стили
-if (!$('#quality-tags').length) {
-    Lampa.Template.add('quality_tags_css', qualityTagsStyle);
-    $('body').append(Lampa.Template.get('quality_tags_css', {}, true));
-}
-
-// Вызываем функцию при загрузке страницы
-Lampa.Listener.follow('full', function(e) {
-    if (e.type === 'complite') {
-        // Даем время на загрузку бейджей
-        setTimeout(moveQualityBadgesToTags, 500);
-        setTimeout(moveQualityBadgesToTags, 1000);
-        setTimeout(moveQualityBadgesToTags, 1500);
-    }
-});
-
-// Наблюдатель за изменениями DOM
-var qualityObserver = new MutationObserver(function(mutations) {
-    // Проверяем, есть ли смысл запускать
-    var hasQualityBadges = document.querySelector('.quality-badges.show');
-    var hasMultipleInfo = document.querySelectorAll('.quality-info-label').length > 1;
-    
-    if (hasQualityBadges && hasMultipleInfo) {
-        moveQualityBadgesToTags();
-    }
-});
-
-// Запускаем наблюдение
-function initQualityObserver() {
-    if (localStorage.getItem('ratings_quality_inlist') === 'true') {
-        setTimeout(function() {
-            qualityObserver.observe(document.body, { 
-                childList: true, 
-                subtree: true
-            });
-            moveQualityBadgesToTags();
-        }, 1000);
-    }
-}
 
 if (window.appready) {
     initializePlugin();
