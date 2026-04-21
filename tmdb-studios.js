@@ -61,7 +61,7 @@
             tmdb_networks_plugin_platforms: {
                 en: 'Platforms',
                 uk: 'Platforms',
-                ru: 'Платформы'
+                ru: 'Platforms'
             },
             tmdb_networks_plugin_platforms_setting_descr: {
                 en: 'Display configuration settings for platforms in cards',
@@ -120,8 +120,8 @@
             },
             tmdb_networks_studios: {
                 en: 'Studio',
-                uk: 'Студія',
-                ru: 'Студия'
+                uk: 'Studio',
+                ru: 'Studio'
             },
             badges_quality: {
                 en: 'Information',
