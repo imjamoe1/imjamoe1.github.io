@@ -1316,7 +1316,7 @@
                 display: inline-flex !important;
                 align-items: center !important;
                 gap: 0.3em !important;
-                border: 1px solid rgba(255, 255, 255, 0.9) !important;
+                border: 0.0625em solid rgba(255, 255, 255, 0.9) !important;
                 border-radius: 0.7em !important;
                 padding: 0.7em 0.5em !important;
             }
