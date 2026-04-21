@@ -1301,10 +1301,19 @@
     function addQualityTagsStyles() {
         const qualityTagsStyle = `<style id='quality-tags'>
             .full-descr__tags {
-                display: flex !important;
-                align-items: center !important;
-                flex-wrap: wrap !important;
-                gap: 0.5em !important;
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4em;
+                margin-left: 0.6em;
+                padding: 0.3em 0.8em !important;
+                //background-color: rgba(0, 0, 0, 0.7) !important;
+                border: 0.8px solid #fff !important;
+                border-radius: 0.7em !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: opacity 0.3s ease-out, transform 0.3s ease-out;
             }
             .quality-tags-wrapper {
                 display: inline-flex !important;
@@ -1312,14 +1321,14 @@
                 margin-left: 0.8em !important;
                 height: 2.94em !important;
             }
-            .quality-tags-container {
+            /*.quality-tags-container {
                 display: inline-flex !important;
                 align-items: center !important;
                 gap: 0.3em !important;
                 border: 0.0625em solid rgba(255, 255, 255, 0.9) !important;
                 border-radius: 0.7em !important;
                 padding: 0.7em 0.5em !important;
-            }
+            }*/
             .quality-tags-container .quality-badge {
                 position: relative !important;
                 height: 1.3em !important;
