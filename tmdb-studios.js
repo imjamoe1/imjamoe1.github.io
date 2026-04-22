@@ -505,6 +505,11 @@
         '</div>');
         
         btn.after(studiosStatic);
+
+        var active = Lampa.Activity.active();
+        if (active && active.activity && active.activity.quality_info) {
+            createQualityBadgesInTags(active.activity, active.activity.quality_info);
+        }
     }
 
     function renderExtraBtn(render, networks, type) {
@@ -620,6 +625,10 @@
             getStudios(object, function(studios) {
                 if (studios.length) {
                     addStudioButton(render, studios, type, object.card.id);
+                }
+
+                if (object.activity && object.activity.quality_info) {
+                    createQualityBadgesInTags(object.activity, object.activity.quality_info);
                 }
             });
         });
@@ -933,7 +942,7 @@
             if (e.type === 'destroy') {
                 var render = e.object?.activity?.render();
                 if (render) {
-                    $('.button--network, .studios-static', render).remove();
+                    $('.button--network, .studios-static, .quality-tags-wrapper', render).remove();
                 }
             }
         });
@@ -1183,9 +1192,8 @@
             }
 
             // СОХРАНЯЕМ ДАННЫЕ И СОЗДАЕМ БЕЙДЖИ НЕПОСРЕДСТВЕННО В БЛОКЕ С ТЕГАМИ
-            if (activity && activity.quality_info === undefined) {
+            if (activity) {
                 activity.quality_info = qualityInfo;
-                // ВЫЗЫВАЕМ ФУНКЦИЮ СОЗДАНИЯ БЕЙДЖОВ ПРЯМО В БЛОКЕ ТЕГОВ
                 createQualityBadgesInTags(activity, qualityInfo);
             }
             
@@ -1199,12 +1207,13 @@
      */
     function createQualityBadgesInTags(activity, qualityInfo) {
         const render = activity.render();
-        
-        // Находим блок с тэгами
         const tagsContainer = render.find('.full-descr__tags');
+
         if (!tagsContainer.length) {
             return;
         }
+
+        tagsContainer.find('.quality-tags-wrapper').remove();
         
         // Находим надпись Studios
         const studiosStatic = tagsContainer.find('.studios-static');
@@ -1356,23 +1365,27 @@
      */
     function initializePlugin() {
         console.log('Quality Badges loaded');
-        
-        // Добавляем стили
+
         addQualityTagsStyles();
-        
-        // Добавляем слушатель для карты фильма
-        Lampa.Listener.follow('full', (event) => {
-            if (event.type === 'complite') {
-                const activity = event.object.activity;
-                const data = event.data && event.data.movie;
-                
-                // Анализируем качество контента
-                if (data) {
-                    analyzeContentQualities(data, activity);
-                }
+
+    Lampa.Listener.follow('full', function (event) {
+        if (event.type === 'complite') {
+            var activity = event.object.activity;
+            var data = event.data && event.data.movie;
+
+            if (!activity) return;
+
+            if (activity.quality_info) {
+                createQualityBadgesInTags(activity, activity.quality_info);
+                return;
             }
-        });
-    }
+
+            if (data) {
+                analyzeContentQualities(data, activity);
+            }
+        }
+    });
+}
 
 if (window.appready) {
     initializePlugin();
@@ -1382,7 +1395,7 @@ if (window.appready) {
         if (event.type === 'ready') {
             initializePlugin();
             startPlugin();
-            }
-        });
-    }
+        }
+    });
+}
 })();
