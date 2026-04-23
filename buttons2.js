@@ -1057,7 +1057,6 @@
             onBack: function() {
                 Lampa.Modal.close();
                 applyChanges();
-                Lampa.Controller.toggle('full_start');
             }
         });
     }
