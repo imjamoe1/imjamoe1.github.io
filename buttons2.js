@@ -64,6 +64,14 @@
         Lampa.Storage.set('button_item_order', order || []);
     }
 
+    function getLastFocusedButtonId() {
+        return Lampa.Storage.get('button_last_focused', '');
+    }
+
+    function setLastFocusedButtonId(id) {
+        Lampa.Storage.set('button_last_focused', id || '');
+    }
+
     function getHiddenButtons() {
         return Lampa.Storage.get('button_hidden', []) || [];
     }
@@ -178,7 +186,7 @@
         });
 
         // Замена платформы-иконок
-        currentContainer.find('.full-start__button.button--plaftorms svg').each(function() {
+        currentContainer.find('.full-start__button.button--plaftorms svg, .full-start__button.button--platforms svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
                 var newSvg = `
@@ -244,6 +252,10 @@
             
             if (shouldUpdate) {
                 setTimeout(function() {
+                    if (!currentContainer) return;
+
+                    revealUnanimatedButtons(currentContainer);
+
                     if (getColoredLogos()) {
                         replaceIcons();
                     }
@@ -451,12 +463,37 @@
 
     function applyButtonAnimation(buttons) {
         buttons.forEach(function(btn, index) {
-
+            btn.stop(true, true);
             btn.css({
                 'opacity': '0',
                 'animation': 'button-fade-in 0.4s ease forwards',
                 'animation-delay': (index * 0.08) + 's'
             });
+
+            setTimeout(function() {
+                btn.css({
+                    'opacity': '1',
+                    'animation': 'none',
+                    'animation-delay': '0s'
+                });
+            }, 450 + (index * 80));
+        });
+    }
+
+    function revealUnanimatedButtons(container) {
+        if (!container || !container.length) return;
+
+        container.find('.full-start__button').each(function() {
+            var btn = $(this);
+            var isHidden = btn.hasClass('hidden');
+
+            if (!isHidden) {
+                btn.css({
+                    'opacity': '1',
+                    'animation': 'none',
+                    'visibility': 'visible'
+                });
+            }
         });
     }
 
@@ -967,6 +1004,7 @@
         resetBtn.on('hover:enter', function() {
             Lampa.Storage.set('button_renamed', {});
             Lampa.Storage.set('button_custom_order', []);
+            Lampa.Storage.set('button_last_focused', '');
             Lampa.Storage.set('button_hidden', []);
             Lampa.Storage.set('button_colors', []);
             Lampa.Storage.set('button_item_order', []);
@@ -1299,7 +1337,7 @@
         
         var hasName = color.name && color.name.trim();
         var btn = $('<div class="full-start__button selector button--color' + (!hasName ? ' color--no-name' : '') + 
-                    '" data-color-id="' + color.id + '">' +
+                    '" data-color-id="' + color.id + '" data-stable-id="color_button_' + color.id + '">' +
             icon +
             (hasName ? '<span>' + color.name + '</span>' : '') +
         '</div>');
@@ -1679,10 +1717,54 @@
             setTimeout(function() {
                 setupButtonNavigation(container);
             }, 100);
+            setTimeout(function() {
+                revealUnanimatedButtons(container);
+            }, 250);
         }, 150); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
 
         return true;
     }
+
+    // ========== ФОКУС ==========
+function bindFocusMemory(container) {
+    if (!container || !container.length) return;
+
+    container.off('hover:enter.button_focus_memory', '.full-start__button');
+    container.on('hover:enter.button_focus_memory', '.full-start__button', function() {
+        var btn = $(this);
+        if (btn.hasClass('button--edit-order')) return;
+        setLastFocusedButtonId(getButtonId(btn));
+    });
+}
+
+function restoreLastFocusedButton(container) {
+    if (!container || !container.length) return false;
+
+    var lastId = getLastFocusedButtonId();
+    if (!lastId) return false;
+
+    var target = container.find('.full-start__button').filter(function() {
+        return getButtonId($(this)) === lastId;
+    }).first();
+
+    if (!target.length || target.hasClass('hidden')) return false;
+
+    setTimeout(function() {
+        try {
+            container.find('.full-start__button').removeClass('focus');
+            target.addClass('focus');
+            target.trigger('hover:focus');
+            if (target[0] && target[0].scrollIntoView) {
+                target[0].scrollIntoView({
+                    block: 'nearest',
+                    inline: 'nearest'
+                });
+            }
+        } catch (e) {}
+    }, 0);
+
+    return true;
+}
 
     // ========== НАВИГАЦИЯ И ОБНОВЛЕНИЕ ==========
 
@@ -1694,20 +1776,18 @@
         }
     }
 
-    function refreshController() {
-        if (!Lampa.Controller || typeof Lampa.Controller.toggle !== 'function') return;
-        
-        setTimeout(function() {
+    function setupButtonNavigation(container) {
+        if (!container || !container.length) return;
+
+        bindFocusMemory(container);
+
+        if (Lampa.Controller && typeof Lampa.Controller.toggle === 'function') {
             try {
                 Lampa.Controller.toggle('full_start');
-                
-                if (currentContainer) {
-                    setTimeout(function() {
-                        setupButtonNavigation(currentContainer);
-                    }, 100);
-                }
             } catch(e) {}
-        }, 50);
+        }
+
+        restoreLastFocusedButton(container);
     }
 
     // ========== ИНИЦИАЛИЗАЦИЯ ==========
@@ -1715,7 +1795,8 @@
     function init() {
         var style = $('<style>' +
             '@keyframes button-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }' +
-            '.full-start__button { opacity: 0; }' +
+            '.full-start__button { opacity: 1; }' +
+            '.full-start-new__buttons.buttons-loading .full-start__button { opacity: 0; }' +
             '.full-start__button.hidden { display: none !important; }' +
             '.button--color { cursor: pointer; }' +
             '.full-start-new__buttons { ' +
