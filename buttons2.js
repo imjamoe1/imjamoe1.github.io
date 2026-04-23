@@ -1043,7 +1043,6 @@
                     });
                     
                     reorderButtons(currentContainer);
-                    refreshController();
                 }
             }, 100);
         });
@@ -1769,14 +1768,6 @@ function restoreLastFocusedButton(container) {
     // ========== НАВИГАЦИЯ И ОБНОВЛЕНИЕ ==========
 
     function setupButtonNavigation(container) {
-        if (Lampa.Controller && typeof Lampa.Controller.toggle === 'function') {
-            try {
-                Lampa.Controller.toggle('full_start');
-            } catch(e) {}
-        }
-    }
-
-    function setupButtonNavigation(container) {
         if (!container || !container.length) return;
 
         bindFocusMemory(container);
@@ -1846,7 +1837,6 @@ function restoreLastFocusedButton(container) {
                                 setTimeout(function() {
                                     targetContainer.removeClass('buttons-loading');
                                 }, 200); // Чуть больше чем задержка в reorderButtons
-                                refreshController();
                             }
                         }
                     }
