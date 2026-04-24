@@ -45,7 +45,7 @@
                     body.menu--always:not(.menu--open) .menu__item:hover {
                         position: relative !important;
                         width: 80% !important;
-                        margin-left: -0.7em !important;
+                        margin-left: -0.65em !important;
                         padding-left: 1.25em !important;
                     }
 
