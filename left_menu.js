@@ -46,7 +46,7 @@
                         position: relative !important;
                         width: 80% !important;
                         margin-left: -0.6em !important;
-                        padding-left: 1.2em !important;
+                        padding-left: 1.1em !important;
                     }
 
                     body.menu--always .menu__text {
