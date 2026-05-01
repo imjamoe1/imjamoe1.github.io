@@ -1097,6 +1097,10 @@
                     .full-start__rate.rate--lampa {
                         display: none !important;
                     }
+                    .full-start__button.focus {
+                        border: 2px solid rgba(255, 255, 255, 0.8) !important;
+                        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important;
+                    }
                     .rating-logo {
                         height: 1.1em;
                         width: auto;
@@ -1330,6 +1334,10 @@
                     }
                     .full-start__rate.rate--lampa {
                         display: none !important;
+                    }
+                    .full-start__button.focus {
+                        border: 2px solid rgba(255, 255, 255, 0.8) !important;
+                        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important;
                     }
                     .rating-logo {
                         height: 1.1em;
