@@ -935,6 +935,9 @@
                     .new-interface .card.card--wide {
                         width: 18.3em;
                     }
+                    .items-line__title {
+                        padding-bottom: 4em !important;
+                    }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
                         height: 1.8em !important;
@@ -1171,9 +1174,9 @@
                     .new-interface .card.card--small {
                         width: 11.7em;
                     }
-					.items-line {
-						padding-bottom: 3.2em !important;
-					}
+                    .items-line__title {
+                        padding-bottom: 3.2em !important;
+                    }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
                         height: 1.8em !important;
