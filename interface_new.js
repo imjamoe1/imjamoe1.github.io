@@ -1171,7 +1171,7 @@
 		return `<style>
                     .new-interface-info__head, .new-interface-info__ratings, .new-interface-info__details{ opacity: 0; transition: opacity 0.5s ease; min-height: 2.2em !important;}
                     .new-interface-info__head.visible, .new-interface-info__ratings.visible, .new-interface-info__details.visible{ opacity: 1; }
-                    .new-interface .card.card--wide{
+                    .new-interface .card.card--wide {
                         width: 18.3em;
                     }
                     .items-line__title {
