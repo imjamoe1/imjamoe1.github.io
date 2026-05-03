@@ -121,6 +121,45 @@
         applyColoredIcons();
     }
 
+    // ========== ФУНКЦИИ ДЛЯ РЕЖИМОВ ОТОБРАЖЕНИЯ КНОПОК (1/2/3) ==========
+
+    function getButtonDisplayModes() {
+        return Lampa.Storage.get('button_display_modes', {});
+    }
+
+    function setButtonDisplayModes(modes) {
+        Lampa.Storage.set('button_display_modes', modes || {});
+    }
+
+    function getButtonDisplayMode(btnId) {
+        var modes = getButtonDisplayModes();
+        return modes[btnId] || 1;
+    }
+
+    function setButtonDisplayMode(btnId, mode) {
+        var modes = getButtonDisplayModes();
+        modes[btnId] = mode;
+        setButtonDisplayModes(modes);
+    }
+
+    function applyButtonDisplayModes(buttons) {
+        buttons.forEach(function(btn) {
+            var id = getButtonId(btn);
+            var mode = getButtonDisplayMode(id);
+            
+            btn.removeClass('button-mode-1 button-mode-2 button-mode-3');
+            btn.addClass('button-mode-' + mode);
+            
+            if (mode === 2) {
+                btn.find('span').css('display', 'none');
+            } else if (mode === 3) {
+                btn.find('span').css('display', '');
+            } else {
+                btn.find('span').css('display', '');
+            }
+        });
+    }
+
     // ========== ФУНКЦИИ ДЛЯ ЦВЕТНЫХ ИКОНОК ==========
 
     function applyColoredIcons() {
@@ -129,16 +168,11 @@
         var coloredLogos = getColoredLogos();
         
         if (coloredLogos) {
-            // Включаем цветные иконки
             replaceIcons();
-            
-            // Наблюдатель за изменениями DOM
             setupIconObserver();
         } else {
-            // Выключаем цветные иконки - возвращаем оригинальные
             restoreOriginalIcons();
             
-            // Останавливаем наблюдение
             if (window.iconObserver) {
                 window.iconObserver.disconnect();
                 window.iconObserver = null;
@@ -149,7 +183,6 @@
     function replaceIcons() {
         if (!currentContainer) return;
         
-        // Замена онлайн-иконок
         currentContainer.find('.full-start__button.view--online svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -160,7 +193,6 @@
             }
         });
 
-        // Замена торрент-иконок
         currentContainer.find('.full-start__button.view--torrent svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -174,7 +206,6 @@
             }
         });
 
-        // Замена трейлер-иконок
         currentContainer.find('.full-start__button.view--trailer svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -185,7 +216,6 @@
             }
         });
 
-        // Замена платформы-иконок
         currentContainer.find('.full-start__button.button--plaftorms svg, .full-start__button.button--platforms svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -208,12 +238,10 @@
     function restoreOriginalIcons() {
         if (!currentContainer) return;
         
-        // Удаляем замененные иконки
         currentContainer.find('svg[data-replaced="true"]').each(function() {
             var $this = $(this);
             var $button = $this.closest('.full-start__button');
             
-            // Находим оригинальную иконку
             var btnId = getButtonId($button);
             var originalBtn = findButton(btnId);
             
@@ -231,7 +259,6 @@
             window.iconObserver.disconnect();
         }
         
-        // Наблюдатель за изменениями DOM для обновления иконок
         var observer = new MutationObserver(function(mutations) {
             var shouldUpdate = false;
             mutations.forEach(function(mutation) {
@@ -847,6 +874,7 @@
             var icon = btn.find('svg').clone();
             var btnId = getButtonId(btn);
             var isHidden = hidden.indexOf(btnId) !== -1;
+            var displayMode = getButtonDisplayMode(btnId);
 
             var item = $('<div class="menu-edit-list__item">' +
                 '<div class="menu-edit-list__icon"></div>' +
@@ -864,6 +892,12 @@
                 '<div class="menu-edit-list__rename selector">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 18" fill="none"><use xlink:href="#sprite-edit"></use></svg>' +
                 '</div>' +
+                '<div class="menu-edit-list__display-mode selector" data-mode="' + displayMode + '">' +
+                    '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
+                        '<text x="13" y="17" text-anchor="middle" fill="currentColor" font-size="12" font-weight="bold" class="mode-number">' + displayMode + '</text>' +
+                    '</svg>' +
+                '</div>' +
                 '<div class="menu-edit-list__toggle toggle selector">' +
                     '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
                         '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
@@ -876,6 +910,28 @@
             item.data('button', btn);
             item.data('buttonId', btnId);
             item.data('itemType', 'button');
+
+            // Обработчик для кнопки 1/2/3
+            item.find('.menu-edit-list__display-mode').on('hover:enter', function() {
+                var currentMode = parseInt($(this).attr('data-mode')) || 1;
+                var newMode = currentMode >= 3 ? 1 : currentMode + 1;
+                
+                $(this).attr('data-mode', newMode);
+                $(this).find('.mode-number').text(newMode);
+                
+                setButtonDisplayMode(btnId, newMode);
+                
+                btn.removeClass('button-mode-1 button-mode-2 button-mode-3');
+                btn.addClass('button-mode-' + newMode);
+                
+                if (newMode === 2) {
+                    btn.find('span').css('display', 'none');
+                } else if (newMode === 3) {
+                    btn.find('span').css('display', '');
+                } else {
+                    btn.find('span').css('display', '');
+                }
+            });
 
             item.find('.move-up').on('hover:enter', function() {
                 var prev = item.prev();
@@ -1010,6 +1066,7 @@
             Lampa.Storage.set('button_item_order', []);
             Lampa.Storage.set('buttons_viewmode', 'default');
             Lampa.Storage.set('buttons_colored_logos', false);
+            Lampa.Storage.set('button_display_modes', {});
             Lampa.Modal.close();
             Lampa.Noty.show('Настройки сброшены');
             
@@ -1158,6 +1215,7 @@
         
         currentButtons = filteredButtons;
         applyHiddenButtons(filteredButtons);
+        applyButtonDisplayModes(filteredButtons);
         
         var targetContainer = currentContainer.find('.full-start-new__buttons');
         if (!targetContainer.length) return;
@@ -1173,6 +1231,7 @@
         });
         
         applyRenamedButtons(allButtons);
+        applyButtonDisplayModes(allButtons);
         
         if (itemOrder.length > 0) {
             var addedColors = [];
@@ -1302,7 +1361,6 @@
 
         saveOrder();
         
-        // Применяем цветные иконки если нужно
         if (getColoredLogos()) {
             setTimeout(function() {
                 replaceIcons();
@@ -1545,7 +1603,6 @@
         currentContainer = container;
         container.find('.button--play, .button--edit-order, .button--color').remove();
 
-        // ДОБАВЛЯЕМ ЗАДЕРЖКУ ЗАГРУЗКИ КОНТЕЙНЕРА КНОПОК - 500 миллисекунд (0.5 секунды)
         setTimeout(function() {
             var categories = categorizeButtons(container);
             
@@ -1581,6 +1638,7 @@
 
             currentButtons = filteredButtons;
             applyHiddenButtons(filteredButtons);
+            applyButtonDisplayModes(filteredButtons);
 
             targetContainer.children().detach();
             
@@ -1588,6 +1646,7 @@
             var itemOrder = getItemOrder();
             
             applyRenamedButtons(allButtons);
+            applyButtonDisplayModes(allButtons);
             
             if (itemOrder.length > 0) {
                 var addedColors = [];
@@ -1704,7 +1763,6 @@
 
             applyButtonAnimation(visibleButtons);
             
-            // Применяем цветные иконки если нужно
             if (getColoredLogos()) {
                 setTimeout(function() {
                     replaceIcons();
@@ -1718,51 +1776,51 @@
             setTimeout(function() {
                 revealUnanimatedButtons(container);
             }, 250);
-        }, 150); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
+        }, 150);
 
         return true;
     }
 
     // ========== ФОКУС ==========
-function bindFocusMemory(container) {
-    if (!container || !container.length) return;
+    function bindFocusMemory(container) {
+        if (!container || !container.length) return;
 
-    container.off('hover:enter.button_focus_memory', '.full-start__button');
-    container.on('hover:enter.button_focus_memory', '.full-start__button', function() {
-        var btn = $(this);
-        if (btn.hasClass('button--edit-order')) return;
-        setLastFocusedButtonId(getButtonId(btn));
-    });
-}
+        container.off('hover:enter.button_focus_memory', '.full-start__button');
+        container.on('hover:enter.button_focus_memory', '.full-start__button', function() {
+            var btn = $(this);
+            if (btn.hasClass('button--edit-order')) return;
+            setLastFocusedButtonId(getButtonId(btn));
+        });
+    }
 
-function restoreLastFocusedButton(container) {
-    if (!container || !container.length) return false;
+    function restoreLastFocusedButton(container) {
+        if (!container || !container.length) return false;
 
-    var lastId = getLastFocusedButtonId();
-    if (!lastId) return false;
+        var lastId = getLastFocusedButtonId();
+        if (!lastId) return false;
 
-    var target = container.find('.full-start__button').filter(function() {
-        return getButtonId($(this)) === lastId;
-    }).first();
+        var target = container.find('.full-start__button').filter(function() {
+            return getButtonId($(this)) === lastId;
+        }).first();
 
-    if (!target.length || target.hasClass('hidden')) return false;
+        if (!target.length || target.hasClass('hidden')) return false;
 
-    setTimeout(function() {
-        try {
-            container.find('.full-start__button').removeClass('focus');
-            target.addClass('focus');
-            target.trigger('hover:focus');
-            if (target[0] && target[0].scrollIntoView) {
-                target[0].scrollIntoView({
-                    block: 'nearest',
-                    inline: 'nearest'
-                });
-            }
-        } catch (e) {}
-    }, 0);
+        setTimeout(function() {
+            try {
+                container.find('.full-start__button').removeClass('focus');
+                target.addClass('focus');
+                target.trigger('hover:focus');
+                if (target[0] && target[0].scrollIntoView) {
+                    target[0].scrollIntoView({
+                        block: 'nearest',
+                        inline: 'nearest'
+                    });
+                }
+            } catch (e) {}
+        }, 0);
 
-    return true;
-}
+        return true;
+    }
 
     // ========== НАВИГАЦИЯ И ОБНОВЛЕНИЕ ==========
 
@@ -1803,6 +1861,12 @@ function restoreLastFocusedButton(container) {
             '.full-start-new__buttons.always-text .full-start__button span {' +
                 'display: block !important;' +
             '}' +
+            
+            // Стили для режимов 1/2/3
+            '.full-start__button.button-mode-2 span { display: none !important; }' +
+            '.full-start__button.button-mode-3 span { display: inline !important; }' +
+            
+            // Стили для кнопок в редакторе
             '.colored-logos-switch, .viewmode-switch { background: rgba(100,100,255,0.3); margin: 0 0 1em 0; border-radius: 0.3em; }' +
             '.colored-logos-switch.focus, .viewmode-switch.focus { border: 3px solid rgba(255,255,255,0.8); }' +
             '.menu-edit-list__delete, .menu-edit-list__rename, .menu-edit-list__edit-content { width: 2.4em; height: 2.4em; display: flex; align-items: center; justify-content: center; cursor: pointer; }' +
@@ -1812,6 +1876,12 @@ function restoreLastFocusedButton(container) {
             '.color-reset-button { background: rgba(200,100,100,0.3); margin-top: 1em; border-radius: 0.3em; }' +
             '.color-reset-button.focus { border: 3px solid rgba(255,255,255,0.8); }' +
             '.menu-edit-list__toggle.focus { border: 2px solid rgba(255,255,255,0.8); border-radius: 0.3em; }' +
+            '.menu-edit-list__display-mode { width: 1.95em; height: 1.95em; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 0.2em; }' +
+            '.menu-edit-list__display-mode svg { width: 1.0em !important; height: 1.0em !important; }' +
+            '.menu-edit-list__display-mode.focus { border: 2px solid rgba(255,255,255,0.8); border-radius: 0.3em; background: rgba(255,255,255,0.9); }' +
+            '.menu-edit-list__display-mode.focus svg { color: #000 !important; }' +
+            '.menu-edit-list__display-mode.focus rect { stroke: #000 !important; }' +
+            '.menu-edit-list__display-mode.focus text { fill: #000 !important; }' +
             '.button--color.color--no-name { min-width: 3.5em; max-width: 3.5em; justify-content: center; }' +
             '.button--color.color--no-name > span { display: none; }' +
             '.button-empty span { display: none !important; }' +
@@ -1835,7 +1905,7 @@ function restoreLastFocusedButton(container) {
                             if (targetContainer.length) {
                                 setTimeout(function() {
                                     targetContainer.removeClass('buttons-loading');
-                                }, 200); // Чуть больше чем задержка в reorderButtons
+                                }, 200);
                             }
                         }
                     }
