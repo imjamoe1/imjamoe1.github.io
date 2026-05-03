@@ -1179,7 +1179,7 @@
                     }
                     .items-line__head {
                         position: relative;
-                        bottom: 0.5em !important;
+                        bottom: 1em !important;
                     }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
