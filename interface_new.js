@@ -1171,6 +1171,9 @@
                     .new-interface .card.card--small {
                         width: 11.7em;
                     }
+					.items-line {
+						padding-bottom: 3.2em !important;
+					}
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
                         height: 1.8em !important;
