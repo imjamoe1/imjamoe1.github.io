@@ -1172,7 +1172,7 @@
                         width: 11.5em;
                     }
                     .items-line__title {
-                        padding-bottom: 0.3em !important;
+                        padding-bottom: 0.2em !important;
                     }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
