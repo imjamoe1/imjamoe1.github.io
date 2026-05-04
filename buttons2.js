@@ -1844,9 +1844,9 @@
     function init() {
         var style = $('<style>' +
             '@keyframes button-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }' +
-            '.btns-plugin-open .modal .modal__content { max-width: 27.5em !important; width: 27.5em !important; margin-left: auto !important; margin-right: 2em !important; left: auto !important; right: 0 !important; transform: none !important; position: relative !important; }' +
+            '.btns-plugin-open .modal .modal__content { max-width: 27.5em !important; width: 27.5em !important; margin-left: auto !important; margin-right: auto !important; left: 50% !important; transform: translateX(-50%) !important; position: relative !important; }' +
             '.btns-plugin-open .modal .modal__body { max-height: 78vh !important; overflow-y: auto !important; }' +
-            '@media screen and (max-width: 520px) { .btns-plugin-open .modal .modal__content { width: 96vw !important; max-width: 96vw !important; left: auto !important; right: auto !important; transform: none !important; margin-left: auto !important; margin-right: auto !important; } }' +
+            '@media screen and (max-width: 520px) { .btns-plugin-open .modal .modal__content { width: 96vw !important; max-width: 96vw !important; left: 2vw !important; transform: none !important; margin-left: 0 !important; margin-right: 0 !important; } }' +
             '.full-start-new__buttons .full-start__button { opacity: 0; }' +
             '.full-start__button.hidden { display: none !important; }' +
             '.button--color { cursor: pointer; }' +
@@ -1856,40 +1856,32 @@
                 'flex-wrap: wrap !important; ' +
                 'gap: 0.5em !important; ' +
             '}' +
-
             '.full-start-new__buttons.icons-only .full-start__button:not(.button--color):not(.button-mode-2):not(.button-mode-3) span,' +
             '.full-start-new__buttons.icons-only .button--color:not(.button-mode-2):not(.button-mode-3) span {' +
                 'display: none !important;' +
             '}' +
-
             '.full-start-new__buttons.always-text .full-start__button:not(.button-mode-1):not(.button-mode-2) span {' +
                 'display: block !important;' +
             '}' +
-
             '.full-start-new__buttons .full-start__button.button-mode-1 span {' +
                 'display: none !important;' +
             '}' +
-
             '.full-start-new__buttons .full-start__button.button-mode-2 span {' +
                 'display: none !important;' +
             '}' +
-
             '.full-start-new__buttons .full-start__button.button-mode-2.focus span,' +
             '.full-start-new__buttons .full-start__button.button-mode-2.hover span,' +
             '.full-start-new__buttons .full-start__button.button-mode-2:hover span {' +
                 'display: inline !important;' +
             '}' +
-
             '.full-start-new__buttons.icons-only .full-start__button.button-mode-2.focus span,' +
             '.full-start-new__buttons.icons-only .full-start__button.button-mode-2.hover span,' +
             '.full-start-new__buttons.icons-only .full-start__button.button-mode-2:hover span {' +
                 'display: inline !important;' +
             '}' +
-
             '.full-start-new__buttons .full-start__button.button-mode-3 span {' +
                 'display: inline !important;' +
-            '}' +
-            
+            '}' +         
             // Стили для кнопок в редакторе
             '.colored-logos-switch, .viewmode-switch { background: rgba(100,100,255,0.3); margin: 0 0 1em 0; border-radius: 0.3em; }' +
             '.colored-logos-switch.focus, .viewmode-switch.focus { border: 3px solid rgba(255,255,255,0.8); }' +
