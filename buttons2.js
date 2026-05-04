@@ -133,12 +133,12 @@
 
     function getButtonDisplayMode(btnId) {
         var modes = getButtonDisplayModes();
-        return modes[btnId] || 1;
+        return parseInt(modes[btnId], 10) || 2;
     }
 
     function setButtonDisplayMode(btnId, mode) {
         var modes = getButtonDisplayModes();
-        modes[btnId] = mode;
+        modes[btnId] = parseInt(mode, 10) || 2;
         setButtonDisplayModes(modes);
     }
 
@@ -146,17 +146,11 @@
         buttons.forEach(function(btn) {
             var id = getButtonId(btn);
             var mode = getButtonDisplayMode(id);
-            
+
             btn.removeClass('button-mode-1 button-mode-2 button-mode-3');
             btn.addClass('button-mode-' + mode);
-            
-            if (mode === 2) {
-                btn.find('span').css('display', 'none');
-            } else if (mode === 3) {
-                btn.find('span').css('display', '');
-            } else {
-                btn.find('span').css('display', '');
-            }
+
+            btn.find('span').css('display', '');
         });
     }
 
@@ -924,13 +918,7 @@
                 btn.removeClass('button-mode-1 button-mode-2 button-mode-3');
                 btn.addClass('button-mode-' + newMode);
                 
-                if (newMode === 2) {
-                    btn.find('span').css('display', 'none');
-                } else if (newMode === 3) {
-                    btn.find('span').css('display', '');
-                } else {
-                    btn.find('span').css('display', '');
-                }
+                applyButtonDisplayModes([btn]);
             });
 
             item.find('.move-up').on('hover:enter', function() {
@@ -1853,18 +1841,39 @@
                 'flex-wrap: wrap !important; ' +
                 'gap: 0.5em !important; ' +
             '}' +
-            '.full-start-new__buttons.buttons-loading .full-start__button { visibility: hidden !important; }' +
-            '.full-start-new__buttons.icons-only .full-start__button:not(.button--color) span,' +
-            '.full-start-new__buttons.icons-only .button--color span {' +
-                'display: none;' +
+
+            '.full-start-new__buttons.icons-only .full-start__button:not(.button--color):not(.button-mode-2):not(.button-mode-3) span,' +
+            '.full-start-new__buttons.icons-only .button--color:not(.button-mode-2):not(.button-mode-3) span {' +
+                'display: none !important;' +
             '}' +
-            '.full-start-new__buttons.always-text .full-start__button span {' +
+
+            '.full-start-new__buttons.always-text .full-start__button:not(.button-mode-1):not(.button-mode-2) span {' +
                 'display: block !important;' +
             '}' +
-            
-            // Стили для режимов 1/2/3
-            '.full-start__button.button-mode-2 span { display: none !important; }' +
-            '.full-start__button.button-mode-3 span { display: inline !important; }' +
+
+            '.full-start-new__buttons .full-start__button.button-mode-1 span {' +
+                'display: none !important;' +
+            '}' +
+
+            '.full-start-new__buttons .full-start__button.button-mode-2 span {' +
+                'display: none !important;' +
+            '}' +
+
+            '.full-start-new__buttons .full-start__button.button-mode-2.focus span,' +
+            '.full-start-new__buttons .full-start__button.button-mode-2.hover span,' +
+            '.full-start-new__buttons .full-start__button.button-mode-2:hover span {' +
+                'display: inline !important;' +
+            '}' +
+
+            '.full-start-new__buttons.icons-only .full-start__button.button-mode-2.focus span,' +
+            '.full-start-new__buttons.icons-only .full-start__button.button-mode-2.hover span,' +
+            '.full-start-new__buttons.icons-only .full-start__button.button-mode-2:hover span {' +
+                'display: inline !important;' +
+            '}' +
+
+            '.full-start-new__buttons .full-start__button.button-mode-3 span {' +
+                'display: inline !important;' +
+            '}' +
             
             // Стили для кнопок в редакторе
             '.colored-logos-switch, .viewmode-switch { background: rgba(100,100,255,0.3); margin: 0 0 1em 0; border-radius: 0.3em; }' +
