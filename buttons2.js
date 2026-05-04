@@ -1055,6 +1055,7 @@
             Lampa.Storage.set('buttons_viewmode', 'default');
             Lampa.Storage.set('buttons_colored_logos', false);
             Lampa.Storage.set('button_display_modes', {});
+            $('body').removeClass('btns-plugin-open');
             Lampa.Modal.close();
             Lampa.Noty.show('Настройки сброшены');
             
@@ -1094,16 +1095,25 @@
 
         list.append(resetBtn);
 
+        $('body').addClass('btns-plugin-open');
+
         Lampa.Modal.open({
             title: 'Порядок кнопок',
             html: list,
-            size: 'small',
+            size: 'medium',
             scroll_to_center: true,
             onBack: function() {
+                $('body').removeClass('btns-plugin-open');
                 Lampa.Modal.close();
                 applyChanges();
             }
         });
+
+        setTimeout(function() {
+            try {
+                Lampa.Controller.toggle('modal');
+            } catch(e) {}
+        }, 50);
     }
 
     // ========== ОСНОВНАЯ ЛОГИКА ==========
@@ -1509,6 +1519,8 @@
             }
         });
 
+        $('body').removeClass('btns-plugin-open');
+
         Lampa.Modal.open({
             title: 'Порядок кнопок в цвете',
             html: list,
@@ -1517,6 +1529,7 @@
             onBack: function() {
                 Lampa.Modal.close();
                 updateColorIcon(color);
+                $('body').addClass('btns-plugin-open');
                 openEditDialog();
             }
         });
@@ -1831,8 +1844,10 @@
     function init() {
         var style = $('<style>' +
             '@keyframes button-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }' +
-            '.full-start__button { opacity: 1; }' +
-            '.full-start-new__buttons.buttons-loading .full-start__button { opacity: 0; }' +
+            '.btns-plugin-open .modal .modal__content { max-width: 27.5em !important; width: 27.5em !important; margin-left: auto !important; margin-right: 2em !important; left: auto !important; right: 0 !important; transform: none !important; position: relative !important; }' +
+            '.btns-plugin-open .modal .modal__body { max-height: 78vh !important; overflow-y: auto !important; }' +
+            '@media screen and (max-width: 520px) { .btns-plugin-open .modal .modal__content { width: 96vw !important; max-width: 96vw !important; left: auto !important; right: auto !important; transform: none !important; margin-left: auto !important; margin-right: auto !important; } }' +
+            '.full-start-new__buttons .full-start__button { opacity: 0; }' +
             '.full-start__button.hidden { display: none !important; }' +
             '.button--color { cursor: pointer; }' +
             '.full-start-new__buttons { ' +
