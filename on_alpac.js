@@ -1956,8 +1956,8 @@ else if (element.url) {
               copylink: true
             });
           }
-          if (window.lampac_online_context_menu)
-            window.lampac_online_context_menu.push(menu, extra, params);
+          if (window.alpac_online_context_menu)
+            window.alpac_online_context_menu.push(menu, extra, params);
           menu.push({
             title: Lampa.Lang.translate('more'),
             separator: true
@@ -1988,8 +1988,8 @@ else if (element.url) {
               if (a.timeclear) params.element.timeclear();
               if (a.clearallmark) params.onClearAllMark();
               if (a.timeclearall) params.onClearAllTime();
-              if (window.lampac_online_context_menu)
-                window.lampac_online_context_menu.onSelect(a, params);
+              if (window.alpac_online_context_menu)
+                window.alpac_online_context_menu.onSelect(a, params);
               Lampa.Controller.toggle(enabled);
               if (a.player) {
                 Lampa.Player.runas(a.player);
@@ -2274,10 +2274,10 @@ else if (element.url) {
   }
 
   function startPlugin() {
-    window.lampac_plugin = true;
+    window.alpac_plugin = true;
     var manifst = {
       type: 'video',
-      version: '0.3d',
+      version: '',
       name: 'Alpac',
       description: 'Плагин для просмотра онлайн сериалов и фильмов',
       component: 'alpac',
@@ -3300,7 +3300,7 @@ else if (element.url) {
 <path d="M0 0 C2 3 2 3 2 6 C0.02 6.33 -1.96 6.66 -4 7 C-4 6.34 -4 5.68 -4 5 C-3.01 5 -2.02 5 -1 5 C-0.67 3.35 -0.34 1.7 0 0 Z " fill="#1254A4" transform="translate(190,26)"/>
 <path d="M0 0 C2.35171131 0.59861742 4.6859378 1.26924352 7 2 C7.33 2.66 7.66 3.32 8 4 C5.69 4 3.38 4 1 4 C0.67 2.68 0.34 1.36 0 0 Z " fill="#337AC4" transform="translate(211,20)"/>
 </svg>
-\n\n        <span>#{title_online}</span>\n    </div>`; // нужна заглушка, а то при страте лампы говорит пусто
+\n\n        <span>Alpac</span>\n    </div>`; // нужна заглушка, а то при страте лампы говорит пусто
     Lampa.Component.add('alpac', component); //то же самое
     resetTemplates();
 
@@ -3353,6 +3353,6 @@ else if (element.url) {
       Lampa.Storage.sync('online_watched_last', 'object_object');
     }
   }
-  if (!window.lampac_plugin) startPlugin();
+  if (!window.alpac_plugin) startPlugin();
 
 })();
