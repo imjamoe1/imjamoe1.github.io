@@ -983,7 +983,7 @@
                     .new-interface-info__title {
                         font-size: 3em;
                         font-weight: 600;
-                        margin-top: -1em;
+                        margin-top: -1.2em;
                         overflow: hidden;
                         -o-text-overflow: '.';
                         text-overflow: '.';
