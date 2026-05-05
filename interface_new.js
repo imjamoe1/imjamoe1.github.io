@@ -983,7 +983,7 @@
                     .new-interface-info__title {
                         font-size: 3em;
                         font-weight: 600;
-                        margin-top: -1.2em;
+                        margin-top: -1em;
                         overflow: hidden;
                         -o-text-overflow: '.';
                         text-overflow: '.';
@@ -1220,7 +1220,7 @@
                     .new-interface-info__title {
                         font-size: 3em;
                         font-weight: 600;
-                        margin-top: -0.5em;
+                        margin-top: -1em;
                         overflow: hidden;
                         -o-text-overflow: '.';
                         text-overflow: '.';
@@ -2052,7 +2052,7 @@
             // Добавляем логотип
             var logoDiv = document.createElement('div');
             logoDiv.className = 'card-logo-overlay';
-            logoDiv.style.cssText = 'position:absolute; bottom:2px; left:50%; transform:translateX(-50%); z-index:5; max-width:50%; max-height:40px; pointer-events:none; padding:2px 8px;';
+            logoDiv.style.cssText = 'position:absolute; bottom:5px; left:50%; transform:translateX(-50%); z-index:5; max-width:50%; max-height:40px; pointer-events:none; padding:5px 8px;';
     
             var type = data.name ? 'tv' : 'movie';
             var tmdb_id = data.id;
