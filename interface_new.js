@@ -778,6 +778,17 @@
 			}
 		}
 
+                // Добавляем логотип на карточку
+                if (card.data && Lampa.Storage.get("wide_post", true) && Lampa.Storage.get("enable_horizontal_logo", true)) {
+                    setTimeout(function() {
+                        var element = card.render(true);
+                        if (element) {
+                            var node = element.jquery ? element[0] : element;
+                            addLogoToCard(node, card.data);
+                        }
+                    }, 100);
+                }
+
 		card.use({
 			onFocus: function () {
 				state.update(card.data);
@@ -2027,6 +2038,71 @@
 		});
 	}
 
+        function addLogoToCard(card, data) {
+            if (!card || !data) return;
+            if (!Lampa.Storage.get("logo_on_card", true)) return;
+    
+            var view = card.querySelector('.card__view');
+            if (!view) return;
+    
+            // Удаляем старый логотип если есть
+            var oldLogo = view.querySelector('.card-logo-overlay');
+            if (oldLogo) oldLogo.remove();
+    
+            // Добавляем логотип
+            var logoDiv = document.createElement('div');
+            logoDiv.className = 'card-logo-overlay';
+            logoDiv.style.cssText = 'position:absolute; bottom:2px; left:50%; transform:translateX(-50%); z-index:5; max-width:50%; max-height:40px; pointer-events:none; padding:2px 8px;';
+    
+            var type = data.name ? 'tv' : 'movie';
+            var tmdb_id = data.id;
+    
+            // Получаем логотип
+            if (data.id) {
+                var cache_key = "card_logo_" + type + "_" + tmdb_id;
+                var cached_url = Lampa.Storage.get(cache_key);
+        
+                if (cached_url && cached_url !== "none") {
+                    logoDiv.innerHTML = '<img src="' + cached_url + '" style="max-height:40px; max-width:100%;">';
+                    view.appendChild(logoDiv);
+                } else {
+                    var url = Lampa.TMDB.api(type + "/" + tmdb_id + "/images?api_key=" + Lampa.TMDB.key() + "&include_image_language=ru,en,null");
+            
+                    $.get(url, function(data_api) {
+                        var final_logo = null;
+                        if (data_api.logos && data_api.logos.length > 0) {
+                            for (var i = 0; i < data_api.logos.length; i++) {
+                                if (data_api.logos[i].iso_639_1 == "ru") {
+                                    final_logo = data_api.logos[i].file_path;
+                                    break;
+                                }
+                            }
+                            if (!final_logo) {
+                                for (var j = 0; j < data_api.logos.length; j++) {
+                                    if (data_api.logos[j].iso_639_1 == "en") {
+                                        final_logo = data_api.logos[j].file_path;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!final_logo) final_logo = data_api.logos[0].file_path;
+                        }
+                
+                        if (final_logo) {
+                            var img_url = Lampa.TMDB.image("/t/p/original" + final_logo);
+                            Lampa.Storage.set(cache_key, img_url);
+                            logoDiv.innerHTML = '<img src="' + img_url + '" style="max-height:40px; max-width:100%;">';
+                            view.appendChild(logoDiv);
+                        } else {
+                            Lampa.Storage.set(cache_key, "none");
+                        }
+                    }).fail(function() {
+                        Lampa.Storage.set(cache_key, "none");
+                    });
+                }
+            }
+        }
+
 	function initializeSettings() {
 		Lampa.Settings.listener.follow("open", function (event) {
 			if (event.name == "main") {
@@ -2075,6 +2151,12 @@
 				window.location.reload();
 			},
 		});
+
+                Lampa.SettingsApi.addParam({
+                        component: "style_interface",
+                        param: { name: "enable_horizontal_logo", type: "trigger", default: true },
+                        field: { name: "Показывать логотипы на широких постерах" }
+                });
 
 		Lampa.SettingsApi.addParam({
 			component: "style_interface",
