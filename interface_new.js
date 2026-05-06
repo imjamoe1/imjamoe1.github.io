@@ -2052,7 +2052,7 @@
             // Добавляем логотип
             var logoDiv = document.createElement('div');
             logoDiv.className = 'card-logo-overlay';
-            logoDiv.style.cssText = 'position:absolute; bottom:5px; left:50%; transform:translateX(-50%); z-index:5; max-width:50%; max-height:40px; pointer-events:none; padding:5px 8px;';
+            logoDiv.style.cssText = 'position:absolute; bottom:5px; left:50%; transform:translateX(-50%); max-width:50%; max-height:40px; pointer-events:none; padding:5px 8px;  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.9));';
     
             var type = data.name ? 'tv' : 'movie';
             var tmdb_id = data.id;
