@@ -92,6 +92,10 @@
                     body.menu--always:not(.hide-compact) .wrap__left {
                         width: 6em !important;
                     }
+
+                    body.menu--always:not(.menu--open):not(.hide-compact) .items-line__more {
+                        margin-right: 4em !important;
+                    }
                 </style>
             `);
 
