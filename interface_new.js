@@ -1061,6 +1061,9 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
+                    body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
+                        left: -4em;
+                    }
                     .card__quality {
                         font-weight: bold !important;
                     } 
@@ -1298,6 +1301,9 @@
                         opacity: 0;
                         object-fit: cover;
                         transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                    }
+                    body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
+                        left: -4em;
                     }
                     .new-interface .full-start__background.active {
                         opacity: 1;
