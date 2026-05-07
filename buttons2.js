@@ -154,11 +154,16 @@
         var coloredLogos = getColoredLogos();
         
         if (coloredLogos) {
+            // Включаем цветные иконки
             replaceIcons();
+            
+            // Наблюдатель за изменениями DOM
             setupIconObserver();
         } else {
+            // Выключаем цветные иконки - возвращаем оригинальные
             restoreOriginalIcons();
             
+            // Останавливаем наблюдение
             if (window.iconObserver) {
                 window.iconObserver.disconnect();
                 window.iconObserver = null;
@@ -224,10 +229,12 @@
     function restoreOriginalIcons() {
         if (!currentContainer) return;
         
+        // Удаляем замененные иконки
         currentContainer.find('svg[data-replaced="true"]').each(function() {
             var $this = $(this);
             var $button = $this.closest('.full-start__button');
             
+            // Находим оригинальную иконку
             var btnId = getButtonId($button);
             var originalBtn = findButton(btnId);
             
@@ -245,6 +252,7 @@
             window.iconObserver.disconnect();
         }
         
+        // Наблюдатель за изменениями DOM для обновления иконок
         var observer = new MutationObserver(function(mutations) {
             var shouldUpdate = false;
             mutations.forEach(function(mutation) {
@@ -265,10 +273,6 @@
             
             if (shouldUpdate) {
                 setTimeout(function() {
-                    if (!currentContainer) return;
-
-                    revealUnanimatedButtons(currentContainer);
-
                     if (getColoredLogos()) {
                         replaceIcons();
                     }
@@ -475,31 +479,13 @@
     }
 
     function applyButtonAnimation(buttons) {
-        buttons.forEach(function(btn) {
-            btn.stop(true, true);
+        buttons.forEach(function(btn, index) {
+
             btn.css({
-                'opacity': '1',
-                'animation': 'none',
-                'animation-delay': '0s',
-                'transform': 'none'
+                'opacity': '0',
+                'animation': 'button-fade-in 0.4s ease forwards',
+                'animation-delay': (index * 0.08) + 's'
             });
-        });
-    }
-
-    function revealUnanimatedButtons(container) {
-        if (!container || !container.length) return;
-
-        container.find('.full-start__button').each(function() {
-            var btn = $(this);
-            var isHidden = btn.hasClass('hidden');
-
-            if (!isHidden) {
-                btn.css({
-                    'opacity': '1',
-                    'animation': 'none',
-                    'visibility': 'visible'
-                });
-            }
         });
     }
 
@@ -1033,14 +1019,12 @@
         resetBtn.on('hover:enter', function() {
             Lampa.Storage.set('button_renamed', {});
             Lampa.Storage.set('button_custom_order', []);
-            Lampa.Storage.set('button_last_focused', '');
             Lampa.Storage.set('button_hidden', []);
             Lampa.Storage.set('button_colors', []);
             Lampa.Storage.set('button_item_order', []);
             Lampa.Storage.set('buttons_viewmode', 'default');
             Lampa.Storage.set('buttons_colored_logos', false);
             Lampa.Storage.set('button_display_modes', {});
-            $('body').removeClass('btns-plugin-open');
             Lampa.Modal.close();
             Lampa.Noty.show('Настройки сброшены');
             
@@ -1074,31 +1058,24 @@
                     });
                     
                     reorderButtons(currentContainer);
+                    refreshController();
                 }
             }, 100);
         });
 
         list.append(resetBtn);
 
-        $('body').addClass('btns-plugin-open');
-
         Lampa.Modal.open({
             title: 'Порядок кнопок',
             html: list,
-            size: 'medium',
+            size: 'small',
             scroll_to_center: true,
             onBack: function() {
-                $('body').removeClass('btns-plugin-open');
                 Lampa.Modal.close();
                 applyChanges();
+                Lampa.Controller.toggle('full_start');
             }
         });
-
-        setTimeout(function() {
-            try {
-                Lampa.Controller.toggle('modal');
-            } catch(e) {}
-        }, 50);
     }
 
     // ========== ОСНОВНАЯ ЛОГИКА ==========
@@ -1344,6 +1321,7 @@
 
         saveOrder();
         
+        // Применяем цветные иконки если нужно
         if (getColoredLogos()) {
             setTimeout(function() {
                 replaceIcons();
@@ -1376,7 +1354,7 @@
         
         var hasName = color.name && color.name.trim();
         var btn = $('<div class="full-start__button selector button--color' + (!hasName ? ' color--no-name' : '') + 
-                    '" data-color-id="' + color.id + '" data-stable-id="color_button_' + color.id + '">' +
+                    '" data-color-id="' + color.id + '">' +
             icon +
             (hasName ? '<span>' + color.name + '</span>' : '') +
         '</div>');
@@ -1504,8 +1482,6 @@
             }
         });
 
-        $('body').removeClass('btns-plugin-open');
-
         Lampa.Modal.open({
             title: 'Порядок кнопок в цвете',
             html: list,
@@ -1514,7 +1490,6 @@
             onBack: function() {
                 Lampa.Modal.close();
                 updateColorIcon(color);
-                $('body').addClass('btns-plugin-open');
                 openEditDialog();
             }
         });
@@ -1589,6 +1564,7 @@
         currentContainer = container;
         container.find('.button--play, .button--edit-order, .button--color').remove();
 
+        // ДОБАВЛЯЕМ ЗАДЕРЖКУ ЗАГРУЗКИ КОНТЕЙНЕРА КНОПОК - 500 миллисекунд (0.5 секунды)
         setTimeout(function() {
             var categories = categorizeButtons(container);
             
@@ -1606,10 +1582,11 @@
             allButtons = sortByCustomOrder(allButtons);
             allButtonsCache = allButtons;
             
-            allButtonsOriginal = [];
-            allButtons.forEach(function(btn) {
-                allButtonsOriginal.push(btn.clone(true, true));
-            });
+            if (allButtonsOriginal.length === 0) {
+                allButtons.forEach(function(btn) {
+                    allButtonsOriginal.push(btn.clone(true, true));
+                });
+            }
 
             var colors = getColors();
             var buttonsInColors = [];
@@ -1748,6 +1725,7 @@
 
             applyButtonAnimation(visibleButtons);
             
+            // Применяем цветные иконки если нужно
             if (getColoredLogos()) {
                 setTimeout(function() {
                     replaceIcons();
@@ -1758,15 +1736,10 @@
             setTimeout(function() {
                 setupButtonNavigation(container);
             }, 100);
-            setTimeout(function() {
-                revealUnanimatedButtons(container);
-            }, 250);
-        }, 150);
+        }, 150); // ЗДЕСЬ ЗАДЕРЖКА 500 МИЛЛИСЕКУНД
 
         return true;
     }
-
-    // ========== ФОКУС ==========
 
     // ========== НАВИГАЦИЯ И ОБНОВЛЕНИЕ ==========
 
@@ -1776,6 +1749,22 @@
                 Lampa.Controller.toggle('full_start');
             } catch(e) {}
         }
+    }
+
+    function refreshController() {
+        if (!Lampa.Controller || typeof Lampa.Controller.toggle !== 'function') return;
+        
+        setTimeout(function() {
+            try {
+                Lampa.Controller.toggle('full_start');
+                
+                if (currentContainer) {
+                    setTimeout(function() {
+                        setupButtonNavigation(currentContainer);
+                    }, 100);
+                }
+            } catch(e) {}
+        }, 50);
     }
 
     // ========== ИНИЦИАЛИЗАЦИЯ ==========
@@ -1860,7 +1849,8 @@
                             if (targetContainer.length) {
                                 setTimeout(function() {
                                     targetContainer.removeClass('buttons-loading');
-                                }, 200);
+                                }, 200); // Чуть больше чем задержка в reorderButtons
+                                refreshController();
                             }
                         }
                     }
