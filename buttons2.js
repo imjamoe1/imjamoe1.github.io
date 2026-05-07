@@ -475,21 +475,14 @@
     }
 
     function applyButtonAnimation(buttons) {
-        buttons.forEach(function(btn, index) {
+        buttons.forEach(function(btn) {
             btn.stop(true, true);
             btn.css({
-                'opacity': '0',
-                'animation': 'button-fade-in 0.4s ease forwards',
-                'animation-delay': (index * 0.08) + 's'
+                'opacity': '1',
+                'animation': 'none',
+                'animation-delay': '0s',
+                'transform': 'none'
             });
-
-            setTimeout(function() {
-                btn.css({
-                    'opacity': '1',
-                    'animation': 'none',
-                    'animation-delay': '0s'
-                });
-            }, 450 + (index * 80));
         });
     }
 
