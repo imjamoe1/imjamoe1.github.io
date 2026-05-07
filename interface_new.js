@@ -1050,7 +1050,7 @@
                     }
                     .new-interface .full-start__background {
                         position: absolute;
-                        height: calc(100% + 6em);
+                        height: calc(100% + 4em);
                         width: 100%;
                         top: -4em;
                         left: 0;
@@ -1294,7 +1294,7 @@
                     }
                     .new-interface .full-start__background {
                         position: absolute;
-                        height: calc(100% + 6em);
+                        height: calc(100% + 4em);
                         width: 100%;
                         top: -4em;
                         left: 0;
