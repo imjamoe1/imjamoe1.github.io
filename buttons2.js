@@ -1065,6 +1065,8 @@
 
         list.append(resetBtn);
 
+        $('body').addClass('btns-plugin-open');
+        
         Lampa.Modal.open({
             title: 'Порядок кнопок',
             html: list,
