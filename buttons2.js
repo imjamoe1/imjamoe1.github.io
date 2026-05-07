@@ -1621,11 +1621,10 @@
             allButtons = sortByCustomOrder(allButtons);
             allButtonsCache = allButtons;
             
-            if (allButtonsOriginal.length === 0) {
-                allButtons.forEach(function(btn) {
-                    allButtonsOriginal.push(btn.clone(true, true));
-                });
-            }
+            allButtonsOriginal = [];
+            allButtons.forEach(function(btn) {
+                allButtonsOriginal.push(btn.clone(true, true));
+            });
 
             var colors = getColors();
             var buttonsInColors = [];
@@ -1783,69 +1782,15 @@
     }
 
     // ========== ФОКУС ==========
-    var lastFocusSaveTimer = null;
-    var lastFocusIdPending = '';
-
-    function bindFocusMemory(container) {
-        if (!container || !container.length) return;
-
-        container.off('hover:enter.button_focus_memory', '.full-start__button');
-        container.on('hover:enter.button_focus_memory', '.full-start__button', function() {
-            var btn = $(this);
-            if (btn.hasClass('button--edit-order')) return;
-
-            lastFocusIdPending = getButtonId(btn);
-
-            clearTimeout(lastFocusSaveTimer);
-            lastFocusSaveTimer = setTimeout(function() {
-                setLastFocusedButtonId(lastFocusIdPending);
-            }, 500);
-        });
-    }
-
-    function restoreLastFocusedButton(container) {
-        if (!container || !container.length) return false;
-
-        var lastId = getLastFocusedButtonId();
-        if (!lastId) return false;
-
-        var target = container.find('.full-start__button').filter(function() {
-            return getButtonId($(this)) === lastId;
-        }).first();
-
-        if (!target.length || target.hasClass('hidden')) return false;
-
-        setTimeout(function() {
-            try {
-                container.find('.full-start__button').removeClass('focus');
-                target.addClass('focus');
-                target.trigger('hover:focus');
-                if (target[0] && target[0].scrollIntoView) {
-                    target[0].scrollIntoView({
-                        block: 'nearest',
-                        inline: 'nearest'
-                    });
-                }
-            } catch (e) {}
-        }, 0);
-
-        return true;
-    }
 
     // ========== НАВИГАЦИЯ И ОБНОВЛЕНИЕ ==========
 
     function setupButtonNavigation(container) {
-        if (!container || !container.length) return;
-
-        bindFocusMemory(container);
-
         if (Lampa.Controller && typeof Lampa.Controller.toggle === 'function') {
             try {
                 Lampa.Controller.toggle('full_start');
             } catch(e) {}
         }
-
-        restoreLastFocusedButton(container);
     }
 
     // ========== ИНИЦИАЛИЗАЦИЯ ==========
