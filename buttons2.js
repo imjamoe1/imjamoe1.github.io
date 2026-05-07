@@ -1783,6 +1783,9 @@
     }
 
     // ========== ФОКУС ==========
+    var lastFocusSaveTimer = null;
+    var lastFocusIdPending = '';
+
     function bindFocusMemory(container) {
         if (!container || !container.length) return;
 
@@ -1790,7 +1793,13 @@
         container.on('hover:enter.button_focus_memory', '.full-start__button', function() {
             var btn = $(this);
             if (btn.hasClass('button--edit-order')) return;
-            setLastFocusedButtonId(getButtonId(btn));
+
+            lastFocusIdPending = getButtonId(btn);
+
+            clearTimeout(lastFocusSaveTimer);
+            lastFocusSaveTimer = setTimeout(function() {
+                setLastFocusedButtonId(lastFocusIdPending);
+            }, 500);
         });
     }
 
