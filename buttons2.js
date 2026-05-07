@@ -64,14 +64,6 @@
         Lampa.Storage.set('button_item_order', order || []);
     }
 
-    function getLastFocusedButtonId() {
-        return Lampa.Storage.get('button_last_focused', '');
-    }
-
-    function setLastFocusedButtonId(id) {
-        Lampa.Storage.set('button_last_focused', id || '');
-    }
-
     function getHiddenButtons() {
         return Lampa.Storage.get('button_hidden', []) || [];
     }
