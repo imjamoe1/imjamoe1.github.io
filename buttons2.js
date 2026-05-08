@@ -1054,7 +1054,7 @@
             
             setTimeout(function() {
                 if (currentContainer) {
-                    currentContainer.find('.button--play, .button--edit-order, .button--color').remove();
+                    currentContainer.find('button--edit-order', 'button--color', 'button--play').remove();
                     currentContainer.data('buttons-processed', false);
                     
                     var targetContainer = currentContainer.find('.full-start-new__buttons');
@@ -1590,7 +1590,7 @@
         if (!targetContainer.length) return false;
 
         currentContainer = container;
-        container.find('.button--play, .button--edit-order, .button--color').remove();
+        container.find('button--edit-order', 'button--color', 'button--play').remove();
 
         // ДОБАВЛЯЕМ ЗАДЕРЖКУ ЗАГРУЗКИ КОНТЕЙНЕРА КНОПОК - 500 миллисекунд (0.5 секунды)
         setTimeout(function() {
