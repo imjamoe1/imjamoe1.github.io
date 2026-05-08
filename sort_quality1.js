@@ -49,23 +49,6 @@
         QUALITY: 'quality'
     };
 
-    // Устанавливаем сортировку по качеству по умолчанию при первом запуске или после очистки кэша
-    function initializeDefaultSort() {
-        var currentSort = Lampa.Storage.get(SORT_KEY);
-        
-        // Если нет сохраненной сортировки (первый запуск или очистка кэша)
-        if (currentSort === null || currentSort === undefined) {
-            console.log('Setting default quality sort (cache cleared or first run)');
-            Lampa.Storage.set(SORT_KEY, TYPES.QUALITY);
-            
-            // Принудительно обновляем интерфейс
-            setTimeout(function() {
-                Lampa.Activity.call();
-                Lampa.Noty.show('Сортировка по качеству установлена по умолчанию');
-            }, 500);
-        }
-    }
-
     var ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" fill="currentColor"/></svg>';
 
     Lampa.Lang.add({
@@ -165,7 +148,7 @@
     }
 
     function showSourceMenu(onUpdate) {
-        var sortType = Lampa.Storage.get(SORT_KEY, TYPES.QUALITY); // Изменено на QUALITY по умолчанию
+        var sortType = Lampa.Storage.get(SORT_KEY, TYPES.QUALITY);
         var hideEnabled = Lampa.Storage.get(HIDE_KEY, false);
         
         var sortTitle = sortType === TYPES.ALPHABET ? Lampa.Lang.translate('source_sort_alphabet') :
@@ -197,7 +180,7 @@
     }
 
     function showSortingMenu(onUpdate) {
-        var current = Lampa.Storage.get(SORT_KEY, TYPES.QUALITY); // Изменено на QUALITY по умолчанию
+        var current = Lampa.Storage.get(SORT_KEY, TYPES.QUALITY);
         
         Lampa.Select.show({
             title: Lampa.Lang.translate('source_sort_sorting'),
@@ -259,10 +242,7 @@
                         lastLen = items.length;
                     }
                     
-                    // Проверяем и устанавливаем сортировку по умолчанию при необходимости
-                    initializeDefaultSort();
-                    
-                    var sortType = Lampa.Storage.get(SORT_KEY, TYPES.QUALITY); // QUALITY по умолчанию
+                    var sortType = Lampa.Storage.get(SORT_KEY, TYPES.QUALITY);
                     var processed = applySorting(items.slice(), sortType);
                     processed = filterUnavailable(processed);
                     
@@ -301,22 +281,6 @@
     }
 
     function init() {
-        // Устанавливаем сортировку по качеству по умолчанию при инициализации
-        initializeDefaultSort();
-        
-        // Отслеживаем изменения в localStorage (для обнаружения очистки кэша)
-        window.addEventListener('storage', function(e) {
-            if (e.key === null || e.key === SORT_KEY) {
-                console.log('Storage changed, checking default sort');
-                initializeDefaultSort();
-            }
-        });
-        
-        // Периодическая проверка (на случай программной очистки кэша)
-        setInterval(function() {
-            initializeDefaultSort();
-        }, 5000);
-        
         patchFilter();
         
         if (Lampa.SettingsApi) {
