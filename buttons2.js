@@ -1803,7 +1803,7 @@
     function init() {
         var style = $('<style>' +
             '@keyframes button-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }' +
-            '.btns-plugin-open .modal .modal__content { max-width: 27.5em !important; width: 27.5em !important; margin-left: auto !important; margin-right: auto !important; left: 50% !important; transform: translateX(-50%) !important; position: relative !important; }' +
+            '.btns-plugin-open .modal .modal__content { max-width: 27.5em !important; width: 27.5em !important; top: 5% !important; margin-left: auto !important; margin-right: auto !important; left: 50% !important; transform: translateX(-50%) !important; position: relative !important; }' +
             '.btns-plugin-open .modal .modal__body { max-height: 78vh !important; overflow-y: auto !important; }' +
             '@media screen and (max-width: 520px) { .btns-plugin-open .modal .modal__content { width: 96vw !important; max-width: 96vw !important; left: 2vw !important; transform: none !important; margin-left: 0 !important; margin-right: 0 !important; } }' +
             '.full-start-new__buttons .full-start__button { opacity: 0; }' +
