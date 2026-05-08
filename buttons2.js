@@ -46,6 +46,26 @@
         return buttonsInColors;
     }
 
+    function mergeOriginalButtons(buttons) {
+        var result = buttons.slice();
+        var existingIds = [];
+
+        result.forEach(function(btn) {
+            existingIds.push(getButtonId(btn));
+        });
+
+        allButtonsOriginal.forEach(function(originalBtn) {
+            var id = getButtonId(originalBtn);
+
+            if (existingIds.indexOf(id) === -1) {
+                result.push(originalBtn.clone(true, true));
+                existingIds.push(id);
+            }
+        });
+
+        return result;
+    }
+
     // ========== ХРАНЕНИЕ ДАННЫХ ==========
 
     function getCustomOrder() {
@@ -616,6 +636,8 @@
                 .concat(categories.other);
             
             allButtons = sortByCustomOrder(allButtons);
+            allButtons = mergeOriginalButtons(allButtons);
+            allButtons = sortByCustomOrder(allButtons);
             allButtonsCache = allButtons;
             
             var colors = getColors();
@@ -841,7 +863,7 @@
             var isHidden = hidden.indexOf(btnId) !== -1;
             var displayMode = getButtonDisplayMode(btnId);
 
-            var item = $('<div class="menu-edit-list__item">' +
+            var item = $('<div class="menu-edit-list__item' + (isHidden ? ' item-hidden' : '') + '">' +
                 '<div class="menu-edit-list__icon"></div>' +
                 '<div class="menu-edit-list__title">' + displayName + '</div>' +
                 '<div class="menu-edit-list__move move-up selector">' +
@@ -956,10 +978,12 @@
                 if (index !== -1) {
                     hidden.splice(index, 1);
                     btn.removeClass('hidden');
+                    item.removeClass('item-hidden');
                     item.find('.dot').attr('opacity', '1');
                 } else {
                     hidden.push(btnId);
                     btn.addClass('hidden');
+                    item.addClass('item-hidden');
                     item.find('.dot').attr('opacity', '0');
                 }
                 
@@ -1097,6 +1121,8 @@
                 .concat(categories.reaction)
                 .concat(categories.other);
         
+        allButtons = sortByCustomOrder(allButtons);
+        allButtons = mergeOriginalButtons(allButtons);
         allButtons = sortByCustomOrder(allButtons);
         allButtonsCache = allButtons;
         
@@ -1582,13 +1608,16 @@
                 .concat(categories.other);
 
             allButtons = sortByCustomOrder(allButtons);
-            allButtonsCache = allButtons;
-            
+
             if (allButtonsOriginal.length === 0) {
                 allButtons.forEach(function(btn) {
                     allButtonsOriginal.push(btn.clone(true, true));
                 });
             }
+
+            allButtons = mergeOriginalButtons(allButtons);
+            allButtons = sortByCustomOrder(allButtons);
+            allButtonsCache = allButtons;
 
             var colors = getColors();
             var buttonsInColors = [];
@@ -1828,6 +1857,16 @@
             '.menu-edit-list__display-mode.focus svg { color: #000 !important; }' +
             '.menu-edit-list__display-mode.focus rect { stroke: #000 !important; }' +
             '.menu-edit-list__display-mode.focus text { fill: #000 !important; }' +
+            '.menu-edit-list__item.item-hidden {' +
+                'opacity: 0.45;' +
+                'filter: grayscale(1);' +
+            '}' +
+            '.menu-edit-list__item.item-hidden .menu-edit-list__title {' +
+                'opacity: 0.65;' +
+            '}' +
+            '.menu-edit-list__item.item-hidden .menu-edit-list__icon {' +
+                'opacity: 0.55;' +
+            '}' +
             '.button--color.color--no-name { min-width: 3.5em; max-width: 3.5em; justify-content: center; }' +
             '.button--color.color--no-name > span { display: none; }' +
             '.button-empty span { display: none !important; }' +
