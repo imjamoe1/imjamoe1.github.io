@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    var EXCLUDED_CLASSES = ['button--play', 'button--edit-order', 'button--color'];
+    var EXCLUDED_CLASSES = ['button--edit-order', 'button--color', 'button--play'];
     
     var DEFAULT_GROUPS = [
         { name: 'online', patterns: ['online', 'lampac', 'modss', 'showy'], label: 'Онлайн' },
