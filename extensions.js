@@ -1,467 +1,446 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
 // @version      1.0
-// @description  Добавляет блоки "Избранное", "Мои", "Онлайн", "ByLampa"
+// @description  Добавляет категории в родной экран расширений через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
 // @grant        none
 // ==/UserScript==
 
-(function() {
-    if (typeof Lampa === 'undefined') return;
+(function () {
+    'use strict';
 
-    console.log('Плагин с категориями запущен');
+    if (window.__lampaMyExtensionCategoriesLoaded) return;
+    window.__lampaMyExtensionCategoriesLoaded = true;
 
-    // Хранилища для разных категорий
+    var CATEGORIES = [
+        { key: 'favorite', title: 'Избранное' },
+        { key: 'my', title: 'Мои' },
+        { key: 'online', title: 'Онлайн' },
+        { key: 'bylampa', title: 'ByLampa' }
+    ];
+    var addingFromCategory = false;
+
+    function log() {
+        try {
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift('[MyExt]');
+            console.log.apply(console, args);
+        } catch (e) {}
+    }
+
+    function tr(key, fallback) {
+        try {
+            return Lampa.Lang.translate(key) || fallback || key;
+        } catch (e) {
+            return fallback || key;
+        }
+    }
+
     function getList(category) {
-        return JSON.parse(localStorage.getItem(`lampa_${category}_extensions`) || '[]');
+        try {
+            return JSON.parse(localStorage.getItem('lampa_' + category + '_extensions') || '[]');
+        } catch (e) {
+            return [];
+        }
     }
 
     function saveList(category, list) {
-        localStorage.setItem(`lampa_${category}_extensions`, JSON.stringify(list));
+        localStorage.setItem('lampa_' + category + '_extensions', JSON.stringify(list));
     }
 
-    // Показать уведомление
-    function showNoty(text) {
-        if (Lampa.Noty) {
-            Lampa.Noty.show(text);
-        }
+    function removeFromCategoryLists(url) {
+        if (!url) return;
+
+        CATEGORIES.forEach(function (category) {
+            var list = getList(category.key);
+            var filtered = list.filter(function (item) {
+                return (item.url || item.link) !== url;
+            });
+
+            if (filtered.length !== list.length) saveList(category.key, filtered);
+        });
     }
 
-    // Перезагрузка Lampa
-    function reloadLampa() {
-        if (Lampa.Utils && Lampa.Utils.showReload) {
-            Lampa.Utils.showReload(() => {});
-        } else {
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        }
+    function updateCategoryItem(url, patch) {
+        if (!url) return;
+
+        CATEGORIES.forEach(function (category) {
+            var changed = false;
+            var list = getList(category.key).map(function (item) {
+                if ((item.url || item.link) !== url) return item;
+
+                changed = true;
+                return Object.assign({}, item, patch);
+            });
+
+            if (changed) saveList(category.key, list);
+        });
     }
 
-    // Проверка расширения (адаптировано под оригинал)
-    function checkExtension(url, item) {
-        let check = item.querySelector('.extensions__item-check');
-        let code = item.querySelector('.extensions__item-code');
-        let status = item.querySelector('.extensions__item-status');
-        let error = item.querySelector('.extensions__item-error');
+    function normalizePlugin(item, category) {
+        return {
+            url: item.url || item.link,
+            link: item.link || item.url,
+            name: item.name || tr('extensions_no_name', 'No name'),
+            author: item.author || category.title,
+            descr: item.descr || item.description || item.url || item.link,
+            status: item.status === 0 ? 0 : 1,
+            my_ext_category: category.key
+        };
+    }
 
-        check?.classList.remove('hide');
-        if (code) code.classList.add('hide');
-        if (status) status.classList.add('hide');
-        if (error) error.classList.add('hide');
-
-        function display(type, num, text) {
-            if (code) {
-                code.innerText = num;
-                code.classList.remove('hide', 'success', 'error');
-                code.classList.add(type);
-            }
-            if (status) {
-                status.innerText = text;
-                status.classList.remove('hide');
-            }
-            if (check) check.classList.add('hide');
-        }
-
-        fetch(url)
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    display('error', response.status, Lampa.Lang.translate('title_error'));
-                    throw new Error('HTTP error');
-                }
+    function categoryData(category) {
+        return getList(category.key)
+            .filter(function (item) {
+                return item && (item.url || item.link);
             })
-            .then(text => {
-                if (/Lampa\./.test(text)) {
-                    display('success', '200', Lampa.Lang.translate('extensions_worked'));
-                } else {
-                    display('error', '500', Lampa.Lang.translate('extensions_no_plugin'));
-                }
-            })
-            .catch(() => {
-                display('error', '404', Lampa.Lang.translate('title_error'));
+            .map(function (item) {
+                return normalizePlugin(item, category);
             });
     }
 
-    // Создание элемента расширения
-    function createExtensionItem(data, category) {
-        const item = document.createElement('div');
-        item.className = 'extensions__item selector';
-        
-        // Определяем статус
-        const isLoaded = Lampa.Plugins?.loaded().indexOf(data.url) >= 0;
-        const isDisabled = data.status === 0;
-        const protocol = data.url.startsWith('https') ? 'protocol-https' : 'protocol-http';
-        
-        item.innerHTML = `
-            <div class="extensions__item-author">${data.author || '@user'}</div>
-            <div class="extensions__item-name">${data.name || Lampa.Lang.translate('extensions_no_name')}</div>
-            <div class="extensions__item-descr">${data.url}</div>
-            <div class="extensions__item-footer">
-                <div class="extensions__item-error hide"></div>
-                <div class="extensions__item-included ${isLoaded ? '' : 'hide'}"></div>
-                <div class="extensions__item-check hide"></div>
-                <div class="extensions__item-proto ${protocol}">
-                    <svg width="21" height="30" viewBox="0 0 21 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="10.5" cy="8.5" r="7" stroke="currentColor" stroke-width="3"></circle>
-                        <rect y="9" width="21" height="21" rx="4" fill="currentColor"></rect>
-                    </svg>
-                </div>
-                <div class="extensions__item-code hide success"></div>
-                <div class="extensions__item-status hide"></div>
-                <div class="extensions__item-disabled ${isDisabled ? '' : 'hide'}">${Lampa.Lang.translate('player_disabled')}</div>
-            </div>
-        `;
+    function allCategoryUrls() {
+        var urls = [];
 
-        // Добавляем обработчик для контекстного меню
-        item.addEventListener('hover:enter', () => {
-            const menu = [
-                {
-                    title: data.status ? Lampa.Lang.translate('extensions_disable') : Lampa.Lang.translate('extensions_enable'),
-                    toggle: true
-                },
-                {
-                    title: Lampa.Lang.translate('extensions_check'),
-                    check: true
-                },
-                {
-                    title: Lampa.Lang.translate('extensions_edit'),
-                    separator: true
-                },
-                {
-                    title: Lampa.Lang.translate('extensions_change_name'),
-                    change: 'name'
-                },
-                {
-                    title: Lampa.Lang.translate('extensions_change_link'),
-                    change: 'url'
-                },
-                {
-                    title: 'В избранное',
-                    favorite: true
-                },
-                {
-                    title: Lampa.Lang.translate('extensions_remove'),
-                    remove: true
-                }
-            ];
-
-            Lampa.Select.show({
-                title: Lampa.Lang.translate('title_action'),
-                items: menu,
-                onSelect: (action) => {
-                    if (action.toggle) {
-                        data.status = data.status === 1 ? 0 : 1;
-                        
-                        const plugin = Lampa.Plugins.get().find(p => p.url === data.url);
-                        if (plugin) {
-                            plugin.status = data.status;
-                            Lampa.Plugins.save(plugin);
-                            if (data.status === 1) {
-                                Lampa.Plugins.push(plugin);
-                            }
-                        }
-                        
-                        const list = getList(category);
-                        const index = list.findIndex(i => i.url === data.url);
-                        if (index >= 0) {
-                            list[index].status = data.status;
-                            saveList(category, list);
-                        }
-                        
-                        reloadLampa();
-                    }
-                    else if (action.check) {
-                        checkExtension(data.url, item);
-                    }
-                    else if (action.change) {
-                        Lampa.Input.edit({
-                            title: action.change === 'name' ? Lampa.Lang.translate('extensions_set_name') : Lampa.Lang.translate('extensions_set_url'),
-                            value: data[action.change] || '',
-                            free: true,
-                            nosave: true
-                        }, (newValue) => {
-                            if (newValue && newValue !== data[action.change]) {
-                                const oldUrl = data.url;
-                                data[action.change] = newValue;
-                                
-                                const plugins = Lampa.Plugins.get();
-                                const oldPlugin = plugins.find(p => p.url === oldUrl);
-                                if (oldPlugin) {
-                                    Lampa.Plugins.remove(oldPlugin);
-                                    Lampa.Plugins.add({...data, status: data.status});
-                                }
-                                
-                                const list = getList(category);
-                                const index = list.findIndex(i => i.url === oldUrl);
-                                if (index >= 0) {
-                                    list[index] = data;
-                                    saveList(category, list);
-                                }
-                                
-                                reloadLampa();
-                            }
-                        });
-                    }
-                    else if (action.favorite) {
-                        const favList = getList('favorite');
-                        if (!favList.find(item => item.url === data.url)) {
-                            favList.unshift({...data});
-                            saveList('favorite', favList);
-                            showNoty('✓ Добавлено в избранное');
-                            
-                            // Обновляем блоки
-                            setTimeout(insertMyBlocks, 500);
-                        } else {
-                            showNoty('✗ Уже в избранном');
-                        }
-                    }
-                    else if (action.remove) {
-                        const list = getList(category).filter(i => i.url !== data.url);
-                        saveList(category, list);
-                        
-                        const plugin = Lampa.Plugins.get().find(p => p.url === data.url);
-                        if (plugin) {
-                            Lampa.Plugins.remove(plugin);
-                        }
-                        
-                        reloadLampa();
-                    }
-                }
+        CATEGORIES.forEach(function (category) {
+            getList(category.key).forEach(function (item) {
+                var url = item && (item.url || item.link);
+                if (url && urls.indexOf(url) < 0) urls.push(url);
             });
         });
 
-        return item;
+        return urls;
     }
 
-    // Создание блока
-    function createBlock(title, category) {
-        const block = document.createElement('div');
-        block.className = 'extensions__block layer--visible layer--render';
-        block.id = `${category}-extensions-block`;
-        
-        const head = document.createElement('div');
-        head.className = 'extensions__block-head';
-        head.innerHTML = `<div class="extensions__block-title">${title}</div>`;
-        block.appendChild(head);
+    function ensureDefaults() {
+        CATEGORIES.forEach(function (category) {
+            if (!localStorage.getItem('lampa_' + category.key + '_extensions')) {
+                saveList(category.key, []);
+            }
+        });
+    }
 
-        const body = document.createElement('div');
-        body.className = 'extensions__block-body';
-        
-        const scroll = document.createElement('div');
-        scroll.className = 'scroll scroll--horizontal';
-        
-        const content = document.createElement('div');
-        content.className = 'scroll__content';
-        
-        const scrollBody = document.createElement('div');
-        scrollBody.className = 'scroll__body';
-        scrollBody.style.display = 'flex';
+    function notify(text) {
+        try {
+            if (Lampa.Noty && Lampa.Noty.show) Lampa.Noty.show(text);
+        } catch (e) {}
+    }
 
-        // Кнопка добавления
-        const addBtn = document.createElement('div');
-        addBtn.className = 'extensions__block-add selector';
-        addBtn.textContent = Lampa.Lang.translate('extensions_add');
-        addBtn.addEventListener('hover:enter', () => {
-            Lampa.Input.edit({
-                title: Lampa.Lang.translate('extensions_set_url'),
-                value: '',
-                free: true,
-                nosave: true
-            }, (url) => {
-                if (url) {
-                    const list = getList(category);
-                    if (list.find(item => item.url === url)) {
-                        showNoty(`✗ Плагин уже в списке ${title}`);
+    function controllerBackToCurrent() {
+        try {
+            if (Lampa.Controller && Lampa.Controller.enabled && Lampa.Controller.toggle) {
+                Lampa.Controller.toggle(Lampa.Controller.enabled().name);
+            }
+        } catch (e) {}
+    }
+
+    function createCategoryAddButton(category, line) {
+        var button = document.createElement('div');
+        button.classList.add('extensions__block-add');
+        button.classList.add('selector');
+        button.innerText = tr('extensions_add', 'Добавить');
+
+        button.addEventListener('hover:enter', function () {
+            try {
+                Lampa.Input.edit({
+                    title: tr('extensions_set_url', 'Ссылка на расширение'),
+                    value: '',
+                    free: true,
+                    nosave: true,
+                    nomic: true
+                }, function (url) {
+                    var list;
+                    var data;
+
+                    if (!url) {
+                        if (line && line.toggle) line.toggle();
                         return;
                     }
-                    
-                    const newItem = {
-                        url: url,
-                        name: Lampa.Lang.translate('extensions_no_name'),
-                        author: title,
-                        status: 1
-                    };
-                    
-                    list.unshift(newItem);
-                    saveList(category, list);
-                    
-                    Lampa.Plugins.add({url: url, status: 1, name: Lampa.Lang.translate('extensions_no_name'), author: title});
-                    
-                    showNoty(`✓ Плагин добавлен в ${title}`);
-                    
-                    // Обновляем блок
-                    insertMyBlocks();
-                }
-            });
-        });
-        scrollBody.appendChild(addBtn);
 
-        // Добавляем сохраненные расширения
-        const list = getList(category);
-        list.forEach(data => {
-            const item = createExtensionItem(data, category);
-            scrollBody.appendChild(item);
-        });
-
-        // Добавляем невидимые элементы для заполнения (как в оригинале)
-        for (let i = 0; i < 20; i++) {
-            const emptyItem = document.createElement('div');
-            emptyItem.className = 'extensions__item selector';
-            emptyItem.style.visibility = 'hidden';
-            emptyItem.innerHTML = `
-                <div class="extensions__item-author"></div>
-                <div class="extensions__item-name"></div>
-                <div class="extensions__item-descr"></div>
-                <div class="extensions__item-footer">
-                    <div class="extensions__item-error hide"></div>
-                    <div class="extensions__item-included hide"></div>
-                    <div class="extensions__item-check hide"></div>
-                    <div class="extensions__item-proto hide">
-                        <svg width="21" height="30" viewBox="0 0 21 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="10.5" cy="8.5" r="7" stroke="currentColor" stroke-width="3"></circle>
-                            <rect y="9" width="21" height="21" rx="4" fill="currentColor"></rect>
-                        </svg>
-                    </div>
-                    <div class="extensions__item-code hide success"></div>
-                    <div class="extensions__item-status hide"></div>
-                    <div class="extensions__item-disabled hide">Отключено</div>
-                </div>
-            `;
-            scrollBody.appendChild(emptyItem);
-        }
-
-        content.appendChild(scrollBody);
-        scroll.appendChild(content);
-        body.appendChild(scroll);
-        block.appendChild(body);
-
-        return block;
-    }
-
-    // Очистка дубликатов из установленных
-    function cleanupInstalledBlock() {
-        const allUrls = [
-            ...getList('favorite'),
-            ...getList('my'),
-            ...getList('online'),
-            ...getList('bylampa')
-        ].map(item => item.url);
-        
-        const installedBlock = document.querySelector('.extensions__block');
-        
-        if (installedBlock) {
-            const items = installedBlock.querySelectorAll('.extensions__item');
-            items.forEach(item => {
-                const descr = item.querySelector('.extensions__item-descr');
-                if (descr) {
-                    const url = descr.textContent;
-                    if (allUrls.includes(url)) {
-                        item.style.display = 'none';
-                    } else {
-                        item.style.display = '';
+                    if (url.length > 300) {
+                        notify(tr('account_export_fail_600', 'Слишком длинная ссылка'));
+                        if (line && line.toggle) line.toggle();
+                        return;
                     }
-                }
+
+                    list = getList(category.key);
+
+                    if (list.some(function (item) { return (item.url || item.link) === url; })) {
+                        notify('Плагин уже есть в разделе ' + category.title);
+                        if (line && line.toggle) line.toggle();
+                        return;
+                    }
+
+                    data = normalizePlugin({
+                        url: url,
+                        name: tr('extensions_no_name', 'No name'),
+                        author: category.title,
+                        status: 1
+                    }, category);
+
+                    list.unshift(data);
+                    saveList(category.key, list);
+
+                    try {
+                        if (Lampa.Plugins && Lampa.Plugins.add) {
+                            addingFromCategory = true;
+                            Lampa.Plugins.add({
+                                url: data.url,
+                                name: data.name,
+                                author: data.author,
+                                status: data.status
+                            });
+                        }
+                    } catch (e) {
+                    } finally {
+                        addingFromCategory = false;
+                    }
+
+                try {
+                    if (line && line.append) {
+                        line.data.unshift(data);
+                        line.append(data);
+                        line.last = button;
+                        if (Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
+                    }
+                } catch (e) {}
+
+                    try {
+                        cleanupInstalledDuplicates(document);
+                    } catch (e) {}
+
+                    if (line && line.toggle) line.toggle();
+                });
+            } catch (e) {
+                log('category add failed', e && e.message);
+            }
+        });
+
+        return button;
+    }
+
+    function attachCategoryAddButton(extensions, category) {
+        var line = extensions.items && extensions.items[extensions.items.length - 1];
+        var button;
+
+        if (!line || line.__myExtAddButtonAttached) return;
+
+        button = createCategoryAddButton(category, line);
+
+        try {
+            line.scroll.body(true).appendChild(button);
+            line.last = button;
+            line.__myExtAddButtonAttached = true;
+        } catch (e) {
+            log('attach add button failed', e && e.message);
+        }
+    }
+
+    function cleanupInstalledDuplicates(root) {
+        var urls = allCategoryUrls();
+
+        if (!root || !urls.length) return;
+
+        Array.prototype.slice.call(root.querySelectorAll('.extensions__block')).forEach(function (block) {
+            var title = block.querySelector('.extensions__block-title');
+            var isInstalled = title && title.textContent.indexOf(tr('extensions_from_memory', 'Установленные в память')) >= 0;
+
+            if (!isInstalled && title && title.textContent.indexOf('Установленные') >= 0) isInstalled = true;
+            if (!isInstalled) return;
+
+            Array.prototype.slice.call(block.querySelectorAll('.extensions__item')).forEach(function (item) {
+                var descr = item.querySelector('.extensions__item-descr');
+                var url = descr && descr.textContent;
+
+                if (url && urls.indexOf(url) >= 0) item.style.display = 'none';
             });
-        }
+        });
     }
 
-    // Вставка блоков
-    function insertMyBlocks() {
-        // Ищем все блоки
-        const blocks = document.querySelectorAll('.extensions__block');
-        
-        // Находим блок "Установленные в память"
-        let installedBlock = null;
-        
-        blocks.forEach((block) => {
-            const title = block.querySelector('.extensions__block-title');
-            if (title && title.textContent.includes('Установленные в память')) {
-                installedBlock = block;
-            }
-        });
+    function patchExtensionMenus(root) {
+        if (!root || root.__myExtMenuPatched) return;
+        root.__myExtMenuPatched = true;
 
-        if (!installedBlock) {
-            setTimeout(insertMyBlocks, 300);
-            return;
-        }
+        root.addEventListener('hover:enter', function (event) {
+            var item = event.target && event.target.closest && event.target.closest('.extensions__item.selector');
+            var descr = item && item.querySelector('.extensions__item-descr');
+            var url = descr && descr.textContent;
 
-        // Удаляем старые блоки если есть
-        ['favorite', 'my', 'online', 'bylampa'].forEach(category => {
-            const oldBlock = document.getElementById(`${category}-extensions-block`);
-            if (oldBlock) oldBlock.remove();
-        });
+            if (!item || !url) return;
 
-        // Создаем новые блоки
-        const favoriteBlock = createBlock('Избранное', 'favorite');
-        const myBlock = createBlock('Мои', 'my');
-        const onlineBlock = createBlock('Онлайн', 'online');
-        const bylampaBlock = createBlock('ByLampa', 'bylampa');
+            item.__myExtLastUrl = url;
+        }, true);
 
-        // Вставляем блоки после установленных
-        installedBlock.parentNode.insertBefore(favoriteBlock, installedBlock.nextSibling);
-        favoriteBlock.parentNode.insertBefore(myBlock, favoriteBlock.nextSibling);
-        myBlock.parentNode.insertBefore(onlineBlock, myBlock.nextSibling);
-        onlineBlock.parentNode.insertBefore(bylampaBlock, onlineBlock.nextSibling);
-
-        cleanupInstalledBlock();
-
-        // Обновляем навигацию несколько раз для надежности
-        setTimeout(() => {
-            if (Lampa.Navigation) {
-                Lampa.Navigation.update();
-            }
-        }, 300);
-        
-        setTimeout(() => {
-            if (Lampa.Navigation) {
-                Lampa.Navigation.update();
-            }
-        }, 1000);
+        cleanupInstalledDuplicates(root);
     }
 
-    // Перехватываем открытие расширений
-    const originalShow = Lampa.Extensions?.show;
-    if (originalShow) {
-        Lampa.Extensions.show = function(params) {
-            const result = originalShow.call(this, params);
-            
-            // Пробуем вставить блоки несколько раз с разными задержками
-            setTimeout(insertMyBlocks, 500);
-            setTimeout(insertMyBlocks, 1000);
-            setTimeout(insertMyBlocks, 1500);
-            setTimeout(insertMyBlocks, 2000);
-            
+    function injectNativeLines(extensions) {
+        if (!extensions || extensions.__myExtLinesWrapped) return;
+        extensions.__myExtLinesWrapped = true;
+
+        var originalAppendLine = extensions.appendLine.bind(extensions);
+        var injected = false;
+        var appendCount = 0;
+
+        extensions.appendLine = function (data, params) {
+            var result = originalAppendLine(data, params);
+
+            appendCount++;
+
+            if (!injected && appendCount === 1) {
+                injected = true;
+
+                CATEGORIES.forEach(function (category) {
+                    originalAppendLine(categoryData(category), {
+                        title: category.title,
+                        type: 'installs',
+                        autocheck: true,
+                        my_ext_category: category.key
+                    });
+
+                    attachCategoryAddButton(extensions, category);
+                });
+            }
+
             return result;
         };
     }
 
-    // Следим за изменениями в DOM
-    const observer = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-            if (mutation.type === 'childList') {
-                // Проверяем, появился ли блок с установленными расширениями
-                const blocks = document.querySelectorAll('.extensions__block');
-                if (blocks.length > 0) {
-                    const installedBlock = Array.from(blocks).find(block => {
-                        const title = block.querySelector('.extensions__block-title');
-                        return title && title.textContent.includes('Установленные в память');
-                    });
-                    
-                    if (installedBlock && !document.getElementById('favorite-extensions-block')) {
-                        setTimeout(insertMyBlocks, 500);
+    function hookExtensionsOpen() {
+        if (!Lampa.Extensions || !Lampa.Extensions.listener) return false;
+        if (Lampa.Extensions.listener.__myExtHooked) return true;
+
+        Lampa.Extensions.listener.follow('open', function (event) {
+            if (!event || !event.extensions) return;
+
+            injectNativeLines(event.extensions);
+
+            setTimeout(function () {
+                try {
+                    patchExtensionMenus(event.extensions.render && event.extensions.render());
+                } catch (e) {}
+            }, 500);
+        });
+
+        Lampa.Extensions.listener.__myExtHooked = true;
+        return true;
+    }
+
+    function hookPluginsAdd() {
+        if (!Lampa.Plugins || typeof Lampa.Plugins.add !== 'function') return false;
+        if (Lampa.Plugins.add.__myExtWrapped) return true;
+
+        var originalAdd = Lampa.Plugins.add;
+
+        Lampa.Plugins.add = function (data) {
+            var result = originalAdd.apply(this, arguments);
+
+            try {
+                if (!addingFromCategory && data && data.url) {
+                    var list = getList('my');
+
+                    if (!list.some(function (item) { return item.url === data.url; })) {
+                        list.unshift({
+                            url: data.url,
+                            name: data.name || tr('extensions_no_name', 'No name'),
+                            author: data.author || 'Мои',
+                            descr: data.descr || data.description || data.url,
+                            status: data.status === 0 ? 0 : 1
+                        });
+
+                        saveList('my', list);
                     }
                 }
-            }
+            } catch (e) {}
+
+            return result;
+        };
+
+        Lampa.Plugins.add.__myExtWrapped = true;
+        return true;
+    }
+
+    function hookPluginsRemove() {
+        if (!Lampa.Plugins || typeof Lampa.Plugins.remove !== 'function') return false;
+        if (Lampa.Plugins.remove.__myExtWrapped) return true;
+
+        var originalRemove = Lampa.Plugins.remove;
+
+        Lampa.Plugins.remove = function (data) {
+            var url = data && (data.url || data.link);
+            var result = originalRemove.apply(this, arguments);
+
+            try {
+                removeFromCategoryLists(url);
+            } catch (e) {}
+
+            return result;
+        };
+
+        Lampa.Plugins.remove.__myExtWrapped = true;
+        return true;
+    }
+
+    function hookPluginsSave() {
+        if (!Lampa.Plugins || typeof Lampa.Plugins.save !== 'function') return false;
+        if (Lampa.Plugins.save.__myExtWrapped) return true;
+
+        var originalSave = Lampa.Plugins.save;
+
+        Lampa.Plugins.save = function (data) {
+            var oldUrl = data && (data.url || data.link);
+            var result = originalSave.apply(this, arguments);
+
+            try {
+                if (data && oldUrl) {
+                    updateCategoryItem(oldUrl, {
+                        url: data.url || data.link,
+                        link: data.link || data.url,
+                        name: data.name,
+                        author: data.author,
+                        descr: data.descr || data.description || data.url || data.link,
+                        status: data.status === 0 ? 0 : 1
+                    });
+                }
+            } catch (e) {}
+
+            return result;
+        };
+
+        Lampa.Plugins.save.__myExtWrapped = true;
+        return true;
+    }
+
+    function start() {
+        if (!window.Lampa || !Lampa.Extensions || !Lampa.Plugins) {
+            setTimeout(start, 500);
+            return;
         }
-    });
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+        ensureDefaults();
+        hookExtensionsOpen();
+        hookPluginsAdd();
+        hookPluginsRemove();
+        hookPluginsSave();
 
-    console.log('Плагин готов к вставке блоков');
+        log('ready');
+    }
+
+    if (window.Lampa && Lampa.Listener) {
+        Lampa.Listener.follow('app', function (event) {
+            if (event && event.type === 'ready') start();
+        });
+        setTimeout(start, 1000);
+    } else {
+        var wait = setInterval(function () {
+            if (window.Lampa && Lampa.Listener) {
+                clearInterval(wait);
+                Lampa.Listener.follow('app', function (event) {
+                    if (event && event.type === 'ready') start();
+                });
+                setTimeout(start, 1000);
+            }
+        }, 300);
+    }
 })();
