@@ -324,6 +324,12 @@
         "    transform: scale(1.8) !important;" +
         "    box-sizing: border-box !important;" +
         "}" +
+        ".rate--bylampa_full .source--name {" +
+        "    line-height: 0 !important;" +
+        "}" +
+        ".rate--bylampa_full .source--name svg {" +
+        "    font-size: 16px !important;" +
+        "}" +
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
         ".rate--orange { color: #ff9800; }" +
@@ -475,7 +481,7 @@
     var QUALITY_CACHE = 'maxsm_ratings_quality_cache';
     var OMDB_API_KEYS = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEYS) || ['18a1eec9', 'd3a7a896']; // api ключи массивом
     var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a', '5421e2f6-e0ed-4c08-aee9-492334f88937', '34abd082-4543-44a2-84fb-2169f49ce93e']; // api ключи массивом
-    var PROXY_TIMEOUT = 5000; // Таймаут прокси
+    var PROXY_TIMEOUT = 1000; // Таймаут прокси
     var JACRED_PROTOCOL = 'http://'; // Протокол JacRed
     //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     //var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
@@ -1390,8 +1396,8 @@ function updateQualityElement(quality, localCurrentCard, render) {
         
         var rateLine = $('.full-start-new__rate-line', render);
         if (rateLine.length) {
-            rateLine.css('visibility', 'hidden');
-            rateLine.addClass('done'); 
+            rateLine.addClass('done');
+            forceReplacebylampaWithStar();
             addLoadingAnimation(localCurrentCard, render);
         }
         
@@ -1507,8 +1513,8 @@ function updateQualityElement(quality, localCurrentCard, render) {
             insertRatings(ratingsData.rt, ratingsData.mc, ratingsData.oscars, ratingsData.awards, ratingsData.emmy, localCurrentCard, render);
 
             // Принудительно заменяем BYLAMPA на звездочку
-            setTimeout(forceReplacebylampaWithStar, 100);
-            setTimeout(replaceTmdbInFullStartDeta, 100);
+            setTimeout(forceReplacebylampaWithStar, 50);
+            setTimeout(replaceTmdbInFullStartDeta, 50);
             
             // Обновляем скрытые элементы
             updateHiddenElements(ratingsData, localCurrentCard, render);
