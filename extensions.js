@@ -99,7 +99,7 @@
         var inCategory = findCategoryByUrl(url);
 
         if (inCategory) {
-            if (inCategory.key === category.key) notify('Плагин уже есть в разделе ' + category.title);
+            if (inCategory.key === category.key) notify('Плагин уже есть в этом разделе');
             else notify('Плагин уже есть в разделе ' + inCategory.title);
             return true;
         }
