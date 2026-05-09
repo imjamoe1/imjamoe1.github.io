@@ -427,45 +427,6 @@
     }
 
     function hookPluginsAdd() {
-        if (!Lampa.Plugins || typeof Lampa.Plugins.add !== 'function') return false;
-        if (Lampa.Plugins.add.__myExtWrapped) return true;
-
-        var originalAdd = Lampa.Plugins.add;
-
-        Lampa.Plugins.add = function (data) {
-            var installed;
-            var result = originalAdd.apply(this, arguments);
-
-            try {
-                if (!addingFromCategory && data && data.url) {
-                    installed = findInstalledPlugin(data.url);
-
-                    if (installed && installed !== data) {
-                        if (installed.status === 0) notify('Плагин уже установлен, но отключен в расширениях!');
-                        else notify('Плагин уже установлен!');
-                        return result;
-                    }
-
-                    var list = getList('my');
-
-                    if (!findCategoryByUrl(data.url)) {
-                        list.unshift({
-                            url: data.url,
-                            name: data.name || tr('extensions_no_name', 'No name'),
-                            author: data.author || 'Мои',
-                            descr: data.descr || data.description || data.url,
-                            status: data.status === 0 ? 0 : 1
-                        });
-
-                        saveList('my', list);
-                    }
-                }
-            } catch (e) {}
-
-            return result;
-        };
-
-        Lampa.Plugins.add.__myExtWrapped = true;
         return true;
     }
 
