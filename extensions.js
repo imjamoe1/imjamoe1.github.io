@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.0
-// @description  Добавляет категории в Расширения через extensions.appendLine()
+// @version      1.5
+// @description  Добавляет категории в родной экран расширений через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
 // @grant        none
@@ -47,6 +47,70 @@
 
     function saveList(category, list) {
         localStorage.setItem('lampa_' + category + '_extensions', JSON.stringify(list));
+    }
+
+    function normalizeUrl(url) {
+        return String(url || '').trim();
+    }
+
+    function findInstalledPlugin(url) {
+        var target = normalizeUrl(url);
+        var plugins = [];
+
+        if (!target) return null;
+
+        try {
+            if (Lampa.Plugins && Lampa.Plugins.get) plugins = Lampa.Plugins.get() || [];
+        } catch (e) {}
+
+        if (!plugins.length) {
+            try {
+                plugins = JSON.parse(localStorage.getItem('plugins') || '[]') || [];
+            } catch (e) {
+                plugins = [];
+            }
+        }
+
+        return plugins.find(function (item) {
+            return normalizeUrl(item && (item.url || item.link)) === target;
+        }) || null;
+    }
+
+    function findCategoryByUrl(url) {
+        var target = normalizeUrl(url);
+        var found = null;
+
+        if (!target) return null;
+
+        CATEGORIES.some(function (category) {
+            var has = getList(category.key).some(function (item) {
+                return normalizeUrl(item && (item.url || item.link)) === target;
+            });
+
+            if (has) found = category;
+            return has;
+        });
+
+        return found;
+    }
+
+    function showInstallBlockedMessage(url, category) {
+        var installed = findInstalledPlugin(url);
+        var inCategory = findCategoryByUrl(url);
+
+        if (inCategory) {
+            if (inCategory.key === category.key) notify('Плагин уже есть в разделе ' + category.title);
+            else notify('Плагин уже есть в разделе ' + inCategory.title);
+            return true;
+        }
+
+        if (installed) {
+            if (installed.status === 0) notify('Плагин уже установлен, но отключен в расширениях!');
+            else notify('Плагин уже установлен!');
+            return true;
+        }
+
+        return false;
     }
 
     function removeFromCategoryLists(url) {
@@ -113,6 +177,36 @@
         return urls;
     }
 
+    function filterInstalledDuplicates(data) {
+        var urls = allCategoryUrls();
+
+        if (!urls.length || !data || !data.filter) return data;
+
+        return data.filter(function (item) {
+            var url = item && (item.url || item.link);
+            return !url || urls.indexOf(url) < 0;
+        });
+    }
+
+    function removePluginFromStorageByUrl(url) {
+        if (!url) return;
+
+        try {
+            var raw = localStorage.getItem('plugins') || '[]';
+            var list = JSON.parse(raw);
+
+            if (!Array.isArray(list)) return;
+
+            var filtered = list.filter(function (item) {
+                return item && item.url !== url && item.link !== url;
+            });
+
+            if (filtered.length !== list.length) {
+                localStorage.setItem('plugins', JSON.stringify(filtered));
+            }
+        } catch (e) {}
+    }
+
     function ensureDefaults() {
         CATEGORIES.forEach(function (category) {
             if (!localStorage.getItem('lampa_' + category.key + '_extensions')) {
@@ -158,19 +252,20 @@
                         return;
                     }
 
+                    url = normalizeUrl(url);
+
                     if (url.length > 300) {
                         notify(tr('account_export_fail_600', 'Слишком длинная ссылка'));
                         if (line && line.toggle) line.toggle();
                         return;
                     }
 
-                    list = getList(category.key);
-
-                    if (list.some(function (item) { return (item.url || item.link) === url; })) {
-                        notify('Плагин уже есть в разделе ' + category.title);
+                    if (showInstallBlockedMessage(url, category)) {
                         if (line && line.toggle) line.toggle();
                         return;
                     }
+
+                    list = getList(category.key);
 
                     data = normalizePlugin({
                         url: url,
@@ -284,6 +379,10 @@
         var appendCount = 0;
 
         extensions.appendLine = function (data, params) {
+            if (appendCount === 0 && params && params.type === 'installs') {
+                data = filterInstalledDuplicates(data);
+            }
+
             var result = originalAppendLine(data, params);
 
             appendCount++;
@@ -334,13 +433,22 @@
         var originalAdd = Lampa.Plugins.add;
 
         Lampa.Plugins.add = function (data) {
+            var installed;
             var result = originalAdd.apply(this, arguments);
 
             try {
                 if (!addingFromCategory && data && data.url) {
+                    installed = findInstalledPlugin(data.url);
+
+                    if (installed && installed !== data) {
+                        if (installed.status === 0) notify('Плагин уже установлен, но отключен в расширениях!');
+                        else notify('Плагин уже установлен!');
+                        return result;
+                    }
+
                     var list = getList('my');
 
-                    if (!list.some(function (item) { return item.url === data.url; })) {
+                    if (!findCategoryByUrl(data.url)) {
                         list.unshift({
                             url: data.url,
                             name: data.name || tr('extensions_no_name', 'No name'),
@@ -369,9 +477,21 @@
 
         Lampa.Plugins.remove = function (data) {
             var url = data && (data.url || data.link);
+            var actual;
             var result = originalRemove.apply(this, arguments);
 
             try {
+                if (url && Lampa.Plugins.get) {
+                    actual = Lampa.Plugins.get().find(function (item) {
+                        return item && (item.url === url || item.link === url);
+                    });
+
+                    if (actual && actual !== data) {
+                        originalRemove.call(this, actual);
+                    }
+                }
+
+                removePluginFromStorageByUrl(url);
                 removeFromCategoryLists(url);
             } catch (e) {}
 
