@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
 // @version      1.0
-// @description  Добавляет категории расширений через extensions.appendLine()
+// @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
 // @grant        none
