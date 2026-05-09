@@ -318,17 +318,16 @@
         ".card__quality div {" +	
         "    font-weight: bold !important;" +	
         "}" +		
-        ".rate--bylampa_full .source--name {" +
-        "    width: 2em !important;" +  /* уменьшил с 2.6em */
-        "    height: 2em !important;" + /* уменьшил с 2.4em */
+        ".rate--bylampa_full .source--name.bylampa-replaced {" +
+        "    width: 2em !important;" +
+        "    height: 2em !important;" +
         "    transform: scale(1.8) !important;" +
         "    box-sizing: border-box !important;" +
         "}" +
-        ".rate--bylampa_full .source--name {" +
-        "    line-height: 0 !important;" +
-        "}" +
-        ".rate--bylampa_full .source--name svg {" +
-        "    font-size: 16px !important;" +
+        ".rate--bylampa_full .source--name.bylampa-replaced svg {" +
+        "    width: 100% !important;" +
+        "    height: 100% !important;" +
+        "    display: block !important;" +
         "}" +
         ".rate--green  { color: #4caf50; }" +
         ".rate--lime   { color: #cddc39; }" +
@@ -1564,51 +1563,46 @@ function replaceTmdbInFullStartDeta() {
 }
 
 // Функция для принудительной замены текста BYLAMPA на звездочку
-function forceReplacebylampaWithStar() {
-    // Несколько попыток с интервалами
-    let attempts = 0;
-    const maxAttempts = 5;
-    
-    function tryReplace() {
-        attempts++;
-        
-        // Ищем всеми возможными способами
-        const selectors = [
-            '.rate--bylampa_full .source--name',
-            '.rate--bylampa_full > div:last-child',
-            '.rate--bylampa_full div.source--name',
-            '[class*="bylampa"] .source--name',
-            '.full-start__rate .source--name'
-        ];
-        
-        let foundElements = false;
-        
-        selectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            
-            elements.forEach(element => {
-                const text = element.textContent || element.innerText || '';
-                if (text.trim().toUpperCase() === 'BYLAMPA') {
-                    element.innerHTML = bylampa_svg;
-                    element.classList.add('source--name');
-                    foundElements = true;
-                    console.log("MAXSM-RATINGS: Replaced BYLAMPA with star using selector:", selector);
-                }
-            });
-        });
-        
-        // Если не нашли или есть еще попытки, пробуем снова
-        if (!foundElements && attempts < maxAttempts) {
-            setTimeout(tryReplace, 200);
-        } else if (foundElements) {
-            console.log("MAXSM-RATINGS: Successfully replaced BYLAMPA with star");
-        } else {
-            console.log("MAXSM-RATINGS: Could not find BYLAMPA elements to replace");
+function forceReplacebylampaWithStar(root) {
+    root = root || document;
+
+    var candidates = root.querySelectorAll(
+        '.rate--bylampa_full .source--name, ' +
+        '[class*="bylampa"] .source--name, ' +
+        '.full-start__rate .source--name'
+    );
+
+    for (var i = 0; i < candidates.length; i++) {
+        var element = candidates[i];
+        var text = (element.textContent || element.innerText || '').replace(/\s+/g, '').toUpperCase();
+
+        if (text === 'BYLAMPA' || text === 'BYLAMPAFULL') {
+            element.innerHTML = bylampa_svg;
+            element.classList.add('source--name');
+            element.classList.add('rate--icon');
+            element.classList.add('bylampa-replaced');
         }
     }
-    
-    // Запускаем первую попытку
-    setTimeout(tryReplace, 100);
+}
+
+var bylampaReplaceObserver = new MutationObserver(function(mutations) {
+    for (var i = 0; i < mutations.length; i++) {
+        var node = mutations[i].target;
+
+        if (node && node.nodeType === 1) {
+            forceReplacebylampaWithStar(node);
+        }
+    }
+});
+
+function startBylampaReplaceObserver() {
+    forceReplacebylampaWithStar(document);
+
+    bylampaReplaceObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
 }
     
 //-------------------------------------------MODALKA---------------------------------------------------------
@@ -2342,6 +2336,7 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
     function startPlugin() {
         if (C_LOGGING) console.log("MAXSM-RATINGS", " Hello!"); 
         window.maxsmRatingsPlugin = true;
+        startBylampaReplaceObserver();
         
         if (!localStorage.getItem('maxsm_ratings_awards')) {
             localStorage.setItem('maxsm_ratings_awards', 'true');
@@ -2581,13 +2576,14 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
         }
         
         // Попадания внутри карточки
-		Lampa.Listener.follow('full', function (e) {
-			if (e.type == 'complite') {
-				var render = e.object.activity.render();
-				globalCurrentCard = e.data.movie.id;
+	Lampa.Listener.follow('full', function (e) {
+            if (e.type == 'complite') {
+                var render = e.object.activity.render();
+                forceReplacebylampaWithStar(render[0] || render);
+                globalCurrentCard = e.data.movie.id;
                 fetchAdditionalRatings(e.data.movie, render);
-			}
-		});
+            }
+        });
     }
 
 // Добавление рейтинга Lampa на страницу полного описания
