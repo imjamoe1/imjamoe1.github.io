@@ -1394,7 +1394,7 @@ Lampa.SettingsApi.addParam({
                 border-radius: 0.3em;
                 box-shadow: none;
                 overflow: hidden;
-                text-shadow: 5px 5px 5px #000;
+                text-shadow: 5px -5px 0 #000;
                 letter-spacing: normal;
                 line-height: 1em; }
 
