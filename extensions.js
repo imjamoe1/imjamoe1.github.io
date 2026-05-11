@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.5
+// @version      1.1
 // @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
@@ -20,6 +20,9 @@
         { key: 'bylampa', title: 'ByLampa' }
     ];
     var addingFromCategory = false;
+    var categoryLines = {};
+    var currentMenuContext = null;
+    var moveState = null;
 
     function log() {
         try {
@@ -221,6 +224,186 @@
         } catch (e) {}
     }
 
+    function injectMoveStyle() {
+        if (document.getElementById('lampa-my-ext-move-style')) return;
+
+        var style = document.createElement('style');
+        style.id = 'lampa-my-ext-move-style';
+        style.textContent =
+            '@keyframes lampaMyExtMoveBlink{' +
+                '0%,100%{outline:0.18em solid rgba(255,214,0,1);filter:brightness(1.25)}' +
+                '50%{outline:0.18em solid rgba(255,214,0,0.1);filter:brightness(0.75)}' +
+            '}' +
+            '.lampa-my-ext-moving{' +
+                'animation:lampaMyExtMoveBlink .75s linear infinite!important;' +
+                'outline-offset:-0.18em!important;' +
+            '}';
+
+        document.head.appendChild(style);
+    }
+
+    function categoryByTitle(title) {
+        return CATEGORIES.find(function (category) {
+            return title && title.trim() === category.title;
+        }) || null;
+    }
+
+    function categoryByBlock(block) {
+        var title = block && block.querySelector('.extensions__block-title');
+        return categoryByTitle(title && title.textContent);
+    }
+
+    function itemUrl(itemObject) {
+        return normalizeUrl(itemObject && itemObject.data && (itemObject.data.url || itemObject.data.link));
+    }
+
+    function lineItemElement(itemObject) {
+        try {
+            return itemObject && itemObject.render ? itemObject.render() : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function saveLineOrder(line, category) {
+        if (!line || !line.items || !category) return;
+
+        saveList(category.key, line.items.map(function (item) {
+            return normalizePlugin(item.data || {}, category);
+        }));
+    }
+
+    function setMovingElement(element) {
+        document.querySelectorAll('.lampa-my-ext-moving').forEach(function (node) {
+            node.classList.remove('lampa-my-ext-moving');
+        });
+
+        if (element) element.classList.add('lampa-my-ext-moving');
+    }
+
+    function stopMoveMode(save) {
+        if (!moveState) return;
+
+        if (save) saveLineOrder(moveState.line, moveState.category);
+
+        setMovingElement(null);
+        notify('Позиция сохранена');
+
+        try {
+            if (moveState.line && moveState.line.toggle) moveState.line.toggle();
+        } catch (e) {}
+
+        moveState = null;
+    }
+
+    function moveActiveItem(step) {
+        var line;
+        var items;
+        var from;
+        var to;
+        var active;
+        var target;
+        var activeElement;
+        var targetElement;
+        var body;
+
+        if (!moveState) return;
+
+        line = moveState.line;
+        items = line && line.items;
+        if (!items || !items.length) return;
+
+        from = moveState.index;
+        to = from + step;
+
+        if (to < 0 || to > items.length - 1) return;
+
+        active = items[from];
+        target = items[to];
+        activeElement = lineItemElement(active);
+        targetElement = lineItemElement(target);
+        body = line.scroll && line.scroll.body && line.scroll.body(true);
+
+        if (!activeElement || !targetElement || !body) return;
+
+        if (step > 0) body.insertBefore(targetElement, activeElement);
+        else body.insertBefore(activeElement, targetElement);
+
+        items[from] = target;
+        items[to] = active;
+        line.data = items.map(function (item) { return item.data; });
+        line.active = to;
+        moveState.index = to;
+
+        setMovingElement(activeElement);
+
+        try {
+            line.last = activeElement;
+            if (line.scroll && line.scroll.update) line.scroll.update(activeElement, true);
+        } catch (e) {}
+    }
+
+    function startMoveMode(context) {
+        var category;
+        var line;
+        var index;
+        var element;
+
+        if (!context || !context.url || !context.category) return;
+
+        category = context.category;
+        line = categoryLines[category.key];
+
+        if (!line || !line.items || !line.items.length) {
+            notify('В этом разделе нечего перемещать');
+            return;
+        }
+
+        index = line.items.findIndex(function (item) {
+            return itemUrl(item) === normalizeUrl(context.url);
+        });
+
+        if (index < 0) {
+            notify('Не удалось найти плагин в разделе');
+            return;
+        }
+
+        element = lineItemElement(line.items[index]);
+        moveState = {
+            category: category,
+            line: line,
+            index: index
+        };
+
+        setMovingElement(element);
+        notify('Режим перемещения: влево/вправо, OK или назад - сохранить');
+
+        try {
+            line.last = element;
+            if (line.toggle) line.toggle();
+        } catch (e) {}
+    }
+
+    function handleMoveKeys(event) {
+        var key = event.key;
+        var code = event.keyCode || event.which;
+        var left = key === 'ArrowLeft' || code === 37;
+        var right = key === 'ArrowRight' || code === 39;
+        var accept = key === 'Enter' || key === 'OK' || code === 13;
+        var back = key === 'Escape' || key === 'Backspace' || code === 8 || code === 27 || code === 461 || code === 10009;
+
+        if (!moveState) return;
+        if (!left && !right && !accept && !back) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+
+        if (left) moveActiveItem(-1);
+        else if (right) moveActiveItem(1);
+        else stopMoveMode(true);
+    }
+
     function controllerBackToCurrent() {
         try {
             if (Lampa.Controller && Lampa.Controller.enabled && Lampa.Controller.toggle) {
@@ -321,6 +504,7 @@
 
         if (!line || line.__myExtAddButtonAttached) return;
 
+        categoryLines[category.key] = line;
         button = createCategoryAddButton(category, line);
 
         try {
@@ -359,12 +543,18 @@
 
         root.addEventListener('hover:enter', function (event) {
             var item = event.target && event.target.closest && event.target.closest('.extensions__item.selector');
+            var block = item && item.closest('.extensions__block');
             var descr = item && item.querySelector('.extensions__item-descr');
             var url = descr && descr.textContent;
+            var category = categoryByBlock(block);
 
             if (!item || !url) return;
 
             item.__myExtLastUrl = url;
+            currentMenuContext = category ? {
+                category: category,
+                url: normalizeUrl(url)
+            } : null;
         }, true);
 
         cleanupInstalledDuplicates(root);
@@ -423,6 +613,54 @@
         });
 
         Lampa.Extensions.listener.__myExtHooked = true;
+        return true;
+    }
+
+    function hookSelectMoveMenu() {
+        if (!Lampa.Select || typeof Lampa.Select.show !== 'function') return false;
+        if (Lampa.Select.show.__myExtMoveWrapped) return true;
+
+        var originalShow = Lampa.Select.show;
+
+        Lampa.Select.show = function (params) {
+            var originalOnSelect;
+            var insertIndex;
+            var hasMove;
+            var context = currentMenuContext;
+
+            if (context && params && params.items && params.items.find) {
+                hasMove = params.items.some(function (item) {
+                    return item && item.my_ext_move;
+                });
+
+                if (!hasMove) {
+                    insertIndex = params.items.findIndex(function (item) {
+                        return item && item.change === 'url';
+                    });
+
+                    if (insertIndex >= 0) {
+                        params.items.splice(insertIndex + 1, 0, {
+                            title: 'Переместить',
+                            my_ext_move: true
+                        });
+                    }
+                }
+
+                originalOnSelect = params.onSelect;
+                params.onSelect = function (action) {
+                    if (action && action.my_ext_move) {
+                        startMoveMode(context);
+                        return;
+                    }
+
+                    if (originalOnSelect) originalOnSelect.apply(this, arguments);
+                };
+            }
+
+            return originalShow.call(this, params);
+        };
+
+        Lampa.Select.show.__myExtMoveWrapped = true;
         return true;
     }
 
@@ -500,10 +738,18 @@
         }
 
         ensureDefaults();
+        injectMoveStyle();
         hookExtensionsOpen();
+        hookSelectMoveMenu();
         hookPluginsAdd();
         hookPluginsRemove();
         hookPluginsSave();
+
+        if (!window.__lampaMyExtensionMoveKeysBound) {
+            window.__lampaMyExtensionMoveKeysBound = true;
+            document.addEventListener('keydown', handleMoveKeys, true);
+            window.addEventListener('keydown', handleMoveKeys, true);
+        }
 
         log('ready');
     }
