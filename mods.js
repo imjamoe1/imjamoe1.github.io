@@ -529,7 +529,7 @@ rating_kp_imdb: function (card) {
             url: kp_prox + "https://kinopoiskapiunofficial.tech/",
             rating_url: kp_prox + "https://rating.kinopoisk.ru/",
             headers: {
-                "X-API-KEY": "7fdba022-d72e-43d7-aa82-4ce175c280a6",
+                "X-API-KEY": "34abd082-4543-44a2-84fb-2169f49ce93e",
             },
             cache_time: 60 * 60 * 24 * 1000,
         };
