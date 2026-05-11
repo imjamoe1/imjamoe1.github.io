@@ -523,13 +523,13 @@ rating_kp_imdb: function (card) {
         var search_date = card.release_date || card.first_air_date || card.last_air_date || "0000";
         var search_year = parseInt((search_date + "").slice(0, 4));
         var orig = card.original_title || card.original_name;
-        var kp_prox = "https://cors.kp556.workers.dev:8443/";
+        var kp_prox = "https://worker-patient-dream-26d8.bdvburik.workers.dev:8443/";
         var params = {
             id: card.id,
             url: kp_prox + "https://kinopoiskapiunofficial.tech/",
             rating_url: kp_prox + "https://rating.kinopoisk.ru/",
             headers: {
-                "X-API-KEY": "34abd082-4543-44a2-84fb-2169f49ce93e",
+                "X-API-KEY": "7fdba022-d72e-43d7-aa82-4ce175c280a6",
             },
             cache_time: 60 * 60 * 24 * 1000,
         };
