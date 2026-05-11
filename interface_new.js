@@ -8,7 +8,7 @@
     window.plugin_interface_ready_v3 = true;
 
     // --- Конфигурация Kinopoisk ---
-    var kp_prox = 'https://cors.fx666.workers.dev:8443/';
+    var kp_prox = 'https://cors.kp556.workers.dev:8443/';
     const KP_CONFIG = {
         api_url: kp_prox + 'https://kinopoiskapiunofficial.tech/',
         rating_url: kp_prox + 'https://rating.kinopoisk.ru/',
