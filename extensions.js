@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.1
+// @version      1.2
 // @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
@@ -21,6 +21,7 @@
     ];
     var addingFromCategory = false;
     var categoryLines = {};
+    var installedLine = null;
     var currentMenuContext = null;
     var moveState = null;
 
@@ -253,6 +254,37 @@
         return categoryByTitle(title && title.textContent);
     }
 
+    function isInstalledBlock(block) {
+        var title = block && block.querySelector('.extensions__block-title');
+        var text = title && title.textContent;
+
+        return !!(text && (
+            text.indexOf(tr('extensions_from_memory', 'Установленные в память')) >= 0 ||
+            text.indexOf('Установленные') >= 0
+        ));
+    }
+
+    function moveContextByBlock(block, url) {
+        var category = categoryByBlock(block);
+
+        if (category) {
+            return {
+                type: 'category',
+                category: category,
+                url: normalizeUrl(url)
+            };
+        }
+
+        if (isInstalledBlock(block)) {
+            return {
+                type: 'installed',
+                url: normalizeUrl(url)
+            };
+        }
+
+        return null;
+    }
+
     function itemUrl(itemObject) {
         return normalizeUrl(itemObject && itemObject.data && (itemObject.data.url || itemObject.data.link));
     }
@@ -273,6 +305,25 @@
         }));
     }
 
+    function saveInstalledLineOrder(line) {
+        var list;
+
+        if (!line || !line.items) return;
+
+        list = line.items.map(function (item) {
+            return Object.assign({}, item.data || {});
+        }).reverse();
+
+        localStorage.setItem('plugins', JSON.stringify(list));
+    }
+
+    function saveMoveOrder(state) {
+        if (!state) return;
+
+        if (state.type === 'installed') saveInstalledLineOrder(state.line);
+        else saveLineOrder(state.line, state.category);
+    }
+
     function setMovingElement(element) {
         document.querySelectorAll('.lampa-my-ext-moving').forEach(function (node) {
             node.classList.remove('lampa-my-ext-moving');
@@ -284,7 +335,7 @@
     function stopMoveMode(save) {
         if (!moveState) return;
 
-        if (save) saveLineOrder(moveState.line, moveState.category);
+        if (save) saveMoveOrder(moveState);
 
         setMovingElement(null);
         notify('Позиция сохранена');
@@ -349,13 +400,13 @@
         var index;
         var element;
 
-        if (!context || !context.url || !context.category) return;
+        if (!context || !context.url) return;
 
         category = context.category;
-        line = categoryLines[category.key];
+        line = context.type === 'installed' ? installedLine : categoryLines[category.key];
 
         if (!line || !line.items || !line.items.length) {
-            notify('В этом разделе нечего перемещать');
+            notify(context.type === 'installed' ? 'В установленных нечего перемещать' : 'В этом разделе нечего перемещать');
             return;
         }
 
@@ -370,6 +421,7 @@
 
         element = lineItemElement(line.items[index]);
         moveState = {
+            type: context.type,
             category: category,
             line: line,
             index: index
@@ -546,15 +598,12 @@
             var block = item && item.closest('.extensions__block');
             var descr = item && item.querySelector('.extensions__item-descr');
             var url = descr && descr.textContent;
-            var category = categoryByBlock(block);
+            var context = moveContextByBlock(block, url);
 
             if (!item || !url) return;
 
             item.__myExtLastUrl = url;
-            currentMenuContext = category ? {
-                category: category,
-                url: normalizeUrl(url)
-            } : null;
+            currentMenuContext = context;
         }, true);
 
         cleanupInstalledDuplicates(root);
@@ -579,6 +628,7 @@
 
             if (!injected && appendCount === 1) {
                 injected = true;
+                installedLine = extensions.items && extensions.items[extensions.items.length - 1];
 
                 CATEGORIES.forEach(function (category) {
                     originalAppendLine(categoryData(category), {
