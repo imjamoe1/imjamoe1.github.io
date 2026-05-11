@@ -8,7 +8,7 @@
     window.plugin_interface_ready_v3 = true;
 
     // --- Конфигурация Kinopoisk ---
-    var kp_prox = 'https://cors-anywhere.herokuapp.com/';
+    var kp_prox = 'http://176.106.241.5:80/';
     const KP_CONFIG = {
         api_url: kp_prox + 'https://kinopoiskapiunofficial.tech/',
         rating_url: kp_prox + 'https://rating.kinopoisk.ru/',
