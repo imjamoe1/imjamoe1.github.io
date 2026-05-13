@@ -697,6 +697,15 @@
         
         list.append(logosBtn);
 
+        var header = $('<div class="menu-edit-list__header">' +
+            '<div class="menu-edit-list__header-spacer"></div>' +
+            '<div class="menu-edit-list__header-move">Сдвиг</div>' +
+            '<div class="menu-edit-list__header-edit">Ред</div>' +
+            '<div class="menu-edit-list__header-mode">Вид</div>' +
+            '<div class="menu-edit-list__header-toggle">Показ</div>' +
+            '</div>');
+        list.append(header);
+
         function createColorItem(color) {
             var item = $('<div class="menu-edit-list__item color-item">' +
                 '<div class="menu-edit-list__icon">' +
@@ -1857,6 +1866,12 @@
             '.menu-edit-list__display-mode.focus svg { color: #000 !important; }' +
             '.menu-edit-list__display-mode.focus rect { stroke: #000 !important; }' +
             '.menu-edit-list__display-mode.focus text { fill: #000 !important; }' +
+            '.menu-edit-list__header { display: flex; align-items: center; padding: 0 0.8em; margin-bottom: 0.5em; opacity: 0.6; font-size: 0.85em; }' +
+            '.menu-edit-list__header-spacer { flex: 1; }' +
+            '.menu-edit-list__header-move { width: 5.3em; text-align: center; margin-left: 0.3em; }' +
+            '.menu-edit-list__header-edit { width: 2.9em; text-align: center; margin-right: -0.3em; }' +
+            '.menu-edit-list__header-mode { width: 2.9em; text-align: center; margin-left: 0.2em; }' +
+            '.menu-edit-list__header-toggle { width: 2.4em; text-align: center; margin-right: -0.3em; }' +
             '.menu-edit-list__item.item-hidden {' +
                 'opacity: 0.45;' +
                 'filter: grayscale(1);' +
