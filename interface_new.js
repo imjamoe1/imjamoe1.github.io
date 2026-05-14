@@ -2343,50 +2343,10 @@
 						},
 						onBack: function () {
 							Lampa.Controller.toggle("settings_component");
-						},
+						}
 					});
 				});
-			},
-		});
-
-		var initInterval = setInterval(function () {
-			if (typeof Lampa !== "undefined") {
-				clearInterval(initInterval);
-				if (!Lampa.Storage.get("int_plug", false)) {
-					setDefaultSettings();
-				}
 			}
-		}, 200);
-
-		function setDefaultSettings() {
-			Lampa.Storage.set("int_plug", "true");
-			Lampa.Storage.set("wide_post", "true");
-			Lampa.Storage.set("logo_show", "true");
-			Lampa.Storage.set("desc", 'true');
-			Lampa.Storage.set("show_background", "true");
-			Lampa.Storage.set("background_resolution", "original");
-			Lampa.Storage.set("status", "true");
-			Lampa.Storage.set("seas", "false");
-			Lampa.Storage.set("eps", "false");
-			Lampa.Storage.set("year_ogr", "true");
-			Lampa.Storage.set("vremya", "true");
-			Lampa.Storage.set("ganr", "true");
-			Lampa.Storage.set("rat", "true");
-			Lampa.Storage.set("colored_ratings", "true");
-			Lampa.Storage.set("async_load", "true");
-			Lampa.Storage.set("hide_captions", "true");
-			Lampa.Storage.set("rating_border", "false");
-			Lampa.Storage.set("interface_size", "small");
-			
-			Lampa.Storage.set("show_rating_tmdb", "true");
-			Lampa.Storage.set("show_rating_imdb", "true");
-			Lampa.Storage.set("show_rating_kp", "true");
-			Lampa.Storage.set("show_rating_tomatoes", "false");
-			Lampa.Storage.set("show_rating_audience", "false");
-			Lampa.Storage.set("show_rating_metacritic", "false");
-			Lampa.Storage.set("show_rating_trakt", "false");
-			Lampa.Storage.set("show_rating_letterboxd", "false");
-			Lampa.Storage.set("show_rating_rogerebert", "false");
-		}
+		});
 	}
 })();
