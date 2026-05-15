@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.2
+// @version      1.10
 // @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
@@ -24,6 +24,7 @@
     var installedLine = null;
     var currentMenuContext = null;
     var moveState = null;
+    var suppressMenuUntil = 0;
 
     function log() {
         try {
@@ -324,6 +325,89 @@
         else saveLineOrder(state.line, state.category);
     }
 
+    function pluginDataFromItem(item) {
+        var data = Object.assign({}, item && item.data || {});
+
+        data.url = data.url || data.link;
+        data.link = data.link || data.url;
+        data.status = data.status === 0 ? 0 : 1;
+
+        return data;
+    }
+
+    function pushUniquePlugin(list, data) {
+        var url = normalizeUrl(data && (data.url || data.link));
+
+        if (!url) return;
+        if (list.some(function (item) {
+            return normalizeUrl(item && (item.url || item.link)) === url;
+        })) return;
+
+        list.push(data);
+    }
+
+    function savePluginsStorageOrder() {
+        var plugins = [];
+
+        if (installedLine && installedLine.items) {
+            installedLine.items.map(pluginDataFromItem).reverse().forEach(function (item) {
+                pushUniquePlugin(plugins, item);
+            });
+        }
+
+        CATEGORIES.forEach(function (category) {
+            var line = categoryLines[category.key];
+
+            if (line && line.items) {
+                line.items.map(function (item) {
+                    return normalizePlugin(item.data || {}, category);
+                }).forEach(function (item) {
+                    pushUniquePlugin(plugins, item);
+                });
+            } else {
+                categoryData(category).forEach(function (item) {
+                    pushUniquePlugin(plugins, item);
+                });
+            }
+        });
+
+        localStorage.setItem('plugins', JSON.stringify(plugins));
+    }
+
+    function saveAllMoveOrders() {
+        CATEGORIES.forEach(function (category) {
+            saveLineOrder(categoryLines[category.key], category);
+        });
+
+        savePluginsStorageOrder();
+    }
+
+    function orderedMoveTargets() {
+        var targets = [];
+
+        if (installedLine) {
+            targets.push({
+                type: 'installed',
+                category: null,
+                line: installedLine
+            });
+        }
+
+        CATEGORIES.forEach(function (category) {
+            var line = categoryLines[category.key];
+
+            if (line) {
+                targets.push({
+                    type: 'category',
+                    category: category,
+                    line: line
+                });
+            }
+        });
+
+        return targets;
+    }
+
     function setMovingElement(element) {
         document.querySelectorAll('.lampa-my-ext-moving').forEach(function (node) {
             node.classList.remove('lampa-my-ext-moving');
@@ -332,19 +416,48 @@
         if (element) element.classList.add('lampa-my-ext-moving');
     }
 
-    function stopMoveMode(save) {
+    function closeActionMenu() {
+        try {
+            if (Lampa.Select && Lampa.Select.close) Lampa.Select.close();
+        } catch (e) {}
+
+        try {
+            if (Lampa.Modal && Lampa.Modal.close) Lampa.Modal.close();
+        } catch (e) {}
+    }
+
+    function commitMovePosition(message) {
         if (!moveState) return;
 
-        if (save) saveMoveOrder(moveState);
+        saveAllMoveOrders();
+        suppressMenuUntil = Date.now() + 900;
+        currentMenuContext = null;
+
+        if (message) notify(message);
+    }
+
+    function stopMoveMode(save, exitExtensions) {
+        if (!moveState) return;
+
+        if (save) commitMovePosition('Порядок сохранен');
 
         setMovingElement(null);
-        notify('Позиция сохранена');
+        closeActionMenu();
 
         try {
             if (moveState.line && moveState.line.toggle) moveState.line.toggle();
         } catch (e) {}
 
         moveState = null;
+
+        if (exitExtensions) {
+            try {
+                if (Lampa.Controller && Lampa.Controller.back) Lampa.Controller.back();
+                else if (Lampa.Controller && Lampa.Controller.enabled && Lampa.Controller.enabled().controller && Lampa.Controller.enabled().controller.back) {
+                    Lampa.Controller.enabled().controller.back();
+                }
+            } catch (e) {}
+        }
     }
 
     function moveActiveItem(step) {
@@ -394,6 +507,113 @@
         } catch (e) {}
     }
 
+    function insertElementIntoLine(line, element, index) {
+        var body;
+        var refItem;
+        var refElement;
+        var addButton;
+        var nextNode;
+
+        body = line && line.scroll && line.scroll.body && line.scroll.body(true);
+        if (!body || !element) return false;
+
+        refItem = line.items && line.items[index];
+        refElement = lineItemElement(refItem);
+
+        if (refElement && refElement.parentNode === body) {
+            body.insertBefore(element, refElement);
+            keepAddButtonFirst(line);
+            return true;
+        }
+
+        addButton = body.querySelector('.extensions__block-add');
+
+        if (addButton && addButton.parentNode === body) {
+            nextNode = addButton.nextSibling;
+            if (nextNode) body.insertBefore(element, nextNode);
+            else body.appendChild(element);
+        }
+        else body.appendChild(element);
+
+        return true;
+    }
+
+    function keepAddButtonFirst(line) {
+        var body;
+        var addButton;
+
+        body = line && line.scroll && line.scroll.body && line.scroll.body(true);
+        if (!body) return;
+
+        addButton = body.querySelector('.extensions__block-add');
+
+        if (addButton && addButton.parentNode === body && body.firstChild !== addButton) {
+            body.insertBefore(addButton, body.firstChild);
+        }
+    }
+
+    function moveActiveItemToLine(step) {
+        var targets;
+        var currentTargetIndex;
+        var target;
+        var sourceLine;
+        var targetLine;
+        var sourceItems;
+        var targetItems;
+        var fromIndex;
+        var toIndex;
+        var active;
+        var activeElement;
+
+        if (!moveState) return;
+
+        targets = orderedMoveTargets();
+        currentTargetIndex = targets.findIndex(function (item) {
+            return item.line === moveState.line;
+        });
+
+        if (currentTargetIndex < 0) return;
+
+        target = targets[currentTargetIndex + step];
+        if (!target || !target.line) return;
+
+        sourceLine = moveState.line;
+        targetLine = target.line;
+        sourceItems = sourceLine.items || [];
+        targetItems = targetLine.items || [];
+        fromIndex = moveState.index;
+        active = sourceItems[fromIndex];
+        activeElement = lineItemElement(active);
+
+        if (!active || !activeElement) return;
+
+        toIndex = Math.min(fromIndex, targetItems.length);
+
+        sourceItems.splice(fromIndex, 1);
+        targetItems.splice(toIndex, 0, active);
+
+        sourceLine.data = sourceItems.map(function (item) { return item.data; });
+        targetLine.data = targetItems.map(function (item) { return item.data; });
+        sourceLine.active = Math.max(0, Math.min(fromIndex, sourceItems.length - 1));
+        targetLine.active = toIndex;
+
+        insertElementIntoLine(targetLine, activeElement, toIndex);
+        keepAddButtonFirst(targetLine);
+
+        moveState.type = target.type;
+        moveState.category = target.category;
+        moveState.line = targetLine;
+        moveState.index = toIndex;
+
+        setMovingElement(activeElement);
+
+        try {
+            targetLine.last = activeElement;
+            if (targetLine.scroll && targetLine.scroll.update) targetLine.scroll.update(activeElement, true);
+            if (targetLine.toggle) targetLine.toggle();
+        } catch (e) {}
+    }
+
     function startMoveMode(context) {
         var category;
         var line;
@@ -428,7 +648,7 @@
         };
 
         setMovingElement(element);
-        notify('Режим перемещения: влево/вправо, OK или назад - сохранить');
+        notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - зафиксировать, Back - сохранить и выйти');
 
         try {
             line.last = element;
@@ -441,11 +661,13 @@
         var code = event.keyCode || event.which;
         var left = key === 'ArrowLeft' || code === 37;
         var right = key === 'ArrowRight' || code === 39;
+        var up = key === 'ArrowUp' || code === 38;
+        var down = key === 'ArrowDown' || code === 40;
         var accept = key === 'Enter' || key === 'OK' || code === 13;
         var back = key === 'Escape' || key === 'Backspace' || code === 8 || code === 27 || code === 461 || code === 10009;
 
         if (!moveState) return;
-        if (!left && !right && !accept && !back) return;
+        if (!left && !right && !up && !down && !accept && !back) return;
 
         event.preventDefault();
         event.stopPropagation();
@@ -453,7 +675,10 @@
 
         if (left) moveActiveItem(-1);
         else if (right) moveActiveItem(1);
-        else stopMoveMode(true);
+        else if (up) moveActiveItemToLine(-1);
+        else if (down) moveActiveItemToLine(1);
+        else if (accept) stopMoveMode(true, false);
+        else stopMoveMode(true, true);
     }
 
     function controllerBackToCurrent() {
@@ -531,6 +756,7 @@
                     if (line && line.append) {
                         line.data.unshift(data);
                         line.append(data);
+                        keepAddButtonFirst(line);
                         line.last = button;
                         if (Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
                     }
@@ -560,7 +786,7 @@
         button = createCategoryAddButton(category, line);
 
         try {
-            line.scroll.body(true).appendChild(button);
+            line.scroll.body(true).insertBefore(button, line.scroll.body(true).firstChild);
             line.last = button;
             line.__myExtAddButtonAttached = true;
         } catch (e) {
@@ -601,6 +827,13 @@
             var context = moveContextByBlock(block, url);
 
             if (!item || !url) return;
+
+            if (Date.now() < suppressMenuUntil) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+                return;
+            }
 
             item.__myExtLastUrl = url;
             currentMenuContext = context;
@@ -699,6 +932,9 @@
                 originalOnSelect = params.onSelect;
                 params.onSelect = function (action) {
                     if (action && action.my_ext_move) {
+                        closeActionMenu();
+                        suppressMenuUntil = Date.now() + 300;
+                        currentMenuContext = null;
                         startMoveMode(context);
                         return;
                     }
