@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.10
+// @version      1.11
 // @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
@@ -220,6 +220,79 @@
         });
     }
 
+    function restoreCategoriesFromPlugins() {
+        var plugins = [];
+        var changed = {};
+
+        try {
+            plugins = JSON.parse(localStorage.getItem('plugins') || '[]') || [];
+        } catch (e) {
+            plugins = [];
+        }
+
+        plugins.forEach(function (plugin) {
+            var categoryKey = plugin && plugin.my_ext_category;
+            var category = CATEGORIES.find(function (item) {
+                return item.key === categoryKey;
+            });
+            var list;
+            var url;
+
+            if (!category) return;
+
+            url = normalizeUrl(plugin.url || plugin.link);
+            if (!url) return;
+
+            list = getList(category.key);
+
+            if (list.some(function (item) {
+                return normalizeUrl(item && (item.url || item.link)) === url;
+            })) return;
+
+            list.push(normalizePlugin(plugin, category));
+            saveList(category.key, list);
+            changed[category.key] = true;
+        });
+
+        return changed;
+    }
+
+    function syncCategoryMarkersToPlugins() {
+        var plugins = [];
+        var changed = false;
+
+        try {
+            plugins = JSON.parse(localStorage.getItem('plugins') || '[]') || [];
+        } catch (e) {
+            plugins = [];
+        }
+
+        CATEGORIES.forEach(function (category) {
+            getList(category.key).forEach(function (categoryItem) {
+                var url = normalizeUrl(categoryItem && (categoryItem.url || categoryItem.link));
+                var plugin;
+
+                if (!url) return;
+
+                plugin = plugins.find(function (item) {
+                    return normalizeUrl(item && (item.url || item.link)) === url;
+                });
+
+                if (plugin) {
+                    if (plugin.my_ext_category !== category.key) {
+                        plugin.my_ext_category = category.key;
+                        changed = true;
+                    }
+                } else {
+                    plugins.push(normalizePlugin(categoryItem, category));
+                    changed = true;
+                }
+            });
+        });
+
+        if (changed) localStorage.setItem('plugins', JSON.stringify(plugins));
+    }
+
     function notify(text) {
         try {
             if (Lampa.Noty && Lampa.Noty.show) Lampa.Noty.show(text);
@@ -312,7 +385,7 @@
         if (!line || !line.items) return;
 
         list = line.items.map(function (item) {
-            return Object.assign({}, item.data || {});
+            return pluginDataFromItem(item, true);
         }).reverse();
 
         localStorage.setItem('plugins', JSON.stringify(list));
@@ -325,12 +398,13 @@
         else saveLineOrder(state.line, state.category);
     }
 
-    function pluginDataFromItem(item) {
+    function pluginDataFromItem(item, clearCategory) {
         var data = Object.assign({}, item && item.data || {});
 
         data.url = data.url || data.link;
         data.link = data.link || data.url;
         data.status = data.status === 0 ? 0 : 1;
+        if (clearCategory) delete data.my_ext_category;
 
         return data;
     }
@@ -350,7 +424,9 @@
         var plugins = [];
 
         if (installedLine && installedLine.items) {
-            installedLine.items.map(pluginDataFromItem).reverse().forEach(function (item) {
+            installedLine.items.map(function (item) {
+                return pluginDataFromItem(item, true);
+            }).reverse().forEach(function (item) {
                 pushUniquePlugin(plugins, item);
             });
         }
@@ -380,6 +456,40 @@
         });
 
         savePluginsStorageOrder();
+    }
+
+    function removeUrlFromLine(line, url) {
+        var target = normalizeUrl(url);
+        var removed = false;
+
+        if (!line || !line.items || !target) return false;
+
+        line.items = line.items.filter(function (item) {
+            var keep = itemUrl(item) !== target;
+            if (!keep) removed = true;
+            return keep;
+        });
+
+        if (removed) {
+            line.data = line.items.map(function (item) {
+                return item.data;
+            });
+            line.active = Math.max(0, Math.min(line.active || 0, line.items.length - 1));
+        }
+
+        return removed;
+    }
+
+    function removeUrlFromVisibleLines(url) {
+        var removed = false;
+
+        removed = removeUrlFromLine(installedLine, url) || removed;
+
+        CATEGORIES.forEach(function (category) {
+            removed = removeUrlFromLine(categoryLines[category.key], url) || removed;
+        });
+
+        return removed;
     }
 
     function orderedMoveTargets() {
@@ -478,11 +588,17 @@
         if (!items || !items.length) return;
 
         from = moveState.index;
+        if (moveState.item) {
+            from = items.indexOf(moveState.item);
+            if (from < 0) from = moveState.index;
+        }
+        if (from < 0 || from > items.length - 1) return;
         to = from + step;
 
         if (to < 0 || to > items.length - 1) return;
 
         active = items[from];
+        moveState.item = active;
         target = items[to];
         activeElement = lineItemElement(active);
         targetElement = lineItemElement(target);
@@ -583,6 +699,12 @@
         targetItems = targetLine.items || [];
         fromIndex = moveState.index;
         active = sourceItems[fromIndex];
+        if (moveState.item) {
+            fromIndex = sourceItems.indexOf(moveState.item);
+            if (fromIndex < 0) fromIndex = moveState.index;
+            active = sourceItems[fromIndex];
+        }
+        if (fromIndex < 0 || fromIndex > sourceItems.length - 1) return;
         activeElement = lineItemElement(active);
 
         if (!active || !activeElement) return;
@@ -604,13 +726,13 @@
         moveState.category = target.category;
         moveState.line = targetLine;
         moveState.index = toIndex;
+        moveState.item = active;
 
         setMovingElement(activeElement);
 
         try {
             targetLine.last = activeElement;
             if (targetLine.scroll && targetLine.scroll.update) targetLine.scroll.update(activeElement, true);
-            if (targetLine.toggle) targetLine.toggle();
         } catch (e) {}
     }
 
@@ -644,11 +766,12 @@
             type: context.type,
             category: category,
             line: line,
-            index: index
+            index: index,
+            item: line.items[index]
         };
 
         setMovingElement(element);
-        notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - зафиксировать, Back - сохранить и выйти');
+        notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - сохранить, Back - отменить');
 
         try {
             line.last = element;
@@ -668,9 +791,13 @@
 
         if (!moveState) return;
         if (!left && !right && !up && !down && !accept && !back) return;
+        if (event.__myExtMoveHandled) return;
+
+        event.__myExtMoveHandled = true;
 
         event.preventDefault();
         event.stopPropagation();
+        event.cancelBubble = true;
         if (event.stopImmediatePropagation) event.stopImmediatePropagation();
 
         if (left) moveActiveItem(-1);
@@ -678,7 +805,7 @@
         else if (up) moveActiveItemToLine(-1);
         else if (down) moveActiveItemToLine(1);
         else if (accept) stopMoveMode(true, false);
-        else stopMoveMode(true, true);
+        else stopMoveMode(false, false);
     }
 
     function controllerBackToCurrent() {
@@ -744,7 +871,8 @@
                                 url: data.url,
                                 name: data.name,
                                 author: data.author,
-                                status: data.status
+                                status: data.status,
+                                my_ext_category: category.key
                             });
                         }
                     } catch (e) {
@@ -963,6 +1091,7 @@
         Lampa.Plugins.remove = function (data) {
             var url = data && (data.url || data.link);
             var actual;
+            var removedFromLines;
             var result = originalRemove.apply(this, arguments);
 
             try {
@@ -976,8 +1105,11 @@
                     }
                 }
 
-                removePluginFromStorageByUrl(url);
+                removedFromLines = removeUrlFromVisibleLines(url);
                 removeFromCategoryLists(url);
+
+                if (removedFromLines) saveAllMoveOrders();
+                else removePluginFromStorageByUrl(url);
             } catch (e) {}
 
             return result;
@@ -1024,6 +1156,8 @@
         }
 
         ensureDefaults();
+        restoreCategoriesFromPlugins();
+        syncCategoryMarkersToPlugins();
         injectMoveStyle();
         hookExtensionsOpen();
         hookSelectMoveMenu();
