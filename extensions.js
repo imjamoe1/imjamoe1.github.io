@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.11
+// @version      1.10
 // @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
@@ -257,42 +257,6 @@
         return changed;
     }
 
-    function syncCategoryMarkersToPlugins() {
-        var plugins = [];
-        var changed = false;
-
-        try {
-            plugins = JSON.parse(localStorage.getItem('plugins') || '[]') || [];
-        } catch (e) {
-            plugins = [];
-        }
-
-        CATEGORIES.forEach(function (category) {
-            getList(category.key).forEach(function (categoryItem) {
-                var url = normalizeUrl(categoryItem && (categoryItem.url || categoryItem.link));
-                var plugin;
-
-                if (!url) return;
-
-                plugin = plugins.find(function (item) {
-                    return normalizeUrl(item && (item.url || item.link)) === url;
-                });
-
-                if (plugin) {
-                    if (plugin.my_ext_category !== category.key) {
-                        plugin.my_ext_category = category.key;
-                        changed = true;
-                    }
-                } else {
-                    plugins.push(normalizePlugin(categoryItem, category));
-                    changed = true;
-                }
-            });
-        });
-
-        if (changed) localStorage.setItem('plugins', JSON.stringify(plugins));
-    }
-
     function notify(text) {
         try {
             if (Lampa.Noty && Lampa.Noty.show) Lampa.Noty.show(text);
@@ -526,6 +490,25 @@
         if (element) element.classList.add('lampa-my-ext-moving');
     }
 
+    function moveItemIndex(line) {
+        var items = line && line.items;
+        var index = -1;
+
+        if (!moveState || !items || !items.length) return -1;
+
+        if (moveState.item) index = items.indexOf(moveState.item);
+
+        if (index < 0 && moveState.url) {
+            index = items.findIndex(function (item) {
+                return itemUrl(item) === moveState.url;
+            });
+        }
+
+        if (index < 0) index = moveState.index;
+
+        return index;
+    }
+
     function closeActionMenu() {
         try {
             if (Lampa.Select && Lampa.Select.close) Lampa.Select.close();
@@ -550,6 +533,10 @@
         if (!moveState) return;
 
         if (save) commitMovePosition('Порядок сохранен');
+        else {
+            suppressMenuUntil = Date.now() + 900;
+            currentMenuContext = null;
+        }
 
         setMovingElement(null);
         closeActionMenu();
@@ -587,11 +574,7 @@
         items = line && line.items;
         if (!items || !items.length) return;
 
-        from = moveState.index;
-        if (moveState.item) {
-            from = items.indexOf(moveState.item);
-            if (from < 0) from = moveState.index;
-        }
+        from = moveItemIndex(line);
         if (from < 0 || from > items.length - 1) return;
         to = from + step;
 
@@ -599,6 +582,7 @@
 
         active = items[from];
         moveState.item = active;
+        moveState.url = itemUrl(active);
         target = items[to];
         activeElement = lineItemElement(active);
         targetElement = lineItemElement(target);
@@ -698,12 +682,8 @@
         sourceItems = sourceLine.items || [];
         targetItems = targetLine.items || [];
         fromIndex = moveState.index;
+        fromIndex = moveItemIndex(sourceLine);
         active = sourceItems[fromIndex];
-        if (moveState.item) {
-            fromIndex = sourceItems.indexOf(moveState.item);
-            if (fromIndex < 0) fromIndex = moveState.index;
-            active = sourceItems[fromIndex];
-        }
         if (fromIndex < 0 || fromIndex > sourceItems.length - 1) return;
         activeElement = lineItemElement(active);
 
@@ -727,6 +707,7 @@
         moveState.line = targetLine;
         moveState.index = toIndex;
         moveState.item = active;
+        moveState.url = itemUrl(active);
 
         setMovingElement(activeElement);
 
@@ -767,7 +748,8 @@
             category: category,
             line: line,
             index: index,
-            item: line.items[index]
+            item: line.items[index],
+            url: itemUrl(line.items[index])
         };
 
         setMovingElement(element);
@@ -1157,7 +1139,6 @@
 
         ensureDefaults();
         restoreCategoriesFromPlugins();
-        syncCategoryMarkersToPlugins();
         injectMoveStyle();
         hookExtensionsOpen();
         hookSelectMoveMenu();
