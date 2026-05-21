@@ -335,8 +335,80 @@
         }
     }
 
+    function lineBody(line) {
+        try {
+            return line && line.scroll && line.scroll.body && line.scroll.body(true);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function findLineElementByUrl(line, url) {
+        var body = lineBody(line);
+        var target = normalizeUrl(url);
+        var found = null;
+
+        if (!body || !target) return null;
+
+        Array.prototype.slice.call(body.querySelectorAll('.extensions__item')).some(function (node) {
+            var descr = node.querySelector('.extensions__item-descr');
+            var nodeUrl = descr && normalizeUrl(descr.textContent);
+
+            if (nodeUrl === target) {
+                found = node;
+                return true;
+            }
+
+            return false;
+        });
+
+        return found;
+    }
+
+    function virtualLineItem(line, data) {
+        return {
+            data: data,
+            render: function () {
+                return findLineElementByUrl(line, data && (data.url || data.link));
+            }
+        };
+    }
+
+    function syncLineItemsWithData(line) {
+        var oldItems;
+        var dataList;
+
+        if (!line || !line.data) return;
+
+        oldItems = line.items || [];
+        dataList = line.data || [];
+
+        line.items = dataList.map(function (data) {
+            var url = normalizeUrl(data && (data.url || data.link));
+            var item = oldItems.find(function (oldItem) {
+                return itemUrl(oldItem) === url;
+            });
+
+            if (item) {
+                item.data = data;
+                return item;
+            }
+
+            return virtualLineItem(line, data);
+        });
+    }
+
+    function syncAllLines() {
+        syncLineItemsWithData(installedLine);
+
+        CATEGORIES.forEach(function (category) {
+            syncLineItemsWithData(categoryLines[category.key]);
+        });
+    }
+
     function saveLineOrder(line, category) {
         if (!line || !line.items || !category) return;
+        syncLineItemsWithData(line);
 
         saveList(category.key, line.items.map(function (item) {
             return normalizePlugin(item.data || {}, category);
@@ -347,6 +419,7 @@
         var list;
 
         if (!line || !line.items) return;
+        syncLineItemsWithData(line);
 
         list = line.items.map(function (item) {
             return pluginDataFromItem(item, true);
@@ -388,6 +461,7 @@
         var plugins = [];
 
         if (installedLine && installedLine.items) {
+            syncLineItemsWithData(installedLine);
             installedLine.items.map(function (item) {
                 return pluginDataFromItem(item, true);
             }).reverse().forEach(function (item) {
@@ -399,6 +473,7 @@
             var line = categoryLines[category.key];
 
             if (line && line.items) {
+                syncLineItemsWithData(line);
                 line.items.map(function (item) {
                     return normalizePlugin(item.data || {}, category);
                 }).forEach(function (item) {
@@ -454,6 +529,60 @@
         });
 
         return removed;
+    }
+
+    function updateLineItemData(line, oldUrl, patch) {
+        var target = normalizeUrl(oldUrl);
+        var newUrl = normalizeUrl(patch && (patch.url || patch.link));
+        var changed = false;
+
+        if (!line || !target) return false;
+
+        syncLineItemsWithData(line);
+
+        (line.data || []).forEach(function (data) {
+            if (normalizeUrl(data && (data.url || data.link)) !== target) return;
+
+            Object.assign(data, patch);
+            changed = true;
+        });
+
+        (line.items || []).forEach(function (item) {
+            var element;
+            var descr;
+            var name;
+
+            if (itemUrl(item) !== target && itemUrl(item) !== newUrl) return;
+
+            item.data = Object.assign(item.data || {}, patch);
+            element = lineItemElement(item) || findLineElementByUrl(line, target);
+            descr = element && element.querySelector('.extensions__item-descr');
+            name = element && element.querySelector('.extensions__item-name');
+
+            if (descr && newUrl) descr.textContent = newUrl;
+            if (name && patch.name) name.textContent = patch.name;
+
+            changed = true;
+        });
+
+        if (changed) {
+            syncLineItemsWithData(line);
+            applyLineDomOrder(line);
+        }
+
+        return changed;
+    }
+
+    function updateVisibleLineItem(oldUrl, patch) {
+        var changed = false;
+
+        changed = updateLineItemData(installedLine, oldUrl, patch) || changed;
+
+        CATEGORIES.forEach(function (category) {
+            changed = updateLineItemData(categoryLines[category.key], oldUrl, patch) || changed;
+        });
+
+        return changed;
     }
 
     function orderedMoveTargets() {
@@ -571,6 +700,7 @@
         if (!moveState) return;
 
         line = moveState.line;
+        syncLineItemsWithData(line);
         items = line && line.items;
         if (!items || !items.length) return;
 
@@ -586,18 +716,15 @@
         target = items[to];
         activeElement = lineItemElement(active);
         targetElement = lineItemElement(target);
-        body = line.scroll && line.scroll.body && line.scroll.body(true);
 
-        if (!activeElement || !targetElement || !body) return;
-
-        if (step > 0) body.insertBefore(targetElement, activeElement);
-        else body.insertBefore(activeElement, targetElement);
+        if (!activeElement || !targetElement) return;
 
         items[from] = target;
         items[to] = active;
         line.data = items.map(function (item) { return item.data; });
         line.active = to;
         moveState.index = to;
+        applyLineDomOrder(line);
 
         setMovingElement(activeElement);
 
@@ -614,7 +741,7 @@
         var addButton;
         var nextNode;
 
-        body = line && line.scroll && line.scroll.body && line.scroll.body(true);
+        body = lineBody(line);
         if (!body || !element) return false;
 
         refItem = line.items && line.items[index];
@@ -642,7 +769,7 @@
         var body;
         var addButton;
 
-        body = line && line.scroll && line.scroll.body && line.scroll.body(true);
+        body = lineBody(line);
         if (!body) return;
 
         addButton = body.querySelector('.extensions__block-add');
@@ -650,6 +777,29 @@
         if (addButton && addButton.parentNode === body && body.firstChild !== addButton) {
             body.insertBefore(addButton, body.firstChild);
         }
+    }
+
+    function applyLineDomOrder(line) {
+        var body = lineBody(line);
+        var marker;
+
+        if (!body || !line || !line.items) return;
+
+        keepAddButtonFirst(line);
+        marker = body.querySelector('.extensions__block-add');
+
+        line.items.forEach(function (item) {
+            var element = lineItemElement(item);
+
+            if (!element || element.parentNode !== body) return;
+
+            if (marker) {
+                body.insertBefore(element, marker.nextSibling);
+                marker = element;
+            } else {
+                body.appendChild(element);
+            }
+        });
     }
 
     function moveActiveItemToLine(step) {
@@ -679,6 +829,8 @@
 
         sourceLine = moveState.line;
         targetLine = target.line;
+        syncLineItemsWithData(sourceLine);
+        syncLineItemsWithData(targetLine);
         sourceItems = sourceLine.items || [];
         targetItems = targetLine.items || [];
         fromIndex = moveState.index;
@@ -700,7 +852,8 @@
         targetLine.active = toIndex;
 
         insertElementIntoLine(targetLine, activeElement, toIndex);
-        keepAddButtonFirst(targetLine);
+        applyLineDomOrder(sourceLine);
+        applyLineDomOrder(targetLine);
 
         moveState.type = target.type;
         moveState.category = target.category;
@@ -727,6 +880,7 @@
 
         category = context.category;
         line = context.type === 'installed' ? installedLine : categoryLines[category.key];
+        syncLineItemsWithData(line);
 
         if (!line || !line.items || !line.items.length) {
             notify(context.type === 'installed' ? 'В установленных нечего перемещать' : 'В этом разделе нечего перемещать');
@@ -866,9 +1020,14 @@
                     if (line && line.append) {
                         line.data.unshift(data);
                         line.append(data);
-                        keepAddButtonFirst(line);
+                        syncLineItemsWithData(line);
+                        applyLineDomOrder(line);
                         line.last = button;
                         if (Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
+                        setTimeout(function () {
+                            syncLineItemsWithData(line);
+                            applyLineDomOrder(line);
+                        }, 100);
                     }
                 } catch (e) {}
 
@@ -1108,19 +1267,24 @@
         var originalSave = Lampa.Plugins.save;
 
         Lampa.Plugins.save = function (data) {
-            var oldUrl = data && (data.url || data.link);
+            var oldUrl = currentMenuContext && currentMenuContext.url || data && (data.url || data.link);
+            var patch;
             var result = originalSave.apply(this, arguments);
 
             try {
                 if (data && oldUrl) {
-                    updateCategoryItem(oldUrl, {
+                    patch = {
                         url: data.url || data.link,
                         link: data.link || data.url,
                         name: data.name,
                         author: data.author,
                         descr: data.descr || data.description || data.url || data.link,
                         status: data.status === 0 ? 0 : 1
-                    });
+                    };
+
+                    updateCategoryItem(oldUrl, patch);
+                    if (updateVisibleLineItem(oldUrl, patch)) saveAllMoveOrders();
+                    if (currentMenuContext) currentMenuContext.url = normalizeUrl(patch.url || patch.link);
                 }
             } catch (e) {}
 
