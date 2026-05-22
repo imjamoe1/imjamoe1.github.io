@@ -1810,9 +1810,9 @@
             },
             onRender: function(element) {
                 setTimeout(function() {
-                    var lastElement = $('div[data-name="interface_size"]');
-                    if (lastElement.length) {
-                        element.insertAfter(lastElement);
+                    var menuAlwaysElement = $('.settings-param[data-name="menu_always"]');
+                    if (menuAlwaysElement.length) {
+                        element.insertAfter(menuAlwaysElement);
                     } else {
                         var lastElement = $('div[data-component="interface"] .settings-param').last();
                         if (lastElement.length) {
