@@ -220,43 +220,6 @@
         });
     }
 
-    function restoreCategoriesFromPlugins() {
-        var plugins = [];
-        var changed = {};
-
-        try {
-            plugins = JSON.parse(localStorage.getItem('plugins') || '[]') || [];
-        } catch (e) {
-            plugins = [];
-        }
-
-        plugins.forEach(function (plugin) {
-            var categoryKey = plugin && plugin.my_ext_category;
-            var category = CATEGORIES.find(function (item) {
-                return item.key === categoryKey;
-            });
-            var list;
-            var url;
-
-            if (!category) return;
-
-            url = normalizeUrl(plugin.url || plugin.link);
-            if (!url) return;
-
-            list = getList(category.key);
-
-            if (list.some(function (item) {
-                return normalizeUrl(item && (item.url || item.link)) === url;
-            })) return;
-
-            list.push(normalizePlugin(plugin, category));
-            saveList(category.key, list);
-            changed[category.key] = true;
-        });
-
-        return changed;
-    }
-
     function notify(text) {
         try {
             if (Lampa.Noty && Lampa.Noty.show) Lampa.Noty.show(text);
@@ -335,80 +298,8 @@
         }
     }
 
-    function lineBody(line) {
-        try {
-            return line && line.scroll && line.scroll.body && line.scroll.body(true);
-        } catch (e) {
-            return null;
-        }
-    }
-
-    function findLineElementByUrl(line, url) {
-        var body = lineBody(line);
-        var target = normalizeUrl(url);
-        var found = null;
-
-        if (!body || !target) return null;
-
-        Array.prototype.slice.call(body.querySelectorAll('.extensions__item')).some(function (node) {
-            var descr = node.querySelector('.extensions__item-descr');
-            var nodeUrl = descr && normalizeUrl(descr.textContent);
-
-            if (nodeUrl === target) {
-                found = node;
-                return true;
-            }
-
-            return false;
-        });
-
-        return found;
-    }
-
-    function virtualLineItem(line, data) {
-        return {
-            data: data,
-            render: function () {
-                return findLineElementByUrl(line, data && (data.url || data.link));
-            }
-        };
-    }
-
-    function syncLineItemsWithData(line) {
-        var oldItems;
-        var dataList;
-
-        if (!line || !line.data) return;
-
-        oldItems = line.items || [];
-        dataList = line.data || [];
-
-        line.items = dataList.map(function (data) {
-            var url = normalizeUrl(data && (data.url || data.link));
-            var item = oldItems.find(function (oldItem) {
-                return itemUrl(oldItem) === url;
-            });
-
-            if (item) {
-                item.data = data;
-                return item;
-            }
-
-            return virtualLineItem(line, data);
-        });
-    }
-
-    function syncAllLines() {
-        syncLineItemsWithData(installedLine);
-
-        CATEGORIES.forEach(function (category) {
-            syncLineItemsWithData(categoryLines[category.key]);
-        });
-    }
-
     function saveLineOrder(line, category) {
         if (!line || !line.items || !category) return;
-        syncLineItemsWithData(line);
 
         saveList(category.key, line.items.map(function (item) {
             return normalizePlugin(item.data || {}, category);
@@ -419,10 +310,9 @@
         var list;
 
         if (!line || !line.items) return;
-        syncLineItemsWithData(line);
 
         list = line.items.map(function (item) {
-            return pluginDataFromItem(item, true);
+            return Object.assign({}, item.data || {});
         }).reverse();
 
         localStorage.setItem('plugins', JSON.stringify(list));
@@ -435,13 +325,12 @@
         else saveLineOrder(state.line, state.category);
     }
 
-    function pluginDataFromItem(item, clearCategory) {
+    function pluginDataFromItem(item) {
         var data = Object.assign({}, item && item.data || {});
 
         data.url = data.url || data.link;
         data.link = data.link || data.url;
         data.status = data.status === 0 ? 0 : 1;
-        if (clearCategory) delete data.my_ext_category;
 
         return data;
     }
@@ -461,10 +350,7 @@
         var plugins = [];
 
         if (installedLine && installedLine.items) {
-            syncLineItemsWithData(installedLine);
-            installedLine.items.map(function (item) {
-                return pluginDataFromItem(item, true);
-            }).reverse().forEach(function (item) {
+            installedLine.items.map(pluginDataFromItem).reverse().forEach(function (item) {
                 pushUniquePlugin(plugins, item);
             });
         }
@@ -473,7 +359,6 @@
             var line = categoryLines[category.key];
 
             if (line && line.items) {
-                syncLineItemsWithData(line);
                 line.items.map(function (item) {
                     return normalizePlugin(item.data || {}, category);
                 }).forEach(function (item) {
@@ -495,94 +380,6 @@
         });
 
         savePluginsStorageOrder();
-    }
-
-    function removeUrlFromLine(line, url) {
-        var target = normalizeUrl(url);
-        var removed = false;
-
-        if (!line || !line.items || !target) return false;
-
-        line.items = line.items.filter(function (item) {
-            var keep = itemUrl(item) !== target;
-            if (!keep) removed = true;
-            return keep;
-        });
-
-        if (removed) {
-            line.data = line.items.map(function (item) {
-                return item.data;
-            });
-            line.active = Math.max(0, Math.min(line.active || 0, line.items.length - 1));
-        }
-
-        return removed;
-    }
-
-    function removeUrlFromVisibleLines(url) {
-        var removed = false;
-
-        removed = removeUrlFromLine(installedLine, url) || removed;
-
-        CATEGORIES.forEach(function (category) {
-            removed = removeUrlFromLine(categoryLines[category.key], url) || removed;
-        });
-
-        return removed;
-    }
-
-    function updateLineItemData(line, oldUrl, patch) {
-        var target = normalizeUrl(oldUrl);
-        var newUrl = normalizeUrl(patch && (patch.url || patch.link));
-        var changed = false;
-
-        if (!line || !target) return false;
-
-        syncLineItemsWithData(line);
-
-        (line.data || []).forEach(function (data) {
-            if (normalizeUrl(data && (data.url || data.link)) !== target) return;
-
-            Object.assign(data, patch);
-            changed = true;
-        });
-
-        (line.items || []).forEach(function (item) {
-            var element;
-            var descr;
-            var name;
-
-            if (itemUrl(item) !== target && itemUrl(item) !== newUrl) return;
-
-            item.data = Object.assign(item.data || {}, patch);
-            element = lineItemElement(item) || findLineElementByUrl(line, target);
-            descr = element && element.querySelector('.extensions__item-descr');
-            name = element && element.querySelector('.extensions__item-name');
-
-            if (descr && newUrl) descr.textContent = newUrl;
-            if (name && patch.name) name.textContent = patch.name;
-
-            changed = true;
-        });
-
-        if (changed) {
-            syncLineItemsWithData(line);
-            applyLineDomOrder(line);
-        }
-
-        return changed;
-    }
-
-    function updateVisibleLineItem(oldUrl, patch) {
-        var changed = false;
-
-        changed = updateLineItemData(installedLine, oldUrl, patch) || changed;
-
-        CATEGORIES.forEach(function (category) {
-            changed = updateLineItemData(categoryLines[category.key], oldUrl, patch) || changed;
-        });
-
-        return changed;
     }
 
     function orderedMoveTargets() {
@@ -619,25 +416,6 @@
         if (element) element.classList.add('lampa-my-ext-moving');
     }
 
-    function moveItemIndex(line) {
-        var items = line && line.items;
-        var index = -1;
-
-        if (!moveState || !items || !items.length) return -1;
-
-        if (moveState.item) index = items.indexOf(moveState.item);
-
-        if (index < 0 && moveState.url) {
-            index = items.findIndex(function (item) {
-                return itemUrl(item) === moveState.url;
-            });
-        }
-
-        if (index < 0) index = moveState.index;
-
-        return index;
-    }
-
     function closeActionMenu() {
         try {
             if (Lampa.Select && Lampa.Select.close) Lampa.Select.close();
@@ -662,10 +440,6 @@
         if (!moveState) return;
 
         if (save) commitMovePosition('Порядок сохранен');
-        else {
-            suppressMenuUntil = Date.now() + 900;
-            currentMenuContext = null;
-        }
 
         setMovingElement(null);
         closeActionMenu();
@@ -700,31 +474,30 @@
         if (!moveState) return;
 
         line = moveState.line;
-        syncLineItemsWithData(line);
         items = line && line.items;
         if (!items || !items.length) return;
 
-        from = moveItemIndex(line);
-        if (from < 0 || from > items.length - 1) return;
+        from = moveState.index;
         to = from + step;
 
         if (to < 0 || to > items.length - 1) return;
 
         active = items[from];
-        moveState.item = active;
-        moveState.url = itemUrl(active);
         target = items[to];
         activeElement = lineItemElement(active);
         targetElement = lineItemElement(target);
+        body = line.scroll && line.scroll.body && line.scroll.body(true);
 
-        if (!activeElement || !targetElement) return;
+        if (!activeElement || !targetElement || !body) return;
+
+        if (step > 0) body.insertBefore(targetElement, activeElement);
+        else body.insertBefore(activeElement, targetElement);
 
         items[from] = target;
         items[to] = active;
         line.data = items.map(function (item) { return item.data; });
         line.active = to;
         moveState.index = to;
-        applyLineDomOrder(line);
 
         setMovingElement(activeElement);
 
@@ -741,7 +514,7 @@
         var addButton;
         var nextNode;
 
-        body = lineBody(line);
+        body = line && line.scroll && line.scroll.body && line.scroll.body(true);
         if (!body || !element) return false;
 
         refItem = line.items && line.items[index];
@@ -769,7 +542,7 @@
         var body;
         var addButton;
 
-        body = lineBody(line);
+        body = line && line.scroll && line.scroll.body && line.scroll.body(true);
         if (!body) return;
 
         addButton = body.querySelector('.extensions__block-add');
@@ -777,29 +550,6 @@
         if (addButton && addButton.parentNode === body && body.firstChild !== addButton) {
             body.insertBefore(addButton, body.firstChild);
         }
-    }
-
-    function applyLineDomOrder(line) {
-        var body = lineBody(line);
-        var marker;
-
-        if (!body || !line || !line.items) return;
-
-        keepAddButtonFirst(line);
-        marker = body.querySelector('.extensions__block-add');
-
-        line.items.forEach(function (item) {
-            var element = lineItemElement(item);
-
-            if (!element || element.parentNode !== body) return;
-
-            if (marker) {
-                body.insertBefore(element, marker.nextSibling);
-                marker = element;
-            } else {
-                body.appendChild(element);
-            }
-        });
     }
 
     function moveActiveItemToLine(step) {
@@ -829,14 +579,10 @@
 
         sourceLine = moveState.line;
         targetLine = target.line;
-        syncLineItemsWithData(sourceLine);
-        syncLineItemsWithData(targetLine);
         sourceItems = sourceLine.items || [];
         targetItems = targetLine.items || [];
         fromIndex = moveState.index;
-        fromIndex = moveItemIndex(sourceLine);
         active = sourceItems[fromIndex];
-        if (fromIndex < 0 || fromIndex > sourceItems.length - 1) return;
         activeElement = lineItemElement(active);
 
         if (!active || !activeElement) return;
@@ -852,21 +598,19 @@
         targetLine.active = toIndex;
 
         insertElementIntoLine(targetLine, activeElement, toIndex);
-        applyLineDomOrder(sourceLine);
-        applyLineDomOrder(targetLine);
+        keepAddButtonFirst(targetLine);
 
         moveState.type = target.type;
         moveState.category = target.category;
         moveState.line = targetLine;
         moveState.index = toIndex;
-        moveState.item = active;
-        moveState.url = itemUrl(active);
 
         setMovingElement(activeElement);
 
         try {
             targetLine.last = activeElement;
             if (targetLine.scroll && targetLine.scroll.update) targetLine.scroll.update(activeElement, true);
+            if (targetLine.toggle) targetLine.toggle();
         } catch (e) {}
     }
 
@@ -880,7 +624,6 @@
 
         category = context.category;
         line = context.type === 'installed' ? installedLine : categoryLines[category.key];
-        syncLineItemsWithData(line);
 
         if (!line || !line.items || !line.items.length) {
             notify(context.type === 'installed' ? 'В установленных нечего перемещать' : 'В этом разделе нечего перемещать');
@@ -901,13 +644,11 @@
             type: context.type,
             category: category,
             line: line,
-            index: index,
-            item: line.items[index],
-            url: itemUrl(line.items[index])
+            index: index
         };
 
         setMovingElement(element);
-        notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - сохранить, Back - отменить');
+        notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - зафиксировать, Back - сохранить и выйти');
 
         try {
             line.last = element;
@@ -927,13 +668,9 @@
 
         if (!moveState) return;
         if (!left && !right && !up && !down && !accept && !back) return;
-        if (event.__myExtMoveHandled) return;
-
-        event.__myExtMoveHandled = true;
 
         event.preventDefault();
         event.stopPropagation();
-        event.cancelBubble = true;
         if (event.stopImmediatePropagation) event.stopImmediatePropagation();
 
         if (left) moveActiveItem(-1);
@@ -941,7 +678,7 @@
         else if (up) moveActiveItemToLine(-1);
         else if (down) moveActiveItemToLine(1);
         else if (accept) stopMoveMode(true, false);
-        else stopMoveMode(false, false);
+        else stopMoveMode(true, true);
     }
 
     function controllerBackToCurrent() {
@@ -1007,8 +744,7 @@
                                 url: data.url,
                                 name: data.name,
                                 author: data.author,
-                                status: data.status,
-                                my_ext_category: category.key
+                                status: data.status
                             });
                         }
                     } catch (e) {
@@ -1020,14 +756,9 @@
                     if (line && line.append) {
                         line.data.unshift(data);
                         line.append(data);
-                        syncLineItemsWithData(line);
-                        applyLineDomOrder(line);
+                        keepAddButtonFirst(line);
                         line.last = button;
                         if (Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
-                        setTimeout(function () {
-                            syncLineItemsWithData(line);
-                            applyLineDomOrder(line);
-                        }, 100);
                     }
                 } catch (e) {}
 
@@ -1232,7 +963,6 @@
         Lampa.Plugins.remove = function (data) {
             var url = data && (data.url || data.link);
             var actual;
-            var removedFromLines;
             var result = originalRemove.apply(this, arguments);
 
             try {
@@ -1246,11 +976,8 @@
                     }
                 }
 
-                removedFromLines = removeUrlFromVisibleLines(url);
+                removePluginFromStorageByUrl(url);
                 removeFromCategoryLists(url);
-
-                if (removedFromLines) saveAllMoveOrders();
-                else removePluginFromStorageByUrl(url);
             } catch (e) {}
 
             return result;
@@ -1267,24 +994,19 @@
         var originalSave = Lampa.Plugins.save;
 
         Lampa.Plugins.save = function (data) {
-            var oldUrl = currentMenuContext && currentMenuContext.url || data && (data.url || data.link);
-            var patch;
+            var oldUrl = data && (data.url || data.link);
             var result = originalSave.apply(this, arguments);
 
             try {
                 if (data && oldUrl) {
-                    patch = {
+                    updateCategoryItem(oldUrl, {
                         url: data.url || data.link,
                         link: data.link || data.url,
                         name: data.name,
                         author: data.author,
                         descr: data.descr || data.description || data.url || data.link,
                         status: data.status === 0 ? 0 : 1
-                    };
-
-                    updateCategoryItem(oldUrl, patch);
-                    if (updateVisibleLineItem(oldUrl, patch)) saveAllMoveOrders();
-                    if (currentMenuContext) currentMenuContext.url = normalizeUrl(patch.url || patch.link);
+                    });
                 }
             } catch (e) {}
 
@@ -1302,7 +1024,6 @@
         }
 
         ensureDefaults();
-        restoreCategoriesFromPlugins();
         injectMoveStyle();
         hookExtensionsOpen();
         hookSelectMoveMenu();
