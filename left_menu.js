@@ -128,7 +128,7 @@
                     applyMenuState(true);
                 }
             }
-
+            /*
             if (Lampa.SettingsApi?.addParam) {
                 Lampa.SettingsApi.addParam({
                     component: 'interface',
@@ -161,7 +161,7 @@
                     }
                 });
             }
-
+            */
             Lampa.Listener.follow('activity', (e) => {
                 if (e.type === 'destroy' || e.type === 'start') {
                     setTimeout(updateMenuState, 10);
