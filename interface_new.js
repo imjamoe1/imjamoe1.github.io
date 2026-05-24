@@ -1296,9 +1296,9 @@
                         position: absolute;
                         height: calc(100% + 4em);
                         width: auto;
-                        min-width: 100%;
+                        //min-width: 100%;
                         top: -4em;
-                        left: 1em;
+                        left: -1em;
                         opacity: 0;
                         object-fit: cover;
                         transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
