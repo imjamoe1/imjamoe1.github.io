@@ -1286,7 +1286,7 @@
                     .new-interface .full-start__background-wrapper {
                         position: absolute;
                         top: 0;
-                        left: -1em;
+                        left: 0;
                         height: 100%;
                         width: 100%;
                         z-index: -1;
@@ -1297,7 +1297,7 @@
                         height: calc(100% + 4em);
                         width: 100%;
                         top: -4em;
-                        left: 1em;
+                        left: 0;
                         opacity: 0;
                         object-fit: cover;
                         transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
