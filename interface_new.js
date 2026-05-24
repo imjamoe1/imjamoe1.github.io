@@ -1297,7 +1297,7 @@
                         height: calc(100% + 4em);
                         width: calc(100% + 2em);
                         top: -4em;
-                        left: 0;
+                        left: -1em;
                         opacity: 0;
                         object-fit: cover;
                         transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
