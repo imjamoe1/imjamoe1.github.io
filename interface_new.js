@@ -1286,7 +1286,7 @@
                     .new-interface .full-start__background-wrapper {
                         position: absolute;
                         top: 0;
-                        left: 1em;
+                        left: 2em;
                         height: 100%;
                         width: 100%;
                         z-index: -1;
