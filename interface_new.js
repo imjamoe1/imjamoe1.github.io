@@ -1288,7 +1288,7 @@
                         top: 0;
                         left: 0;
                         height: 100%;
-                        width: auto;
+                        width: 100%;
                         z-index: -1;
                         pointer-events: none;
                     }
