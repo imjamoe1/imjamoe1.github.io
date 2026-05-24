@@ -1286,18 +1286,19 @@
                     .new-interface .full-start__background-wrapper {
                         position: absolute;
                         top: 0;
-                        left: 1em;
-                        width: 100%;
+                        left: 0;
                         height: 100%;
+                        width: auto;
                         z-index: -1;
                         pointer-events: none;
                     }
                     .new-interface .full-start__background {
                         position: absolute;
                         height: calc(100% + 4em);
-                        width: 100%;
+                        width: auto;
+                        min-width: 100%;
                         top: -4em;
-                        left: 0;
+                        left: 1em;
                         opacity: 0;
                         object-fit: cover;
                         transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
