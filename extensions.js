@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.10
+// @version      1.11
 // @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
@@ -460,15 +460,6 @@
     function savePluginsStorageOrder() {
         var plugins = [];
 
-        if (installedLine && installedLine.items) {
-            syncLineItemsWithData(installedLine);
-            installedLine.items.map(function (item) {
-                return pluginDataFromItem(item, true);
-            }).reverse().forEach(function (item) {
-                pushUniquePlugin(plugins, item);
-            });
-        }
-
         CATEGORIES.forEach(function (category) {
             var line = categoryLines[category.key];
 
@@ -485,6 +476,15 @@
                 });
             }
         });
+
+        if (installedLine && installedLine.items) {
+            syncLineItemsWithData(installedLine);
+            installedLine.items.map(function (item) {
+                return pluginDataFromItem(item, true);
+            }).reverse().forEach(function (item) {
+                pushUniquePlugin(plugins, item);
+            });
+        }
 
         localStorage.setItem('plugins', JSON.stringify(plugins));
     }
@@ -505,7 +505,13 @@
 
         line.items = line.items.filter(function (item) {
             var keep = itemUrl(item) !== target;
+            var element;
+
             if (!keep) removed = true;
+            if (!keep) {
+                element = lineItemElement(item);
+                if (element && element.parentNode) element.parentNode.removeChild(element);
+            }
             return keep;
         });
 
@@ -619,6 +625,54 @@
         if (element) element.classList.add('lampa-my-ext-moving');
     }
 
+    function scrollMoveElementIntoView(element) {
+        try {
+            if (element && element.scrollIntoView) {
+                element.scrollIntoView({
+                    block: 'center',
+                    inline: 'nearest',
+                    behavior: 'smooth'
+                });
+            }
+            if (element && Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(element);
+        } catch (e) {
+            try {
+                if (element && element.scrollIntoView) element.scrollIntoView(false);
+                if (element && Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(element);
+            } catch (ignore) {}
+        }
+    }
+
+    function installMoveBackGuard() {
+        var enabled;
+        var controller;
+
+        try {
+            if (!Lampa.Controller || !Lampa.Controller.enabled) return;
+
+            enabled = Lampa.Controller.enabled();
+            controller = enabled && enabled.controller;
+
+            if (!controller || controller.__myExtMoveBackGuarded) return;
+
+            moveState.backController = controller;
+            moveState.backHandler = controller.back;
+            controller.__myExtMoveBackGuarded = true;
+            controller.back = function () {
+                stopMoveMode(false, false);
+            };
+        } catch (e) {}
+    }
+
+    function restoreMoveBackGuard() {
+        try {
+            if (moveState && moveState.backController && moveState.backController.__myExtMoveBackGuarded) {
+                moveState.backController.back = moveState.backHandler;
+                delete moveState.backController.__myExtMoveBackGuarded;
+            }
+        } catch (e) {}
+    }
+
     function moveItemIndex(line) {
         var items = line && line.items;
         var index = -1;
@@ -674,6 +728,7 @@
             if (moveState.line && moveState.line.toggle) moveState.line.toggle();
         } catch (e) {}
 
+        restoreMoveBackGuard();
         moveState = null;
 
         if (exitExtensions) {
@@ -727,6 +782,7 @@
         applyLineDomOrder(line);
 
         setMovingElement(activeElement);
+        scrollMoveElementIntoView(activeElement);
 
         try {
             line.last = activeElement;
@@ -863,6 +919,7 @@
         moveState.url = itemUrl(active);
 
         setMovingElement(activeElement);
+        scrollMoveElementIntoView(activeElement);
 
         try {
             targetLine.last = activeElement;
@@ -907,12 +964,15 @@
         };
 
         setMovingElement(element);
+        scrollMoveElementIntoView(element);
         notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - сохранить, Back - отменить');
 
         try {
             line.last = element;
             if (line.toggle) line.toggle();
         } catch (e) {}
+
+        installMoveBackGuard();
     }
 
     function handleMoveKeys(event) {
@@ -1022,7 +1082,6 @@
                         line.append(data);
                         syncLineItemsWithData(line);
                         applyLineDomOrder(line);
-                        line.last = button;
                         if (Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
                         setTimeout(function () {
                             syncLineItemsWithData(line);
@@ -1056,7 +1115,6 @@
 
         try {
             line.scroll.body(true).insertBefore(button, line.scroll.body(true).firstChild);
-            line.last = button;
             line.__myExtAddButtonAttached = true;
         } catch (e) {
             log('attach add button failed', e && e.message);
@@ -1269,6 +1327,7 @@
         Lampa.Plugins.save = function (data) {
             var oldUrl = currentMenuContext && currentMenuContext.url || data && (data.url || data.link);
             var patch;
+            var categoryBefore = findCategoryByUrl(oldUrl);
             var result = originalSave.apply(this, arguments);
 
             try {
@@ -1284,6 +1343,12 @@
 
                     updateCategoryItem(oldUrl, patch);
                     if (updateVisibleLineItem(oldUrl, patch)) saveAllMoveOrders();
+                    if (categoryBefore) {
+                        removeUrlFromLine(installedLine, oldUrl);
+                        removeUrlFromLine(installedLine, patch.url || patch.link);
+                        cleanupInstalledDuplicates(document);
+                        saveAllMoveOrders();
+                    }
                     if (currentMenuContext) currentMenuContext.url = normalizeUrl(patch.url || patch.link);
                 }
             } catch (e) {}
