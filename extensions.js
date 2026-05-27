@@ -654,8 +654,36 @@
         if (element) element.classList.add('lampa-my-ext-moving');
     }
 
-    function scrollMoveElementIntoView(element) {
+    function scrollParentToElement(element) {
+        var parent = element && element.parentElement;
+        var elementRect;
+        var parentRect;
+        var delta;
+
+        if (!element) return;
+
+        while (parent && parent !== document.body) {
+            if (parent.scrollHeight > parent.clientHeight + 5) {
+                elementRect = element.getBoundingClientRect();
+                parentRect = parent.getBoundingClientRect();
+                delta = elementRect.top - parentRect.top - (parentRect.height / 2) + (elementRect.height / 2);
+
+                if (Math.abs(delta) > 4) parent.scrollTop += delta;
+                return;
+            }
+
+            parent = parent.parentElement;
+        }
+    }
+
+    function scrollMoveElementIntoView(element, line) {
+        var block;
+
         try {
+            block = element && element.closest && element.closest('.extensions__block');
+
+            if (line && line.render && Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
+            if (block && Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(block);
             if (element && element.scrollIntoView) {
                 element.scrollIntoView({
                     block: 'center',
@@ -664,10 +692,12 @@
                 });
             }
             if (element && Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(element);
+            scrollParentToElement(element);
         } catch (e) {
             try {
                 if (element && element.scrollIntoView) element.scrollIntoView(false);
                 if (element && Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(element);
+                scrollParentToElement(element);
             } catch (ignore) {}
         }
     }
@@ -813,7 +843,7 @@
         applyLineDomOrder(line);
 
         setMovingElement(activeElement);
-        scrollMoveElementIntoView(activeElement);
+        scrollMoveElementIntoView(activeElement, line);
 
         try {
             line.last = activeElement;
@@ -950,7 +980,7 @@
         moveState.url = itemUrl(active);
 
         setMovingElement(activeElement);
-        scrollMoveElementIntoView(activeElement);
+        scrollMoveElementIntoView(activeElement, targetLine);
 
         try {
             targetLine.last = activeElement;
@@ -995,7 +1025,7 @@
         };
 
         setMovingElement(element);
-        scrollMoveElementIntoView(element);
+        scrollMoveElementIntoView(element, line);
         notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - сохранить, Back - отменить');
 
         try {
