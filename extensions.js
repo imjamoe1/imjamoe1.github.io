@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
 // @version      1.12
-// @description  Добавляет категории в родной экран расширений через extensions.appendLine()
+// @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
 // @grant        none
@@ -28,6 +28,10 @@
     var startTimer = null;
     var waitTimer = null;
     var started = false;
+    var verticalNavTarget = {
+        kind: 'add',
+        index: 0
+    };
 
     function log() {
         try {
@@ -370,6 +374,87 @@
         } catch (e) {
             return null;
         }
+    }
+
+    function visibleSelectorItems(root, selector) {
+        if (!root) return [];
+
+        return Array.prototype.slice.call(root.querySelectorAll(selector)).filter(function (element) {
+            return element.offsetParent !== null && !element.classList.contains('hide');
+        });
+    }
+
+    function lineAddButton(line) {
+        var body = lineBody(line);
+
+        if (!body) return null;
+
+        return body.querySelector('.extensions__block-add.selector');
+    }
+
+    function lineVisibleItems(line) {
+        return visibleSelectorItems(lineBody(line), '.extensions__item.selector');
+    }
+
+    function rememberVerticalTarget(element) {
+        var block;
+        var items;
+        var index;
+
+        if (!element) return;
+
+        if (element.classList && element.classList.contains('extensions__block-add')) {
+            verticalNavTarget = {
+                kind: 'add',
+                index: 0
+            };
+            return;
+        }
+
+        if (element.classList && element.classList.contains('extensions__item')) {
+            block = element.closest && element.closest('.extensions__block');
+            items = visibleSelectorItems(block, '.extensions__item.selector');
+            index = items.indexOf(element);
+
+            verticalNavTarget = {
+                kind: 'item',
+                index: index >= 0 ? index : 0
+            };
+        }
+    }
+
+    function desiredLineFocus(line) {
+        var addButton = lineAddButton(line);
+        var items = lineVisibleItems(line);
+
+        if (verticalNavTarget.kind === 'add' && addButton) return addButton;
+
+        if (verticalNavTarget.kind === 'item') {
+            if (items[verticalNavTarget.index]) return items[verticalNavTarget.index];
+            if (items[0]) return items[0];
+        }
+
+        return addButton || items[0] || null;
+    }
+
+    function prepareLineNavigation(line) {
+        var originalToggle;
+
+        if (!line || line.__myExtNavPrepared || typeof line.toggle !== 'function') return;
+
+        originalToggle = line.toggle;
+        line.toggle = function () {
+            var focusElement;
+
+            if (!moveState) {
+                focusElement = desiredLineFocus(line);
+                if (focusElement) line.last = focusElement;
+            }
+
+            return originalToggle.apply(line, arguments);
+        };
+
+        line.__myExtNavPrepared = true;
     }
 
     function findLineElementByUrl(line, url) {
@@ -1098,6 +1183,14 @@
         button.classList.add('selector');
         button.innerText = tr('extensions_add', 'Добавить');
 
+        button.addEventListener('hover:focus', function () {
+            rememberVerticalTarget(button);
+        });
+
+        button.addEventListener('hover:hover', function () {
+            rememberVerticalTarget(button);
+        });
+
         button.addEventListener('hover:enter', function () {
             try {
                 Lampa.Input.edit({
@@ -1200,6 +1293,7 @@
 
         try {
             line.scroll.body(true).insertBefore(button, line.scroll.body(true).firstChild);
+            prepareLineNavigation(line);
             line.__myExtAddButtonAttached = true;
         } catch (e) {
             log('attach add button failed', e && e.message);
@@ -1231,6 +1325,18 @@
         if (!root || root.__myExtMenuPatched) return;
         root.__myExtMenuPatched = true;
 
+        root.addEventListener('hover:focus', function (event) {
+            var selector = event.target && event.target.closest && event.target.closest('.selector');
+
+            rememberVerticalTarget(selector);
+        }, true);
+
+        root.addEventListener('hover:hover', function (event) {
+            var selector = event.target && event.target.closest && event.target.closest('.selector');
+
+            rememberVerticalTarget(selector);
+        }, true);
+
         root.addEventListener('hover:enter', function (event) {
             var item = event.target && event.target.closest && event.target.closest('.extensions__item.selector');
             var block = item && item.closest('.extensions__block');
@@ -1249,6 +1355,7 @@
 
             item.__myExtLastUrl = url;
             currentMenuContext = context;
+            rememberVerticalTarget(item);
         }, true);
 
         cleanupInstalledDuplicates(root);
@@ -1274,6 +1381,7 @@
             if (!injected && appendCount === 1) {
                 injected = true;
                 installedLine = extensions.items && extensions.items[extensions.items.length - 1];
+                prepareLineNavigation(installedLine);
 
                 CATEGORIES.forEach(function (category) {
                     originalAppendLine(categoryData(category), {
