@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
 // @version      1.12
-// @description  Добавляет категории в Расширения через extensions.appendLine()
+// @description  Добавляет категории в родной экран расширений через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
 // @grant        none
@@ -702,6 +702,28 @@
         }
     }
 
+    function focusMoveElement(element, line, switchLine) {
+        if (!element || !line) return;
+
+        try {
+            line.last = element;
+
+            if (switchLine && line.toggle) line.toggle();
+
+            if (Lampa.Controller) {
+                if (Lampa.Controller.collectionFocus && line.render) {
+                    Lampa.Controller.collectionFocus(element, line.render(), true);
+                }
+
+                if (Lampa.Controller.focus) Lampa.Controller.focus(element);
+            }
+
+            if (line.scroll && line.scroll.update) line.scroll.update(element, true);
+        } catch (e) {}
+
+        scrollMoveElementIntoView(element, line);
+    }
+
     function installMoveBackGuard() {
         var enabled;
         var controller;
@@ -713,6 +735,7 @@
             controller = enabled && enabled.controller;
 
             if (!controller || controller.__myExtMoveBackGuarded) return;
+            if (moveState.backController && moveState.backController !== controller) restoreMoveBackGuard();
 
             moveState.backController = controller;
             moveState.backHandler = controller.back;
@@ -843,12 +866,7 @@
         applyLineDomOrder(line);
 
         setMovingElement(activeElement);
-        scrollMoveElementIntoView(activeElement, line);
-
-        try {
-            line.last = activeElement;
-            if (line.scroll && line.scroll.update) line.scroll.update(activeElement, true);
-        } catch (e) {}
+        focusMoveElement(activeElement, line, false);
     }
 
     function insertElementIntoLine(line, element, index) {
@@ -980,12 +998,13 @@
         moveState.url = itemUrl(active);
 
         setMovingElement(activeElement);
-        scrollMoveElementIntoView(activeElement, targetLine);
+        focusMoveElement(activeElement, targetLine, true);
+        installMoveBackGuard();
 
-        try {
-            targetLine.last = activeElement;
-            if (targetLine.scroll && targetLine.scroll.update) targetLine.scroll.update(activeElement, true);
-        } catch (e) {}
+        deferDomUpdate(function () {
+            setMovingElement(activeElement);
+            focusMoveElement(activeElement, targetLine, false);
+        });
     }
 
     function startMoveMode(context) {
@@ -1025,7 +1044,6 @@
         };
 
         setMovingElement(element);
-        scrollMoveElementIntoView(element, line);
         notify('Режим перемещения: влево/вправо - в разделе, вверх/вниз - между разделами, OK - сохранить, Back - отменить');
 
         try {
@@ -1033,6 +1051,7 @@
             if (line.toggle) line.toggle();
         } catch (e) {}
 
+        focusMoveElement(element, line, false);
         installMoveBackGuard();
     }
 
