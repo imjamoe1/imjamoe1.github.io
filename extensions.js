@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Lampa - Мои расширения с категориями
-// @version      1.11
+// @version      1.12
 // @description  Добавляет категории в Расширения через extensions.appendLine()
 // @author       Custom
 // @match        *://lampa.*/*
@@ -25,12 +25,21 @@
     var currentMenuContext = null;
     var moveState = null;
     var suppressMenuUntil = 0;
+    var startTimer = null;
+    var waitTimer = null;
+    var started = false;
 
     function log() {
         try {
             var args = Array.prototype.slice.call(arguments);
             args.unshift('[MyExt]');
             console.log.apply(console, args);
+        } catch (e) {}
+    }
+
+    function logError(label, error) {
+        try {
+            console.warn('[MyExt]', label, error && (error.stack || error.message) || error);
         } catch (e) {}
     }
 
@@ -46,6 +55,7 @@
         try {
             return JSON.parse(localStorage.getItem('lampa_' + category + '_extensions') || '[]');
         } catch (e) {
+            logError('read category list failed', e);
             return [];
         }
     }
@@ -55,7 +65,10 @@
     }
 
     function normalizeUrl(url) {
-        return String(url || '').trim();
+        return String(url || '')
+            .trim()
+            .replace(/[\u0000-\u001F\u007F]/g, '')
+            .replace(/\s+/g, '');
     }
 
     function findInstalledPlugin(url) {
@@ -66,12 +79,15 @@
 
         try {
             if (Lampa.Plugins && Lampa.Plugins.get) plugins = Lampa.Plugins.get() || [];
-        } catch (e) {}
+        } catch (e) {
+            logError('read Lampa plugins failed', e);
+        }
 
         if (!plugins.length) {
             try {
                 plugins = JSON.parse(localStorage.getItem('plugins') || '[]') || [];
             } catch (e) {
+                logError('read plugins storage failed', e);
                 plugins = [];
             }
         }
@@ -209,7 +225,9 @@
             if (filtered.length !== list.length) {
                 localStorage.setItem('plugins', JSON.stringify(filtered));
             }
-        } catch (e) {}
+        } catch (e) {
+            logError('remove plugin from storage failed', e);
+        }
     }
 
     function ensureDefaults() {
@@ -227,6 +245,7 @@
         try {
             plugins = JSON.parse(localStorage.getItem('plugins') || '[]') || [];
         } catch (e) {
+            logError('restore categories failed', e);
             plugins = [];
         }
 
@@ -261,6 +280,16 @@
         try {
             if (Lampa.Noty && Lampa.Noty.show) Lampa.Noty.show(text);
         } catch (e) {}
+    }
+
+    function deferDomUpdate(callback) {
+        if (window.requestAnimationFrame) {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(callback);
+            });
+        } else {
+            setTimeout(callback, 0);
+        }
     }
 
     function injectMoveStyle() {
@@ -737,7 +766,9 @@
                 else if (Lampa.Controller && Lampa.Controller.enabled && Lampa.Controller.enabled().controller && Lampa.Controller.enabled().controller.back) {
                     Lampa.Controller.enabled().controller.back();
                 }
-            } catch (e) {}
+            } catch (e) {
+                logError('patch extensions menu failed', e);
+            }
         }
     }
 
@@ -936,7 +967,7 @@
         if (!context || !context.url) return;
 
         category = context.category;
-        line = context.type === 'installed' ? installedLine : categoryLines[category.key];
+        line = context.type === 'installed' ? installedLine : (category ? categoryLines[category.key] : undefined);
         syncLineItemsWithData(line);
 
         if (!line || !line.items || !line.items.length) {
@@ -1072,27 +1103,32 @@
                             });
                         }
                     } catch (e) {
+                        logError('plugin add failed', e);
                     } finally {
                         addingFromCategory = false;
                     }
 
-                try {
-                    if (line && line.append) {
-                        line.data.unshift(data);
-                        line.append(data);
-                        syncLineItemsWithData(line);
-                        applyLineDomOrder(line);
-                        if (Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
-                        setTimeout(function () {
+                    try {
+                        if (line && line.append) {
+                            line.data.unshift(data);
+                            line.append(data);
                             syncLineItemsWithData(line);
                             applyLineDomOrder(line);
-                        }, 100);
+                            if (Lampa.Layer && Lampa.Layer.visible) Lampa.Layer.visible(line.render());
+                            deferDomUpdate(function () {
+                                syncLineItemsWithData(line);
+                                applyLineDomOrder(line);
+                            });
+                        }
+                    } catch (e) {
+                        logError('append category item failed', e);
                     }
-                } catch (e) {}
 
                     try {
                         cleanupInstalledDuplicates(document);
-                    } catch (e) {}
+                    } catch (e) {
+                        logError('cleanup installed duplicates failed', e);
+                    }
 
                     if (line && line.toggle) line.toggle();
                 });
@@ -1215,11 +1251,13 @@
 
             injectNativeLines(event.extensions);
 
-            setTimeout(function () {
+            deferDomUpdate(function () {
                 try {
                     patchExtensionMenus(event.extensions.render && event.extensions.render());
-                } catch (e) {}
-            }, 500);
+                } catch (e) {
+                    logError('patch extensions menu failed', e);
+                }
+            });
         });
 
         Lampa.Extensions.listener.__myExtHooked = true;
@@ -1277,10 +1315,6 @@
         return true;
     }
 
-    function hookPluginsAdd() {
-        return true;
-    }
-
     function hookPluginsRemove() {
         if (!Lampa.Plugins || typeof Lampa.Plugins.remove !== 'function') return false;
         if (Lampa.Plugins.remove.__myExtWrapped) return true;
@@ -1309,7 +1343,9 @@
 
                 if (removedFromLines) saveAllMoveOrders();
                 else removePluginFromStorageByUrl(url);
-            } catch (e) {}
+            } catch (e) {
+                logError('plugin remove hook failed', e);
+            }
 
             return result;
         };
@@ -1325,7 +1361,7 @@
         var originalSave = Lampa.Plugins.save;
 
         Lampa.Plugins.save = function (data) {
-            var oldUrl = currentMenuContext && currentMenuContext.url || data && (data.url || data.link);
+            var oldUrl = (currentMenuContext && currentMenuContext.url) || (data && (data.url || data.link));
             var patch;
             var categoryBefore = findCategoryByUrl(oldUrl);
             var result = originalSave.apply(this, arguments);
@@ -1351,7 +1387,9 @@
                     }
                     if (currentMenuContext) currentMenuContext.url = normalizeUrl(patch.url || patch.link);
                 }
-            } catch (e) {}
+            } catch (e) {
+                logError('plugin save hook failed', e);
+            }
 
             return result;
         };
@@ -1362,42 +1400,76 @@
 
     function start() {
         if (!window.Lampa || !Lampa.Extensions || !Lampa.Plugins) {
-            setTimeout(start, 500);
+            if (!startTimer) {
+                startTimer = setTimeout(function () {
+                    startTimer = null;
+                    start();
+                }, 500);
+            }
             return;
         }
+
+        if (started) return;
+        started = true;
 
         ensureDefaults();
         restoreCategoriesFromPlugins();
         injectMoveStyle();
         hookExtensionsOpen();
         hookSelectMoveMenu();
-        hookPluginsAdd();
         hookPluginsRemove();
         hookPluginsSave();
 
         if (!window.__lampaMyExtensionMoveKeysBound) {
             window.__lampaMyExtensionMoveKeysBound = true;
             document.addEventListener('keydown', handleMoveKeys, true);
-            window.addEventListener('keydown', handleMoveKeys, true);
         }
 
         log('ready');
+    }
+
+    function cleanup() {
+        try {
+            document.removeEventListener('keydown', handleMoveKeys, true);
+            window.__lampaMyExtensionMoveKeysBound = false;
+        } catch (e) {
+            logError('cleanup failed', e);
+        }
+
+        if (startTimer) {
+            clearTimeout(startTimer);
+            startTimer = null;
+        }
+
+        if (waitTimer) {
+            clearInterval(waitTimer);
+            waitTimer = null;
+        }
     }
 
     if (window.Lampa && Lampa.Listener) {
         Lampa.Listener.follow('app', function (event) {
             if (event && event.type === 'ready') start();
         });
-        setTimeout(start, 1000);
+        startTimer = setTimeout(function () {
+            startTimer = null;
+            start();
+        }, 1000);
     } else {
-        var wait = setInterval(function () {
+        waitTimer = setInterval(function () {
             if (window.Lampa && Lampa.Listener) {
-                clearInterval(wait);
+                clearInterval(waitTimer);
+                waitTimer = null;
                 Lampa.Listener.follow('app', function (event) {
                     if (event && event.type === 'ready') start();
                 });
-                setTimeout(start, 1000);
+                startTimer = setTimeout(function () {
+                    startTimer = null;
+                    start();
+                }, 1000);
             }
         }, 300);
     }
+
+    window.addEventListener('beforeunload', cleanup, false);
 })();
