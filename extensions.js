@@ -423,6 +423,37 @@
         }
     }
 
+    function resetVerticalTarget() {
+        verticalNavTarget = {
+            kind: 'add',
+            index: 0
+        };
+    }
+
+    function resetInstalledLineFocus() {
+        var addButton;
+
+        resetVerticalTarget();
+
+        if (!installedLine) return;
+
+        prepareLineNavigation(installedLine);
+        addButton = lineAddButton(installedLine);
+
+        if (!addButton) return;
+
+        installedLine.last = addButton;
+
+        try {
+            if (Lampa.Controller && Lampa.Controller.collectionFocus && installedLine.render) {
+                Lampa.Controller.collectionFocus(addButton, installedLine.render(), true);
+            }
+
+            if (Lampa.Controller && Lampa.Controller.focus) Lampa.Controller.focus(addButton);
+            if (installedLine.scroll && installedLine.scroll.update) installedLine.scroll.update(addButton, true);
+        } catch (e) {}
+    }
+
     function desiredLineFocus(line) {
         var addButton = lineAddButton(line);
         var items = lineVisibleItems(line);
@@ -1401,6 +1432,7 @@
                 injected = true;
                 installedLine = extensions.items && extensions.items[extensions.items.length - 1];
                 prepareLineNavigation(installedLine);
+                resetInstalledLineFocus();
 
                 CATEGORIES.forEach(function (category) {
                     originalAppendLine(categoryData(category), {
@@ -1425,11 +1457,13 @@
         Lampa.Extensions.listener.follow('open', function (event) {
             if (!event || !event.extensions) return;
 
+            resetVerticalTarget();
             injectNativeLines(event.extensions);
 
             deferDomUpdate(function () {
                 try {
                     patchExtensionMenus(event.extensions.render && event.extensions.render());
+                    resetInstalledLineFocus();
                 } catch (e) {
                     logError('patch extensions menu failed', e);
                 }
