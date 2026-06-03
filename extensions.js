@@ -685,6 +685,7 @@
     function updateLineItemData(line, oldUrl, patch) {
         var target = normalizeUrl(oldUrl);
         var newUrl = normalizeUrl(patch && (patch.url || patch.link));
+        var displayText = (patch && (patch.descr || patch.description || patch.url || patch.link) || '').replace(/\n|\t|\r/g, ' ');
         var changed = false;
 
         if (!line || !target) return false;
@@ -710,7 +711,10 @@
             descr = element && element.querySelector('.extensions__item-descr');
             name = element && element.querySelector('.extensions__item-name');
 
-            if (descr && newUrl) descr.textContent = newUrl;
+            if (descr && displayText) {
+                descr.textContent = displayText;
+                descr.innerText = displayText;
+            }
             if (name && patch.name) name.textContent = patch.name;
 
             changed = true;
@@ -739,6 +743,7 @@
     function updateContextElement(patch) {
         var element = currentMenuContext && currentMenuContext.element;
         var newUrl = normalizeUrl(patch && (patch.url || patch.link));
+        var displayText = (patch && (patch.descr || patch.description || patch.url || patch.link) || '').replace(/\n|\t|\r/g, ' ');
         var descr;
         var name;
 
@@ -747,8 +752,15 @@
         descr = element.querySelector('.extensions__item-descr');
         name = element.querySelector('.extensions__item-name');
 
-        if (descr) descr.textContent = newUrl;
-        if (name && patch.name) name.textContent = patch.name;
+        if (descr && displayText) {
+            descr.textContent = displayText;
+            descr.innerText = displayText;
+        }
+
+        if (name && patch.name) {
+            name.textContent = patch.name;
+            name.innerText = patch.name;
+        }
 
         element.__myExtLastUrl = newUrl;
         return !!descr;
@@ -1576,16 +1588,18 @@
             var categoryBefore = findCategoryByUrl(oldUrl);
             var contextChanged;
             var lineChanged;
+            var newUrl;
             var result = originalSave.apply(this, arguments);
 
             try {
                 if (data && oldUrl) {
+                    newUrl = normalizeUrl(data.url || data.link);
                     patch = {
-                        url: data.url || data.link,
-                        link: data.link || data.url,
+                        url: newUrl,
+                        link: newUrl,
                         name: data.name,
                         author: data.author,
-                        descr: data.descr || data.description || data.url || data.link,
+                        descr: newUrl,
                         status: data.status === 0 ? 0 : 1
                     };
 
@@ -1600,6 +1614,12 @@
                         saveAllMoveOrders();
                     }
                     if (currentMenuContext) currentMenuContext.url = normalizeUrl(patch.url || patch.link);
+
+                    deferDomUpdate(function () {
+                        updateContextElement(patch);
+                        updateVisibleLineItem(oldUrl, patch);
+                        cleanupInstalledDuplicates(document);
+                    });
                 }
             } catch (e) {
                 logError('plugin save hook failed', e);
