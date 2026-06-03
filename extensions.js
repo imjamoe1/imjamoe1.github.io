@@ -705,6 +705,24 @@
         return changed;
     }
 
+    function updateContextElement(patch) {
+        var element = currentMenuContext && currentMenuContext.element;
+        var newUrl = normalizeUrl(patch && (patch.url || patch.link));
+        var descr;
+        var name;
+
+        if (!element || !newUrl) return false;
+
+        descr = element.querySelector('.extensions__item-descr');
+        name = element.querySelector('.extensions__item-name');
+
+        if (descr) descr.textContent = newUrl;
+        if (name && patch.name) name.textContent = patch.name;
+
+        element.__myExtLastUrl = newUrl;
+        return !!descr;
+    }
+
     function orderedMoveTargets() {
         var targets = [];
 
@@ -1355,6 +1373,7 @@
 
             item.__myExtLastUrl = url;
             currentMenuContext = context;
+            if (currentMenuContext) currentMenuContext.element = item;
             rememberVerticalTarget(item);
         }, true);
 
@@ -1521,6 +1540,8 @@
             var oldUrl = (currentMenuContext && currentMenuContext.url) || (data && (data.url || data.link));
             var patch;
             var categoryBefore = findCategoryByUrl(oldUrl);
+            var contextChanged;
+            var lineChanged;
             var result = originalSave.apply(this, arguments);
 
             try {
@@ -1535,7 +1556,9 @@
                     };
 
                     updateCategoryItem(oldUrl, patch);
-                    if (updateVisibleLineItem(oldUrl, patch)) saveAllMoveOrders();
+                    contextChanged = updateContextElement(patch);
+                    lineChanged = updateVisibleLineItem(oldUrl, patch);
+                    if (contextChanged || lineChanged) saveAllMoveOrders();
                     if (categoryBefore) {
                         removeUrlFromLine(installedLine, oldUrl);
                         removeUrlFromLine(installedLine, patch.url || patch.link);
