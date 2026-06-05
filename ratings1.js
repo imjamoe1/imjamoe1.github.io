@@ -2935,7 +2935,7 @@ Lampa.Listener.follow('full', function(e) {
                 var render = e.object.activity.render();
                 var details = $('.full-start-new__details', render);
                 var reactions = $('.full-start-new__reactions', render);
-                var reactions = $('.full-start-new__buttons', render);
+                var buttons = $('.full-start-new__buttons', render);
                 var movie = e.data.movie;
             
                 // Проверяем, является ли контент сериалом
