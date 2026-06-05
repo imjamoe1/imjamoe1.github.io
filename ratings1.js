@@ -2957,7 +2957,7 @@ Lampa.Listener.follow('full', function(e) {
 
                     buttons.css({
                         'position': 'relative',
-                        'bottom': '1em'
+                        'bottom': '3em'
                     });
                 }
             });
