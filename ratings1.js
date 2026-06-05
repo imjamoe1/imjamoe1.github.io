@@ -2928,6 +2928,35 @@ Lampa.Listener.follow('full', function(e) {
         }, 100);
     }
     });
+
+    Lampa.Listener.follow('full', function(e) {
+        if (e.type == 'complite') {
+            setTimeout(function() {
+                var render = e.object.activity.render();
+                var details = $('.full-start-new__details', render);
+                var reactions = $('.full-start-new__reactions', render);
+                var movie = e.data.movie;
+            
+                // Проверяем, является ли контент сериалом
+                var isSeries = (movie.media_type === 'tv' || 
+                               movie.type === 'tv' || 
+                               movie.name || 
+                               movie.original_name);
+            
+                if (isSeries) {
+                    details.css({
+                        'position': 'relative',
+                        'bottom': '2em'
+                    });
+                
+                    reactions.css({
+                        'position': 'relative',
+                        'bottom': '3em'
+                    });
+                }
+            });
+        }
+    });
     
     startPlugin();
     
