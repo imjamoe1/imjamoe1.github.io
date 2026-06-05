@@ -2963,7 +2963,7 @@ Lampa.Listener.follow('full', function(e) {
 
                     networks.css({
                         'position': 'relative',
-                        'bottom': '3.5em'
+                        'bottom': '3.3em'
                     });
                 }
             });
