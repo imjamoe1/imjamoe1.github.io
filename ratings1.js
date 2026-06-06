@@ -2958,12 +2958,12 @@ Lampa.Listener.follow('full', function(e) {
 
                     buttons.css({
                         'position': 'relative',
-                        'bottom': '2em'
+                        'bottom': '2.5em'
                     });
 
                     networks.css({
                         'position': 'relative',
-                        'bottom': '2.3em'
+                        'bottom': '2.8em'
                     });
                 }
             });
