@@ -1328,7 +1328,7 @@
                 border: 0.03em solid rgba(255, 255, 255, 0.9) !important;
                 border-radius: 0.5em !important;
                 padding: 0.4em 0.35em !important;
-                margin-top: 0.3em !important;
+                margin-top: 1em !important;
             }
             .quality-tags-container .quality-badge {
                 position: relative !important;
