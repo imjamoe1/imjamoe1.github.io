@@ -2601,7 +2601,7 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
         }
     });
         
-    // Попадания внутри карточки
+	// Попадания внутри карточки
 	Lampa.Listener.follow('full', function (e) {
             if (e.type == 'complite') {
                 var render = e.object.activity.render();
