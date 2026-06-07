@@ -2574,8 +2574,34 @@ function applyQualityToCard(card, quality, source, qCacheKey) {
             observer.observe(document.body, { childList: true, subtree: true });
             console.log('MAXSM-RATINGS: observer Start');
         }
+
+    Lampa.SettingsApi.addParam({
+        component: 'interface',
+        param: {
+            name: 'maxsm_ratings_old_interface',
+            type: 'trigger',
+            default: true
+        },
+        field: {
+            name: Lampa.Lang.translate('maxsm_ratings_old_interface')
+        },
+        onRender: function(item) {
+            setTimeout(function() {
+                let target = $('div[data-name="card_interfice_poster"]');
+                if (target.length) {
+                    let parent = target.closest('.settings-param');
+                    if (parent.length) item.insertBefore(parent);
+                }
+                            
+                let value = Lampa.Storage.field('maxsm_ratings_old_interface');
+                item.find('.settings-param__value').text(
+                    Lampa.Lang.translate(value ? 'settings_param_yes' : 'settings_param_no')
+                );
+            }, 50);
+        }
+    });
         
-        // Попадания внутри карточки
+    // Попадания внутри карточки
 	Lampa.Listener.follow('full', function (e) {
             if (e.type == 'complite') {
                 var render = e.object.activity.render();
@@ -2636,298 +2662,314 @@ Lampa.Listener.follow('full', function(e) {
     ]);
 }
 
+// Перемещение rateLine над head
 Lampa.Listener.follow('full', function(e) {
     if (e.type == 'complite') {
-        setTimeout(function() {
-            try {
-                var render = e.object.activity.render();
-                var rateLine = $('.full-start-new__rate-line', render);
-                var head = $('.full-start-new__head', render);
-                
-                if (rateLine.length && head.length) {
-                    // Находим общий родительский контейнер
-                    var parentContainer = head.parent();
+        // Проверяем, включен ли старый интерфейс
+        if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
+            setTimeout(function() {
+                try {
+                    var render = e.object.activity.render();
+                    var rateLine = $('.full-start-new__rate-line', render);
+                    var head = $('.full-start-new__head', render);
                     
-                    if (parentContainer.length) {
-                        // 1. Перемещаем rateLine перед head внутри их общего родителя
-                        rateLine.insertBefore(head);
+                    if (rateLine.length && head.length) {
+                        // Находим общий родительский контейнер
+                        var parentContainer = head.parent();
                         
-                        // 2. Применяем стили
-                        rateLine.css({
-                            'visibility': 'visible',
-                            'margin-left': '-10px',
-                            'margin-bottom': '10px',
-                            'display': 'flex',
-                            'flex-wrap': 'wrap'
-                        });
-                        
-                        // 3. Добавляем отступ для head, чтобы не наезжал
-                        head.css('margin-top', '5px');
-                        
-                        console.log('MAXSM-RATINGS: Rate line positioned above head');
+                        if (parentContainer.length) {
+                            // 1. Перемещаем rateLine перед head внутри их общего родителя
+                            rateLine.insertBefore(head);
+                            
+                            // 2. Применяем стили
+                            rateLine.css({
+                                'visibility': 'visible',
+                                'margin-left': '-10px',
+                                'margin-bottom': '10px',
+                                'display': 'flex',
+                                'flex-wrap': 'wrap'
+                            });
+                            
+                            // 3. Добавляем отступ для head, чтобы не наезжал
+                            head.css('margin-top', '5px');
+                            
+                            console.log('MAXSM-RATINGS: Rate line positioned above head');
+                        }
                     }
+                } catch(err) {
+                    console.error('MAXSM-RATINGS: Error:', err);
                 }
-            } catch(err) {
-                console.error('MAXSM-RATINGS: Error:', err);
-            }
-        }, 100);
+            }, 100);
+        }
     }
 });
 
+// Преобразование details в теги
 Lampa.Listener.follow('full', function(e) {
     if (e.type == 'complite') {
-        setTimeout(function() {
-            var render = e.object.activity.render();
-            var head = render.find('.full-start-new__head');
-            var details = render.find('.full-start-new__details');
-            
-            if (!head.length || !details.length) return;
-            
-            // Сохраняем оригинальный контент details
-            var originalDetailsHTML = details.html();
-            
-            // SVG иконки - для длительности и следующей серии
-            var timeSVG = '<svg width="1em" height="1em" viewBox="0 0 512 512"><path fill="#fff" d="M256,0C114.845,0,0,114.839,0,256s114.845,256,256,256c141.161,0,256-114.839,256-256S397.155,0,256,0z M256,474.628C135.45,474.628,37.372,376.55,37.372,256S135.45,37.372,256,37.372s218.628,98.077,218.628,218.622C474.628,376.55,376.55,474.628,256,474.628z M343.202,256h-80.973V143.883c0-10.321-8.365-18.686-18.686-18.686s-18.686,8.365-18.686,18.686v130.803c0,10.321,8.365,18.686,18.686,18.686h99.659c10.321,0,18.686-8.365,18.686-18.686S353.523,256,343.202,256z"/></svg>';
-            
-            // Получаем текст
-            var headText = head.text();
-            var detailsText = details.text();
-            
-            // Проверяем, это сериал или фильм
-            var isSeries = false;
-            var seriesInfo = [];
-            var durationElement = null;
-            var nextEpisodeInfo = null;
-            
-            // Ищем всю информацию о сериалах
-            var tempDiv = $('<div>').html(originalDetailsHTML);
-            var seriesElements = tempDiv.find('span, div');
-            
-            // Собираем все части информации о сериале
-            seriesElements.each(function() {
-                var text = $(this).text().trim();
-                if (text.includes('Сезон') || text.includes('сезон') || 
-                    text.includes('Серии') || text.includes('серии') ||
-                    text.includes('Следующ') || text.includes('следующ')) {
-                    isSeries = true;
-                    // Разбиваем на отдельные части если есть разделители
-                    var parts = text.split(/[●·]/).map(p => p.trim()).filter(p => p);
-                    seriesInfo = seriesInfo.concat(parts);
-                }
-            });
-            
-            // Если не нашли в спанах, ищем в тексте details
-            if (seriesInfo.length === 0) {
-                var lines = detailsText.split('●');
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i].trim();
-                    if (line.includes('Сезон') || line.includes('сезон') || 
-                        line.includes('Серии') || line.includes('серии') ||
-                        line.includes('Следующ') || line.includes('следующ')) {
+        // Проверяем, включен ли старый интерфейс
+        if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
+            setTimeout(function() {
+                var render = e.object.activity.render();
+                var head = render.find('.full-start-new__head');
+                var details = render.find('.full-start-new__details');
+                
+                if (!head.length || !details.length) return;
+                
+                // Сохраняем оригинальный контент details
+                var originalDetailsHTML = details.html();
+                
+                // SVG иконки - для длительности и следующей серии
+                var timeSVG = '<svg width="1em" height="1em" viewBox="0 0 512 512"><path fill="#fff" d="M256,0C114.845,0,0,114.839,0,256s114.845,256,256,256c141.161,0,256-114.839,256-256S397.155,0,256,0z M256,474.628C135.45,474.628,37.372,376.55,37.372,256S135.45,37.372,256,37.372s218.628,98.077,218.628,218.622C474.628,376.55,376.55,474.628,256,474.628z M343.202,256h-80.973V143.883c0-10.321-8.365-18.686-18.686-18.686s-18.686,8.365-18.686,18.686v130.803c0,10.321,8.365,18.686,18.686,18.686h99.659c10.321,0,18.686-8.365,18.686-18.686S353.523,256,343.202,256z"/></svg>';
+                
+                // Получаем текст
+                var headText = head.text();
+                var detailsText = details.text();
+                
+                // Проверяем, это сериал или фильм
+                var isSeries = false;
+                var seriesInfo = [];
+                var durationElement = null;
+                var nextEpisodeInfo = null;
+                
+                // Ищем всю информацию о сериалах
+                var tempDiv = $('<div>').html(originalDetailsHTML);
+                var seriesElements = tempDiv.find('span, div');
+                
+                // Собираем все части информации о сериале
+                seriesElements.each(function() {
+                    var text = $(this).text().trim();
+                    if (text.includes('Сезон') || text.includes('сезон') || 
+                        text.includes('Серии') || text.includes('серии') ||
+                        text.includes('Следующ') || text.includes('следующ')) {
                         isSeries = true;
-                        var parts = line.split(/[●·]/).map(p => p.trim()).filter(p => p);
+                        // Разбиваем на отдельные части если есть разделители
+                        var parts = text.split(/[●·]/).map(p => p.trim()).filter(p => p);
                         seriesInfo = seriesInfo.concat(parts);
                     }
-                }
-            }
-            
-            // Извлекаем данные из head
-            var year = headText.match(/(\d{4})/);
-            var country = headText.match(/,\s*([^,]+)/);
-            
-            var tags = [];
-            
-            // Год (БЕЗ иконки)
-            if (year) tags.push({icon: '', text: year[1]});
-            
-            // Страна (БЕЗ иконки)
-            if (country) tags.push({icon: '', text: country[1].trim()});
-            
-            // Разбиваем details на части
-            var parts = detailsText.split('●').map(p => p.trim()).filter(p => p);
-            
-            // Добавляем жанры (исключая информацию о сериалах)
-            parts.forEach(function(part) {
-                if (part.includes('|')) {
-                    // Проверяем, что это не информация о сериале
-                    var isSeriesPart = false;
-                    for (var i = 0; i < seriesInfo.length; i++) {
-                        if (part.includes(seriesInfo[i])) {
-                            isSeriesPart = true;
-                            break;
-                        }
-                    }
-        
-                    if (!isSeriesPart) {
-                        var formattedGenres = part.replace(/\s*\|\s*/g, ' , ');
-                        tags.push({icon: '', text: formattedGenres});
-                    }
-                }
-    
-                // Находим время (длительность) - отдельно от информации о сериалах
-                if (part.match(/\d{2}:\d{2}/)) {
-                    // Проверяем, что это не "Следующая HH:MM" и не часть информации о сезонах
-                    var isSeriesTime = false;
-                    for (var i = 0; i < seriesInfo.length; i++) {
-                        if (part.includes(seriesInfo[i]) || seriesInfo[i].includes(part)) {
-                            isSeriesTime = true;
-                            break;
-                        }
-                    }
-        
-                    if (!isSeriesTime && !part.includes('Следующ') && !part.includes('следующ')) {
-                        durationElement = {icon: timeSVG, text: part};
-                    }
-        
-                    // Отдельно сохраняем информацию о следующей серии
-                    if (part.includes('Следующ') || part.includes('следующ')) {
-                        nextEpisodeInfo = {icon: timeSVG, text: part};
-                    }
-                }
-            });
-            
-            // Добавляем длительность в конец (если есть) С ИКОНКОЙ
-            if (durationElement) {
-                tags.push(durationElement);
-            }
-            
-            // Создаем HTML для первой строки
-            var tagsHtml = '';
-            
-            if (tags.length > 0) {
-                tagsHtml = tags.map(function(tag) {
-                    var content = tag.icon ? tag.icon + ' ' + tag.text : tag.text;
-                    return '<span class="maxsm-tag-item">' + content + '</span>';
-                }).join('');
-            }
-            
-            // Для сериалов добавляем отдельные теги для сезонов, серий и следующей серии
-            if (isSeries && seriesInfo.length > 0) {
-                // Фильтруем уникальные значения
-                var uniqueSeriesInfo = [];
-                seriesInfo.forEach(function(item) {
-                    if (uniqueSeriesInfo.indexOf(item) === -1 && item) {
-                        uniqueSeriesInfo.push(item);
-                    }
                 });
                 
-                // Создаем отдельные теги для каждой части информации
-                var seriesTagsHtml = '';
-                uniqueSeriesInfo.forEach(function(item) {
-                    // Проверяем, что это не длительность (формат HH:MM)
-                    if (!item.match(/^\d{2}:\d{2}$/)) {
-                        // Для "Следующая HH:MM" добавляем иконку часов
-                        if (item.includes('Следующ') || item.includes('следующ')) {
-                            seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + item + '</span>';
-                        } else {
-                            // Для сезонов и серий без иконки
-                            seriesTagsHtml += '<span class="maxsm-tag-item">' + item + '</span>';
+                // Если не нашли в спанах, ищем в тексте details
+                if (seriesInfo.length === 0) {
+                    var lines = detailsText.split('●');
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i].trim();
+                        if (line.includes('Сезон') || line.includes('сезон') || 
+                            line.includes('Серии') || line.includes('серии') ||
+                            line.includes('Следующ') || line.includes('следующ')) {
+                            isSeries = true;
+                            var parts = line.split(/[●·]/).map(p => p.trim()).filter(p => p);
+                            seriesInfo = seriesInfo.concat(parts);
+                        }
+                    }
+                }
+                
+                // Извлекаем данные из head
+                var year = headText.match(/(\d{4})/);
+                var country = headText.match(/,\s*([^,]+)/);
+                
+                var tags = [];
+                
+                // Год (БЕЗ иконки)
+                if (year) tags.push({icon: '', text: year[1]});
+                
+                // Страна (БЕЗ иконки)
+                if (country) tags.push({icon: '', text: country[1].trim()});
+                
+                // Разбиваем details на части
+                var parts = detailsText.split('●').map(p => p.trim()).filter(p => p);
+                
+                // Добавляем жанры (исключая информацию о сериалах)
+                parts.forEach(function(part) {
+                    if (part.includes('|')) {
+                        // Проверяем, что это не информация о сериале
+                        var isSeriesPart = false;
+                        for (var i = 0; i < seriesInfo.length; i++) {
+                            if (part.includes(seriesInfo[i])) {
+                                isSeriesPart = true;
+                                break;
+                            }
+                        }
+            
+                        if (!isSeriesPart) {
+                            var formattedGenres = part.replace(/\s*\|\s*/g, ' , ');
+                            tags.push({icon: '', text: formattedGenres});
+                        }
+                    }
+        
+                    // Находим время (длительность) - отдельно от информации о сериалах
+                    if (part.match(/\d{2}:\d{2}/)) {
+                        // Проверяем, что это не "Следующая HH:MM" и не часть информации о сезонах
+                        var isSeriesTime = false;
+                        for (var i = 0; i < seriesInfo.length; i++) {
+                            if (part.includes(seriesInfo[i]) || seriesInfo[i].includes(part)) {
+                                isSeriesTime = true;
+                                break;
+                            }
+                        }
+            
+                        if (!isSeriesTime && !part.includes('Следующ') && !part.includes('следующ')) {
+                            durationElement = {icon: timeSVG, text: part};
+                        }
+            
+                        // Отдельно сохраняем информацию о следующей серии
+                        if (part.includes('Следующ') || part.includes('следующ')) {
+                            nextEpisodeInfo = {icon: timeSVG, text: part};
                         }
                     }
                 });
                 
-                // Если у нас есть отдельная информация о следующей серии, добавляем её
-                if (nextEpisodeInfo && !seriesTagsHtml.includes('Следующ') && !seriesTagsHtml.includes('следующ')) {
-                    seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + nextEpisodeInfo.text + '</span>';
+                // Добавляем длительность в конец (если есть) С ИКОНКОЙ
+                if (durationElement) {
+                    tags.push(durationElement);
                 }
                 
-                if (seriesTagsHtml) {
-                    tagsHtml += '<div class="maxsm-series-container">' + seriesTagsHtml + '</div>';
-                }
-            }
-            
-            if (tagsHtml) {
-                details.html('<div class="maxsm-tags-container">' + tagsHtml + '</div>');
+                // Создаем HTML для первой строки
+                var tagsHtml = '';
                 
-                // Стили
-                var style = '<style id="maxsm-tags-equal">' +
-                    '.maxsm-tags-container {' +
-                    '    display: flex !important;' +
-                    '    align-items: center !important;' +
-                    '    flex-wrap: wrap !important;' +
-                    '    gap: 0.5em !important;' +
-                    '    margin: 0.75em 0 1em 0 !important;' +
-                    '}' +
-                    '.maxsm-tag-item {' +
-                    '    display: inline-flex !important;' +
-                    '    align-items: center !important;' +
-                    '    gap: 0.3em !important;' +
-                    '    padding: 0.25em 0.75em !important;' +
-                    '    background: rgba(0, 0, 0, 0.2) !important;' +
-                    '    border-radius: 0.6em !important;' +
-                    '    font-size: 1.1em !important;' +
-                    '    color: rgba(255, 255, 255, 0.95) !important;' +
-                    '    line-height: 1 !important;' +
-                    '    min-height: 1.5em !important;' +
-                    '    box-sizing: border-box !important;' +
-                    '}' +
-                    '.maxsm-tag-item svg {' +
-                    '    flex-shrink: 0 !important;' +
-                    '    width: 1em !important;' +
-                    '    height: 1em !important;' +
-                    '}' +
-                    '.maxsm-series-container {' +
-                    '    width: 100% !important;' +
-                    '    display: flex !important;' +
-                    '    flex-wrap: wrap !important;' +
-                    '    gap: 0.5em !important;' +
-                    '    margin-top: 0.5em !important;' +
-                    '}' +
-                    '</style>';
-                
-                if (!$('#maxsm-tags-equal').length) {
-                    $('head').append(style);
+                if (tags.length > 0) {
+                    tagsHtml = tags.map(function(tag) {
+                        var content = tag.icon ? tag.icon + ' ' + tag.text : tag.text;
+                        return '<span class="maxsm-tag-item">' + content + '</span>';
+                    }).join('');
                 }
                 
-                // Очищаем head
-                var rateLine = head.find('.full-start-new__rate-line');
-                if (rateLine.length) {
-                    head.html(rateLine);
-                    rateLine.css('visibility', 'visible');
-                } else {
-                    head.remove();
+                // Для сериалов добавляем отдельные теги для сезонов, серий и следующей серии
+                if (isSeries && seriesInfo.length > 0) {
+                    // Фильтруем уникальные значения
+                    var uniqueSeriesInfo = [];
+                    seriesInfo.forEach(function(item) {
+                        if (uniqueSeriesInfo.indexOf(item) === -1 && item) {
+                            uniqueSeriesInfo.push(item);
+                        }
+                    });
+                    
+                    // Создаем отдельные теги для каждой части информации
+                    var seriesTagsHtml = '';
+                    uniqueSeriesInfo.forEach(function(item) {
+                        // Проверяем, что это не длительность (формат HH:MM)
+                        if (!item.match(/^\d{2}:\d{2}$/)) {
+                            // Для "Следующая HH:MM" добавляем иконку часов
+                            if (item.includes('Следующ') || item.includes('следующ')) {
+                                seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + item + '</span>';
+                            } else {
+                                // Для сезонов и серий без иконки
+                                seriesTagsHtml += '<span class="maxsm-tag-item">' + item + '</span>';
+                            }
+                        }
+                    });
+                    
+                    // Если у нас есть отдельная информация о следующей серии, добавляем её
+                    if (nextEpisodeInfo && !seriesTagsHtml.includes('Следующ') && !seriesTagsHtml.includes('следующ')) {
+                        seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + nextEpisodeInfo.text + '</span>';
+                    }
+                    
+                    if (seriesTagsHtml) {
+                        tagsHtml += '<div class="maxsm-series-container">' + seriesTagsHtml + '</div>';
+                    }
                 }
-            }
-            
-        }, 300);
+                
+                if (tagsHtml) {
+                    details.html('<div class="maxsm-tags-container">' + tagsHtml + '</div>');
+                    
+                    // Стили
+                    var style = '<style id="maxsm-tags-equal">' +
+                        '.maxsm-tags-container {' +
+                        '    display: flex !important;' +
+                        '    align-items: center !important;' +
+                        '    flex-wrap: wrap !important;' +
+                        '    gap: 0.5em !important;' +
+                        '    margin: 0.75em 0 1em 0 !important;' +
+                        '}' +
+                        '.maxsm-tag-item {' +
+                        '    display: inline-flex !important;' +
+                        '    align-items: center !important;' +
+                        '    gap: 0.3em !important;' +
+                        '    padding: 0.25em 0.75em !important;' +
+                        '    background: rgba(0, 0, 0, 0.2) !important;' +
+                        '    border-radius: 0.6em !important;' +
+                        '    font-size: 1.1em !important;' +
+                        '    color: rgba(255, 255, 255, 0.95) !important;' +
+                        '    line-height: 1 !important;' +
+                        '    min-height: 1.5em !important;' +
+                        '    box-sizing: border-box !important;' +
+                        '}' +
+                        '.maxsm-tag-item svg {' +
+                        '    flex-shrink: 0 !important;' +
+                        '    width: 1em !important;' +
+                        '    height: 1em !important;' +
+                        '}' +
+                        '.maxsm-series-container {' +
+                        '    width: 100% !important;' +
+                        '    display: flex !important;' +
+                        '    flex-wrap: wrap !important;' +
+                        '    gap: 0.5em !important;' +
+                        '    margin-top: 0.5em !important;' +
+                        '}' +
+                        '.maxsm-series-container .full-start-new__buttons {' +
+                        '    position: absolute !important;' +
+                        '    bottom: 3em !important;' +
+                        '}' +
+                        '</style>';
+                    
+                    if (!$('#maxsm-tags-equal').length) {
+                        $('head').append(style);
+                    }
+                    
+                    // Очищаем head
+                    var rateLine = head.find('.full-start-new__rate-line');
+                    if (rateLine.length) {
+                        head.html(rateLine);
+                        rateLine.css('visibility', 'visible');
+                    } else {
+                        head.remove();
+                    }
+                }
+                
+            }, 300);
+        }
     }
 });
 
+// Перемещение original-title над title
 Lampa.Listener.follow('full', function(e) {
     if (e.type == 'complite') {
-        setTimeout(function() {
-            try {
-                var render = e.object.activity.render();
-                var originalTitleElement = $('.original-title', render);
-                var titleElement = $('.full-start-new__title', render);
-                
-                if (originalTitleElement.length && titleElement.length) {
-                    // Находим общий родительский контейнер
-                    var parentContainer = titleElement.parent();
+        // Проверяем, включен ли старый интерфейс
+        if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
+            setTimeout(function() {
+                try {
+                    var render = e.object.activity.render();
+                    var originalTitleElement = $('.original-title', render);
+                    var titleElement = $('.full-start-new__title', render);
                     
-                    if (parentContainer.length) {
-                        // 1. Перемещаем originalTitleElement перед titleElement
-                        titleElement.before(originalTitleElement);
+                    if (originalTitleElement.length && titleElement.length) {
+                        // Находим общий родительский контейнер
+                        var parentContainer = titleElement.parent();
                         
-                        // 2. Применяем стили
-                        originalTitleElement.css({
-                            'font-size': '1.5em',
-                            'margin-top': '0.3em',
-                            'margin-bottom': '0.3em'
-                        });
-                        
-                        // 3. Добавляем отступ для titleElement, чтобы не наезжал
-                        titleElement.css('margin-top', '5px');
-                        
-                        console.log('MAXSM-RATINGS: Original title positioned above titleElement');
+                        if (parentContainer.length) {
+                            // 1. Перемещаем originalTitleElement перед titleElement
+                            titleElement.before(originalTitleElement);
+                            
+                            // 2. Применяем стили
+                            originalTitleElement.css({
+                                'font-size': '1.5em',
+                                'margin-top': '0.3em',
+                                'margin-bottom': '0.3em'
+                            });
+                            
+                            // 3. Добавляем отступ для titleElement, чтобы не наезжал
+                            titleElement.css('margin-top', '5px');
+                            
+                            console.log('MAXSM-RATINGS: Original title positioned above titleElement');
+                        }
                     }
+                } catch(err) {
+                    console.error('MAXSM-RATINGS: Error:', err);
                 }
-            } catch(err) {
-                console.error('MAXSM-RATINGS: Error:', err);
-            }
-        }, 100);
+            }, 100);
+        }
     }
-    });
+});
 
     Lampa.Listener.follow('full', function(e) {
         if (e.type == 'complite') {
