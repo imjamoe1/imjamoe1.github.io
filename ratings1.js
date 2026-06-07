@@ -42,7 +42,7 @@
             pt: 'Classificação e Qualidade',
             zh: '评分与画质',
             he: 'דירוג ואיכות',
-                        cs: 'Hodnocení a kvalita',
+            cs: 'Hodnocení a kvalita',
             bg: 'Рейтинг и качество'
         },
         maxsm_ratings_cc: {
@@ -53,7 +53,7 @@
             pt: 'Limpar cache local',
             zh: '清除本地缓存',
             he: 'נקה מטמון מקומי',
-                        cs: 'Vymazat místní mezipaměť',
+            cs: 'Vymazat místní mezipaměť',
             bg: 'Изчистване на локалния кеш'
         },
         maxsm_ratings_critic: {
@@ -64,7 +64,7 @@
             pt: 'Avaliações da crítica',
             zh: '影评人评分',
             he: 'דירוגי מבקרים',
-                        cs: 'Hodnocení kritiků',
+            cs: 'Hodnocení kritiků',
             bg: 'Оценки на критиците'
         },
         maxsm_ratings_mode: {
@@ -75,7 +75,7 @@
             pt: 'Classificação média',
             zh: '平均评分',
             he: 'דירוג ממוצע',
-                        cs: 'Průměrné hodnocení',
+            cs: 'Průměrné hodnocení',
             bg: 'Среден рейтинг'
         },
         maxsm_ratings_mode_normal: {
@@ -97,7 +97,7 @@
             pt: 'Apenas classificação média',
             zh: '仅显示平均评分',
             he: 'רק דירוג ממוצע',
-                        cs: 'Pouze průměrné hodnocení',
+            cs: 'Pouze průměrné hodnocení',
             bg: 'Само среден рейтинг'
         },
         maxsm_ratings_mode_noavg: {
@@ -108,7 +108,7 @@
             pt: 'Sem média',
             zh: '无平均值',
             he: 'ללא ממוצע',
-                        cs: 'Bez průměru',
+            cs: 'Bez průměru',
             bg: 'Без среден рейтинг'
         }, 
         maxsm_ratings_icons: {
@@ -119,7 +119,7 @@
             pt: 'Ícones',
             zh: '图标',
             he: 'סמלים',
-                        cs: 'Ikony',
+            cs: 'Ikony',
             bg: 'Икони'
         },
         maxsm_ratings_colors: {
@@ -130,7 +130,7 @@
             pt: 'Cores',
             zh: '颜色',
             he: 'צבעים',
-                        cs: 'Barvy',
+            cs: 'Barvy',
             bg: 'Цветове'
         },
         maxsm_ratings_avg: {
@@ -141,7 +141,7 @@
             pt: 'TOTAL',
             zh: '总评',
             he: 'סה"כ',
-                        cs: 'VÝSLEDEK',
+            cs: 'VÝSLEDEK',
             bg: 'РЕЗУЛТАТ'
         },
         maxsm_ratings_avg_simple: {
@@ -152,7 +152,7 @@
             pt: 'Avaliação',
             zh: '评分',
             he: 'דירוג',
-                        cs: 'Hodnocení',
+            cs: 'Hodnocení',
             bg: 'Оценка'
         },
         maxsm_ratings_loading: {
@@ -163,7 +163,7 @@
             pt: 'Carregando',
             zh: '加载中',
             he: 'טוען',
-                        cs: 'Načítání',
+            cs: 'Načítání',
             bg: 'Зареждане'
         },
         maxsm_ratings_oscars: { 
@@ -174,7 +174,7 @@
             pt: 'Oscar',
             zh: '奥斯卡奖',
             he: 'אוסקר',
-                        cs: 'Oscar',
+            cs: 'Oscar',
             bg: 'Оскар'
         },
         maxsm_ratings_emmy: {
@@ -196,7 +196,7 @@
             pt: 'Prêmios',
             zh: '奖项',
             he: 'פרסים',
-                        cs: 'Ocenění',
+            cs: 'Ocenění',
             bg: 'Награди'
         },
         maxsm_ratings_pg: {
@@ -217,7 +217,7 @@
             pt: 'Qualidade dentro dos cartões',
             zh: '卡片内的质量',
             he: 'איכות בתוך כרטיסים',
-                        cs: 'Kvalita uvnitř karet',
+            cs: 'Kvalita uvnitř karet',
             bg: 'Качество вътре в картите'
         },
         maxsm_ratings_quality_inlist: {
@@ -228,7 +228,7 @@
             pt: 'Qualidade nos cartões',
             zh: '卡片上的质量',
             he: 'איכות בכרטיסים',
-                        cs: 'Kvalita na kartách',
+            cs: 'Kvalita na kartách',
             bg: 'Качество по картите'
         },
         maxsm_ratings_quality_tv: {
@@ -239,8 +239,19 @@
             pt: 'Qualidade para séries',
             zh: '剧集的质量',
             he: 'איכות לסדרות',
-                        cs: 'Kvalita pro seriály',
+            cs: 'Kvalita pro seriály',
             bg: 'Качество за сериали'
+        },
+        maxsm_ratings_old_interface: {
+            ru: 'Старый интерфейс',
+            en: 'Old interface',
+            uk: 'Старий інтерфейс',
+            be: 'Стары інтэрфейс',
+            pt: 'Interface antiga',
+            zh: '旧界面',
+            he: 'ממשק ישן',
+            cs: 'Staré rozhraní',
+            bg: 'Стар интерфейс'
         }
     });
 
