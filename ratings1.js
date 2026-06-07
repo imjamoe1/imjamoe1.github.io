@@ -404,6 +404,7 @@
         "    height: 1.9em !important;" +
         "    width: 3em !important;" +
         "    padding: 1px !important;" +
+        "    margin-left: 0.5em !important;" +
         "    border-radius: 0.2em !important;" +
         "    display: inline-flex !important;" +
         "    align-items: center !important;" +
