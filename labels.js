@@ -23,7 +23,7 @@
             'label_cartoon_caption': {
                 'ru': "Мульт",
                 'en': "Cartoon", 
-                'uk': "Мультфільм"
+                'uk': "Мульт"
             }
         });
 
