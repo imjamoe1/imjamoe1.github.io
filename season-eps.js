@@ -226,7 +226,7 @@
             '  color: #fff;' +
             '  background: rgba(0, 0, 0, 0.7);' +
             '  border: 0.1em solid rgba(255, 255, 255, 0.9);' +
-            '  border-radius: 0.7em;' +
+            '  border-radius: 0.5em;' +
             '  text-align: center;' +
             '  text-shadow: 0 1px 2px rgba(0,0,0,0.8);' +
             '  pointer-events: none;' +
