@@ -224,7 +224,7 @@
             '  font-size: 0.72em;' +
             '  font-weight: bold;' +
             '  color: #fff;' +
-            '  background: rgba(0, 0, 0, 0.7);' +
+            '  background: rgba(0, 0, 0, 0.5);' +
             '  border: 1px solid #fff;' +
             '  border-radius: 0.5em;' +
             '  text-align: center;' +
