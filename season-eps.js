@@ -234,6 +234,9 @@
             '  line-height: 1.3;' +
             '  box-sizing: border-box;' +
             '}' +
+            '.activity .card__badge--next-episode:not(.card__view *) {' +
+            '  display: none !important;' +
+            '}' +
             '.hero-banner .card__badge--next-episode {' +
             '  display: none !important;' +
             '}'
