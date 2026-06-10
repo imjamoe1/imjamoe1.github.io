@@ -1666,9 +1666,9 @@
 				vids.results.forEach(function (element) {
 					var name_orig = (element.name || "").toLowerCase();
 					
-					if (element.iso_639_1 === 'ru' || name_orig.indexOf('официальный') !== -1 || name_orig.indexOf('русский') !== -1 || name_orig.indexOf('на русском') !== -1) {
+					/*if (element.iso_639_1 === 'ru' || name_orig.indexOf('официальный') !== -1 || name_orig.indexOf('русский') !== -1 || name_orig.indexOf('на русском') !== -1) {
 						return;
-					}
+					}*/
 
 					if (name_orig.indexOf('#shorts') !== -1 || name_orig.indexOf('[shorts]') !== -1 || name_orig.indexOf('(shorts)') !== -1 || name_orig.indexOf('tiktok') !== -1 || name_orig.indexOf('vertical') !== -1) {
 						return;
