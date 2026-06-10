@@ -1659,85 +1659,97 @@
 			}
 		});
 
-        function video(data) {
-			var vids = data.videos || (data.movie && data.movie.videos) || (data.tv && data.tv.videos);
-			if (vids && vids.results && vids.results.length) {
-				var items =[];
-				vids.results.forEach(function (element) {
-					var name_orig = (element.name || "").toLowerCase();
-					
-					/*if (element.iso_639_1 === 'ru' || name_orig.indexOf('официальный') !== -1 || name_orig.indexOf('русский') !== -1 || name_orig.indexOf('на русском') !== -1) {
-						return;
-					}*/
+                function video(data) {
+                    var vids = data.videos || (data.movie && data.movie.videos) || (data.tv && data.tv.videos);
+                    if (vids && vids.results && vids.results.length) {
+                        var items = [];
+                        var currentLang = Lampa.Storage.field('tmdb_lang') || 'ru'; // Получаем текущий язык интерфейса
+        
+                        vids.results.forEach(function (element) {
+                            var name_orig = (element.name || "").toLowerCase();
+            
+                            // Пропускаем шортсы и TikTok
+                            if (name_orig.indexOf('#shorts') !== -1 || name_orig.indexOf('[shorts]') !== -1 || name_orig.indexOf('(shorts)') !== -1 || name_orig.indexOf('tiktok') !== -1 || name_orig.indexOf('vertical') !== -1) {
+                                return;
+                            }
 
-					if (name_orig.indexOf('#shorts') !== -1 || name_orig.indexOf('[shorts]') !== -1 || name_orig.indexOf('(shorts)') !== -1 || name_orig.indexOf('tiktok') !== -1 || name_orig.indexOf('vertical') !== -1) {
-						return;
-					}
+                            items.push({
+                                title: Lampa.Utils.shortText(element.name, 50),
+                                id: element.key,
+                                code: element.iso_639_1,
+                                time: new Date(element.published_at).getTime(),
+                                url: "https://www.youtube.com/watch?v=" + element.key,
+                                img: "https://img.youtube.com/vi/" + element.key + "/default.jpg",
+                                name_orig: name_orig,
+                                type: (element.type || "").toLowerCase()
+                            });
+                        });
 
-					items.push({
-						title: Lampa.Utils.shortText(element.name, 50),
-						id: element.key,
-						code: element.iso_639_1,
-						time: new Date(element.published_at).getTime(),
-						url: "https://www.youtube.com/watch?v=" + element.key,
-						img: "https://img.youtube.com/vi/" + element.key + "/default.jpg",
-						name_orig: name_orig,
-						type: (element.type || "").toLowerCase()
-					});
-				});
+                        items.sort(function (a, b) {
+                            return a.time > b.time ? -1 : a.time < b.time ? 1 : 0;
+                        });
 
-				items.sort(function (a, b) {
-					return a.time > b.time ? -1 : a.time < b.time ? 1 : 0;
-				});
+                        // Приоритет для текущего языка интерфейса
+                        var currentLangItems = items.filter(function (n) {
+                            if (currentLang === 'ru') {
+                                return n.code === "ru" || 
+                                       n.name_orig.indexOf("официальный") !== -1 || 
+                                       n.name_orig.indexOf("русский") !== -1 || 
+                                       n.name_orig.indexOf("на русском") !== -1;
+                            } else if (currentLang === 'uk') {
+                                return n.code === "uk" || 
+                                       n.name_orig.indexOf("українською") !== -1 || 
+                                       n.name_orig.indexOf("український") !== -1 || 
+                                       n.name_orig.indexOf("укр трейлер") !== -1;
+                            }
+                            return n.code === currentLang;
+                        });
 
-				var uk_lang = items.filter(function (n) {
-					return n.code === "uk" || 
-					       n.name_orig.indexOf("українською") !== -1 || 
-					       n.name_orig.indexOf("український") !== -1 || 
-					       n.name_orig.indexOf("укр трейлер") !== -1;
-				});
+                        // Английские трейлеры как fallback
+                        var en_lang = items.filter(function (n) {
+                            return n.code === "en" && currentLangItems.indexOf(n) === -1;
+                        });
 
-				var en_lang = items.filter(function (n) {
-					return n.code === "en" && uk_lang.indexOf(n) === -1;
-				});
+                        // Выбираем лучший трейлер на текущем языке
+                        if (currentLangItems.length) {
+                            var best = currentLangItems.find(function(n) {
+                                if (currentLang === 'ru') {
+                                    return n.name_orig.indexOf("официальный трейлер") !== -1 || 
+                                           n.name_orig.indexOf("русский трейлер") !== -1;
+                                } else if (currentLang === 'uk') {
+                                    return n.name_orig.indexOf("офіційний трейлер") !== -1 || 
+                                           n.name_orig.indexOf("українською") !== -1 || 
+                                           n.name_orig.indexOf("український") !== -1;
+                                }
+                                return n.type === "trailer";
+                            });
+            
+                            if (best) return best;
+                            return currentLangItems[0];
+                        }
 
-				if (uk_lang.length) {
-					var best_uk = uk_lang.find(function(n) {
-						return n.name_orig.indexOf("офіційний трейлер") !== -1 || 
-						       n.name_orig.indexOf("українською") !== -1 || 
-						       n.name_orig.indexOf("український") !== -1;
-					});
-					
-					if (!best_uk) {
-						best_uk = uk_lang.find(function(n) {
-							return n.name_orig.indexOf("трейлер") !== -1 || n.type === "trailer";
-						});
-					}
-					
-					if (best_uk) return best_uk;
-					return uk_lang[0];
-				}
+                        // Если нет трейлера на текущем языке, берём английский
+                        if (en_lang.length) {
+                            var best_en = en_lang.find(function(n) {
+                                return n.name_orig.indexOf("official trailer") !== -1;
+                            });
+            
+                            if (!best_en) {
+                                best_en = en_lang.find(function(n) {
+                                    return n.name_orig.indexOf("trailer") !== -1 || n.type === "trailer";
+                                });
+                            }
+            
+                            if (best_en) return best_en;
+                            return en_lang[0];
+                        }
 
-				if (en_lang.length) {
-					var best_en = en_lang.find(function(n) {
-						return n.name_orig.indexOf("official trailer") !== -1;
-					});
-					
-					if (!best_en) {
-						best_en = en_lang.find(function(n) {
-							return n.name_orig.indexOf("trailer") !== -1 || n.type === "trailer";
-						});
-					}
-					
-					if (best_en) return best_en;
-					return en_lang[0];
-				}
-
-				if (items.length) {
-					return items[0];
-				}
-			}
-		}
+                        // Самый последний по дате
+                        if (items.length) {
+                            return items[0];
+                        }
+                    }
+                }
 
 		Follow.get(Type.de([102, 117, 108, 108]), function (e) {
 			if (Type.co(e)) {
