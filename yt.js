@@ -184,7 +184,7 @@
                 '</svg>' +
                 '</div>' +
                 '<div class="trailer-player__sound-text">'.concat(
-					Lampa.Lang.translate("cardify_enable_sound"),
+					Lampa.Lang.translate("trailer_enable_sound"),
 					"</div></div></div>"
 				) : "") + '</div>'
 			);
@@ -226,6 +226,31 @@
                             events: {
                                 onReady: function onReady(event) {
                                     _this.loaded = true;
+                                    var iframe = $(_this.youtube.getIframe());
+                                    
+                                    var blurVal = parseInt(Main.cases()[Main.stor()].field("cardify_trailers_blur")) || 0;
+                                    if (blurVal > 0) {
+                                        iframe.css('filter', 'blur(' + blurVal + 'px)');
+                                    }
+
+                                    if (_this.isBgMode || isHorizontal) {
+                                        var zoomVal = Main.cases()[Main.stor()].field("cardify_trailers_zoom");
+                                        if (zoomVal === true) zoomVal = "33"; 
+                                        if (zoomVal === false) zoomVal = "0";
+                                        zoomVal = zoomVal || "0";
+
+                                        if (zoomVal !== "0") {
+                                            var scale = 1;
+                                            if (zoomVal == "25") scale = 1.25;
+                                            else if (zoomVal == "33") scale = 1.33;
+                                            else if (zoomVal == "40") scale = 1.40;
+                                            else if (zoomVal == "45") scale = 1.45;
+                                            else if (zoomVal == "50") scale = 1.50;
+                                            
+                                            iframe.css('transform', 'scale(' + scale + ')');
+                                        }
+                                    }
+
                                     _this.listener.send("loaded");
                                 },
                                 onStateChange: function onStateChange(state) {
@@ -273,8 +298,21 @@
                 key: "initHtml5",
                 value: function initHtml5() {
                     var _this = this;
+                    var blurVal = parseInt(Main.cases()[Main.stor()].field("cardify_trailers_blur")) || 0;
+                    var zoomVal = Main.cases()[Main.stor()].field("cardify_trailers_zoom");
                     var bgSound = Main.cases()[Main.stor()].field("cardify_bg_trailer_sound") === true;
                     var isHorizontal = window.innerWidth > window.innerHeight;
+                    
+                    if (zoomVal === true) zoomVal = "33";
+                    if (zoomVal === false) zoomVal = "0";
+                    zoomVal = zoomVal || "0";
+
+                    var scale = 1;
+                    if (zoomVal == "25") scale = 1.25;
+                    else if (zoomVal == "33") scale = 1.33;
+                    else if (zoomVal == "40") scale = 1.40;
+                    else if (zoomVal == "45") scale = 1.45;
+                    else if (zoomVal == "50") scale = 1.50;
 
                     var container = this.html.find(".trailer-player__video-iframe");
                     container.empty();
@@ -297,6 +335,9 @@
                     videoElem.style.outline = 'none';
                     videoElem.style.background = 'transparent';
                     videoElem.tabIndex = -1; 
+
+                    if (blurVal > 0) videoElem.style.filter = 'blur(' + blurVal + 'px)';
+                    if (scale > 1 && (this.isBgMode || isHorizontal)) videoElem.style.transform = 'scale(' + scale + ')';
 
                     var srcUrl = this.video.url;
                     if (this.video.startTime) {
@@ -1267,14 +1308,90 @@
 
 	function startPlugin() {
         Lampa.Lang.add({
-			cardify_enable_sound: {
+			trailer_enable_sound: {
 				ru: "Включить звук",
 				en: "Enable sound",
-				uk: "Увімкнути звук",
-				be: "Уключыць гук",
-				zh: "启用声音",
-				pt: "Ativar som",
-				bg: "Включване на звук"
+				uk: "Увімкнути звук"
+			},
+			trailer_blur: {
+				ru: "Размытие трейлера",
+				en: "Trailer blur",
+				uk: "Розмиття трейлера"
+			},
+			trailer_blur_description: {
+				ru: "Настройте уровень размытия фонового трейлера",
+				en: "Adjust the background trailer blur level",
+				uk: "Налаштуйте рівень розмиття фонового трейлера"
+			},
+			trailer_zoom: {
+				ru: "Степень растяжения трейлера",
+				en: "Trailer zoom level",
+				uk: "Ступінь розтягнення трейлера"
+			},
+			trailer_zoom_description: {
+				ru: "Убирает черные полосы видео (по умолчанию 0%)",
+				en: "Removes black video borders (default 0%)",
+				uk: "Прибирає чорні полоси відео (за замовчуванням 0%)"
+			},
+			trailer_off: {
+				ru: "Выключено (0%)",
+				en: "Disabled (0%)",
+				uk: "Вимкнено (0%)"
+			},
+			trailer_zoom_25: {
+				ru: "25%",
+				en: "25%",
+				uk: "25%"
+			},
+			trailer_zoom_33: {
+				ru: "33%",
+				en: "33%",
+				uk: "33%"
+			},
+			trailer_zoom_40: {
+				ru: "40%",
+				en: "40%",
+				uk: "40%"
+			},
+			trailer_zoom_45: {
+				ru: "45%",
+				en: "45%",
+				uk: "45%"
+			},
+			trailer_zoom_50: {
+				ru: "50%",
+				en: "50%",
+				uk: "50%"
+			},
+			trailer_blur_1: {
+				ru: "1%",
+				en: "1%",
+				uk: "1%"
+			},
+			trailer_blur_2: {
+				ru: "2%",
+				en: "2%",
+				uk: "2%"
+			},
+			trailer_blur_3: {
+				ru: "3%",
+				en: "3%",
+				uk: "3%"
+			},
+			trailer_blur_4: {
+				ru: "4%",
+				en: "4%",
+				uk: "4%"
+			},
+			trailer_blur_5: {
+				ru: "5%",
+				en: "5%",
+				uk: "5%"
+			},
+			trailer_blur_10: {
+				ru: "10%",
+				en: "10%",
+				uk: "10%"
 			}
 		});
 
@@ -1463,6 +1580,49 @@
         });
 
         Lampa.SettingsApi.addParam({
+			component: "cardify",
+			param: {
+				name: "cardify_trailers_blur",
+				type: "select",
+                values: {
+                    "0": Lampa.Lang.translate("trailer_off"),
+                    "1": Lampa.Lang.translate("trailer_blur_1"),
+                    "2": Lampa.Lang.translate("trailer_blur_2"),
+                    "3": Lampa.Lang.translate("trailer_blur_3"),
+                    "4": Lampa.Lang.translate("trailer_blur_4"),
+                    "5": Lampa.Lang.translate("trailer_blur_5"),
+                    "10": Lampa.Lang.translate("trailer_blur_10")
+                },
+				default: "0"
+			},
+			field: {
+				name: Lampa.Lang.translate("trailer_blur"),
+				description: Lampa.Lang.translate("trailer_blur_description")
+			}
+		});
+
+        Lampa.SettingsApi.addParam({
+			component: "cardify",
+			param: {
+				name: "cardify_trailers_zoom",
+				type: "select",
+                values: {
+                    "0": Lampa.Lang.translate("trailer_off"),
+                    "25": Lampa.Lang.translate("trailer_zoom_25"),
+                    "33": Lampa.Lang.translate("trailer_zoom_33"),
+                    "40": Lampa.Lang.translate("trailer_zoom_40"),
+                    "45": Lampa.Lang.translate("trailer_zoom_45"),
+                    "50": Lampa.Lang.translate("trailer_zoom_50")
+                },
+				default: "0"
+			},
+			field: {
+				name: Lampa.Lang.translate("trailer_zoom"),
+				description: Lampa.Lang.translate("trailer_zoom_description")
+			}
+		});
+
+		Lampa.SettingsApi.addParam({
 			component: "cardify",
 			param: {
 				name: "cardify_run_slideshow",
