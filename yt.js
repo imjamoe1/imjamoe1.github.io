@@ -195,7 +195,7 @@
                 key: "initYoutube",
                 value: function initYoutube() {
                     var _this = this;
-                    var bgSound = Main.cases()[Main.stor()].field("cardify_bg_trailer_sound") === true;
+                    var bgSound = Main.cases()[Main.stor()].field("bg_trailer_sound") === true;
                     var isHorizontal = window.innerWidth > window.innerHeight;
                     
                     var h = (this.isBgMode || isHorizontal) ? window.innerHeight * 2 : '100%';
@@ -228,13 +228,13 @@
                                     _this.loaded = true;
                                     var iframe = $(_this.youtube.getIframe());
                                     
-                                    var blurVal = parseInt(Main.cases()[Main.stor()].field("cardify_trailers_blur")) || 0;
+                                    var blurVal = parseInt(Main.cases()[Main.stor()].field("trailers_blur")) || 0;
                                     if (blurVal > 0) {
                                         iframe.css('filter', 'blur(' + blurVal + 'px)');
                                     }
 
                                     if (_this.isBgMode || isHorizontal) {
-                                        var zoomVal = Main.cases()[Main.stor()].field("cardify_trailers_zoom");
+                                        var zoomVal = Main.cases()[Main.stor()].field("trailers_zoom");
                                         if (zoomVal === true) zoomVal = "33"; 
                                         if (zoomVal === false) zoomVal = "0";
                                         zoomVal = zoomVal || "0";
@@ -268,7 +268,7 @@
 
                                         _this.listener.send("play");
 
-                                        if (window.cardify_fist_unmute && !_this.isBgMode) _this.unmute();
+                                        if (window.fist_unmute && !_this.isBgMode) _this.unmute();
                                     }
 
                                     if (state.data == window.YT.PlayerState.PAUSED) {
@@ -298,9 +298,9 @@
                 key: "initHtml5",
                 value: function initHtml5() {
                     var _this = this;
-                    var blurVal = parseInt(Main.cases()[Main.stor()].field("cardify_trailers_blur")) || 0;
-                    var zoomVal = Main.cases()[Main.stor()].field("cardify_trailers_zoom");
-                    var bgSound = Main.cases()[Main.stor()].field("cardify_bg_trailer_sound") === true;
+                    var blurVal = parseInt(Main.cases()[Main.stor()].field("trailers_blur")) || 0;
+                    var zoomVal = Main.cases()[Main.stor()].field("trailers_zoom");
+                    var bgSound = Main.cases()[Main.stor()].field("bg_trailer_sound") === true;
                     var isHorizontal = window.innerWidth > window.innerHeight;
                     
                     if (zoomVal === true) zoomVal = "33";
@@ -375,7 +375,7 @@
                         }, 100);
                         
                         _this.listener.send("play");
-                        if (window.cardify_fist_unmute && !_this.isBgMode) _this.unmute();
+                        if (window.fist_unmute && !_this.isBgMode) _this.unmute();
                     });
 
                     this.videoNode.addEventListener('pause', function() {
@@ -425,7 +425,7 @@
                             this.youtube.unMute();
                         }
 						this.html.find(".trailer-player__sound").remove();
-						window.cardify_fist_unmute = true;
+						window.fist_unmute = true;
 					} catch (e) {}
 				}
 			},
@@ -493,7 +493,7 @@
                 this.background = this.object.activity.render().find(".full-start__background, .m-full-start__background, .m-full-start__poster img, img.full-start__poster, .full-start-new__poster img");
             }
             
-			this.startblock = this.object.activity.render().find(".cardify");
+			this.startblock = this.object.activity.render();
 			this.head = $(".head");
 			this.timelauch = isBgMode ? 100 : 5000;
 			this.state = new State({
@@ -541,7 +541,7 @@
                         }
 
 						clearTimeout(_this.timer_load);
-						if (Lampa.Controller.enabled().name == "cardify_trailer");
+						if (Lampa.Controller.enabled().name == "trailer");
 						else if (
 							Lampa.Controller.enabled().name == "full_start" &&
 							_this.same()
@@ -591,7 +591,7 @@
 						Lampa.Controller.toggle("full_start");
 					};
 
-					Lampa.Controller.add("cardify_trailer", {
+					Lampa.Controller.add("trailer", {
 						toggle: function toggle() {
 							Lampa.Controller.clear();
 						},
@@ -607,7 +607,7 @@
 							out();
 						}
 					});
-					Lampa.Controller.toggle("cardify_trailer");
+					Lampa.Controller.toggle("trailer");
 				}
 			},
 			{
@@ -636,11 +636,11 @@
 						Lampa.Listener.remove("activity", activityListener);
 						Lampa.Controller.listener.remove("toggle", toggle);
                         
-                        if (window.cardifyBgPlayer === _this4.player) {
-                            window.cardifyBgPlayer = null;
+                        if (window.BgPlayer === _this4.player) {
+                            window.BgPlayer = null;
                         }
-                        if (window.cardifyBgTrailer === _self) {
-                            window.cardifyBgTrailer = null;
+                        if (window.BgTrailer === _self) {
+                            window.BgTrailer = null;
                         }
 
 						_self.destroy();
@@ -652,8 +652,8 @@
 					this.player = new Player(this.object, this.video, this.isBgMode);
                     
                     if (this.isBgMode) {
-                        window.cardifyBgPlayer = this.player;
-                        window.cardifyBgTrailer = this;
+                        window.BgPlayer = this.player;
+                        window.BgTrailer = this;
                     }
 
 					this.player.listener.follow("loaded", function () {
@@ -761,8 +761,8 @@
                             }
                         }, 100);
 
-                        if (!window.YT && !window.cardify_yt_injecting) {
-                            window.cardify_yt_injecting = true;
+                        if (!window.YT && !window.yt_injecting) {
+                            window.yt_injecting = true;
                             Lampa.Utils.putScript([ 'https://www.youtube.com/iframe_api' ], function(){});
                         }
                     }
@@ -1185,7 +1185,7 @@
 			{
 				key: "loadOriginalPoster",
 				value: function loadOriginalPoster(e, render) {
-					var quality = Lampa.Storage.field('cardify_slideshow_quality') || 'w1280';
+					var quality = Lampa.Storage.field('slideshow_quality') || 'w1280';
                     var isHorizontal = window.innerWidth > window.innerHeight;
                     var bgSelectors = isHorizontal 
                         ? "img.full-start__background, img.m-full-start__background" 
@@ -1487,22 +1487,22 @@
 
         if (window.Lampa && Lampa.Player && Lampa.Player.listener) {
             Lampa.Player.listener.follow('ready', function () {
-                if (window.cardifyBgTrailer && window.cardifyBgTrailer.state) {
-                    window.cardifyBgTrailer.state.dispath('hide');
-                } else if (window.cardifyBgPlayer && typeof window.cardifyBgPlayer.pause === 'function') {
-                    window.cardifyBgPlayer.pause();
-                    if (typeof window.cardifyBgPlayer.hide === 'function') window.cardifyBgPlayer.hide();
+                if (window.BgTrailer && window.BgTrailer.state) {
+                    window.BgTrailer.state.dispath('hide');
+                } else if (window.BgPlayer && typeof window.BgPlayer.pause === 'function') {
+                    window.BgPlayer.pause();
+                    if (typeof window.BgPlayer.hide === 'function') window.BgPlayer.hide();
                 }
             });
 
             Lampa.Player.listener.follow('destroy', function () {
                 setTimeout(function() {
                     if (Lampa.Activity.active() && Lampa.Activity.active().component === 'full_start') {
-                        if (window.cardifyBgTrailer && window.cardifyBgTrailer.state) {
-                            window.cardifyBgTrailer.state.start();
-                        } else if (window.cardifyBgPlayer && typeof window.cardifyBgPlayer.play === 'function') {
-                            window.cardifyBgPlayer.play();
-                            if (typeof window.cardifyBgPlayer.show === 'function') window.cardifyBgPlayer.show();
+                        if (window.BgTrailer && window.BgTrailer.state) {
+                            window.BgTrailer.state.start();
+                        } else if (window.BgPlayer && typeof window.BgPlayer.play === 'function') {
+                            window.BgPlayer.play();
+                            if (typeof window.BgPlayer.show === 'function') window.BgPlayer.show();
                         }
                     }
                 }, 300);
@@ -1529,21 +1529,21 @@
             ".trailer-player.display{opacity:1}\n" +
             ".trailer-player.display .trailer-player__controls{transform:translate3d(0,0,0);opacity:1}\n" +
             "        </style>\n    ";
-		Lampa.Template.add("cardify_css", style);
-		$("body").append(Lampa.Template.get("cardify_css", {}, true));
+		Lampa.Template.add("css", style);
+		$("body").append(Lampa.Template.get("css", {}, true));
 		var icon =
 			'<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 1536 1536"><path fill="currentColor" d="M919 1175v-157q0-50-29-50q-17 0-33 16v224q16 16 33 16q29 0 29-49zm184-122h66v-34q0-51-33-51t-33 51v34zM532 787v70h-80v423h-74V857h-78v-70h232zm201 126v367h-67v-40q-39 45-76 45q-33 0-42-28q-6-17-6-54V913h66v270q0 24 1 26q1 15 15 15q20 0 42-31V913h67zm252 111v146q0 52-7 73q-12 42-53 42q-35 0-68-41v36h-67V787h67v161q32-40 68-40q41 0 53 42q7 21 7 74zm251 129v9q0 29-2 43q-3 22-15 40q-27 40-80 40q-52 0-81-38q-21-27-21-86v-129q0-59 20-86q29-38 80-38t78 38q21 29 21 86v76h-133v65q0 51 34 51q24 0 30-26q0-1 .5-7t.5-16.5V1153h68zM785 329v156q0 51-32 51t-32-51V329q0-52 32-52t32 52zm533 713q0-177-19-260q-10-44-43-73.5t-76-34.5q-136-15-412-15q-275 0-411 15q-44 5-76.5 34.5T238 782q-20 87-20 260q0 176 20 260q10 43 42.5 73t75.5 35q137 15 412 15t412-15q43-5 75.5-35t42.5-73q20-84 20-260zM563 391l90-296h-75l-51 195l-53-195h-78q7 23 23 69l24 69q35 103 46 158v201h74V391zm289 81V342q0-58-21-87q-29-38-78-38q-51 0-78 38q-21 29-21 87v130q0 58 21 87q27 38 78 38q49 0 78-38q21-27 21-87zm181 120h67V222h-67v283q-22 31-42 31q-15 0-16-16q-1-2-1-26V222h-67v293q0 37 6 55q11 27 43 27q36 0 77-45v40zm503-304v960q0 119-84.5 203.5T1248 1536H288q-119 0-203.5-84.5T0 1248V288Q0 169 84.5 84.5T288 0h960q119 0 203.5 84.5T1536 288z"/></svg>';
 		
         Lampa.SettingsApi.addComponent({
-			component: "cardify",
+			component: "trailers",
 			icon: icon,
 			name: Lampa.Lang.translate("trailers")
 		});
 
         Lampa.SettingsApi.addParam({
-			component: "cardify",
+			component: "trailers",
 			param: {
-				name: "cardify_run_trailers",
+				name: "run_trailers",
 				type: "trigger",
 				default: false
 			},
@@ -1554,9 +1554,9 @@
 		});
 
         Lampa.SettingsApi.addParam({
-            component: "cardify",
+            component: "trailers",
             param: {
-                name: "cardify_bg_trailer_sound",
+                name: "bg_trailer_sound",
                 type: "trigger",
                 default: false
             },
@@ -1567,9 +1567,9 @@
         });
 
         Lampa.SettingsApi.addParam({
-            component: "cardify",
+            component: "trailers",
             param: {
-                name: "cardify_trailer_source",
+                name: "trailer_source",
                 type: "select",
                 values: {
                     "tmdb": Lampa.Lang.translate("tmdb"),
@@ -1584,9 +1584,9 @@
         });
 
         Lampa.SettingsApi.addParam({
-            component: "cardify",
+            component: "trailers",
             param: {
-                name: "cardify_trailer_quality",
+                name: "trailer_quality",
                 type: "select",
                 values: {
                     "1080": Lampa.Lang.translate("quality_1080"),
@@ -1604,9 +1604,9 @@
         });
 
         Lampa.SettingsApi.addParam({
-            component: "cardify",
+            component: "trailers",
             param: {
-                name: "cardify_trailer_proxy",
+                name: "trailer_proxy",
                 type: "trigger",
                 default: true
             },
@@ -1617,9 +1617,9 @@
         });
 
         Lampa.SettingsApi.addParam({
-			component: "cardify",
+			component: "trailers",
 			param: {
-				name: "cardify_trailers_blur",
+				name: "trailers_blur",
 				type: "select",
                 values: {
                     "0": Lampa.Lang.translate("trailer_off"),
@@ -1639,9 +1639,9 @@
 		});
 
         Lampa.SettingsApi.addParam({
-			component: "cardify",
+			component: "trailers",
 			param: {
-				name: "cardify_trailers_zoom",
+				name: "trailers_zoom",
 				type: "select",
                 values: {
                     "0": Lampa.Lang.translate("trailer_off"),
@@ -1757,12 +1757,12 @@
 				setTimeout(fixOpacity, 300);
 				setTimeout(fixOpacity, 1000); 
 
-                var isRunTrailers = Main.cases()[Main.stor()].field("cardify_run_trailers");
-                var isBgTrailers = Main.cases()[Main.stor()].field("cardify_trailers_bg");
-				var run_slideshow = Main.cases()[Main.stor()].field("cardify_run_slideshow");
-                var trailer_source = Main.cases()[Main.stor()].field("cardify_trailer_source") || "tmdb";
-                var trailer_quality = Main.cases()[Main.stor()].field("cardify_trailer_quality") || "auto";
-                var use_proxy = Main.cases()[Main.stor()].field("cardify_trailer_proxy") !== false; 
+                var isRunTrailers = Main.cases()[Main.stor()].field("run_trailers");
+                var isBgTrailers = Main.cases()[Main.stor()].field("trailers_bg");
+				var run_slideshow = Main.cases()[Main.stor()].field("run_slideshow");
+                var trailer_source = Main.cases()[Main.stor()].field("trailer_source") || "tmdb";
+                var trailer_quality = Main.cases()[Main.stor()].field("trailer_quality") || "auto";
+                var use_proxy = Main.cases()[Main.stor()].field("trailer_proxy") !== false; 
 
                 var processSlideshow = function() {
                     if (run_slideshow && !isBgTrailers) {
@@ -1821,20 +1821,20 @@
                                         final_backdrops = final_backdrops.slice(0, 15);
                                         
                                         if (final_backdrops.length > 1) {
-                                            if (window.cardifyRotationTimer) {
-                                                clearInterval(window.cardifyRotationTimer);
+                                            if (window.RotationTimer) {
+                                                clearInterval(window.RotationTimer);
                                             }
                                             
                                             var current_index = 0;
                                             var is_active = true;
-                                            window.cardifyCurrentItemId = item_id;
+                                            window.CurrentItemId = item_id;
                                             
-                                            var quality = Lampa.Storage.field('cardify_slideshow_quality') || 'w1280';
-                                            var duration = parseInt(Lampa.Storage.field('cardify_slideshow_duration')) || 8000;
+                                            var quality = Lampa.Storage.field('slideshow_quality') || 'w1280';
+                                            var duration = parseInt(Lampa.Storage.field('slideshow_duration')) || 8000;
                                             
-                                            window.cardifyRotationTimer = setInterval(function() {
-                                                if (!is_active || window.cardifyCurrentItemId !== item_id) {
-                                                    clearInterval(window.cardifyRotationTimer);
+                                            window.RotationTimer = setInterval(function() {
+                                                if (!is_active || window.CurrentItemId !== item_id) {
+                                                    clearInterval(window.RotationTimer);
                                                     return;
                                                 }
                                                 
@@ -1852,7 +1852,7 @@
                                                 
                                                 var img = new Image();
                                                 img.onload = function() {
-                                                    if (!is_active || window.cardifyCurrentItemId !== item_id) return;
+                                                    if (!is_active || window.CurrentItemId !== item_id) return;
                                                     
                                                     var $newBg = $currentBg.clone();
                                                     $newBg.attr('src', backdrop_url);
@@ -1888,7 +1888,7 @@
                                                         $newBg.css('opacity', '1');
                                                         
                                                         setTimeout(function() {
-                                                            if (!is_active || window.cardifyCurrentItemId !== item_id) return;
+                                                            if (!is_active || window.CurrentItemId !== item_id) return;
                                                             $currentBg.attr('src', backdrop_url);
                                                             $newBg.remove();
                                                         }, 1550);
@@ -1916,7 +1916,7 @@
                                                         });
                                                         
                                                         setTimeout(function() {
-                                                            if (!is_active || window.cardifyCurrentItemId !== item_id) return;
+                                                            if (!is_active || window.CurrentItemId !== item_id) return;
                                                             $currentBg.remove();
                                                             var bgToRemove = $render.find(bgSelectors).not($newBg);
                                                             bgToRemove.remove();
@@ -1930,8 +1930,8 @@
                                             var stop_rotation = function(a) {    
                                                 if (a.type == 'destroy' && a.object.activity === e.object.activity) {    
                                                     is_active = false;
-                                                    if (window.cardifyRotationTimer) {
-                                                        clearInterval(window.cardifyRotationTimer);
+                                                    if (window.RotationTimer) {
+                                                        clearInterval(window.RotationTimer);
                                                     }
                                                     Lampa.Listener.remove('activity', stop_rotation);    
                                                 }    
