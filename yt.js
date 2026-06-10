@@ -1313,6 +1313,56 @@
 				en: "Enable sound",
 				uk: "Увімкнути звук"
 			},
+			trailer_show: {
+				ru: "Показывать трейлеры",
+				en: "Show trailers",
+				uk: "Показувати трейлери"
+			},
+			trailer_show_description: {
+				ru: "Запускать трейлер через таймаут 5 сек",
+				en: "Start trailer after 5 sec timeout",
+				uk: "Запускати трейлер через таймаут 5 сек"
+			},
+			trailer_bg_sound: {
+				ru: "Звук фонового трейлера",
+				en: "Background trailer sound",
+				uk: "Звук фонового трейлера"
+			},
+			trailer_bg_sound_description: {
+				ru: "Включить звук для трейлера на фоне",
+				en: "Enable sound for background trailer",
+				uk: "Увімкнути звук для трейлера на фоні"
+			},
+			trailer_source: {
+				ru: "Источник трейлеров",
+				en: "Trailer source",
+				uk: "Джерело трейлерів"
+			},
+			trailer_source_description: {
+				ru: "Откуда загружать трейлеры",
+				en: "Where to load trailers from",
+				uk: "Звідки завантажувати трейлери"
+			},
+			trailer_quality: {
+				ru: "Качество фонового трейлера IMDB",
+				en: "IMDB background trailer quality",
+				uk: "Якість фонового трейлера IMDB"
+			},
+			trailer_quality_description: {
+				ru: "Работает только если источник - IMDB",
+				en: "Works only if source is IMDB",
+				uk: "Працює лише якщо джерело - IMDB"
+			},
+			trailer_proxy: {
+				ru: "Прокси для трейлеров IMDB",
+				en: "Proxy for IMDB trailers",
+				uk: "Проксі для трейлерів IMDB"
+			},
+			trailer_proxy_description: {
+				ru: "Использовать прокси для запросов API и видео",
+				en: "Use proxy for API requests and video",
+				uk: "Використовувати проксі для запитів API та відео"
+			},
 			trailer_blur: {
 				ru: "Размытие трейлера",
 				en: "Trailer blur",
@@ -1392,6 +1442,41 @@
 				ru: "10%",
 				en: "10%",
 				uk: "10%"
+			},
+			tmdb: {
+				ru: "TMDB (YouTube)",
+				en: "TMDB (YouTube)",
+				uk: "TMDB (YouTube)"
+			},
+			imdb: {
+				ru: "IMDB (Balloonerism)",
+				en: "IMDB (Balloonerism)",
+				uk: "IMDB (Balloonerism)"
+			},
+			quality_1080: {
+				ru: "1080p",
+				en: "1080p",
+				uk: "1080p"
+			},
+			quality_720: {
+				ru: "720p",
+				en: "720p",
+				uk: "720p"
+			},
+			quality_480: {
+				ru: "480p",
+				en: "480p",
+				uk: "480p"
+			},
+			quality_sd: {
+				ru: "SD",
+				en: "SD",
+				uk: "SD"
+			},
+			quality_auto: {
+				ru: "Авто",
+				en: "Auto",
+				uk: "Авто"
 			}
 		});
 
@@ -1447,27 +1532,7 @@
         Lampa.SettingsApi.addComponent({
 			component: "cardify",
 			icon: icon,
-			name: "YCard Mod"
-		});
-
-        Lampa.SettingsApi.addParam({
-			component: "cardify",
-			param: {
-				name: "cardify_info_link",
-				type: "button"
-			},
-			field: {
-				name: "Інформація + Подякувати",
-				description: "Відкрити сайт: http://lampalampa.free.nf"
-			},
-            onChange: function () {
-                Lampa.Noty.show("Відкриваємо http://lampalampa.free.nf");
-                if (window.Lampa && window.Lampa.Utils && typeof window.Lampa.Utils.openUrl === 'function') {
-                    window.Lampa.Utils.openUrl("http://lampalampa.free.nf");
-                } else {
-                    window.open("http://lampalampa.free.nf", "_blank");
-                }
-            }
+			name: "Trailers Mod"
 		});
 
         Lampa.SettingsApi.addParam({
@@ -1478,21 +1543,8 @@
 				default: false
 			},
 			field: {
-				name: "Показувати трейлери",
-                description: "Запускати трейлер через таймаут 5 сек (замість фону та інтерфейсу)"
-			}
-		});
-
-        Lampa.SettingsApi.addParam({
-			component: "cardify",
-			param: {
-				name: "cardify_trailers_bg",
-				type: "trigger",
-				default: false
-			},
-			field: {
-				name: "Трейлери замість слайдшоу",
-                description: "Завантажити трейлер на задній фон одразу"
+				name: Lampa.Lang.translate("trailer_show"),
+                description: Lampa.Lang.translate("trailer_show_description")
 			}
 		});
 
@@ -1504,8 +1556,8 @@
                 default: false
             },
             field: {
-                name: "Звук фонового трейлеру",
-                description: "Увімкнути звук для трейлеру, що грає на фоні замість фото/слайдшоу"
+                name: Lampa.Lang.translate("trailer_bg_sound"),
+                description: Lampa.Lang.translate("trailer_bg_sound_description")
             }
         });
 
@@ -1515,14 +1567,14 @@
                 name: "cardify_trailer_source",
                 type: "select",
                 values: {
-                    "tmdb": "TMDB (YouTube)",
-                    "imdb": "IMDB (Balloonerism)"
+                    "tmdb": Lampa.Lang.translate("tmdb"),
+                    "imdb": Lampa.Lang.translate("imdb")
                 },
                 default: "tmdb"
             },
             field: {
-                name: "Джерело трейлерів",
-                description: "Звідки завантажувати трейлери"
+                name: Lampa.Lang.translate("trailer_source"),
+                description: Lampa.Lang.translate("trailer_source_description")
             }
         });
 
@@ -1532,37 +1584,17 @@
                 name: "cardify_trailer_quality",
                 type: "select",
                 values: {
-                    "1080": "1080p",
-                    "720": "720p",
-                    "480": "480p",
-                    "sd": "SD",
-                    "auto": "Auto"
+                    "1080": Lampa.Lang.translate("quality_1080"),
+                    "720": Lampa.Lang.translate("quality_720"),
+                    "480": Lampa.Lang.translate("quality_480"),
+                    "sd": Lampa.Lang.translate("quality_sd"),
+                    "auto": Lampa.Lang.translate("quality_auto")
                 },
                 default: "auto"
             },
             field: {
-                name: "Якість фонового трейлеру IMDB",
-                description: "Працює лише якщо джерело - IMDB"
-            }
-        });
-
-        Lampa.SettingsApi.addParam({
-            component: "cardify",
-            param: {
-                name: "cardify_button_imdb_quality",
-                type: "select",
-                values: {
-                    "1080": "1080p",
-                    "720": "720p",
-                    "480": "480p",
-                    "sd": "SD",
-                    "auto": "Auto"
-                },
-                default: "auto"
-            },
-            field: {
-                name: "Якість кнопки IMDB Trailer",
-                description: "Якість відео при ручному запуску трейлеру з кнопки"
+                name: Lampa.Lang.translate("trailer_quality"),
+                description: Lampa.Lang.translate("trailer_quality_description")
             }
         });
 
@@ -1574,8 +1606,8 @@
                 default: true
             },
             field: {
-                name: "Проксі для трейлерів IMDB",
-                description: "Використовувати проксі для запитів API та відео"
+                name: Lampa.Lang.translate("trailer_proxy"),
+                description: Lampa.Lang.translate("trailer_proxy_description")
             }
         });
 
@@ -1619,52 +1651,6 @@
 			field: {
 				name: Lampa.Lang.translate("trailer_zoom"),
 				description: Lampa.Lang.translate("trailer_zoom_description")
-			}
-		});
-
-		Lampa.SettingsApi.addParam({
-			component: "cardify",
-			param: {
-				name: "cardify_run_slideshow",
-				type: "trigger",
-				default: true
-			},
-			field: {
-				name: "Слайд-шоу",
-				description: "Плавно змінювати фонові зображення"
-			}
-		});
-		Lampa.SettingsApi.addParam({
-			component: "cardify",
-			param: {
-				name: "cardify_slideshow_quality",
-				type: "select",
-				values: {
-					w780: "Стандартна (w780)",
-					w1280: "Висока (w1280)",
-					original: "Оригінал (original)"
-				},
-				default: "w1280"
-			},
-			field: {
-				name: "Якість зображень"
-			}
-		});
-		Lampa.SettingsApi.addParam({
-			component: "cardify",
-			param: {
-				name: "cardify_slideshow_duration",
-				type: "select",
-				values: {
-					5000: "5 секунд",
-					8000: "8 секунд",
-					10000: "10 секунд",
-					15000: "15 секунд"
-				},
-				default: 8000
-			},
-			field: {
-				name: "Тривалість фото (сек)"
 			}
 		});
 
