@@ -219,6 +219,7 @@
                                 rel: 0,
                                 suggestedQuality: "hd1080",
                                 setPlaybackQuality: "hd1080",
+                                mute: (this.isBgMode && !bgSound) ? 1 : 0,
                                 mute: 1,
                                 start: 8
                             },
