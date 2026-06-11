@@ -1952,23 +1952,16 @@
                 };
 
                 var finalizeTrailer = function(tr) {
+                    if (!isRunTrailers && !isBgTrailers) {
+                        processSlideshow();
+                        return;
+                    }
+    
                     if (tr && Main.cases().Manifest.app_digital >= 220) {
-                        if (Main.cases().Activity.active().activity === e.object.activity) {
-                            new Trailer(e.object, tr, isBgTrailers);
-                        } else {
-                            var follow = function follow(a) {
-                                if (
-                                    a.type == Type.de([115, 116, 97, 114, 116]) &&
-                                    a.object.activity === e.object.activity &&
-                                    !e.object.activity.trailer_ready
-                                ) {
-                                    Main.cases()[binaryLifting()].remove("activity", follow);
-                                    new Trailer(e.object, tr, isBgTrailers);
-                                }
-                            };
-                            Follow.get("activity", follow);
-                        }
-                    } else {
+                        if (isRunTrailers || isBgTrailers) {
+                            if (Main.cases().Activity.active().activity === e.object.activity) {
+                                new Trailer(e.object, tr, isBgTrailers);
+                            } else {
                         isBgTrailers = false;
                     }
                     processSlideshow(); 
