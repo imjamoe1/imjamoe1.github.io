@@ -1758,14 +1758,13 @@
 				setTimeout(fixOpacity, 1000); 
 
                 var isRunTrailers = Main.cases()[Main.stor()].field("run_trailers");
-                var isBgTrailers = Main.cases()[Main.stor()].field("trailers_bg");
 				var run_slideshow = Main.cases()[Main.stor()].field("run_slideshow");
                 var trailer_source = Main.cases()[Main.stor()].field("trailer_source") || "tmdb";
                 var trailer_quality = Main.cases()[Main.stor()].field("trailer_quality") || "auto";
                 var use_proxy = Main.cases()[Main.stor()].field("trailer_proxy") !== false; 
 
                 var processSlideshow = function() {
-                    if (run_slideshow && !isBgTrailers) {
+                    if (run_slideshow) {
                         var movie_data = e.data.movie || e.data.tv || (e.object && e.object.card);
                         
                         if (movie_data && movie_data.id) {
@@ -1947,14 +1946,14 @@
                 };
 
                 var finalizeTrailer = function(tr) {
-                    if (!isRunTrailers && !isBgTrailers) {
+                    if (!isRunTrailers) {
                         processSlideshow();
                         return;
                     }
     
                     if (tr && Main.cases().Manifest.app_digital >= 220) {
                         if (Main.cases().Activity.active().activity === e.object.activity) {
-                            new Trailer(e.object, tr, isBgTrailers);
+                            new Trailer(e.object, tr, false);
                         } else {
                             var follow = function follow(a) {
                                 if (
@@ -1963,13 +1962,13 @@
                                     !e.object.activity.trailer_ready
                                 ) {
                                     Main.cases()[binaryLifting()].remove("activity", follow);
-                                    new Trailer(e.object, tr, isBgTrailers);
+                                    new Trailer(e.object, tr, false);
                                 }
                             };
                             Follow.get("activity", follow);
                         }
                     } else {
-                        isBgTrailers = false;
+                        processSlideshow();
                     }
                     processSlideshow(); 
                 };
@@ -1981,7 +1980,6 @@
                         if (tmdb_tr) {
                             finalizeTrailer(tmdb_tr);
                         } else {
-                            isBgTrailers = false;
                             processSlideshow();
                         }
                     }
