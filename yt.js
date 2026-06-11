@@ -1322,9 +1322,9 @@
 				uk: "Трейлери замість слайдшоу"
 			},
 			trailers_bg_description: {
-				ru: "Скачать трейлер на задний фон сразу",
-				en: "Download the trailer as a background right away",
-				uk: "Завантажити трейлер на задній фон одразу"
+				ru: "Запуск трейлера на заднем фоне",
+				en: "Run the trailer in the background",
+				uk: "Запускати трейлер на задньому фоні"
 			},
 			trailers_enable_sound: {
 				ru: "Включить звук",
