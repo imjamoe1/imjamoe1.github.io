@@ -201,6 +201,8 @@
                     var h = (this.isBgMode || isHorizontal) ? window.innerHeight * 2 : '100%';
                     var w = (this.isBgMode || isHorizontal) ? window.innerWidth : '100%';
 
+                    var muteValue = this.isBgMode ? (bgSound ? 0 : 1) : (soundEnabled ? 0 : 1);			
+
                     this.youtube = new window.YT.Player(
                         this.html.find(".trailer-player__video-iframe")[0],
                         {
@@ -219,7 +221,7 @@
                                 rel: 0,
                                 suggestedQuality: "hd1080",
                                 setPlaybackQuality: "hd1080",
-                                mute: (this.isBgMode && !bgSound) ? 1 : 0,
+                                mute: muteValue,
                                 start: 8
                             },
                             videoId: this.video.id,
