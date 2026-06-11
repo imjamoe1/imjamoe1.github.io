@@ -1306,72 +1306,82 @@
 				en: "Trailers",
 				uk: "Трейлери"
 			},
-			trailer_show: {
+			trailers_show: {
 				ru: "Показывать трейлеры",
 				en: "Show trailers",
 				uk: "Показувати трейлери"
 			},
-			trailer_show_description: {
+			trailers_show_description: {
 				ru: "Запускать трейлер через таймаут 5 сек",
 				en: "Start trailer after 5 sec timeout",
 				uk: "Запускати трейлер через таймаут 5 сек"
 			},
-			trailer_enable_sound: {
+			trailers_bg: {
+				ru: "Трейлеры вместо слайдшоу",
+				en: "Trailers instead of slideshows",
+				uk: "Трейлери замість слайдшоу"
+			},
+			trailers_bg_description: {
+				ru: "Скачать трейлер на задний фон сразу",
+				en: "Download the trailer as a background right away",
+				uk: "Завантажити трейлер на задній фон одразу"
+			},
+			trailers_enable_sound: {
 				ru: "Включить звук",
 				en: "Enable sound",
 				uk: "Увімкнути звук"
 			},
-			trailer_bg_sound: {
+			trailers_bg_sound: {
 				ru: "Звук фонового трейлера",
 				en: "Background trailer sound",
 				uk: "Звук фонового трейлера"
 			},
-			trailer_bg_sound_description: {
+			trailers_bg_sound_description: {
 				ru: "Включить звук для трейлера на фоне",
 				en: "Enable sound for background trailer",
 				uk: "Увімкнути звук для трейлера на фоні"
 			},
-			trailer_source: {
+			trailers_source: {
 				ru: "Источник трейлеров",
 				en: "Trailer source",
 				uk: "Джерело трейлерів"
 			},
-			trailer_source_description: {
+			trailers_source_description: {
 				ru: "Откуда загружать трейлеры",
 				en: "Where to load trailers from",
 				uk: "Звідки завантажувати трейлери"
 			},
-			trailer_quality: {
+			trailers_quality: {
 				ru: "Качество фонового трейлера IMDB",
 				en: "IMDB background trailer quality",
 				uk: "Якість фонового трейлера IMDB"
 			},
-			trailer_quality_description: {
+			trailers_quality_description: {
 				ru: "Работает только если источник - IMDB",
 				en: "Works only if source is IMDB",
 				uk: "Працює лише якщо джерело - IMDB"
 			},
-			trailer_proxy: {
+			trailers_proxy: {
 				ru: "Прокси для трейлеров IMDB",
 				en: "Proxy for IMDB trailers",
 				uk: "Проксі для трейлерів IMDB"
 			},
-			trailer_proxy_description: {
+			trailers_proxy_description: {
 				ru: "Использовать прокси для запросов API и видео",
 				en: "Use proxy for API requests and video",
 				uk: "Використовувати проксі для запитів API та відео"
 			},
-			trailer_blur: {
+			trailers_blur: {
 				ru: "Размытие трейлера",
 				en: "Trailer blur",
 				uk: "Розмиття трейлера"
 			},
-			trailer_blur_description: {
+			trailers_blur_description: {
 				ru: "Настройте уровень размытия фонового трейлера",
 				en: "Adjust the background trailer blur level",
 				uk: "Налаштуйте рівень розмиття фонового трейлера"
 			},
-			trailer_zoom: {
+			trailers_zoom: {
 				ru: "Степень растяжения трейлера",
 				en: "Trailer zoom level",
 				uk: "Ступінь розтягнення трейлера"
@@ -1381,62 +1391,62 @@
 				en: "Removes black video borders (default 0%)",
 				uk: "Прибирає чорні полоси відео (за замовчуванням 0%)"
 			},
-			trailer_off: {
+			trailers_off: {
 				ru: "Выключено (0%)",
 				en: "Disabled (0%)",
 				uk: "Вимкнено (0%)"
 			},
-			trailer_zoom_25: {
+			trailers_zoom_25: {
 				ru: "25%",
 				en: "25%",
 				uk: "25%"
 			},
-			trailer_zoom_33: {
+			trailers_zoom_33: {
 				ru: "33%",
 				en: "33%",
 				uk: "33%"
 			},
-			trailer_zoom_40: {
+			trailers_zoom_40: {
 				ru: "40%",
 				en: "40%",
 				uk: "40%"
 			},
-			trailer_zoom_45: {
+			trailers_zoom_45: {
 				ru: "45%",
 				en: "45%",
 				uk: "45%"
 			},
-			trailer_zoom_50: {
+			trailers_zoom_50: {
 				ru: "50%",
 				en: "50%",
 				uk: "50%"
 			},
-			trailer_blur_1: {
+			trailers_blur_1: {
 				ru: "1%",
 				en: "1%",
 				uk: "1%"
 			},
-			trailer_blur_2: {
+			trailers_blur_2: {
 				ru: "2%",
 				en: "2%",
 				uk: "2%"
 			},
-			trailer_blur_3: {
+			trailers_blur_3: {
 				ru: "3%",
 				en: "3%",
 				uk: "3%"
 			},
-			trailer_blur_4: {
+			trailers_blur_4: {
 				ru: "4%",
 				en: "4%",
 				uk: "4%"
 			},
-			trailer_blur_5: {
+			trailers_blur_5: {
 				ru: "5%",
 				en: "5%",
 				uk: "5%"
 			},
-			trailer_blur_10: {
+			trailers_blur_10: {
 				ru: "10%",
 				en: "10%",
 				uk: "10%"
@@ -1541,28 +1551,41 @@
 				default: false
 			},
 			field: {
-				name: Lampa.Lang.translate("trailer_show"),
-                description: Lampa.Lang.translate("trailer_show_description")
+				name: Lampa.Lang.translate("trailers_show"),
+                description: Lampa.Lang.translate("trailers_show_description")
+			}
+		});
+
+        Lampa.SettingsApi.addParam({
+			component: "trailers",
+			param: {
+				name: "trailers_bg",
+				type: "trigger",
+				default: false
+			},
+			field: {
+				name: Lampa.Lang.translate("trailers_bg"),
+                description: Lampa.Lang.translate("trailers_bg_description")
 			}
 		});
 
         Lampa.SettingsApi.addParam({
             component: "trailers",
             param: {
-                name: "bg_trailer_sound",
+                name: "bg_trailers_sound",
                 type: "trigger",
                 default: false
             },
             field: {
-                name: Lampa.Lang.translate("trailer_bg_sound"),
-                description: Lampa.Lang.translate("trailer_bg_sound_description")
+                name: Lampa.Lang.translate("trailers_bg_sound"),
+                description: Lampa.Lang.translate("trailers_bg_sound_description")
             }
         });
 
         Lampa.SettingsApi.addParam({
             component: "trailers",
             param: {
-                name: "trailer_source",
+                name: "trailers_source",
                 type: "select",
                 values: {
                     "tmdb": Lampa.Lang.translate("tmdb"),
@@ -1571,15 +1594,15 @@
                 default: "tmdb"
             },
             field: {
-                name: Lampa.Lang.translate("trailer_source"),
-                description: Lampa.Lang.translate("trailer_source_description")
+                name: Lampa.Lang.translate("trailers_source"),
+                description: Lampa.Lang.translate("trailers_source_description")
             }
         });
 
         Lampa.SettingsApi.addParam({
             component: "trailers",
             param: {
-                name: "trailer_quality",
+                name: "trailers_quality",
                 type: "select",
                 values: {
                     "1080": Lampa.Lang.translate("quality_1080"),
@@ -1591,21 +1614,21 @@
                 default: "auto"
             },
             field: {
-                name: Lampa.Lang.translate("trailer_quality"),
-                description: Lampa.Lang.translate("trailer_quality_description")
+                name: Lampa.Lang.translate("trailers_quality"),
+                description: Lampa.Lang.translate("trailers_quality_description")
             }
         });
 
         Lampa.SettingsApi.addParam({
             component: "trailers",
             param: {
-                name: "trailer_proxy",
+                name: "trailers_proxy",
                 type: "trigger",
                 default: true
             },
             field: {
-                name: Lampa.Lang.translate("trailer_proxy"),
-                description: Lampa.Lang.translate("trailer_proxy_description")
+                name: Lampa.Lang.translate("trailers_proxy"),
+                description: Lampa.Lang.translate("trailers_proxy_description")
             }
         });
 
@@ -1615,19 +1638,19 @@
 				name: "trailers_blur",
 				type: "select",
                 values: {
-                    "0": Lampa.Lang.translate("trailer_off"),
-                    "1": Lampa.Lang.translate("trailer_blur_1"),
-                    "2": Lampa.Lang.translate("trailer_blur_2"),
-                    "3": Lampa.Lang.translate("trailer_blur_3"),
-                    "4": Lampa.Lang.translate("trailer_blur_4"),
-                    "5": Lampa.Lang.translate("trailer_blur_5"),
-                    "10": Lampa.Lang.translate("trailer_blur_10")
+                    "0": Lampa.Lang.translate("trailers_off"),
+                    "1": Lampa.Lang.translate("trailers_blur_1"),
+                    "2": Lampa.Lang.translate("trailers_blur_2"),
+                    "3": Lampa.Lang.translate("trailers_blur_3"),
+                    "4": Lampa.Lang.translate("trailers_blur_4"),
+                    "5": Lampa.Lang.translate("trailers_blur_5"),
+                    "10": Lampa.Lang.translate("trailers_blur_10")
                 },
 				default: "0"
 			},
 			field: {
-				name: Lampa.Lang.translate("trailer_blur"),
-				description: Lampa.Lang.translate("trailer_blur_description")
+				name: Lampa.Lang.translate("trailers_blur"),
+				description: Lampa.Lang.translate("trailers_blur_description")
 			}
 		});
 
@@ -1637,18 +1660,18 @@
 				name: "trailers_zoom",
 				type: "select",
                 values: {
-                    "0": Lampa.Lang.translate("trailer_off"),
-                    "25": Lampa.Lang.translate("trailer_zoom_25"),
-                    "33": Lampa.Lang.translate("trailer_zoom_33"),
-                    "40": Lampa.Lang.translate("trailer_zoom_40"),
-                    "45": Lampa.Lang.translate("trailer_zoom_45"),
-                    "50": Lampa.Lang.translate("trailer_zoom_50")
+                    "0": Lampa.Lang.translate("trailers_off"),
+                    "25": Lampa.Lang.translate("trailers_zoom_25"),
+                    "33": Lampa.Lang.translate("trailers_zoom_33"),
+                    "40": Lampa.Lang.translate("trailers_zoom_40"),
+                    "45": Lampa.Lang.translate("trailers_zoom_45"),
+                    "50": Lampa.Lang.translate("trailers_zoom_50")
                 },
 				default: "0"
 			},
 			field: {
-				name: Lampa.Lang.translate("trailer_zoom"),
-				description: Lampa.Lang.translate("trailer_zoom_description")
+				name: Lampa.Lang.translate("trailers_zoom"),
+				description: Lampa.Lang.translate("trailers_zoom_description")
 			}
 		});
 
@@ -1974,7 +1997,7 @@
                     processSlideshow(); 
                 };
 
-                if (isRunTrailers) {
+                if (isRunTrailers || isBgTrailers) {
                     if (trailer_source === 'imdb') {
                     } else {
                         var tmdb_tr = Follow.vjsk(video(e.data));
