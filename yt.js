@@ -220,7 +220,6 @@
                                 suggestedQuality: "hd1080",
                                 setPlaybackQuality: "hd1080",
                                 mute: (this.isBgMode && !bgSound) ? 1 : 0,
-                                mute: 1,
                                 start: 8
                             },
                             videoId: this.video.id,
@@ -1317,7 +1316,7 @@
 				en: "Start trailer after 5 sec timeout",
 				uk: "Запускати трейлер через таймаут 5 сек"
 			},
-			trailers_sound_enabled: {
+			trailers_enable_sound: {
 				ru: "Звук трейлера",
 				en: "Trailer sounds",
 				uk: "Звук трейлера"
@@ -1570,13 +1569,13 @@
         Lampa.SettingsApi.addParam({
 			component: "trailers",
 			param: {
-				name: "trailers_sound_enabled",
+				name: "trailers_enable_sound",
 				type: "trigger",
 				default: false
 			},
 			field: {
-				name: Lampa.Lang.translate("trailers_sound_enabled"),
-                description: Lampa.Lang.translate("trailers_sound_enabled_description")
+				name: Lampa.Lang.translate("trailers_enable_sound"),
+                description: Lampa.Lang.translate("trailers_enable_sound_description")
 			}
 		});
 
