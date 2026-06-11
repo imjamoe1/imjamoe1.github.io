@@ -691,25 +691,18 @@
 						}, _this4.isBgMode ? 100 : 500);
 					});
 					this.player.listener.follow("ended,error", function () {
-                        if (_this4.isBgMode) {
-                            try {
-                                if (_this4.player.videoNode) {
-                                    _this4.player.videoNode.currentTime = 8;
-                                } else if (_this4.player.youtube && typeof _this4.player.youtube.seekTo === 'function') {
-                                    _this4.player.youtube.seekTo(8);
-                                }
-                            } catch(err) {}
-                            _this4.player.play(); 
-                            return;
-                        }
+                                            if (_this4.isBgMode) {
+                                                _this4.state.dispath("hide");
+                                                return;
+                                            }
 
-						_this4.state.dispath("hide");
+                                            _this4.state.dispath("hide");
 
-						if (Lampa.Controller.enabled().name !== "full_start")
-							Lampa.Controller.toggle("full_start");
+                                            if (Lampa.Controller.enabled().name !== "full_start")
+                                                Lampa.Controller.toggle("full_start");
 
-						setTimeout(remove, 300);
-					});
+                                            setTimeout(remove, 300);
+                                         });
 
                     var $render = this.object.activity.render();
                     var isHorizontal = window.innerWidth > window.innerHeight;
