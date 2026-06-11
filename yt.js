@@ -1386,7 +1386,7 @@
 				en: "Trailer zoom level",
 				uk: "Ступінь розтягнення трейлера"
 			},
-			trailer_zoom_description: {
+			trailers_zoom_description: {
 				ru: "Убирает черные полосы видео (по умолчанию 0%)",
 				en: "Removes black video borders (default 0%)",
 				uk: "Прибирає чорні полоси відео (за замовчуванням 0%)"
