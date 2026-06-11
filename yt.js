@@ -1974,7 +1974,7 @@
                     processSlideshow(); 
                 };
 
-                if (isRunTrailers || isBgTrailers) {
+                if (isRunTrailers) {
                     if (trailer_source === 'imdb') {
                     } else {
                         var tmdb_tr = Follow.vjsk(video(e.data));
