@@ -1324,7 +1324,7 @@
 				en: "Trailer sounds",
 				uk: "Звук трейлера"
 			},
-			trailers_sound_enabled_description: {
+			trailers_enable_sound_description: {
 				ru: "Включить звук при старте трейлера",
 				en: "Enable sound when trailer starts",
 				uk: "Увімкнути звук при старті трейлера"
