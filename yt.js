@@ -1306,11 +1306,6 @@
 				en: "Trailers",
 				uk: "Трейлери"
 			},
-			trailer_enable_sound: {
-				ru: "Включить звук",
-				en: "Enable sound",
-				uk: "Увімкнути звук"
-			},
 			trailer_show: {
 				ru: "Показывать трейлеры",
 				en: "Show trailers",
@@ -1320,6 +1315,11 @@
 				ru: "Запускать трейлер через таймаут 5 сек",
 				en: "Start trailer after 5 sec timeout",
 				uk: "Запускати трейлер через таймаут 5 сек"
+			},
+			trailer_enable_sound: {
+				ru: "Включить звук",
+				en: "Enable sound",
+				uk: "Увімкнути звук"
 			},
 			trailer_bg_sound: {
 				ru: "Звук фонового трейлера",
@@ -1682,7 +1682,6 @@
                             return a.time > b.time ? -1 : a.time < b.time ? 1 : 0;
                         });
 
-                        // Приоритет для текущего языка интерфейса
                         var currentLangItems = items.filter(function (n) {
                             if (currentLang === 'ru') {
                                 return n.code === "ru" || 
@@ -1698,12 +1697,10 @@
                             return n.code === currentLang;
                         });
 
-                        // Английские трейлеры как fallback
                         var en_lang = items.filter(function (n) {
                             return n.code === "en" && currentLangItems.indexOf(n) === -1;
                         });
 
-                        // Выбираем лучший трейлер на текущем языке
                         if (currentLangItems.length) {
                             var best = currentLangItems.find(function(n) {
                                 if (currentLang === 'ru') {
@@ -1721,7 +1718,6 @@
                             return currentLangItems[0];
                         }
 
-                        // Если нет трейлера на текущем языке, берём английский
                         if (en_lang.length) {
                             var best_en = en_lang.find(function(n) {
                                 return n.name_orig.indexOf("official trailer") !== -1;
@@ -1737,7 +1733,6 @@
                             return en_lang[0];
                         }
 
-                        // Самый последний по дате
                         if (items.length) {
                             return items[0];
                         }
@@ -1981,7 +1976,6 @@
 
                 if (isRunTrailers || isBgTrailers) {
                     if (trailer_source === 'imdb') {
-                        // ... существующий код для imdb ...
                     } else {
                         var tmdb_tr = Follow.vjsk(video(e.data));
                         if (tmdb_tr) {
