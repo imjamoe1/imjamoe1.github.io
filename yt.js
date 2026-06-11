@@ -184,7 +184,7 @@
                 '</svg>' +
                 '</div>' +
                 '<div class="trailer-player__sound-text">'.concat(
-					Lampa.Lang.translate("trailer_enable_sound"),
+					Lampa.Lang.translate("trailers_enable_sound"),
 					"</div></div></div>"
 				) : "") + '</div>'
 			);
@@ -195,7 +195,7 @@
                 key: "initYoutube",
                 value: function initYoutube() {
                     var _this = this;
-                    var bgSound = Main.cases()[Main.stor()].field("bg_trailer_sound") === true;
+                    var bgSound = Main.cases()[Main.stor()].field("bg_trailers_sound") === true;
                     var isHorizontal = window.innerWidth > window.innerHeight;
                     
                     var h = (this.isBgMode || isHorizontal) ? window.innerHeight * 2 : '100%';
@@ -300,7 +300,7 @@
                     var _this = this;
                     var blurVal = parseInt(Main.cases()[Main.stor()].field("trailers_blur")) || 0;
                     var zoomVal = Main.cases()[Main.stor()].field("trailers_zoom");
-                    var bgSound = Main.cases()[Main.stor()].field("bg_trailer_sound") === true;
+                    var bgSound = Main.cases()[Main.stor()].field("bg_trailers_sound") === true;
                     var isHorizontal = window.innerWidth > window.innerHeight;
                     
                     if (zoomVal === true) zoomVal = "33";
@@ -1783,9 +1783,9 @@
                 var isRunTrailers = Main.cases()[Main.stor()].field("run_trailers");
                 var isBgTrailers = Main.cases()[Main.stor()].field("trailers_bg");
 				var run_slideshow = Main.cases()[Main.stor()].field("run_slideshow");
-                var trailer_source = Main.cases()[Main.stor()].field("trailer_source") || "tmdb";
-                var trailer_quality = Main.cases()[Main.stor()].field("trailer_quality") || "auto";
-                var use_proxy = Main.cases()[Main.stor()].field("trailer_proxy") !== false; 
+                var trailers_source = Main.cases()[Main.stor()].field("trailers_source") || "tmdb";
+                var trailers_quality = Main.cases()[Main.stor()].field("trailers_quality") || "auto";
+                var use_proxy = Main.cases()[Main.stor()].field("trailers_proxy") !== false; 
 
                 var processSlideshow = function() {
                     if (run_slideshow && !isBgTrailers) {
@@ -1998,7 +1998,7 @@
                 };
 
                 if (isRunTrailers || isBgTrailers) {
-                    if (trailer_source === 'imdb') {
+                    if (trailers_source === 'imdb') {
                     } else {
                         var tmdb_tr = Follow.vjsk(video(e.data));
                         if (tmdb_tr) {
