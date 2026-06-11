@@ -219,7 +219,6 @@
                                 rel: 0,
                                 suggestedQuality: "hd1080",
                                 setPlaybackQuality: "hd1080",
-                                var soundEnabled = Main.cases()[Main.stor()].field("trailers_sound_enabled") === true;
                                 mute: (this.isBgMode && !bgSound) ? 1 : (soundEnabled ? 0 : 1),
                                 start: 8
                             },
