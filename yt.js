@@ -1316,6 +1316,16 @@
 				en: "Start trailer after 5 sec timeout",
 				uk: "Запускати трейлер через таймаут 5 сек"
 			},
+			trailers_sound_enabled: {
+				ru: "Звук трейлера",
+				en: "Trailer sounds",
+				uk: "Звук трейлера"
+			},
+			trailers_sound_enabled_description: {
+				ru: "Включить звук при старте трейлера",
+				en: "Enable sound when trailer starts",
+				uk: "Увімкнути звук при старті трейлера"
+			},
 			trailers_bg: {
 				ru: "Трейлеры вместо слайдшоу",
 				en: "Trailers instead of slideshows",
@@ -1553,6 +1563,19 @@
 			field: {
 				name: Lampa.Lang.translate("trailers_show"),
                 description: Lampa.Lang.translate("trailers_show_description")
+			}
+		});
+
+        Lampa.SettingsApi.addParam({
+			component: "trailers",
+			param: {
+				name: "trailers_sound_enabled",
+				type: "trigger",
+				default: false
+			},
+			field: {
+				name: Lampa.Lang.translate("trailers_sound_enabled"),
+                description: Lampa.Lang.translate("trailers_sound_enabled_description")
 			}
 		});
 
