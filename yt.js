@@ -219,7 +219,7 @@
                                 rel: 0,
                                 suggestedQuality: "hd1080",
                                 setPlaybackQuality: "hd1080",
-                                mute: (this.isBgMode && !bgSound) ? 1 : (soundEnabled ? 0 : 1),
+                                mute: 1,
                                 start: 8
                             },
                             videoId: this.video.id,
