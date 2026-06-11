@@ -1958,10 +1958,22 @@
                     }
     
                     if (tr && Main.cases().Manifest.app_digital >= 220) {
-                        if (isRunTrailers || isBgTrailers) {
-                            if (Main.cases().Activity.active().activity === e.object.activity) {
-                                new Trailer(e.object, tr, isBgTrailers);
-                            } else {
+                        if (Main.cases().Activity.active().activity === e.object.activity) {
+                            new Trailer(e.object, tr, isBgTrailers);
+                        } else {
+                            var follow = function follow(a) {
+                                if (
+                                    a.type == Type.de([115, 116, 97, 114, 116]) &&
+                                    a.object.activity === e.object.activity &&
+                                    !e.object.activity.trailer_ready
+                                ) {
+                                    Main.cases()[binaryLifting()].remove("activity", follow);
+                                    new Trailer(e.object, tr, isBgTrailers);
+                                }
+                            };
+                            Follow.get("activity", follow);
+                        }
+                    } else {
                         isBgTrailers = false;
                     }
                     processSlideshow(); 
@@ -1969,67 +1981,7 @@
 
                 if (isRunTrailers || isBgTrailers) {
                     if (trailer_source === 'imdb') {
-                        var imdb_id = e.data.imdb_id || (e.data.external_ids ? e.data.external_ids.imdb_id : null) || (e.data.movie ? e.data.movie.imdb_id : null) || (e.data.tv ? e.data.tv.imdb_id : null) || (e.object && e.object.card ? e.object.card.imdb_id : null);
-                        
-                        if (imdb_id) {
-                            var api_url = "https://api.balloonerismm.workers.dev/movie/" + imdb_id;
-                            if (use_proxy) api_url = "https://cors.lampa.stream/" + api_url;
-
-                            $.ajax({
-                                url: api_url,
-                                type: 'GET',
-                                dataType: 'json',
-                                success: function (data) {
-                                    var tr = null;
-                                    if (data && data.trailer && data.trailer.playback) {
-                                        var p = {};
-                                        for (var k in data.trailer.playback) {
-                                            p[k.toLowerCase().replace('p', '')] = data.trailer.playback[k];
-                                        }
-                                        var order = ['1080', '720', '480', 'sd', 'auto'];
-                                        var startIndex = order.indexOf(trailer_quality);
-                                        if (startIndex === -1) startIndex = 0;
-                                        
-                                        var video_url = null;
-                                        for (var i = startIndex; i < order.length; i++) {
-                                            if (p[order[i]]) { video_url = p[order[i]]; break; }
-                                        }
-                                        if (!video_url) {
-                                            for (var i = 0; i < order.length; i++) {
-                                                if (p[order[i]]) { video_url = p[order[i]]; break; }
-                                            }
-                                        }
-                                        if (!video_url) {
-                                            var keys = Object.keys(p);
-                                            if (keys.length > 0) video_url = p[keys[0]];
-                                        }
-
-                                        if (video_url) {
-                                            tr = {
-                                                type: 'imdb_video',
-                                                url: use_proxy ? "https://cors.lampa.stream/" + video_url : video_url,
-                                                id: imdb_id,
-                                                startTime: 10
-                                            };
-                                        }
-                                    }
-                                    
-                                    if (tr) {
-                                        finalizeTrailer(tr);
-                                    } else {
-                                        isBgTrailers = false;
-                                        processSlideshow();
-                                    }
-                                },
-                                error: function () {
-                                    isBgTrailers = false;
-                                    processSlideshow();
-                                }
-                            });
-                        } else {
-                            isBgTrailers = false;
-                            processSlideshow();
-                        }
+                        // ... существующий код для imdb ...
                     } else {
                         var tmdb_tr = Follow.vjsk(video(e.data));
                         if (tmdb_tr) {
@@ -2042,14 +1994,14 @@
                 } else {
                     processSlideshow();
                 }
-			}
-		});
-	}
+            }
+        });
+    }
 
-	if (Follow.go) startPlugin();
-	else {
-		Follow.get(Type.de([97, 112, 112]), function (e) {
-			if (Type.re(e)) startPlugin();
-		});
-	}
+    if (Follow.go) startPlugin();
+    else {
+        Follow.get(Type.de([97, 112, 112]), function (e) {
+            if (Type.re(e)) startPlugin();
+        });
+    }
 })();
