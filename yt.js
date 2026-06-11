@@ -196,6 +196,7 @@
                 value: function initYoutube() {
                     var _this = this;
                     var bgSound = Main.cases()[Main.stor()].field("bg_trailers_sound") === true;
+                    var soundEnabled = Main.cases()[Main.stor()].field("trailers_enable_sound") === true;
                     var isHorizontal = window.innerWidth > window.innerHeight;
                     
                     var h = (this.isBgMode || isHorizontal) ? window.innerHeight * 2 : '100%';
