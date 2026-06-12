@@ -487,7 +487,7 @@
             /* Затемняющий оверлей - ОЧЕНЬ ТЕМНЫЙ ФОН */
             ".trailer-player__overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.1);z-index:1;}\n" +
             /* Контейнер для видео (мини-плеер) */
-            ".trailer-player__container{position:absolute;z-index:2;overflow:hidden;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);}\n" +
+            ".trailer-player__container{position:absolute;z-index:2;overflow:hidden;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.5);}\n" +
             /* Режим мини-плеера - размеры увеличенные */
             ".trailer-player__container.mini-player-mode{width:588px;height:331px;}\n" +
             /* Позиция справа - со сдвигом вниз */
