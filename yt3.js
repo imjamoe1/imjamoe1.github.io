@@ -176,7 +176,7 @@
                             var iframe = $(_this.youtube.getIframe());
                             var blurVal = parseInt(Main.cases()[Main.stor()].field("trailers_blur")) || 0;
                             if (blurVal > 0 && !(_this.miniPlayerEnabled && _this.isBgMode)) iframe.css('filter', 'blur(' + blurVal + 'px)');
-                            if ((_this.isBgMode || isHorizontal) && !(_this.miniPlayerEnabled && _this.isBgMode)) {
+                            if ((_this.isBgMode || isHorizontal)) {
                                 var zoomVal = Main.cases()[Main.stor()].field("trailers_zoom");
                                 if (zoomVal === true) zoomVal = "33";
                                 if (zoomVal === false) zoomVal = "0";
@@ -489,9 +489,9 @@
             /* Контейнер для видео (мини-плеер) */
             ".trailer-player__container{position:absolute;z-index:2;overflow:hidden;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);}\n" +
             /* Режим мини-плеера - размеры увеличенные */
-            ".trailer-player__container.mini-player-mode{width:560px;height:315px;}\n" +
+            ".trailer-player__container.mini-player-mode{width:588px;height:331px;}\n" +
             /* Позиция справа - со сдвигом вниз */
-            ".trailer-player__container.mini-player-right{top:120px;right:24px;}\n" +
+            ".trailer-player__container.mini-player-right{top:20px;right:0;}\n" +
             /* Позиция слева - со сдвигом вниз */
             ".trailer-player__container.mini-player-left{top:120px;left:24px;}\n" +
             /* Позиция по центру */
