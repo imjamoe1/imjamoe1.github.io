@@ -483,7 +483,7 @@
             /* Контейнер для видео (мини-плеер) */
             ".trailer-player__container{position:absolute;z-index:2;overflow:hidden;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);}\n" +
             /* Режим мини-плеера - размеры увеличенные */
-            ".trailer-player__container.mini-player-mode{width:560px;height:315px;}\n" +
+            ".trailer-player__container.mini-player-mode{width:588px;height:331px;}\n" +
             /* Позиция справа - со сдвигом вниз */
             ".trailer-player__container.mini-player-right{top:0;right:0;}\n" +
             /* Позиция слева - со сдвигом вниз */
