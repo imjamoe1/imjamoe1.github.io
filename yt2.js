@@ -1744,7 +1744,7 @@
                 values: {
                     "0": Lampa.Lang.translate("trailers_vignette_off"),
                     "around": Lampa.Lang.translate("trailers_vignette_around"),
-                    "right": Lampa.Lang.translate("trailers_vignette_left")
+                    "left": Lampa.Lang.translate("trailers_vignette_left")
                 },
                 default: "0"
             },
