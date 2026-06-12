@@ -485,7 +485,7 @@
             ".trailer-player{opacity:0;transition:opacity .3s;position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;}\n" +
             ".trailer-player.fg-mode{z-index:100 !important; background-color:#000;}\n" +
             /* Затемняющий оверлей - ОЧЕНЬ ТЕМНЫЙ ФОН */
-            ".trailer-player__overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:1;}\n" +
+            ".trailer-player__overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.1);z-index:1;}\n" +
             /* Контейнер для видео (мини-плеер) */
             ".trailer-player__container{position:absolute;z-index:2;overflow:hidden;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);}\n" +
             /* Режим мини-плеера - размеры увеличенные */
