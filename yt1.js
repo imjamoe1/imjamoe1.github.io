@@ -176,7 +176,7 @@
                             var iframe = $(_this.youtube.getIframe());
                             var blurVal = parseInt(Main.cases()[Main.stor()].field("trailers_blur")) || 0;
                             if (blurVal > 0 && !(_this.miniPlayerEnabled && _this.isBgMode)) iframe.css('filter', 'blur(' + blurVal + 'px)');
-                            if ((_this.isBgMode || isHorizontal) {
+                            if ((_this.isBgMode || isHorizontal)) {
                                 var zoomVal = Main.cases()[Main.stor()].field("trailers_zoom");
                                 if (zoomVal === true) zoomVal = "33";
                                 if (zoomVal === false) zoomVal = "0";
