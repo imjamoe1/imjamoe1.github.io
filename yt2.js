@@ -1427,10 +1427,10 @@
 				en: "Around the trailer",
 				uk: "Навколо трейлера"
 			},
-			trailers_vignette_right: {
-				ru: "С правой стороны",
-				en: "Right side only",
-				uk: "З правого боку"
+			trailers_vignette_left: {
+				ru: "С левой стороны",
+				en: "Left side only",
+				uk: "З лівого боку"
 			},
 			trailers_off: {
 				ru: "Выключено (0%)",
@@ -1563,7 +1563,7 @@
             /* Виньетка вокруг всего трейлера */
             ".trailer-player__vignette--around::after { box-shadow: inset 0 0 120px 60px rgba(0,0,0,0.7); }\n" +
             /* Виньетка только с правой стороны */
-            ".trailer-player__vignette--right::after { background: linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.85) 100%); }\n" +
+            ".trailer-player__vignette--left::after { background: linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.85) 100%); }\n" +
             ".trailer-player__video iframe{border:0;width:100%;height:100%;flex-shrink:0;z-index:0;transition:transform 0.3s;pointer-events:none;}\n" +
             ".trailer-player__video-iframe video { outline:none; border:none; pointer-events:none; cursor:none; }\n" +
             ".trailer-player__video-iframe video::-webkit-media-controls { display:none !important; opacity:0 !important; }\n" +
@@ -1744,7 +1744,7 @@
                 values: {
                     "0": Lampa.Lang.translate("trailers_vignette_off"),
                     "around": Lampa.Lang.translate("trailers_vignette_around"),
-                    "right": Lampa.Lang.translate("trailers_vignette_right")
+                    "right": Lampa.Lang.translate("trailers_vignette_left")
                 },
                 default: "0"
             },
