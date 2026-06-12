@@ -304,7 +304,7 @@
             }
             this.startblock = this.object.activity.render();
             this.head = $(".head");
-            this.timelauch = isBgMode ? 100 : 5000;
+            this.timelauch = isBgMode ? 100 : 3000;
             this.state = new State({
                 state: "start",
                 transitions: {
