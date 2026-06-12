@@ -485,7 +485,7 @@
             /* Режим мини-плеера - размеры увеличенные */
             ".trailer-player__container.mini-player-mode{width:560px;height:315px;}\n" +
             /* Позиция справа - со сдвигом вниз */
-            ".trailer-player__container.mini-player-right{top:0;right:24px;}\n" +
+            ".trailer-player__container.mini-player-right{top:0;right:0;}\n" +
             /* Позиция слева - со сдвигом вниз */
             ".trailer-player__container.mini-player-left{top:120px;left:24px;}\n" +
             /* Позиция по центру */
