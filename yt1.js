@@ -1196,7 +1196,7 @@
             /* Контейнер для видео (мини-плеер) */
             ".trailer-player__container{position:absolute;z-index:2;overflow:hidden;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}\n" +
             /* Режим мини-плеера - размеры */
-            ".trailer-player__container.mini-player-mode{width:560px;height:315px;}\n" +
+            ".trailer-player__container.mini-player-mode{width:360px;height:202px;}\n" +
             /* Позиция справа */
             ".trailer-player__container.mini-player-right{top:20px;right:20px;}\n" +
             /* Позиция слева */
