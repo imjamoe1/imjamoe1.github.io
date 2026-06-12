@@ -1563,7 +1563,7 @@
             /* Виньетка вокруг всего трейлера */
             ".trailer-player__vignette--around::after { box-shadow: inset 0 0 120px 60px rgba(0,0,0,0.7); }\n" +
             /* Виньетка только с левой стороны */
-            ".trailer-player__vignette--left::after { background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 20%, transparent 65%); }\n" +
+            ".trailer-player__vignette--left::after { background: linear-gradient(90deg, rgba(0,0,0,1) 0%, transparent 65%); }\n" +
             ".trailer-player__video iframe{border:0;width:100%;height:100%;flex-shrink:0;z-index:0;transition:transform 0.3s;pointer-events:none;}\n" +
             ".trailer-player__video-iframe video { outline:none; border:none; pointer-events:none; cursor:none; }\n" +
             ".trailer-player__video-iframe video::-webkit-media-controls { display:none !important; opacity:0 !important; }\n" +
