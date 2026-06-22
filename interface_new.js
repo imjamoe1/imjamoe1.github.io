@@ -1063,7 +1063,7 @@
                         left: 2em;
                     }
                     body.menu--always .new-interface .card.card--wide {
-                        width: calc(18.3em + 1em) !important;
+                        width: calc(18.3em + 2em) !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
