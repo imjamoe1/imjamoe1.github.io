@@ -1065,9 +1065,6 @@
                     body.menu--always .new-interface .card.card--wide {
                         width: calc(18.3em - 2em) !important;
                     }
-                    body.menu--always .new-interface .items-line {
-                        padding-right: 2em !important
-                    }
                     .card__quality {
                         font-weight: bold !important;
                     } 
