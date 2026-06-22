@@ -945,6 +945,9 @@
                         width: 18.3em;
                         margin-top: -1.5em !important;
                     }
+                    .items-line__title {
+                        padding-bottom: 0.15em !important;
+                    }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
                         height: 1.8em !important;
@@ -955,9 +958,6 @@
                     }
                     .items-line__title .full-person__photo {
                         margin-right: 0.5em !important;
-                    }
-                    .items-line {
-                        padding-bottom: 2em !important;
                     }
                     .new-interface-info {
                         position: relative;
