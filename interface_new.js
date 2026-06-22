@@ -946,7 +946,7 @@
                         margin-top: -1.5em !important;
                     }
                     .new-interface .items-line__title {
-                        margin-top: -1em !important;
+                        margin-top: -2em !important;
                         padding-bottom: 0.15em !important;
                     }
                     .items-line__title .full-person__photo {
