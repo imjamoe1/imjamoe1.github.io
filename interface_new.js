@@ -945,6 +945,9 @@
                         width: 18.3em;
                         margin-right: 0 !important;
                     }
+                    .new-interface .items-line__wrap {
+                        padding-right: 0 !important;
+                    }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
                         height: 1.8em !important;
