@@ -945,7 +945,8 @@
                         width: 18.3em;
                         margin-top: -1.5em !important;
                     }
-                    .items-line {
+                    .items-line__title {
+                        margin-top: -0.5em !important;
                         padding-bottom: 0.15em !important;
                     }
                     .items-line__title .full-person__photo {
@@ -968,7 +969,7 @@
                         position: absolute;
                         z-index: 9999999;
                         width: 80%;
-                        padding-top: 0.5em;
+                        padding-top: 1.1em;
                     }
                     .new-interface-info__head {
                         color: rgba(255, 255, 255, 0.6);
