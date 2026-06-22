@@ -944,6 +944,10 @@
                     .new-interface .card.card--wide {
                         width: 18.3em;
                     }
+                    .new-interface .card:last-child {
+                        margin-right: 0 !important;
+                        padding-right: 0 !important;
+                    }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
                         height: 1.8em !important;
@@ -1062,8 +1066,8 @@
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
-                    body.menu--always .new-interface .card.card--wide {
-                        width: calc(18.3em - 1.3em) !important;
+                    body.menu--always .new-interface .card.card--wide:last-child {
+                        width: calc(18.3em + 2em) !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
