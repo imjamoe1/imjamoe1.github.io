@@ -943,7 +943,7 @@
                     .new-interface-info__head.visible, .new-interface-info__ratings.visible, .new-interface-info__details.visible{ opacity: 1; }
                     .new-interface .card.card--wide {
                         width: 18.3em;
-                        margin-top: -0.5em !important;
+                        margin-top: -1em !important;
                     }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
