@@ -1062,6 +1062,9 @@
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
+                    body.menu--always .new-interface .card.card--wide {
+                        width: calc(18.3em - 2em) !important;
+                    }
                     body.menu--always .new-interface .items-line {
                         padding-right: 2em !important
                     }
