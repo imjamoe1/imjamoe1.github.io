@@ -1060,7 +1060,7 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
-                        left: -4em;
+                        left: 2em;
                     }
                     .card__quality {
                         font-weight: bold !important;
