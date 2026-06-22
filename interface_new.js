@@ -942,15 +942,7 @@
                     .new-interface-info__head, .new-interface-info__ratings, .new-interface-info__details{ opacity: 0; transition: opacity 0.5s ease; min-height: 2.2em !important;}
                     .new-interface-info__head.visible, .new-interface-info__ratings.visible, .new-interface-info__details.visible{ opacity: 1; }
                     .new-interface .card.card--wide {
-                        width: 18.3em;
-                        margin-right: 0 !important;
-                    }
-                    .new-interface .items-line__wrap {
-                        padding-right: 0 !important;
-                    }
-                    .new-interface .items-line {
-                        padding-right: 0 !important;
-                        margin-right: 0 !important;
+                        width: 19em;
                     }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
