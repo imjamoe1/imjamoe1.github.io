@@ -1051,7 +1051,7 @@
                         height: calc(100% + 4em);
                         width: 100%;
                         top: -4em;
-                        left: 0;
+                        left: -2em;
                         opacity: 0;
                         object-fit: cover;
                         transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1059,9 +1059,9 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    //body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
-                        //left: 2em;
-                    //}
+                    body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
+                        left: 2em;
+                    }
                     .card__quality {
                         font-weight: bold !important;
                     } 
