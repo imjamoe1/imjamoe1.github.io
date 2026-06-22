@@ -1311,7 +1311,7 @@
                         left: 2em;
                     }
                     body.menu--always .new-interface .card.card--small {
-                        width: calc(11.5em - 0.8em) !important;
+                        width: calc(11.5em - 1.2em) !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
