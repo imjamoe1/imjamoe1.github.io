@@ -1062,8 +1062,11 @@
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
+                    body.menu--always .new-interface .items-line__wrap {
+                        padding-right: 0 !important;
+                    }
                     body.menu--always .new-interface .card.card--wide {
-                        width: calc(18.3em + 2em) !important;
+                        width: calc(18.3em + 1em) !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
