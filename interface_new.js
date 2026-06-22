@@ -1059,13 +1059,7 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    //body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
-                        //left: 2em;
-                    //}
-                    body.menu--always .wrap__content .new-interface .full-start__background {
-                        left: 2em;
-                    }
-                    body.menu--always .wrap__content .new-interface .items-line__body {
+                    body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
                     .card__quality {
