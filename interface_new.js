@@ -957,7 +957,7 @@
                         margin-right: 0.5em !important;
                     }
                     .items-line {
-                        padding-bottom: 4em !important;
+                        padding-bottom: 2em !important;
                     }
                     .new-interface-info {
                         position: relative;
@@ -974,7 +974,7 @@
                         color: rgba(255, 255, 255, 0.6);
                         font-size: 1.3em;
                         min-height: 1em;
-                        margin-bottom: 0.5em;
+                        margin-bottom: 1em;
                     }
                     .new-interface-info__head span {
                         color: #fff;
