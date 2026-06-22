@@ -1066,7 +1066,7 @@
                         padding-right: 0 !important;
                     }
                     body.menu--always .new-interface .card.card--wide {
-                        width: calc(18.3em + 1em) !important;
+                        width: calc(18.3em + 3em) !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
