@@ -1062,11 +1062,11 @@
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
-                    body.menu--always .new-interface .items-line__wrap {
+                    body.menu--always .new-interface .full-start__background .items-line__wrap {
                         padding-right: 0 !important;
                     }
                     body.menu--always .new-interface .card.card--wide {
-                        width: calc(18.3em + 3em) !important;
+                        width: calc(18.3em + 4em) !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
