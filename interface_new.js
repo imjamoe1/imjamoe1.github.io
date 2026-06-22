@@ -945,7 +945,7 @@
                         width: 18.3em;
                         margin-top: -1.5em !important;
                     }
-                    .items-line__title {
+                    .items-line {
                         padding-bottom: 0.15em !important;
                     }
                     .items-line__title .full-person__photo {
