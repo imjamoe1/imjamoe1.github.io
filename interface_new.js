@@ -1065,6 +1065,9 @@
                     body.menu--always .wrap__content .new-interface .full-start__background {
                         left: 2em;
                     }
+                    body.menu--always .wrap__content .new-interface .items-line__body {
+                        left: 2em;
+                    }
                     .card__quality {
                         font-weight: bold !important;
                     } 
