@@ -945,7 +945,7 @@
                         width: 18.3em;
                         margin-top: -1.5em !important;
                     }
-                    .items-line__title {
+                    .new-interface .items-line__title {
                         margin-top: -0.5em !important;
                         padding-bottom: 0.15em !important;
                     }
