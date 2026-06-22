@@ -1311,7 +1311,7 @@
                         left: 2em;
                     }
                     body.menu--always .new-interface .card.card--small {
-                        width: calc(11.5em - 1em) !important;
+                        //width: calc(11.5em - 1em) !important;
                         padding-right: 0 !important;
                         margin-right: 0 !important;
                     }
