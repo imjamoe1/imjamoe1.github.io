@@ -968,7 +968,7 @@
                         position: absolute;
                         z-index: 9999999;
                         width: 80%;
-                        padding-top: 1.1em;
+                        padding-top: 0.5em;
                     }
                     .new-interface-info__head {
                         color: rgba(255, 255, 255, 0.6);
