@@ -1310,6 +1310,9 @@
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
+                    body.menu--always .new-interface .card.card--small {
+                        width: calc(11.5em - 1em) !important;
+                    }
                     .card__quality {
                         font-weight: bold !important;
                     }
