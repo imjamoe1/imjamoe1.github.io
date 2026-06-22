@@ -1185,6 +1185,7 @@
                     .new-interface-info__head.visible, .new-interface-info__ratings.visible, .new-interface-info__details.visible{ opacity: 1; }
                     .new-interface .card.card--small {
                         width: 11.5em;
+                        margin-top: -1em !important;
                     }
                     .items-line__title {
                         padding-bottom: 0.15em !important;
