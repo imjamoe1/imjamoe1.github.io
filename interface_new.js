@@ -511,9 +511,7 @@
     var mdblistRatingsPending = {};
     var kpRatingsCache = {};
     var kpRatingsPending = {};
-
-	Lampa.Storage.set("interface_size", "small");
-
+	
 	addStyles();
 	initializeSettings();
 
