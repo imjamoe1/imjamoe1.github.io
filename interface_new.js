@@ -942,7 +942,7 @@
                     .new-interface-info__head, .new-interface-info__ratings, .new-interface-info__details{ opacity: 0; transition: opacity 0.5s ease; min-height: 2.2em !important;}
                     .new-interface-info__head.visible, .new-interface-info__ratings.visible, .new-interface-info__details.visible{ opacity: 1; }
                     .new-interface .card.card--wide {
-                        width: 18em;
+                        width: 18.3em;
                     }
                     .items-line__title .full-person__photo {
                         width: 1.8em !important;
@@ -1062,9 +1062,9 @@
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
-                    //body.menu--always .new-interface .card.card--wide {
-                        //width: calc(18.3em - 2em) !important;
-                    //}
+                    body.menu--always .new-interface .card.card--wide {
+                        width: calc(18.3em - 1.3em) !important;
+                    }
                     .card__quality {
                         font-weight: bold !important;
                     } 
