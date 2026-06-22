@@ -974,7 +974,7 @@
                         color: rgba(255, 255, 255, 0.6);
                         font-size: 1.3em;
                         min-height: 1em;
-                        margin-bottom: 1em;
+                        margin-bottom: 0.5em;
                     }
                     .new-interface-info__head span {
                         color: #fff;
