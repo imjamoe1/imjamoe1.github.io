@@ -1064,6 +1064,9 @@
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
                     }
+                    .full-start-new__title {
+                        padding-top: 0.3em;
+                    }
                     .full-start-new__title span {
                         display: none !important;
                     }
