@@ -983,7 +983,7 @@
                     .new-interface-info__title {
                         font-size: 3em;
                         font-weight: 600;
-                        margin-top: -0.5em;
+                        margin-top: -1em;
                         overflow: hidden;
                         -o-text-overflow: '.';
                         text-overflow: '.';
@@ -1226,7 +1226,7 @@
                     .new-interface-info__title {
                         font-size: 3em;
                         font-weight: 600;
-                        margin-top: 0;
+                        margin-top: -0.5em;
                         overflow: hidden;
                         -o-text-overflow: '.';
                         text-overflow: '.';
@@ -1313,6 +1313,9 @@
                     }
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
+                    }
+                    .full-start-new__title {
+                        padding-top: 1em;
                     }
                     .full-start-new__title span {
                         display: none !important;
