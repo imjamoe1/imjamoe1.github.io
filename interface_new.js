@@ -1311,6 +1311,9 @@
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
                     }
+                    .original-title {
+                        display: none !important;
+                    }
                     .card__quality {
                         font-weight: bold !important;
                     }
