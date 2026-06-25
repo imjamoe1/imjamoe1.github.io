@@ -1315,7 +1315,7 @@
                         width: calc(11.5em - 1.5em) !important;
                     }
                     .full-start-new__title {
-                        padding-top: 1em;
+                        padding-top: 0.3em;
                     }
                     .full-start-new__title span {
                         display: none !important;
