@@ -1311,7 +1311,7 @@
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
                     }
-                    .original-title {
+                    .full-start-new__title span {
                         display: none !important;
                     }
                     .card__quality {
