@@ -983,7 +983,7 @@
                     .new-interface-info__title {
                         font-size: 3em;
                         font-weight: 600;
-                        margin-top: -1em;
+                        margin-top: -0.5em;
                         overflow: hidden;
                         -o-text-overflow: '.';
                         text-overflow: '.';
@@ -1063,6 +1063,9 @@
                     }
                     body.menu--always:not(.menu--open):not(.hide-compact) .new-interface .full-start__background {
                         left: 2em;
+                    }
+                    .full-start-new__title span {
+                        display: none !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
@@ -1223,7 +1226,7 @@
                     .new-interface-info__title {
                         font-size: 3em;
                         font-weight: 600;
-                        margin-top: -0.5em;
+                        margin-top: 0;
                         overflow: hidden;
                         -o-text-overflow: '.';
                         text-overflow: '.';
