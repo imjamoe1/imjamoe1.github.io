@@ -1065,7 +1065,7 @@
                         left: 2em;
                     }
                     .full-start-new__title {
-                        padding-top: 0.3em;
+                        padding-top: 0.2em;
                     }
                     .card__quality {
                         font-weight: bold !important;
@@ -1318,7 +1318,7 @@
                         width: calc(11.5em - 1.5em) !important;
                     }
                     .full-start-new__title {
-                        padding-top: 0.3em;
+                        padding-top: 0.2em;
                     }
                     .card__quality {
                         font-weight: bold !important;
