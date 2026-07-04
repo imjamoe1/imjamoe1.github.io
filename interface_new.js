@@ -1314,7 +1314,7 @@
                     body.menu--always .new-interface .full-start__background {
                         left: 2em;
                     }
-                    body.menu--always .new-interface .items-line__more {
+                    body.menu--always .items-line__more {
                         margin-left: 2em;
                     }
                     body.menu--always .new-interface .card.card--small {
