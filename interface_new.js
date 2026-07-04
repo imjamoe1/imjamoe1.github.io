@@ -1064,6 +1064,9 @@
                     body.menu--always .new-interface .full-start__background {
                         left: 2em;
                     }
+                    .full-start-new__title {
+                        padding-top: 0.3em;
+                    }
                     .card__quality {
                         font-weight: bold !important;
                     } 
@@ -1313,6 +1316,9 @@
                     }
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
+                    }
+                    .full-start-new__title {
+                        padding-top: 0.3em;
                     }
                     .card__quality {
                         font-weight: bold !important;
