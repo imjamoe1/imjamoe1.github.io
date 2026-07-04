@@ -1311,9 +1311,9 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    body.menu--always .new-interface .full-start__background {
-                        left: 2em;
-                    }
+                    //body.menu--always .new-interface .full-start__background {
+                        //left: 2em;
+                    //}
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
                     }
