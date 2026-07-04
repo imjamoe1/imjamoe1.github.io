@@ -1315,7 +1315,7 @@
                         left: 2em;
                     }
                     body.menu--always .new-interface .items-line__more {
-                        right: 2em;
+                        left: 2em;
                     }
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
