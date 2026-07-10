@@ -129,6 +129,7 @@ resetLumioCacheOnce();
 
     resetTemplates();
 
+    // ====== ДОБАВЛЯЕМ ЗАЩИТУ КНОПКИ В CSS ======
     if (!document.getElementById('nexus-css')) {
         var styleEl = document.createElement('style');
         styleEl.id = 'nexus-css';
@@ -137,6 +138,10 @@ resetLumioCacheOnce();
         styleEl.textContent += '.online-prestige__media--voice{background:linear-gradient(145deg,rgba(18,214,223,.34),rgba(155,92,255,.20) 58%,rgba(15,23,42,.72));overflow:hidden}.online-prestige__media--voice .online-prestige__logo{display:none}.online-prestige__media--voice:before{content:"";position:absolute;left:50%;top:50%;width:2.75em;height:4.25em;transform:translate(-50%,-50%);background:rgba(255,255,255,.92);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 768 1280%22%3E%3Cg transform=%22translate(0,1280) scale(0.1,-0.1)%22%3E%3Cpath d=%22M3158 12790 c-91 -11 -256 -53 -350 -89 -504 -195 -884 -646 -995 -1184 -16 -76 -17 -285 -21 -2742 -3 -2824 -4 -2785 44 -2975 153 -606 674 -1083 1284 -1175 139 -22 1297 -22 1438 0 532 80 1005 457 1218 971 31 77 84 252 84 282 0 9 -159 12 -760 12 l-760 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 773 2 772 3 0 255 0 255 -772 3 -773 2 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 260 0 260 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 760 0 761 0 -7 38 c-12 71 -84 274 -128 361 -193 381 -532 678 -923 806 -213 69 -201 68 -923 71 -360 1 -685 -2 -722 -6z%22/%3E%3Cpath d=%22M3 6903 c4 -1139 2 -1097 68 -1418 104 -504 329 -976 672 -1408 101 -128 380 -408 513 -515 562 -451 1232 -709 1920 -740 l149 -7 0 -895 0 -895 -1087 -3 -1088 -2 0 -510 0 -510 2690 0 2690 0 0 510 0 510 -1087 2 -1088 3 0 895 0 895 149 7 c688 31 1358 289 1920 740 133 107 412 387 513 515 343 432 568 904 672 1408 66 321 64 279 68 1418 l4 1037 -510 0 -510 0 -4 -992 c-3 -960 -4 -998 -25 -1129 -41 -258 -116 -484 -236 -715 -113 -217 -227 -373 -406 -558 -357 -368 -795 -595 -1315 -683 -100 -16 -176 -18 -835 -18 -799 0 -798 0 -1062 66 -631 159 -1186 603 -1494 1193 -120 231 -195 457 -236 715 -21 131 -22 169 -25 1129 l-4 992 -510 0 -510 0 4 -1037z%22/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 768 1280%22%3E%3Cg transform=%22translate(0,1280) scale(0.1,-0.1)%22%3E%3Cpath d=%22M3158 12790 c-91 -11 -256 -53 -350 -89 -504 -195 -884 -646 -995 -1184 -16 -76 -17 -285 -21 -2742 -3 -2824 -4 -2785 44 -2975 153 -606 674 -1083 1284 -1175 139 -22 1297 -22 1438 0 532 80 1005 457 1218 971 31 77 84 252 84 282 0 9 -159 12 -760 12 l-760 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 773 2 772 3 0 255 0 255 -772 3 -773 2 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 260 0 260 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 760 0 761 0 -7 38 c-12 71 -84 274 -128 361 -193 381 -532 678 -923 806 -213 69 -201 68 -923 71 -360 1 -685 -2 -722 -6z%22/%3E%3Cpath d=%22M3 6903 c4 -1139 2 -1097 68 -1418 104 -504 329 -976 672 -1408 101 -128 380 -408 513 -515 562 -451 1232 -709 1920 -740 l149 -7 0 -895 0 -895 -1087 -3 -1088 -2 0 -510 0 -510 2690 0 2690 0 0 510 0 510 -1087 2 -1088 3 0 895 0 895 149 7 c688 31 1358 289 1920 740 133 107 412 387 513 515 343 432 568 904 672 1408 66 321 64 279 68 1418 l4 1037 -510 0 -510 0 -4 -992 c-3 -960 -4 -998 -25 -1129 -41 -258 -116 -484 -236 -715 -113 -217 -227 -373 -406 -558 -357 -368 -795 -595 -1315 -683 -100 -16 -176 -18 -835 -18 -799 0 -798 0 -1062 66 -631 159 -1186 603 -1494 1193 -120 231 -195 457 -236 715 -21 131 -22 169 -25 1129 l-4 992 -510 0 -510 0 4 -1037z%22/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 .45em .85em rgba(0,0,0,.34));z-index:1}.online-prestige__media--voice:after{background:linear-gradient(90deg,rgba(0,0,0,.04),rgba(5,8,16,.43))}.nexus-voice-tone-0{background:linear-gradient(145deg,rgba(18,214,223,.34),rgba(155,92,255,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-1{background:linear-gradient(145deg,rgba(34,197,94,.34),rgba(18,214,223,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-2{background:linear-gradient(145deg,rgba(244,114,182,.30),rgba(155,92,255,.22) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-3{background:linear-gradient(145deg,rgba(250,204,21,.30),rgba(34,197,94,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-4{background:linear-gradient(145deg,rgba(96,165,250,.34),rgba(18,214,223,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-5{background:linear-gradient(145deg,rgba(248,113,113,.30),rgba(250,204,21,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-6{background:linear-gradient(145deg,rgba(45,212,191,.34),rgba(96,165,250,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-7{background:linear-gradient(145deg,rgba(192,132,252,.32),rgba(244,114,182,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-8{background:linear-gradient(145deg,rgba(251,146,60,.30),rgba(248,113,113,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-9{background:linear-gradient(145deg,rgba(74,222,128,.30),rgba(250,204,21,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-10{background:linear-gradient(145deg,rgba(56,189,248,.34),rgba(129,140,248,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-11{background:linear-gradient(145deg,rgba(217,70,239,.28),rgba(34,211,238,.18) 58%,rgba(15,23,42,.72))}.online-prestige__badge.nexus-badge--voice{background:rgba(18,214,223,.18);color:#bdfaff}';
         styleEl.textContent += '.nexus--button .nexus-button-logo{width:1.6em;height:1.6em;object-fit:contain;display:inline-block;vertical-align:middle;margin-right:.45em;filter:drop-shadow(0 .2em .45em rgba(18,214,223,.35))}';
         styleEl.textContent += '.nexus--button{display:flex;align-items:center;gap:.45em}.nexus--button .nexus-button-logo{width:1.8em;height:1.8em;min-width:1.8em;min-height:1.8em;object-fit:contain;display:block;flex:none;filter:drop-shadow(0 .2em .45em rgba(18,214,223,.35))}.nexus--button span{display:inline-block}';
+        // ====== ЗАЩИТА КНОПКИ В CSS ======
+        styleEl.textContent += '.nexus--button{order:0 !important;flex-shrink:0 !important}';
+        styleEl.textContent += '.full-start-new__buttons .view--nexus{display:flex !important;visibility:visible !important;opacity:1 !important}';
+        styleEl.textContent += '.view--nexus.hidden{display:flex !important;visibility:visible !important;opacity:1 !important}';
         document.head.appendChild(styleEl);
     }
 
@@ -2846,7 +2851,7 @@ if (data.url || data.method || data.stream) result.push(data);
 
 
 var nexusCardButtonHtml =
-    '<div class="full-start__button selector view--nexus nexus--button" data-subtitle="V' + NEXUS_VERSION + '">' +
+    '<div class="full-start__button selector view--nexus nexus--button" data-stable-id="nexus_online_button" data-subtitle="V' + NEXUS_VERSION + '">' +
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
             '<path d="M32 4 58 18v28L32 60 6 46V18L32 4Z" fill="#12D6DF"></path>' +
             '<path d="M32 4 58 18 32 33 6 18 32 4Z" fill="#9B5CFF"></path>' +
@@ -2856,6 +2861,8 @@ var nexusCardButtonHtml =
     '</div>';
 
 var nexusButtonObserverTimer = null;
+var nexusButtonProtectionTimer = null;
+var nexusButtonInserted = false;
 
 function getActiveMovie() {
     try {
@@ -2867,6 +2874,28 @@ function getActiveMovie() {
     }
 }
 
+// ====== ЗАЩИТА КНОПКИ ======
+function protectNexusButton() {
+    if (!nexusButtonInserted) return;
+    
+    var container = $('.full-start-new__buttons');
+    if (!container.length) return;
+    
+    var btn = container.find('.view--nexus');
+    if (!btn.length) {
+        nexusLog('[Lumio] Button disappeared, restoring...');
+        nexusButtonInserted = false;
+        insertNexusButton();
+    } else if (btn.css('display') === 'none' || btn.css('visibility') === 'hidden') {
+        btn.css({
+            'display': 'flex',
+            'visibility': 'visible',
+            'opacity': '1'
+        });
+        btn.removeClass('hidden');
+    }
+}
+
 function insertNexusButton() {
     try {
         var act = Lampa.Activity.active();
@@ -2875,7 +2904,10 @@ function insertNexusButton() {
         var anchor = $('.view--torrent').first();
         if (!anchor.length) return false;
 
-        if (anchor.parent().find('.nexus--button').length) return true;
+        if (anchor.parent().find('.nexus--button').length) {
+            nexusButtonInserted = true;
+            return true;
+        }
 
         var btn = $(nexusCardButtonHtml);
         var movie = getActiveMovie();
@@ -2888,6 +2920,7 @@ function insertNexusButton() {
         });
 
         anchor.after(btn);
+        nexusButtonInserted = true;
         nexusLog('[Lumio] button inserted');
         return true;
     } catch (e) {
@@ -2907,15 +2940,50 @@ function startNexusButtonWatcher() {
 
             var inserted = insertNexusButton();
 
-            if (inserted || attempts >= 40) {
+            if (inserted || attempts >= 60) {
                 clearInterval(nexusButtonObserverTimer);
                 nexusButtonObserverTimer = null;
                 nexusLog('[Lumio] watcher stop, inserted:', inserted, 'attempts:', attempts);
+                
+                if (inserted) {
+                    // Запускаем защиту после успешной вставки
+                    if (nexusButtonProtectionTimer) clearInterval(nexusButtonProtectionTimer);
+                    nexusButtonProtectionTimer = setInterval(protectNexusButton, 500);
+                }
             }
-        }, 250);
+        }, 300);
     } catch (e) {
         console.error('[Lumio] startNexusButtonWatcher error:', e);
     }
+}
+
+// ====== НАБЛЮДАТЕЛЬ ЗА УДАЛЕНИЕМ ======
+function setupNexusButtonObserver() {
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.removedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) {
+                        var $node = $(node);
+                        if ($node.hasClass('view--nexus') || $node.find('.view--nexus').length) {
+                            nexusLog('[Lumio] Button removal detected');
+                            setTimeout(function() {
+                                if (!document.querySelector('.view--nexus')) {
+                                    nexusButtonInserted = false;
+                                    insertNexusButton();
+                                }
+                            }, 100);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 }
 
 if (Lampa.Listener && Lampa.Listener.follow) {
@@ -2924,19 +2992,27 @@ if (Lampa.Listener && Lampa.Listener.follow) {
             setTimeout(startNexusButtonWatcher, 0);
             setTimeout(startNexusButtonWatcher, 500);
             setTimeout(startNexusButtonWatcher, 1500);
+            setupNexusButtonObserver();
         }
     });
 
     Lampa.Listener.follow('full', function (e) {
         nexusLog('[Lumio] full event:', e.type);
+        nexusButtonInserted = false;
+        if (nexusButtonProtectionTimer) {
+            clearInterval(nexusButtonProtectionTimer);
+            nexusButtonProtectionTimer = null;
+        }
         setTimeout(startNexusButtonWatcher, 0);
         setTimeout(startNexusButtonWatcher, 300);
         setTimeout(startNexusButtonWatcher, 1000);
     });
 
     Lampa.Listener.follow('activity', function (e) {
-        setTimeout(startNexusButtonWatcher, 0);
-        setTimeout(startNexusButtonWatcher, 500);
+        if (e.type === 'complite') {
+            setTimeout(startNexusButtonWatcher, 0);
+            setTimeout(startNexusButtonWatcher, 500);
+        }
     });
     
 var nexusCardPreloadTimer = null;
