@@ -4,7 +4,7 @@
     var EXCLUDED_CLASSES = ['button--edit-order', 'button--color', 'button--play'];
     
     var DEFAULT_GROUPS = [
-        { name: 'online', patterns: ['online', 'lampac', 'modss', 'showy'], label: 'Онлайн' },
+        { name: 'online', patterns: ['online', 'lampac', 'modss', 'showy', 'nexus'], label: 'Онлайн' },
         { name: 'torrent', patterns: ['torrent'], label: 'Торренты' },
         { name: 'trailer', patterns: ['trailer', 'rutube'], label: 'Трейлеры' },
         { name: 'rating', patterns: ['rating'], label: 'Оценить' },
