@@ -2846,7 +2846,7 @@ if (data.url || data.method || data.stream) result.push(data);
         });
     }
 
-
+// ====== КНОПКА ======
 var nexusCardButtonHtml =
     '<div class="full-start__button selector view--nexus nexus--button" data-stable-id="nexus_online_button" data-subtitle="V' + NEXUS_VERSION + '">' +
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
@@ -2857,9 +2857,24 @@ var nexusCardButtonHtml =
         '<span>' + NEXUS_TITLE + '</span>' +
     '</div>';
 
-var nexusButtonObserverTimer = null;
-var nexusButtonProtectionTimer = null;
-var nexusButtonInserted = false;
+// ====== ВСТАВКА КНОПКИ ======
+function addNexusButton(e) {
+    if (e.render.find('.nexus--button').length) return;
+    
+    var btn = $(nexusCardButtonHtml);
+    var movie = e.movie || getActiveMovie();
+    
+    if (movie) preloadSources(movie);
+    
+    btn.on('hover:enter', function() {
+        var activeMovie = getActiveMovie();
+        if (activeMovie) openNexus(activeMovie);
+    });
+    
+    // Вставляем после кнопки Torrent
+    e.render.after(btn);
+    nexusLog('[Lumio] button inserted (style)');
+}
 
 function getActiveMovie() {
     try {
@@ -2871,201 +2886,27 @@ function getActiveMovie() {
     }
 }
 
-// ====== ВСТАВКА КНОПКИ С УЧЁТОМ СОХРАНЁННОЙ ПОЗИЦИИ ======
-function insertNexusButton() {
-    try {
-        var act = Lampa.Activity.active();
-        if (!act || act.component !== 'full') return false;
-
-        var container = $('.full-start-new__buttons');
-        if (!container.length) return false;
-
-        // Проверяем, есть ли уже кнопка
-        var existingBtn = container.find('.nexus--button');
-        if (existingBtn.length) {
-            nexusButtonInserted = true;
-            return true;
-        }
-
-        var btn = $(nexusCardButtonHtml);
-        var movie = getActiveMovie();
-
-        if (movie) preloadSources(movie);
-
-        btn.on('hover:enter', function () {
-            var activeMovie = getActiveMovie();
-            if (activeMovie) openNexus(activeMovie);
+// ====== НАБЛЮДАТЕЛЬ СОБЫТИЙ ======
+Lampa.Listener.follow('full', function(e) {
+    if (e.type === 'complite') {
+        addNexusButton({
+            render: e.object.activity.render().find('.view--torrent'),
+            movie: e.data.movie
         });
-
-        // ====== ПОЛУЧАЕМ СОХРАНЁННЫЙ ПОРЯДОК ======
-        var customOrder = Lampa.Storage.get('button_custom_order', []);
-        var nexusId = 'nexus_online_button';
-        var insertBefore = null;
-
-        if (customOrder.length) {
-            // Находим позицию кнопки в сохранённом порядке
-            var nexusIndex = customOrder.indexOf(nexusId);
-            
-            if (nexusIndex > 0) {
-                // Ищем предыдущую кнопку в сохранённом порядке
-                var prevId = customOrder[nexusIndex - 1];
-                
-                // Ищем кнопку с этим ID в контейнере
-                var prevBtn = container.find('[data-stable-id="' + prevId + '"]');
-                
-                if (prevBtn.length) {
-                    // Вставляем после предыдущей кнопки
-                    insertBefore = prevBtn.next();
-                } else {
-                    // Если предыдущая кнопка не найдена, ищем следующую
-                    for (var i = nexusIndex + 1; i < customOrder.length; i++) {
-                        var nextId = customOrder[i];
-                        var nextBtn = container.find('[data-stable-id="' + nextId + '"]');
-                        if (nextBtn.length) {
-                            insertBefore = nextBtn;
-                            break;
-                        }
-                    }
-                }
-            } else if (nexusIndex === 0) {
-                // Кнопка первая в списке - вставляем в начало
-                insertBefore = container.find('.full-start__button').first();
-            }
-        }
-
-        // Если позиция не найдена, вставляем после Torrent или в конец
-        if (!insertBefore || !insertBefore.length) {
-            var torrentBtn = container.find('.view--torrent');
-            if (torrentBtn.length) {
-                insertBefore = torrentBtn.next();
-            }
-        }
-
-        // Вставляем кнопку
-        if (insertBefore && insertBefore.length) {
-            btn.insertBefore(insertBefore);
-        } else {
-            container.append(btn);
-        }
-
-        nexusButtonInserted = true;
-        nexusLog('[Lumio] button inserted at position: ' + (insertBefore && insertBefore.length ? 'before ' + insertBefore.attr('class') : 'end'));
-
-        // Запускаем защиту
-        if (nexusButtonProtectionTimer) {
-            clearInterval(nexusButtonProtectionTimer);
-        }
-        nexusButtonProtectionTimer = setInterval(protectNexusButton, 500);
-
-        return true;
-    } catch (e) {
-        console.error('[Lumio] insertNexusButton error:', e);
-        return false;
     }
-}
+});
 
-// ====== ЗАЩИТА КНОПКИ ======
-function protectNexusButton() {
-    if (!nexusButtonInserted) return;
-    
-    var container = $('.full-start-new__buttons');
-    if (!container.length) return;
-    
-    var btn = container.find('.view--nexus');
-    if (!btn.length) {
-        nexusLog('[Lumio] Button disappeared, restoring...');
-        nexusButtonInserted = false;
-        insertNexusButton();
-    } else if (btn.css('display') === 'none' || btn.css('visibility') === 'hidden') {
-        btn.css({
-            'display': 'flex',
-            'visibility': 'visible',
-            'opacity': '1'
+// ====== ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА ======
+try {
+    if (Lampa.Activity.active().component === 'full') {
+        addNexusButton({
+            render: Lampa.Activity.active().activity.render().find('.view--torrent'),
+            movie: Lampa.Activity.active().card
         });
-        btn.removeClass('hidden');
     }
-}
+} catch (e) {}
 
-function startNexusButtonWatcher() {
-    try {
-        if (nexusButtonObserverTimer) clearInterval(nexusButtonObserverTimer);
-
-        var attempts = 0;
-
-        nexusButtonObserverTimer = setInterval(function () {
-            attempts++;
-
-            var inserted = insertNexusButton();
-
-            if (inserted || attempts >= 60) {
-                clearInterval(nexusButtonObserverTimer);
-                nexusButtonObserverTimer = null;
-                nexusLog('[Lumio] watcher stop, inserted:', inserted, 'attempts:', attempts);
-            }
-        }, 300);
-    } catch (e) {
-        console.error('[Lumio] startNexusButtonWatcher error:', e);
-    }
-}
-
-// ====== НАБЛЮДАТЕЛЬ ЗА УДАЛЕНИЕМ ======
-function setupNexusButtonObserver() {
-    var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList') {
-                mutation.removedNodes.forEach(function(node) {
-                    if (node.nodeType === 1) {
-                        var $node = $(node);
-                        if ($node.hasClass('view--nexus') || $node.find('.view--nexus').length) {
-                            nexusLog('[Lumio] Button removal detected');
-                            setTimeout(function() {
-                                if (!document.querySelector('.view--nexus')) {
-                                    nexusButtonInserted = false;
-                                    insertNexusButton();
-                                }
-                            }, 100);
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-}
-
-if (Lampa.Listener && Lampa.Listener.follow) {
-    Lampa.Listener.follow('app', function (e) {
-        if (e.type === 'ready') {
-            setTimeout(startNexusButtonWatcher, 0);
-            setTimeout(startNexusButtonWatcher, 500);
-            setTimeout(startNexusButtonWatcher, 1500);
-            setupNexusButtonObserver();
-        }
-    });
-
-    Lampa.Listener.follow('full', function (e) {
-        nexusLog('[Lumio] full event:', e.type);
-        nexusButtonInserted = false;
-        if (nexusButtonProtectionTimer) {
-            clearInterval(nexusButtonProtectionTimer);
-            nexusButtonProtectionTimer = null;
-        }
-        setTimeout(startNexusButtonWatcher, 0);
-        setTimeout(startNexusButtonWatcher, 300);
-        setTimeout(startNexusButtonWatcher, 1000);
-    });
-
-    Lampa.Listener.follow('activity', function (e) {
-        if (e.type === 'complite') {
-            setTimeout(startNexusButtonWatcher, 0);
-            setTimeout(startNexusButtonWatcher, 500);
-        }
-    });
-    
+// ====== ПРЕЛОАД ДЛЯ КАРТОЧКИ ======
 var nexusCardPreloadTimer = null;
 
 if (Lampa.Listener && Lampa.Listener.follow) {
@@ -3077,7 +2918,6 @@ if (Lampa.Listener && Lampa.Listener.follow) {
             preloadSources(e.data.movie);
         }, 350);
     });
-}
 }
 
     var manifst = {
