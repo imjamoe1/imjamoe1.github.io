@@ -3674,6 +3674,23 @@ if (Lampa.Listener && Lampa.Listener.follow) {
         setTimeout(startNexusButtonWatcher, 0);
         setTimeout(startNexusButtonWatcher, 500);
     });
+
+function addNexusButton(e) {
+    if (e.render.find('.nexus--button').length) return;
+    
+    var btn = $(nexusCardButtonHtml);
+    var movie = e.movie || getActiveMovie();
+    
+    if (movie) preloadSources(movie);
+    
+    btn.on('hover:enter', function() {
+        var activeMovie = getActiveMovie();
+        if (activeMovie) openNexus(activeMovie);
+    });
+
+    e.render.after(btn);
+    nexusLog('[Lumio] button inserted (style)');
+}
     
 var nexusCardPreloadTimer = null;
 
