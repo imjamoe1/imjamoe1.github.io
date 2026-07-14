@@ -3691,6 +3691,25 @@ function addNexusButton(e) {
     e.render.after(btn);
     nexusLog('[Lumio] button inserted (style)');
 }
+
+function getActiveMovie() {
+    try {
+        var act = Lampa.Activity.active();
+        if (!act) return null;
+        return act.card || act.movie || (act.activity && act.activity.card) || null;
+    } catch (e) {
+        return null;
+    }
+}
+
+Lampa.Listener.follow('full', function(e) {
+    if (e.type === 'complite') {
+        addNexusButton({
+            render: e.object.activity.render().find('.view--torrent'),
+            movie: e.data.movie
+        });
+    }
+});
     
 var nexusCardPreloadTimer = null;
 
