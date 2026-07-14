@@ -13,15 +13,13 @@ window.addEventListener('unhandledrejection', function (e) {
     if (window.nexus_online_plugin_started) return;
     window.nexus_online_plugin_started = true;
 
-    var NEXUS_VERSION   = '1.25.5';
+    var NEXUS_VERSION   = '1.24.6';
     var NEXUS_COMPONENT = 'nexusonline';
     var NEXUS_TITLE     = 'Lumio';
     var NEXUS_DEBUG     = false;
     var NEXUS_CACHE_TTL = 6 * 60 * 60 * 1000;
     var NEXUS_CONTENT_CACHE_TTL = 45 * 60 * 1000;
     var NEXUS_FAST_SOURCE_LIMIT = 5;
-    var NEXUS_SOURCE_PROBE_TIMEOUT = 6500;
-    var NEXUS_SOURCE_PROBE_CONCURRENCY = 4;
     var NEXUS_CONTENT_TIMEOUT = 16000;
 var NEXUS_SOURCE_ATTEMPTS = 3;
 var NEXUS_OPEN_ATTEMPTS = 3;
@@ -32,26 +30,11 @@ function timeoutForAttempt(base, attempt) {
     return base + (attempt * 4000);
 }
     
-    var NEXUS_SOURCE_ORDER = [
-        'zetflix',
-        'veoveo',
-        'cdnvideohub',
-        'kinotochka',
-        'phantom',
-        'uafilm',
-        'leproduction',
-        'filmix',
-        'vkmovie',
-        'pidtor'
-    ];
-    var NEXUS_SOURCE_ALIASES = {
-        videohub: 'cdnvideohub',
-        vkvideo: 'vkmovie'
-    };
-    var NEXUS_DEFAULT_SOURCE = 'zetflix';
+    var NEXUS_SOURCE_ORDER = ['veoveo', 'kinobase', 'filmix', 'phantom', 'kinogo'];
+    var NEXUS_DEFAULT_SOURCE = 'veoveo';
     var NEXUS_BALANSER_STORAGE = 'lumio_online_balanser';
     
-    var NEXUS_STORAGE_SCHEMA = '1.25.5';
+    var NEXUS_STORAGE_SCHEMA = '1.24.6';
 
 function removeStorageKey(key) {
     try {
@@ -76,7 +59,6 @@ function resetLumioCacheOnce() {
                     key.indexOf('lumio_sources_') === 0 ||
                     key.indexOf('lumio_content_') === 0 ||
                     key.indexOf('lumio_serial_choice_') === 0 ||
-                    key.indexOf('lumio_choice_') === 0 ||
                     key.indexOf('nexus_choice_') === 0
                 ) {
                     localStorage.removeItem(key);
@@ -91,16 +73,15 @@ function resetLumioCacheOnce() {
 
 resetLumioCacheOnce();
 
-    // Замените на свой адрес когда поднимите свой lampac
     var NEXUS_HOST = 'https://beta.mitsu.tv/api';
 
     function resetTemplates() {
 
         Lampa.Template.add('nexus_prestige_folder',
-            '<div class="lumio-prestige lumio-prestige--folder selector">' +
-                '<div class="lumio-prestige__glow"></div>' +
-                '<div class="lumio-prestige__media {media_class}" style="{media_style}">' +
-                    '<div class="lumio-prestige__logo">' +
+            '<div class="online-prestige online-prestige--folder selector">' +
+                '<div class="online-prestige__glow"></div>' +
+                '<div class="online-prestige__media {media_class}" style="{media_style}">' +
+                    '<div class="online-prestige__logo">' +
                         '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' +
                             '<path d="M32 4 58 18v28L32 60 6 46V18L32 4Z" fill="#12D6DF"/>' +
                             '<path d="M32 4 58 18 32 33 6 18 32 4Z" fill="#9B5CFF"/>' +
@@ -108,22 +89,28 @@ resetLumioCacheOnce();
                         '</svg>' +
                     '</div>' +
                 '</div>' +
-                '<div class="lumio-prestige__body">' +
-                    '<div class="lumio-prestige__head">' +
-                        '<div class="lumio-prestige__title">{title}</div>' +
-                        '<div class="lumio-prestige__time">{time}</div>' +
+                '<div class="online-prestige__body">' +
+                    '<div class="online-prestige__head">' +
+                        '<div class="online-prestige__title">{title}</div>' +
+                        '<div class="online-prestige__time">{time}</div>' +
                     '</div>' +
-                    '<div class="lumio-prestige__footer">' +
-                        '<div class="lumio-prestige__info">{info}</div>' +
-                        '<div class="lumio-prestige__badge {badge_class}">{badge}</div>' +
+                    '<div class="online-prestige__footer">' +
+                        '<div class="online-prestige__info">{info}</div>' +
+                        '<div class="online-prestige__badge {badge_class}">{badge}</div>' +
                     '</div>' +
                 '</div>' +
             '</div>'
         );
 
         Lampa.Template.add('nexus_content_loading',
-            '<div class="lumio-empty nexus-loader">' +
-                '<div class="nexus-loader__mark">{logo}</div>' +
+            '<div class="online-empty nexus-loader">' +
+                '<div class="nexus-loader__mark">' +
+                    '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' +
+                        '<path d="M32 4 58 18v28L32 60 6 46V18L32 4Z" fill="#12D6DF"/>' +
+                        '<path d="M32 4 58 18 32 33 6 18 32 4Z" fill="#9B5CFF"/>' +
+                        '<path d="M25 21v22l18-11-18-11Z" fill="#fff"/>' +
+                    '</svg>' +
+                '</div>' +
                 '<div class="nexus-loader__title">{title}</div>' +
                 '<div class="nexus-loader__text">{text}</div>' +
                 '<div class="nexus-loader__bar"><i></i></div>' +
@@ -131,9 +118,9 @@ resetLumioCacheOnce();
         );
 
         Lampa.Template.add('nexus_doesnotanswer',
-            '<div class="lumio-empty">' +
-                '<div class="lumio-empty__title">{title}</div>' +
-                '<div class="lumio-empty__time">{text}</div>' +
+            '<div class="online-empty">' +
+                '<div class="online-empty__title">{title}</div>' +
+                '<div class="online-empty__time">{text}</div>' +
             '</div>'
         );
 
@@ -144,17 +131,19 @@ resetLumioCacheOnce();
     if (!document.getElementById('nexus-css')) {
         var styleEl = document.createElement('style');
         styleEl.id = 'nexus-css';
-        styleEl.textContent = '.lumio-prestige{position:relative;overflow:hidden;border-radius:.55em;background:linear-gradient(110deg,rgba(15,23,42,.76),rgba(7,11,22,.48));border:1px solid rgba(255,255,255,.12);box-shadow:0 .45em 1.2em rgba(0,0,0,.22);display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;min-height:7.4em}.lumio-prestige__glow{position:absolute;inset:-45% -10% auto auto;width:12em;height:12em;background:radial-gradient(circle,rgba(18,214,223,.25),rgba(155,92,255,0) 68%);pointer-events:none}.lumio-prestige__body{padding:1.05em 1.15em;line-height:1.3;-webkit-box-flex:1;-webkit-flex-grow:1;-moz-box-flex:1;-ms-flex-positive:1;flex-grow:1;position:relative;min-width:0}.lumio-prestige__media{width:5.2em;min-height:7.4em;background-color:rgba(255,255,255,.08);background-position:center;background-size:cover;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative}.lumio-prestige__media:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(5,8,16,.44))}.lumio-prestige__media--poster .lumio-prestige__logo{display:none}.lumio-prestige__logo{position:absolute;left:50%;top:50%;width:3.7em;height:3.7em;transform:translate(-50%,-50%);filter:drop-shadow(0 .35em .8em rgba(0,0,0,.38));z-index:1}.lumio-prestige__logo svg{width:100%!important;height:100%!important}.lumio-prestige__head,.lumio-prestige__footer{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-pack:justify;-webkit-justify-content:space-between;-moz-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;gap:.8em}.lumio-prestige__title{font-size:1.55em;font-weight:600;overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical}.lumio-prestige__time,.lumio-prestige__badge{font-size:.86em;padding:.28em .58em;border-radius:.45em;background:rgba(18,214,223,.16);color:#bdfaff;white-space:nowrap}.lumio-prestige__time:empty,.lumio-prestige__badge:empty{display:none}.lumio-prestige__info{font-size:1.02em;color:rgba(255,255,255,.72);overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical}.lumio-prestige--folder .lumio-prestige__footer{margin-top:.85em}.lumio-prestige.focus{background:linear-gradient(110deg,rgba(18,214,223,.22),rgba(155,92,255,.24)),rgba(7,11,22,.78)}.lumio-prestige.focus:after{content:"";position:absolute;top:-0.34em;left:-0.34em;right:-0.34em;bottom:-0.34em;border-radius:.75em;border:solid .22em #fff;z-index:-1;pointer-events:none}.lumio-prestige .lumio-prestige{margin-top:1.5em}.lumio-empty{line-height:1.4}.lumio-empty__title{font-size:1.8em;margin-bottom:.3em}.lumio-empty__time{font-size:1.2em;font-weight:300;margin-bottom:1.6em}.nexus-loader{padding:2.2em 1em;text-align:center}.nexus-loader__mark{width:4.8em;height:4.8em;margin:0 auto 1em;animation:nexusPulse 1.3s ease-in-out infinite}.nexus-loader__mark svg{width:100%;height:100%;filter:drop-shadow(0 .6em 1.2em rgba(18,214,223,.28))}.nexus-loader__title{font-size:1.65em;font-weight:600}.nexus-loader__text{font-size:1.05em;color:rgba(255,255,255,.64);margin-top:.35em}.nexus-loader__bar{position:relative;overflow:hidden;width:15em;max-width:78%;height:.28em;margin:1.25em auto 0;border-radius:2em;background:rgba(255,255,255,.14)}.nexus-loader__bar i{position:absolute;inset:0 auto 0 0;width:45%;border-radius:inherit;background:linear-gradient(90deg,#12d6df,#9b5cff);animation:nexusLoad 1.15s ease-in-out infinite}@keyframes nexusPulse{0%,100%{transform:scale(.96);opacity:.72}50%{transform:scale(1);opacity:1}}@keyframes nexusLoad{0%{transform:translateX(-110%)}100%{transform:translateX(240%)}}.nexus--button svg{filter:drop-shadow(0 .2em .45em rgba(18,214,223,.35))}';
-        styleEl.textContent += '.nexus-serial-filter{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;gap:.65em}.nexus-serial-filter__value{font-size:.78em;padding:.32em .55em;border-radius:.36em;background:rgba(255,255,255,.18);white-space:nowrap;color:#fff}.nexus-serial-filter.focus .nexus-serial-filter__value{background:rgba(18,214,223,.28)} .lumio-prestige__badge.nexus-badge--uhd{background:rgba(155,92,255,.22);color:#e4d4ff}.lumio-prestige__badge.nexus-badge--hd{background:rgba(34,197,94,.20);color:#9dffc0}.lumio-prestige__badge.nexus-badge--sd{background:rgba(234,179,8,.22);color:#ffe58a}';
-        styleEl.textContent += '.lumio-prestige__media--voice{background:linear-gradient(145deg,rgba(18,214,223,.34),rgba(155,92,255,.20) 58%,rgba(15,23,42,.72));overflow:hidden}.lumio-prestige__media--voice .lumio-prestige__logo{display:none}.lumio-prestige__media--voice:before{content:"";position:absolute;left:50%;top:50%;width:2.75em;height:4.25em;transform:translate(-50%,-50%);background:rgba(255,255,255,.92);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 768 1280%22%3E%3Cg transform=%22translate(0,1280) scale(0.1,-0.1)%22%3E%3Cpath d=%22M3158 12790 c-91 -11 -256 -53 -350 -89 -504 -195 -884 -646 -995 -1184 -16 -76 -17 -285 -21 -2742 -3 -2824 -4 -2785 44 -2975 153 -606 674 -1083 1284 -1175 139 -22 1297 -22 1438 0 532 80 1005 457 1218 971 31 77 84 252 84 282 0 9 -159 12 -760 12 l-760 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 773 2 772 3 0 255 0 255 -772 3 -773 2 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 260 0 260 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 760 0 761 0 -7 38 c-12 71 -84 274 -128 361 -193 381 -532 678 -923 806 -213 69 -201 68 -923 71 -360 1 -685 -2 -722 -6z%22/%3E%3Cpath d=%22M3 6903 c4 -1139 2 -1097 68 -1418 104 -504 329 -976 672 -1408 101 -128 380 -408 513 -515 562 -451 1232 -709 1920 -740 l149 -7 0 -895 0 -895 -1087 -3 -1088 -2 0 -510 0 -510 2690 0 2690 0 0 510 0 510 -1087 2 -1088 3 0 895 0 895 149 7 c688 31 1358 289 1920 740 133 107 412 387 513 515 343 432 568 904 672 1408 66 321 64 279 68 1418 l4 1037 -510 0 -510 0 -4 -992 c-3 -960 -4 -998 -25 -1129 -41 -258 -116 -484 -236 -715 -113 -217 -227 -373 -406 -558 -357 -368 -795 -595 -1315 -683 -100 -16 -176 -18 -835 -18 -799 0 -798 0 -1062 66 -631 159 -1186 603 -1494 1193 -120 231 -195 457 -236 715 -21 131 -22 169 -25 1129 l-4 992 -510 0 -510 0 4 -1037z%22/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 768 1280%22%3E%3Cg transform=%22translate(0,1280) scale(0.1,-0.1)%22%3E%3Cpath d=%22M3158 12790 c-91 -11 -256 -53 -350 -89 -504 -195 -884 -646 -995 -1184 -16 -76 -17 -285 -21 -2742 -3 -2824 -4 -2785 44 -2975 153 -606 674 -1083 1284 -1175 139 -22 1297 -22 1438 0 532 80 1005 457 1218 971 31 77 84 252 84 282 0 9 -159 12 -760 12 l-760 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 773 2 772 3 0 255 0 255 -772 3 -773 2 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 260 0 260 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 760 0 761 0 -7 38 c-12 71 -84 274 -128 361 -193 381 -532 678 -923 806 -213 69 -201 68 -923 71 -360 1 -685 -2 -722 -6z%22/%3E%3Cpath d=%22M3 6903 c4 -1139 2 -1097 68 -1418 104 -504 329 -976 672 -1408 101 -128 380 -408 513 -515 562 -451 1232 -709 1920 -740 l149 -7 0 -895 0 -895 -1087 -3 -1088 -2 0 -510 0 -510 2690 0 2690 0 0 510 0 510 -1087 2 -1088 3 0 895 0 895 149 7 c688 31 1358 289 1920 740 133 107 412 387 513 515 343 432 568 904 672 1408 66 321 64 279 68 1418 l4 1037 -510 0 -510 0 -4 -992 c-3 -960 -4 -998 -25 -1129 -41 -258 -116 -484 -236 -715 -113 -217 -227 -373 -406 -558 -357 -368 -795 -595 -1315 -683 -100 -16 -176 -18 -835 -18 -799 0 -798 0 -1062 66 -631 159 -1186 603 -1494 1193 -120 231 -195 457 -236 715 -21 131 -22 169 -25 1129 l-4 992 -510 0 -510 0 4 -1037z%22/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 .45em .85em rgba(0,0,0,.34));z-index:1}.lumio-prestige__media--voice:after{background:linear-gradient(90deg,rgba(0,0,0,.04),rgba(5,8,16,.43))}.nexus-voice-tone-0{background:linear-gradient(145deg,rgba(18,214,223,.34),rgba(155,92,255,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-1{background:linear-gradient(145deg,rgba(34,197,94,.34),rgba(18,214,223,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-2{background:linear-gradient(145deg,rgba(244,114,182,.30),rgba(155,92,255,.22) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-3{background:linear-gradient(145deg,rgba(250,204,21,.30),rgba(34,197,94,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-4{background:linear-gradient(145deg,rgba(96,165,250,.34),rgba(18,214,223,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-5{background:linear-gradient(145deg,rgba(248,113,113,.30),rgba(250,204,21,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-6{background:linear-gradient(145deg,rgba(45,212,191,.34),rgba(96,165,250,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-7{background:linear-gradient(145deg,rgba(192,132,252,.32),rgba(244,114,182,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-8{background:linear-gradient(145deg,rgba(251,146,60,.30),rgba(248,113,113,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-9{background:linear-gradient(145deg,rgba(74,222,128,.30),rgba(250,204,21,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-10{background:linear-gradient(145deg,rgba(56,189,248,.34),rgba(129,140,248,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-11{background:linear-gradient(145deg,rgba(217,70,239,.28),rgba(34,211,238,.18) 58%,rgba(15,23,42,.72))}.lumio-prestige__badge.nexus-badge--voice{background:rgba(18,214,223,.18);color:#bdfaff}';
-        styleEl.textContent += '.nexus-logo-svg{display:block;width:48px;height:48px;overflow:visible;shape-rendering:geometricPrecision}.nexus-loader__mark{width:5.2em;height:5.2em;margin-bottom:1.05em}.nexus-loader__mark .nexus-logo-svg{width:100%;height:100%;filter:drop-shadow(0 .55em 1.15em rgba(18,214,223,.24))}.nexus--button{display:flex;align-items:center;gap:.45em}.nexus--button .nexus-menu-icon{display:none!important}.nexus--button .nexus-logo-svg{width:1.55em!important;height:1.55em!important;min-width:1.55em;min-height:1.55em;flex:none;filter:drop-shadow(0 .18em .34em rgba(18,214,223,.26))}.nexus--button span{display:inline-block}.nexus-controls-hidden{display:none!important}';
+        styleEl.textContent = '.online-prestige{position:relative;overflow:hidden;border-radius:.55em;background:linear-gradient(110deg,rgba(15,23,42,.76),rgba(7,11,22,.48));border:1px solid rgba(255,255,255,.12);box-shadow:0 .45em 1.2em rgba(0,0,0,.22);display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;min-height:7.4em}.online-prestige__glow{position:absolute;inset:-45% -10% auto auto;width:12em;height:12em;background:radial-gradient(circle,rgba(18,214,223,.25),rgba(155,92,255,0) 68%);pointer-events:none}.online-prestige__body{padding:1.05em 1.15em;line-height:1.3;-webkit-box-flex:1;-webkit-flex-grow:1;-moz-box-flex:1;-ms-flex-positive:1;flex-grow:1;position:relative;min-width:0}.online-prestige__media{width:5.2em;min-height:7.4em;background-color:rgba(255,255,255,.08);background-position:center;background-size:cover;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative}.online-prestige__media:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(5,8,16,.44))}.online-prestige__media--poster .online-prestige__logo{display:none}.online-prestige__logo{position:absolute;left:50%;top:50%;width:3.7em;height:3.7em;transform:translate(-50%,-50%);filter:drop-shadow(0 .35em .8em rgba(0,0,0,.38));z-index:1}.online-prestige__logo svg{width:100%!important;height:100%!important}.online-prestige__head,.online-prestige__footer{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-pack:justify;-webkit-justify-content:space-between;-moz-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;gap:.8em}.online-prestige__title{font-size:1.55em;font-weight:600;overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical}.online-prestige__time,.online-prestige__badge{font-size:.86em;padding:.28em .58em;border-radius:.45em;background:rgba(18,214,223,.16);color:#bdfaff;white-space:nowrap}.online-prestige__time:empty,.online-prestige__badge:empty{display:none}.online-prestige__info{font-size:1.02em;color:rgba(255,255,255,.72);overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical}.online-prestige--folder .online-prestige__footer{margin-top:.85em}.online-prestige.focus{background:linear-gradient(110deg,rgba(18,214,223,.22),rgba(155,92,255,.24)),rgba(7,11,22,.78)}.online-prestige.focus:after{content:"";position:absolute;top:-0.34em;left:-0.34em;right:-0.34em;bottom:-0.34em;border-radius:.75em;border:solid .22em #fff;z-index:-1;pointer-events:none}.online-prestige .online-prestige{margin-top:1.5em}.online-empty{line-height:1.4}.online-empty__title{font-size:1.8em;margin-bottom:.3em}.online-empty__time{font-size:1.2em;font-weight:300;margin-bottom:1.6em}.nexus-loader{padding:2.2em 1em;text-align:center}.nexus-loader__mark{width:4.8em;height:4.8em;margin:0 auto 1em;animation:nexusPulse 1.3s ease-in-out infinite}.nexus-loader__mark svg{width:100%;height:100%;filter:drop-shadow(0 .6em 1.2em rgba(18,214,223,.28))}.nexus-loader__title{font-size:1.65em;font-weight:600}.nexus-loader__text{font-size:1.05em;color:rgba(255,255,255,.64);margin-top:.35em}.nexus-loader__bar{position:relative;overflow:hidden;width:15em;max-width:78%;height:.28em;margin:1.25em auto 0;border-radius:2em;background:rgba(255,255,255,.14)}.nexus-loader__bar i{position:absolute;inset:0 auto 0 0;width:45%;border-radius:inherit;background:linear-gradient(90deg,#12d6df,#9b5cff);animation:nexusLoad 1.15s ease-in-out infinite}@keyframes nexusPulse{0%,100%{transform:scale(.96);opacity:.72}50%{transform:scale(1);opacity:1}}@keyframes nexusLoad{0%{transform:translateX(-110%)}100%{transform:translateX(240%)}}.nexus--button svg{filter:drop-shadow(0 .2em .45em rgba(18,214,223,.35))}';
+        styleEl.textContent += '.nexus-serial-filter{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;gap:.65em}.nexus-serial-filter__value{font-size:.78em;padding:.32em .55em;border-radius:.36em;background:rgba(255,255,255,.18);white-space:nowrap;color:#fff}.nexus-serial-filter.focus .nexus-serial-filter__value{background:rgba(18,214,223,.28)} .online-prestige__badge.nexus-badge--uhd{background:rgba(155,92,255,.22);color:#e4d4ff}.online-prestige__badge.nexus-badge--hd{background:rgba(34,197,94,.20);color:#9dffc0}.online-prestige__badge.nexus-badge--sd{background:rgba(234,179,8,.22);color:#ffe58a}';
+        styleEl.textContent += '.online-prestige__media--voice{background:linear-gradient(145deg,rgba(18,214,223,.34),rgba(155,92,255,.20) 58%,rgba(15,23,42,.72));overflow:hidden}.online-prestige__media--voice .online-prestige__logo{display:none}.online-prestige__media--voice:before{content:"";position:absolute;left:50%;top:50%;width:2.75em;height:4.25em;transform:translate(-50%,-50%);background:rgba(255,255,255,.92);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 768 1280%22%3E%3Cg transform=%22translate(0,1280) scale(0.1,-0.1)%22%3E%3Cpath d=%22M3158 12790 c-91 -11 -256 -53 -350 -89 -504 -195 -884 -646 -995 -1184 -16 -76 -17 -285 -21 -2742 -3 -2824 -4 -2785 44 -2975 153 -606 674 -1083 1284 -1175 139 -22 1297 -22 1438 0 532 80 1005 457 1218 971 31 77 84 252 84 282 0 9 -159 12 -760 12 l-760 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 773 2 772 3 0 255 0 255 -772 3 -773 2 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 260 0 260 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 760 0 761 0 -7 38 c-12 71 -84 274 -128 361 -193 381 -532 678 -923 806 -213 69 -201 68 -923 71 -360 1 -685 -2 -722 -6z%22/%3E%3Cpath d=%22M3 6903 c4 -1139 2 -1097 68 -1418 104 -504 329 -976 672 -1408 101 -128 380 -408 513 -515 562 -451 1232 -709 1920 -740 l149 -7 0 -895 0 -895 -1087 -3 -1088 -2 0 -510 0 -510 2690 0 2690 0 0 510 0 510 -1087 2 -1088 3 0 895 0 895 149 7 c688 31 1358 289 1920 740 133 107 412 387 513 515 343 432 568 904 672 1408 66 321 64 279 68 1418 l4 1037 -510 0 -510 0 -4 -992 c-3 -960 -4 -998 -25 -1129 -41 -258 -116 -484 -236 -715 -113 -217 -227 -373 -406 -558 -357 -368 -795 -595 -1315 -683 -100 -16 -176 -18 -835 -18 -799 0 -798 0 -1062 66 -631 159 -1186 603 -1494 1193 -120 231 -195 457 -236 715 -21 131 -22 169 -25 1129 l-4 992 -510 0 -510 0 4 -1037z%22/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 768 1280%22%3E%3Cg transform=%22translate(0,1280) scale(0.1,-0.1)%22%3E%3Cpath d=%22M3158 12790 c-91 -11 -256 -53 -350 -89 -504 -195 -884 -646 -995 -1184 -16 -76 -17 -285 -21 -2742 -3 -2824 -4 -2785 44 -2975 153 -606 674 -1083 1284 -1175 139 -22 1297 -22 1438 0 532 80 1005 457 1218 971 31 77 84 252 84 282 0 9 -159 12 -760 12 l-760 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 773 2 772 3 0 255 0 255 -772 3 -773 2 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 775 0 775 0 0 255 0 255 -775 0 -775 0 0 260 0 260 775 0 775 0 0 255 0 255 -775 0 -775 0 0 255 0 255 760 0 761 0 -7 38 c-12 71 -84 274 -128 361 -193 381 -532 678 -923 806 -213 69 -201 68 -923 71 -360 1 -685 -2 -722 -6z%22/%3E%3Cpath d=%22M3 6903 c4 -1139 2 -1097 68 -1418 104 -504 329 -976 672 -1408 101 -128 380 -408 513 -515 562 -451 1232 -709 1920 -740 l149 -7 0 -895 0 -895 -1087 -3 -1088 -2 0 -510 0 -510 2690 0 2690 0 0 510 0 510 -1087 2 -1088 3 0 895 0 895 149 7 c688 31 1358 289 1920 740 133 107 412 387 513 515 343 432 568 904 672 1408 66 321 64 279 68 1418 l4 1037 -510 0 -510 0 -4 -992 c-3 -960 -4 -998 -25 -1129 -41 -258 -116 -484 -236 -715 -113 -217 -227 -373 -406 -558 -357 -368 -795 -595 -1315 -683 -100 -16 -176 -18 -835 -18 -799 0 -798 0 -1062 66 -631 159 -1186 603 -1494 1193 -120 231 -195 457 -236 715 -21 131 -22 169 -25 1129 l-4 992 -510 0 -510 0 4 -1037z%22/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 .45em .85em rgba(0,0,0,.34));z-index:1}.online-prestige__media--voice:after{background:linear-gradient(90deg,rgba(0,0,0,.04),rgba(5,8,16,.43))}.nexus-voice-tone-0{background:linear-gradient(145deg,rgba(18,214,223,.34),rgba(155,92,255,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-1{background:linear-gradient(145deg,rgba(34,197,94,.34),rgba(18,214,223,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-2{background:linear-gradient(145deg,rgba(244,114,182,.30),rgba(155,92,255,.22) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-3{background:linear-gradient(145deg,rgba(250,204,21,.30),rgba(34,197,94,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-4{background:linear-gradient(145deg,rgba(96,165,250,.34),rgba(18,214,223,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-5{background:linear-gradient(145deg,rgba(248,113,113,.30),rgba(250,204,21,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-6{background:linear-gradient(145deg,rgba(45,212,191,.34),rgba(96,165,250,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-7{background:linear-gradient(145deg,rgba(192,132,252,.32),rgba(244,114,182,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-8{background:linear-gradient(145deg,rgba(251,146,60,.30),rgba(248,113,113,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-9{background:linear-gradient(145deg,rgba(74,222,128,.30),rgba(250,204,21,.18) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-10{background:linear-gradient(145deg,rgba(56,189,248,.34),rgba(129,140,248,.20) 58%,rgba(15,23,42,.72))}.nexus-voice-tone-11{background:linear-gradient(145deg,rgba(217,70,239,.28),rgba(34,211,238,.18) 58%,rgba(15,23,42,.72))}.online-prestige__badge.nexus-badge--voice{background:rgba(18,214,223,.18);color:#bdfaff}';
+        styleEl.textContent += '.nexus--button .nexus-button-logo{width:1.6em;height:1.6em;object-fit:contain;display:inline-block;vertical-align:middle;margin-right:.45em;filter:drop-shadow(0 .2em .45em rgba(18,214,223,.35))}';
+        styleEl.textContent += '.nexus--button{display:flex;align-items:center;gap:.45em}.nexus--button .nexus-button-logo{width:1.8em;height:1.8em;min-width:1.8em;min-height:1.8em;object-fit:contain;display:block;flex:none;filter:drop-shadow(0 .2em .45em rgba(18,214,223,.35))}.nexus--button span{display:inline-block}';
+        styleEl.textContent += '.nexus--button{order:0 !important;flex-shrink:0 !important}';
+        styleEl.textContent += '.full-start-new__buttons .view--nexus{display:flex !important;visibility:visible !important;opacity:1 !important}';
+        styleEl.textContent += '.view--nexus.hidden{display:flex !important;visibility:visible !important;opacity:1 !important}';
         document.head.appendChild(styleEl);
     }
 
     var Network = Lampa.Reguest;
 
-    // Lampac validates generated proxy links against this shared session ID.
-    // It is a protocol value, not Lumio's own preference.
     var unic_id = Lampa.Storage.get('lampac_unic_id', '');
     if (!unic_id) {
         unic_id = Lampa.Utils.uid(8).toLowerCase();
@@ -169,9 +158,9 @@ resetLumioCacheOnce();
         if (uid) url = Lampa.Utils.addUrlComponent(url, 'uid=' + encodeURIComponent(uid));
     }
 
-    if (url.indexOf('nws_id=') === -1) {
+    if (url.indexOf('nwsid=') === -1) {
         var nwsid = Lampa.Storage.get('lampac_nws_id', '') || Lampa.Storage.get('lampac_nwsid', '');
-        if (nwsid) url = Lampa.Utils.addUrlComponent(url, 'nws_id=' + encodeURIComponent(nwsid));
+        if (nwsid) url = Lampa.Utils.addUrlComponent(url, 'nwsid=' + encodeURIComponent(nwsid));
     }
 
     return url;
@@ -184,332 +173,6 @@ function addHeaders() {
     }
     return {};
 }
-
-    // RCH is required by a few Lampac providers. Keep the client private to
-    // Lumio so it cannot alter the state or handlers of other online plugins.
-    var nexusRch = {
-        client: null,
-        state: 'idle',
-        type: '',
-        waiters: [],
-        scriptLoading: false,
-        typeLoading: false
-    };
-
-    function nexusRchType() {
-        return nexusRch.type || (Lampa.Platform.is('android') ? 'apk' : 'cors');
-    }
-
-    function nexusRchResolveType(done) {
-        if (nexusRch.type) {
-            done();
-            return;
-        }
-
-        if (Lampa.Platform.is('android')) {
-            nexusRch.type = 'apk';
-            done();
-            return;
-        }
-
-        if (Lampa.Platform.is('tizen')) {
-            nexusRch.type = 'cors';
-            done();
-            return;
-        }
-
-        if (nexusRch.typeLoading) return;
-        nexusRch.typeLoading = true;
-
-        var check = new Network();
-        check.timeout(3500);
-        check.silent(NEXUS_HOST + '/cors/check', function () {
-            nexusRch.type = 'cors';
-            nexusRch.typeLoading = false;
-            done();
-        }, function () {
-            nexusRch.type = 'web';
-            nexusRch.typeLoading = false;
-            done();
-        }, false, {
-            dataType: 'text',
-            headers: addHeaders()
-        });
-    }
-
-    function nexusRchWsUrl() {
-        return NEXUS_HOST
-            .replace(/^https:/i, 'wss:')
-            .replace(/^http:/i, 'ws:')
-            .replace(/\/api\/?$/i, '') + '/nws';
-    }
-
-    function nexusRchFinish(ok, error) {
-        var waiters = nexusRch.waiters.splice(0);
-        waiters.forEach(function (waiter) {
-            if (ok) waiter.success();
-            else if (waiter.error) waiter.error(error || {});
-        });
-    }
-
-    function nexusRchPostResult(uri, rchId, html) {
-        $.ajax({
-            url: accountUrl(NEXUS_HOST + '/rch/' + uri + '?id=' + encodeURIComponent(rchId)),
-            type: 'POST',
-            data: html,
-            async: true,
-            cache: false,
-            contentType: false,
-            processData: false,
-            headers: addHeaders(),
-            success: function () {
-                console.warn('[Lumio RCH] result delivered:', uri, rchId);
-            },
-            error: function () {
-                console.warn('[Lumio RCH] result delivery failed:', uri, rchId);
-                if (nexusRch.client) nexusRch.client.invoke('RchResult', rchId, '');
-            }
-        });
-    }
-
-    function nexusRchSendResult(rchId, html) {
-        if (Lampa.Arrays.isObject(html) || Lampa.Arrays.isArray(html)) {
-            html = JSON.stringify(html);
-        }
-
-        html = html == null ? '' : String(html);
-
-        if (typeof CompressionStream === 'undefined' || typeof TextEncoder === 'undefined' || html.length <= 1000) {
-            nexusRchPostResult('result', rchId, html);
-            return;
-        }
-
-        try {
-            var stream = new CompressionStream('gzip');
-            var readable = new ReadableStream({
-                start: function (controller) {
-                    controller.enqueue(new TextEncoder().encode(html));
-                    controller.close();
-                }
-            });
-
-            new Response(readable.pipeThrough(stream)).arrayBuffer().then(function (buffer) {
-                var zipped = new Uint8Array(buffer);
-                nexusRchPostResult(zipped.length < html.length ? 'gzresult' : 'result', rchId, zipped.length < html.length ? zipped : html);
-            }).catch(function () {
-                nexusRchPostResult('result', rchId, html);
-            });
-        } catch (e) {
-            nexusRchPostResult('result', rchId, html);
-        }
-    }
-
-    function nexusRchHandleRequest(rchId, url, data, headers, returnHeaders) {
-        var network = new Lampa.Reguest();
-
-        console.warn('[Lumio RCH] request:', rchId, url);
-
-        if (url === 'eval') {
-            try {
-                // Lampac sends these helpers only through this authenticated RCH socket.
-                nexusRchSendResult(rchId, eval(data));
-            } catch (e) {
-                nexusRchSendResult(rchId, '');
-            }
-            return;
-        }
-
-        if (url === 'evalrun') {
-            try { eval(data); } catch (e2) {}
-            return;
-        }
-
-        if (url === 'ping') {
-            nexusRchSendResult(rchId, 'pong');
-            return;
-        }
-
-        network.native(url, function (result) {
-            console.warn('[Lumio RCH] request completed:', rchId, String(result || '').length + ' bytes');
-            nexusRchSendResult(rchId, result);
-        }, function () {
-            console.warn('[Lumio RCH] request failed:', rchId, url);
-            nexusRchSendResult(rchId, '');
-        }, data, {
-            dataType: 'text',
-            timeout: 8000,
-            headers: headers || {},
-            returnHeaders: returnHeaders
-        });
-    }
-
-    function nexusRchConnect() {
-        if (typeof NativeWsClient === 'undefined') {
-            nexusRch.state = 'failed';
-            nexusRch.scriptLoading = false;
-            nexusRchFinish(false, { msg: 'Не удалось загрузить клиент RCH' });
-            return;
-        }
-
-        var client = nexusRch.client = new NativeWsClient(nexusRchWsUrl(), {
-            autoReconnect: true,
-            onClose: function () {
-                if (nexusRch.state === 'ready') nexusRch.state = 'connecting';
-            },
-            onError: function (error) {
-                nexusLog('[Lumio] RCH websocket error:', error);
-            }
-        });
-
-        client.on('Connected', function () {
-            nexusRch.state = 'registering';
-            nexusLog('[Lumio] RCH connected, registering device');
-            client.invoke('RchRegistry', {
-                host: location.host,
-                rchtype: nexusRchType(),
-                apkVersion: Lampa.Platform.is('android') ? parseInt(((navigator.userAgent || '').match(/Android\s+(\d+)/i) || [])[1] || 0, 10) : 0,
-                player: Lampa.Storage.field('player')
-            });
-        });
-
-        client.on('RchRegistry', function () {
-            nexusRch.state = 'ready';
-            nexusLog('[Lumio] RCH ready');
-            console.warn('[Lumio RCH] ready:', nexusRchType(), client.connectionId || '');
-            nexusRchFinish(true);
-        });
-
-        client.on('RchClient', nexusRchHandleRequest);
-        client.connect();
-    }
-
-    function nexusRchEnsure(success, error) {
-        if (nexusRch.state === 'ready' && nexusRch.client && nexusRch.client.connectionId != null) {
-            success();
-            return;
-        }
-
-        nexusRch.waiters.push({ success: success, error: error });
-
-        if (nexusRch.state === 'connecting' || nexusRch.state === 'registering' || nexusRch.scriptLoading) return;
-
-        nexusRch.state = 'connecting';
-
-        nexusRchResolveType(function () {
-        if (typeof NativeWsClient !== 'undefined') {
-            nexusRchConnect();
-            return;
-        }
-
-        nexusRch.scriptLoading = true;
-        var script = document.createElement('script');
-        script.src = NEXUS_HOST + '/js/nws-client-es5.js?v21042026';
-        script.onload = function () {
-            nexusRch.scriptLoading = false;
-            nexusRchConnect();
-        };
-        script.onerror = function () {
-            nexusRch.state = 'failed';
-            nexusRch.scriptLoading = false;
-            nexusRchFinish(false, { msg: 'Не удалось подключиться к RCH' });
-        };
-        document.head.appendChild(script);
-        });
-    }
-
-    function nexusRchRequestUrl(url) {
-        if (!url) return url;
-
-        var type = encodeURIComponent(nexusRchType());
-        if (/[?&]rchtype=/.test(url)) {
-            return url.replace(/([?&]rchtype=)[^&]*/i, '$1' + type);
-        }
-
-        return Lampa.Utils.addUrlComponent(url, 'rchtype=' + type);
-    }
-
-    function nexusRchResponse(data) {
-        var json = data;
-
-        if (typeof json === 'string') {
-            try {
-                json = JSON.parse(json);
-            } catch (e) {
-                return null;
-            }
-        }
-
-        return json && json.rch ? json : null;
-    }
-
-    function nexusPlainText(value) {
-        return String(value == null ? '' : value)
-            .replace(/<[^>]*>/g, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-    }
-
-    function nexusPidtorDetails(item) {
-        var details = [];
-        var quality = item.quality;
-        var size = item.size_name || item.sizeName || item.filesize || item.file_size || item.torrent_size || item.size;
-        var seeds = item.seeders || item.seeds || item.sid || item.peers;
-
-        function add(value) {
-            value = nexusPlainText(value);
-            if (value && details.indexOf(value) === -1) details.push(value);
-        }
-
-        if (typeof quality === 'string' && quality) add(quality);
-        else if (quality && typeof quality === 'object') {
-            var variants = Object.keys(quality).filter(Boolean);
-            if (variants.length) add(variants.join(', '));
-        } else if (item.maxquality) {
-            add(item.maxquality + 'p');
-        }
-
-        var voiceParts = nexusPlainText(item.voice_name || '').split(/\s*\/\s*/).filter(Boolean);
-        voiceParts.forEach(function (part, index) {
-            if (/^\d+$/.test(part) && (index === voiceParts.length - 1 || index > 0)) {
-                add('Сиды: ' + part);
-            } else {
-                add(part);
-            }
-        });
-
-        if (details.length && item.maxquality) {
-            var maxquality = item.maxquality + 'p';
-            if (details[0] !== maxquality && details.indexOf(maxquality) === -1) details.unshift(maxquality);
-        }
-
-        if (size !== undefined && size !== null && size !== '') {
-            if (typeof size === 'number' && size > 1024) {
-                var units = ['Б', 'КБ', 'МБ', 'ГБ', 'ТБ'];
-                var index = 0;
-                while (size >= 1024 && index < units.length - 1) {
-                    size /= 1024;
-                    index++;
-                }
-                size = (size >= 10 || index === 0 ? Math.round(size) : Math.round(size * 10) / 10) + ' ' + units[index];
-            }
-            add(size);
-        }
-
-        if (seeds !== undefined && seeds !== null && seeds !== '') {
-            add('Сиды: ' + seeds);
-        }
-
-        return details.join(' · ');
-    }
-
-    function nexusPidtorKey(item) {
-        var url = String(item.stream || item.url || '');
-
-        // Tracker parameters describe the same torrent and should not create
-        // several visually identical cards for a single hash.
-        url = url.replace(/([?&])tr=[^&]*/gi, '$1').replace(/[?&]$/, '').replace('?&', '?');
-        return [url, item.method || '', item.season || '', item.episode || ''].join('|');
-    }
 
 function escapeHtml(str) {
     return String(str == null ? '' : str)
@@ -565,7 +228,7 @@ function mediaTemplateData(movie) {
     var img = movieImage(movie);
 
     return {
-        media_class: img ? 'lumio-prestige__media--poster' : 'lumio-prestige__media--logo',
+        media_class: img ? 'online-prestige__media--poster' : 'online-prestige__media--logo',
         media_style: img ? 'background-image:url(&quot;' + escapeHtml(img) + '&quot;)' : ''
     };
 }
@@ -588,7 +251,7 @@ function voiceMediaTemplateData(title, tone) {
     if (isNaN(index)) index = stableIndex(title, 12);
 
     return {
-        media_class: 'lumio-prestige__media--voice nexus-voice-tone-' + (index % 12),
+        media_class: 'online-prestige__media--voice nexus-voice-tone-' + (index % 12),
         media_style: ''
     };
 }
@@ -604,7 +267,7 @@ function movieCacheKey(movie) {
         year
     ].join(':').toLowerCase();
 
-    return 'lumio_sources_v127_' + encodeURIComponent(raw).replace(/%/g, '_').slice(0, 180);
+    return 'lumio_sources_v122_' + encodeURIComponent(raw).replace(/%/g, '_').slice(0, 180);
 }
 
 function readSourcesCache(movie, allowExpired) {
@@ -622,10 +285,29 @@ function saveSourcesCache(movie, items) {
     });
 }
 
-function isWorkingSource(j) {
-    if (!j || !j.url) return false;
+function isBlockedSourceName(name) {
+    name = String(name || '').trim().toLowerCase();
 
-    return NEXUS_SOURCE_ORDER.indexOf(balanserName(j)) >= 0;
+    if (!name) return false;
+
+    if (/\beng\b/i.test(name)) return true;
+    if (/\(eng\)/i.test(name)) return true;
+
+    return /(uakino|geosaitebi|pidtor|collaps|vidsrc|vidlink|videasy|movpi|smashystream)/i.test(name);
+}
+
+function isWorkingSource(j) {
+    if (!j || j.show === false) return false;
+
+    var names = [
+        j.name,
+        j.balanser,
+        balanserName(j)
+    ];
+
+    return !names.some(function (name) {
+        return isBlockedSourceName(name);
+    });
 }
 
 function filterWorkingSources(items) {
@@ -676,7 +358,7 @@ return a.index - b.index;
 }
 
 function contentCacheKey(url) {
-    return 'lumio_content_v127_' + encodeURIComponent(String(url || '')).replace(/%/g, '_').slice(0, 220);
+    return 'lumio_content_v122_' + encodeURIComponent(String(url || '')).replace(/%/g, '_').slice(0, 220);
 }
 
 function readContentCache(url) {
@@ -793,16 +475,9 @@ function warmBestSource(movie, items) {
     preloadContent(requestParams(item.url, movie));
 }
 
-function loadSources(movie, call, fail, fast, idsReady) {
+function loadSources(movie, call, fail, fast) {
     if (!movie) {
         fail && fail({});
-        return;
-    }
-
-    if (!idsReady) {
-        resolveExternalIds(movie, function () {
-            loadSources(movie, call, fail, fast, true);
-        });
         return;
     }
 
@@ -959,7 +634,16 @@ function preloadSources(movie) {
         q.push('tmdb_id=' + encodeURIComponent(movie.tmdb_id));
     }
 
-    q.push('rchtype=' + encodeURIComponent(nexusRch.type || ''));
+    var hostkey = NEXUS_HOST.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    var rchtype = '';
+
+    if (window.rch_nws && window.rch_nws[hostkey]) {
+        rchtype = window.rch_nws[hostkey].type || '';
+    } else if (window.rch && window.rch[hostkey]) {
+        rchtype = window.rch[hostkey].type || '';
+    }
+
+    q.push('rchtype=' + encodeURIComponent(rchtype));
 
     if (extraParams) {
         Object.keys(extraParams).forEach(function (key) {
@@ -973,79 +657,10 @@ function preloadSources(movie) {
     return accountUrl(baseUrl + sep + q.join('&'));
 }
 
-var nexusExternalIdRequests = {};
-
-function resolveExternalIds(movie, done) {
-    if (!movie || (movie.imdb_id && movie.kinopoisk_id)) {
-        done();
-        return;
-    }
-
-    var key = [
-        movie.source || Lampa.Storage.field('source') || 'tmdb',
-        movie.id || movie.tmdb_id || '',
-        movie.name ? 'serial' : 'movie'
-    ].join(':');
-
-    if (nexusExternalIdRequests[key]) {
-        nexusExternalIdRequests[key].push(done);
-        return;
-    }
-
-    nexusExternalIdRequests[key] = [done];
-
-    function finish(data) {
-        if (typeof data === 'string') {
-            try { data = JSON.parse(data); } catch (e) { data = null; }
-        }
-
-        if (data && typeof data === 'object') {
-            var imdb = data.imdb_id || data.imdbid;
-            var kinopoisk = data.kinopoisk_id || data.kinopoiskid || data.kp_id;
-
-            if (imdb) movie.imdb_id = imdb;
-            if (kinopoisk) movie.kinopoisk_id = kinopoisk;
-        }
-
-        var callbacks = nexusExternalIdRequests[key] || [];
-        delete nexusExternalIdRequests[key];
-        callbacks.forEach(function (callback) { callback(); });
-    }
-
-    var network = new Network();
-    var query = [
-        'id=' + encodeURIComponent(movie.id || ''),
-        'serial=' + (movie.name ? 1 : 0)
-    ];
-
-    if (movie.imdb_id || movie.imdbid) {
-        query.push('imdb_id=' + encodeURIComponent(movie.imdb_id || movie.imdbid));
-    }
-
-    if (movie.kinopoisk_id || movie.kinopoiskid) {
-        query.push('kinopoisk_id=' + encodeURIComponent(movie.kinopoisk_id || movie.kinopoiskid));
-    }
-
-    network.timeout(6000);
-    network.silent(
-        accountUrl(NEXUS_HOST + '/externalids?' + query.join('&')),
-        finish,
-        function () { finish(null); },
-        false,
-        { headers: addHeaders() }
-    );
-}
-
     function balanserName(j) {
         var bals = j.balanser;
         var name = (j.name || '').split(' ')[0];
-        var key = (bals || name).toLowerCase();
-        return NEXUS_SOURCE_ALIASES[key] || key;
-    }
-
-    function sourceDisplayName(j, name) {
-        if (name === 'pidtor') return 'PidTor (beta)';
-        return j.name || name;
+        return (bals || name).toLowerCase();
     }
     
     function qualityBadge(quality) {
@@ -1086,106 +701,22 @@ function resolveExternalIds(movie, done) {
         var serial_voices = {};
         var serial_episode_url = '';
         var serial_auto_transition = false;
-        var serial_veoveo_seasons = {};
-        var loading_status_timer = null;
-        var loading_status_token = 0;
 
         this.activity = object.activity;
-
-        this.stopLoadingStatus = function () {
-            loading_status_token++;
-
-            if (loading_status_timer) {
-                clearInterval(loading_status_timer);
-                loading_status_timer = null;
-            }
-        };
-
-        this.setLoadingStatus = function (title, text) {
-            var loader = $('.nexus-loader').last();
-
-            if (!loader.length) return;
-
-            loader.find('.nexus-loader__title').text(title || '');
-            loader.find('.nexus-loader__text').text(text || '');
-        };
-
-        this.loadingStatusSteps = function (title, text) {
-            return [
-                {
-                    title: title || 'Запускаем просмотр',
-                    text: text || 'Подключение к серверу'
-                },
-                {
-                    title: 'Подбираем варианты',
-                    text: 'Ищем доступные источники'
-                },
-                {
-                    title: 'Проверяем доступность',
-                    text: 'Оставляем рабочие варианты'
-                },
-                {
-                    title: 'Готовим просмотр',
-                    text: 'Уточняем качество видео'
-                },
-                {
-                    title: 'Почти готово',
-                    text: 'Осталось совсем немного'
-                }
-            ];
-        };
-
-        this.startLoadingStatus = function (title, text) {
-            var token = ++loading_status_token;
-            var index = 0;
-            var steps = _this.loadingStatusSteps(title, text);
-
-            if (loading_status_timer) {
-                clearInterval(loading_status_timer);
-                loading_status_timer = null;
-            }
-
-            _this.setLoadingStatus(steps[0].title, steps[0].text);
-
-            loading_status_timer = setInterval(function () {
-                if (token !== loading_status_token) return;
-
-                index = Math.min(index + 1, steps.length - 1);
-                _this.setLoadingStatus(steps[index].title, steps[index].text);
-            }, 3000);
-        };
         
         this.loading = function (status) {
-            if (!status) _this.stopLoadingStatus();
-
             if (!_this.activity) return;
 
-            if (status) {
-                if ($('.nexus-loader').length) _this.activity.loader(false);
-                else _this.activity.loader(true);
-            }
-            else {
-                _this.setControlsVisible(true);
-                _this.activity.loader(false);
-            }
-        };
-
-        this.setControlsVisible = function (visible) {
-            if (!filter_render) return;
-
-            filter_render.toggleClass('nexus-controls-hidden', !visible);
+            if (status) _this.activity.loader(true);
+            else _this.activity.loader(false);
         };
 
         this.showLoading = function (title, text) {
-            _this.stopLoadingStatus();
-            _this.setControlsVisible(false);
             scroll.clear();
             scroll.append(Lampa.Template.get('nexus_content_loading', {
-                logo: NEXUS_LOGO_SVG,
-                title: escapeHtml(title || 'Запускаем просмотр'),
-                text: escapeHtml(text || 'Подключение к серверу')
+                title: escapeHtml(title || 'Загружаем источники'),
+                text: escapeHtml(text || 'Проверяем доступные варианты просмотра')
             }));
-            _this.startLoadingStatus(title, text);
             _this.loading(true);
         };
 
@@ -1486,42 +1017,6 @@ function resolveExternalIds(movie, done) {
             return info.episodes || {};
         };
 
-        this.rememberVeoVeoSeasons = function () {
-            if (!_this.isVeoVeoSource()) return;
-
-            Lampa.Arrays.getKeys(serial_seasons).forEach(function (key) {
-                var season = parseInt(key, 10);
-                var info = serial_seasons[season];
-
-                if (!season || !info) return;
-
-                if (!serial_veoveo_seasons[season]) {
-                    serial_veoveo_seasons[season] = {
-                        season: season,
-                        title: info.title || (season + ' \u0441\u0435\u0437\u043e\u043d'),
-                        url: info.url || ''
-                    };
-                }
-
-                if (info.title) serial_veoveo_seasons[season].title = info.title;
-                if (info.url) serial_veoveo_seasons[season].url = info.url;
-            });
-        };
-
-        this.restoreVeoVeoSeasons = function () {
-            if (!_this.isVeoVeoSource()) return;
-
-            Lampa.Arrays.getKeys(serial_veoveo_seasons).forEach(function (key) {
-                var season = parseInt(key, 10);
-                var cached = serial_veoveo_seasons[season];
-
-                if (!season || !cached) return;
-
-                var info = _this.ensureSerialSeason(season, cached.title, cached.url);
-                if (cached.url && info && !info.url) info.url = cached.url;
-            });
-        };
-
         this.collectSerialOptions = function (items) {
             if (!is_serial || !items || !items.length) return false;
 
@@ -1596,14 +1091,10 @@ function resolveExternalIds(movie, done) {
                 }
             });
 
-            _this.rememberVeoVeoSeasons();
-
             return changed;
         };
 
         this.serialSeasonItems = function () {
-            _this.restoreVeoVeoSeasons();
-
             return Lampa.Arrays.getKeys(serial_seasons).map(function (k) {
                 return parseInt(k, 10);
             }).filter(function (season) {
@@ -1713,42 +1204,6 @@ function resolveExternalIds(movie, done) {
             serial_choice.episode = 0;
             serial_episode_url = '';
             _this.saveSerialChoice();
-
-            var hasSeasonData = info && (
-                Lampa.Arrays.getKeys(info.voices || {}).length ||
-                Lampa.Arrays.getKeys(info.episodes || {}).length
-            );
-
-            if (_this.isVeoVeoSource() && !hasSeasonData) {
-                var seasonUrl = _this.serialSeasonRequestUrl(serial_choice.season);
-
-                if (seasonUrl) {
-                    var token = ++request_token;
-
-                    _this.showLoading('\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u0441\u0435\u0437\u043e\u043d', serial_choice.season + ' \u0441\u0435\u0437\u043e\u043d');
-
-                    loadContent(
-                        seasonUrl,
-                        { timeout: timeoutForAttempt(NEXUS_CONTENT_TIMEOUT, 1), cache: false },
-                        function (data) {
-                            if (token !== request_token) return;
-                            _this.parse(data);
-                        },
-                        function () {
-                            if (token !== request_token) return;
-
-                            if (info && info.url) {
-                                _this.request(accountUrl(_this.normalizeUrl(info.url)));
-                                return;
-                            }
-
-                            _this.doesNotAnswer({});
-                        }
-                    );
-
-                    return;
-                }
-            }
 
             if (info && info.url && !Lampa.Arrays.getKeys(info.voices || {}).length && !Lampa.Arrays.getKeys(info.episodes || {}).length) {
                 _this.showLoading('\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u0441\u0435\u0437\u043e\u043d', serial_choice.season + ' \u0441\u0435\u0437\u043e\u043d');
@@ -2191,8 +1646,7 @@ function resolveExternalIds(movie, done) {
 
 
         this.initialize = function () {
-    _this.stopLoadingStatus();
-    if (_this.activity) _this.activity.loader(false);
+    _this.loading(true);
 
     filter.onBack = function () {
     Lampa.Controller.toggle('content');
@@ -2218,7 +1672,7 @@ function resolveExternalIds(movie, done) {
     if (filter.addButtonBack) filter.addButtonBack();
 
     filterRender.find('.filter--sort span').text(
-        Lampa.Lang.translate('lumio_balanser') || 'Источник'
+        Lampa.Lang.translate('lampac_balanser') || 'Источник'
     );
 
     scroll.body().addClass('torrent-list');
@@ -2226,12 +1680,9 @@ function resolveExternalIds(movie, done) {
     files.appendHead(filterRender);
     scroll.minus(files.render().find('.explorer__files-head'));
     scroll.body().append(Lampa.Template.get('nexus_content_loading', {
-        logo: NEXUS_LOGO_SVG,
-        title: 'Запускаем просмотр',
-        text: 'Подключение к серверу'
+        title: 'Запускаем ' + NEXUS_TITLE,
+        text: 'Готовим источники для просмотра'
     }));
-    _this.setControlsVisible(false);
-    _this.startLoadingStatus('Запускаем просмотр', 'Подключение к серверу');
 
     if (object.balanser) {
         sources[object.balanser] = { name: object.balanser, url: object.url };
@@ -2264,7 +1715,7 @@ function resolveExternalIds(movie, done) {
         return;
     }
 
-    _this.showLoading('Запускаем просмотр', 'Подключение к серверу');
+    _this.showLoading('Ищем источники', 'Подключаем ' + NEXUS_TITLE + ' к Lampac');
 
     loadSources(
         object.movie,
@@ -2274,7 +1725,7 @@ function resolveExternalIds(movie, done) {
         function (e) {
             console.error('[Lumio] createSource error:', e);
             if (attempt + 1 < NEXUS_OPEN_ATTEMPTS) {
-                _this.showLoading('Пробуем снова', 'Сервер отвечает чуть дольше обычного');
+                _this.showLoading('Ищем источники', 'Сервер готовит список, пробуем еще раз');
                 setTimeout(function () {
                     _this.createSource(attempt + 1);
                 }, 1200 + attempt * 1400);
@@ -2300,8 +1751,10 @@ function resolveExternalIds(movie, done) {
 
             balanser = name;
             source_url = sources[name].url;
+            Lampa.Storage.set('active_balanser', name);
             if (saveChoice) {
                 Lampa.Storage.set(NEXUS_BALANSER_STORAGE, name);
+                Lampa.Storage.set('online_balanser', name);
             }
             _this.updateSourceFilter();
 
@@ -2312,33 +1765,6 @@ function resolveExternalIds(movie, done) {
             if (!sources[name]) return '';
 
             return requestParams(sources[name].url, object.movie, _this.getSerialParams());
-        };
-
-        this.sourceNeedsRch = function (name) {
-            return !!(sources[name] && sources[name].rch);
-        };
-
-        this.withSourceReady = function (name, success, error) {
-            if (!_this.sourceNeedsRch(name)) {
-                success();
-                return;
-            }
-
-            nexusRchEnsure(success, error);
-        };
-
-        this.isVeoVeoSource = function () {
-            return String(balanser || '').toLowerCase() === 'veoveo';
-        };
-
-        this.serialSeasonRequestUrl = function (season) {
-            season = parseInt(season || 0, 10);
-            if (!source_url || !season) return '';
-
-            return requestParams(source_url, object.movie, {
-                s: season,
-                season: season
-            });
         };
 
         this.previewItems = function (data) {
@@ -2398,41 +1824,36 @@ function resolveExternalIds(movie, done) {
                 setTimeout(function () {
                     if (settled || token !== request_token) return;
 
+                    var url = _this.sourceRequestUrl(name);
                     var startedAt = Date.now();
-                    _this.withSourceReady(name, function () {
-                        var url = _this.sourceRequestUrl(name);
-                        if (!url) {
-                            done();
-                            return;
-                        }
-
-                        loadContent(
-                            url,
-                            { timeout: 5000 },
-                            function (data) {
-                                if (settled || token !== request_token) return;
-
-                                var items = _this.previewItems(data);
-                                if (!_this.hasUsablePreview(items)) {
-                                    done();
-                                    return;
-                                }
-
-                                settled = true;
-                                recordLatency(name, Date.now() - startedAt);
-                                _this.resetSerialSourceState();
-                                _this.activateSource(name, false);
-                                _this.parse(data);
-                            },
-                            function () {
-                                if (settled || token !== request_token) return;
-                                done();
-                            }
-                        );
-                    }, function () {
-                        if (settled || token !== request_token) return;
+                    if (!url) {
                         done();
-                    });
+                        return;
+                    }
+
+                    loadContent(
+                        url,
+                        { timeout: 5000 },
+                        function (data) {
+                            if (settled || token !== request_token) return;
+
+                            var items = _this.previewItems(data);
+                            if (!_this.hasUsablePreview(items)) {
+                                done();
+                                return;
+                            }
+
+                            settled = true;
+                            recordLatency(name, Date.now() - startedAt);
+                            _this.resetSerialSourceState();
+                            _this.activateSource(name, false);
+                            _this.parse(data);
+                        },
+                        function () {
+                            if (settled || token !== request_token) return;
+                            done();
+                        }
+                    );
                 }, index ? index * 40 : 0);
             });
         };
@@ -2444,12 +1865,7 @@ function resolveExternalIds(movie, done) {
             json.forEach(function (j) {
                 if (!isWorkingSource(j)) return;
                 var name = balanserName(j);
-                sources[name] = {
-                    url: _this.normalizeUrl(j.url),
-                    name: sourceDisplayName(j, name),
-                    show: true,
-                    rch: !!j.rch
-                };
+                sources[name] = { url: _this.normalizeUrl(j.url), name: j.name || name, show: true };
             });
 
             filter_sources = sortSourceKeys(Lampa.Arrays.getKeys(sources));
@@ -2459,90 +1875,16 @@ function resolveExternalIds(movie, done) {
                 return;
             }
 
-            _this.showLoading('Ищем доступные источники', 'Проверяем варианты для этого видео');
-            _this.probeSources(function () {
-                if (!filter_sources.length) {
-                    _this.doesNotAnswer({});
-                    return;
-                }
+            var saved = Lampa.Storage.get(NEXUS_BALANSER_STORAGE, '');
+            balanser  = sources[saved] ? saved : (sources[NEXUS_DEFAULT_SOURCE] ? NEXUS_DEFAULT_SOURCE : filter_sources[0]);
+            if (!sources[balanser].show && !object.nexus_custom_select) balanser = filter_sources[0];
+            _this.resetSerialSourceState();
+            _this.activateSource(balanser, false);
 
-                var saved = Lampa.Storage.get(NEXUS_BALANSER_STORAGE, '');
-                balanser = sources[saved] ? saved : (sources[NEXUS_DEFAULT_SOURCE] ? NEXUS_DEFAULT_SOURCE : filter_sources[0]);
-                _this.resetSerialSourceState();
-                _this.activateSource(balanser, false);
-                _this.updateSourceFilter();
-                _this.showLoading('Загружаем видео', 'Источник: ' + sources[balanser].name);
-                _this.find();
-            });
-        };
+            _this.updateSourceFilter();
 
-        this.probeSources = function (done) {
-            var queue = filter_sources.slice();
-            var available = {};
-            var active = 0;
-            var finished = false;
-
-            function complete() {
-                if (finished) return;
-                if (queue.length || active) return;
-
-                finished = true;
-                sources = available;
-                filter_sources = sortSourceKeys(Lampa.Arrays.getKeys(sources));
-                done();
-            }
-
-            function next() {
-                while (active < NEXUS_SOURCE_PROBE_CONCURRENCY && queue.length) {
-                    var nextName = queue.shift();
-
-                    (function (name, source) {
-                        active++;
-
-                        function finish(ok) {
-                            if (ok) available[name] = source;
-                            active--;
-                            next();
-                            complete();
-                        }
-
-                        function probe() {
-                            var url = _this.sourceRequestUrl(name);
-                            if (!url) {
-                                finish(false);
-                                return;
-                            }
-
-                            loadContent(
-                                url,
-                                { timeout: NEXUS_SOURCE_PROBE_TIMEOUT },
-                                function (data) {
-                                    if (nexusRchResponse(data) && !source.rch) {
-                                        source.rch = true;
-                                        _this.withSourceReady(name, probe, function () {
-                                            finish(false);
-                                        });
-                                        return;
-                                    }
-
-                                    finish(_this.hasUsablePreview(_this.previewItems(data)));
-                                },
-                                function () {
-                                    finish(false);
-                                }
-                            );
-                        }
-
-                        _this.withSourceReady(name, probe, function () {
-                            finish(false);
-                        });
-                    })(nextName, sources[nextName]);
-                }
-
-                complete();
-            }
-
-            next();
+            _this.showLoading('Загружаем видео', 'Источник: ' + (sources[balanser] ? sources[balanser].name : balanser));
+            _this.findFast();
         };
 
         // ── changeBalanser ──────────────────────────────────────────────────
@@ -2562,17 +1904,9 @@ function resolveExternalIds(movie, done) {
 
         // ── find / request ──────────────────────────────────────────────────
         this.find = function () {
-            var selected = balanser;
-
-            _this.withSourceReady(selected, function () {
-                var serialParams = _this.getSerialParams();
-                var episodeUrl = _this.normalizeUrl(serial_episode_url);
-                if (_this.sourceNeedsRch(selected)) episodeUrl = nexusRchRequestUrl(episodeUrl);
-                var url = (is_serial && serial_episode_url) ? accountUrl(episodeUrl) : requestParams(source_url, object.movie, serialParams);
-                _this.request(url);
-            }, function () {
-                _this.doesNotAnswer({ msg: 'Не удалось подключить источник' });
-            });
+            var serialParams = _this.getSerialParams();
+            var url = (is_serial && serial_episode_url) ? accountUrl(_this.normalizeUrl(serial_episode_url)) : requestParams(source_url, object.movie, serialParams);
+            _this.request(url);
         };
 
         this.request = function (url, attempt, token) {
@@ -2595,35 +1929,12 @@ function resolveExternalIds(movie, done) {
         { timeout: timeoutForAttempt(NEXUS_CONTENT_TIMEOUT, attempt) },
         function (data) {
             if (token !== request_token) return;
-
-            var rch = nexusRchResponse(data);
-            if (rch) {
-                if (/[?&]rchtype=[^&]+/i.test(url)) {
-                    _this.doesNotAnswer({ msg: 'Источник не завершил подключение RCH' });
-                    return;
-                }
-
-                nexusLog('[Lumio] RCH requested by source');
-                console.warn('[Lumio RCH] source requested RCH:', rch.nws || 'no nws address');
-                nexusRchEnsure(function () {
-                    _this.request(nexusRchRequestUrl(url), 0, token);
-                }, function () {
-                    _this.doesNotAnswer({ msg: 'Не удалось подключиться к источнику' });
-                });
-                return;
-            }
-
             nexusLog('[Lumio] request success');
             _this.parse(data);
         },
         function (e) {
             if (token !== request_token) return;
             console.error('[Lumio] request error:', e);
-            console.warn('[Lumio] source response details:', {
-                status: e && e.status,
-                text: String((e && (e.responseText || e.statusText)) || '').slice(0, 500),
-                url: url
-            });
             if (attempt < 1) {
                 setTimeout(function () { _this.request(url, attempt + 1, token); }, 450 + attempt * 650);
                 return;
@@ -2660,8 +1971,8 @@ function resolveExternalIds(movie, done) {
 
     if (!items.length) {
         scroll.append(Lampa.Template.get('nexus_doesnotanswer', {
-            title: Lampa.Lang.translate('lumio_error_title') || 'Ничего не найдено',
-            text: Lampa.Lang.translate('lumio_no_sources') || 'Нет источников'
+            title: Lampa.Lang.translate('title_error') || 'Ничего не найдено',
+            text: Lampa.Lang.translate('lampac_doesnotanswer_text') || 'Нет источников'
         }));
         _this.loading(false);
         return;
@@ -2672,9 +1983,8 @@ function resolveExternalIds(movie, done) {
         var media = mediaTemplateData(object.movie);
 var qBadge = qualityBadge(item.quality);
 var resolutionText = (item.quality && typeof item.quality === 'object') ? Object.keys(item.quality).join(', ') : '';
- var sourceText = nexusPlainText(sources[balanser] ? sources[balanser].name : '');
- var pidtorInfo = balanser === 'pidtor' ? nexusPidtorDetails(item) : '';
- var infoText = pidtorInfo || resolutionText || nexusPlainText(item.info) || sourceText;
+var sourceText = sources[balanser] ? sources[balanser].name : '';
+var infoText = resolutionText || item.info || sourceText;
 var badgeText = qBadge ? qBadge.label : (item.badge || '');
 var badgeClass = qBadge ? qBadge.css : (item.badge_class || '');
 var timeText = item.episode !== undefined ? ('\u00b7 ' + item.episode) : '';
@@ -2790,18 +2100,7 @@ if (file.url) {
             }
 
             if (stream && stream.rch) {
-                if (file._nexus_rch_retry) {
-                    call(false, file);
-                    return;
-                }
-
-                file._nexus_rch_retry = true;
-                nexusRchEnsure(function () {
-                    file.url = nexusRchRequestUrl(file.url);
-                    _this.getFileUrl(file, call);
-                }, function () {
-                    call(false, file);
-                });
+                call(false, file);
                 return;
             }
 
@@ -2850,7 +2149,7 @@ if (file.stream) {
 
 call(false, file);
 };
-
+        
                 // ── normalizeUrl ─────────────────────────────────────────────────────
         this.normalizeUrl = function (url) {
     if (!url) return '';
@@ -3257,22 +2556,10 @@ if (/^https?:\/\/(127\.0\.0\.1|localhost):9118/i.test(play.url)) {
         this.parseItems = function (str) {
             if (!str) return [];
 
-            function finish(items) {
-                if (balanser !== 'pidtor') return items;
-
-                var seen = {};
-                return items.filter(function (item) {
-                    var key = nexusPidtorKey(item);
-                    if (!key || seen[key]) return false;
-                    seen[key] = true;
-                    return true;
-                });
-            }
-
             try {
     var j = (typeof str === 'object') ? str : JSON.parse(str);
     if (Array.isArray(j)) {
-        return finish(j.map(function (data) {
+        return j.map(function (data) {
             data = data || {};
 
             var season  = parseInt(data.season || data.s || 0, 10);
@@ -3305,13 +2592,8 @@ if (object.movie.name && data.season && !data.episode) {
                 });
             }
 
-            if (balanser === 'pidtor' && data.maxquality && !data.quality) {
-                data.quality = {};
-                data.quality[String(data.maxquality) + 'p'] = data.url || data.stream || '';
-            }
-
             return data;
-        }));
+        });
     }
 } catch (e1) {}
 
@@ -3362,16 +2644,11 @@ if (data.quality && typeof data.quality === 'object') {
     });
 }
 
-if (balanser === 'pidtor' && data.maxquality && !data.quality) {
-    data.quality = {};
-    data.quality[String(data.maxquality) + 'p'] = data.url || data.stream || '';
-}
-
 if (data.url || data.method || data.stream) result.push(data);
                 });
             } catch (e3) {}
 
-            return finish(result);
+            return result;
         };
 
         // ── doesNotAnswer ────────────────────────────────────────────────────
@@ -3388,7 +2665,7 @@ if (data.url || data.method || data.stream) result.push(data);
 
     scroll.clear();
     var html = Lampa.Template.get('nexus_doesnotanswer', {
-        title: Lampa.Lang.translate('lumio_error_title') || 'Ошибка',
+        title: Lampa.Lang.translate('title_error') || 'Ошибка',
         text: msg
     });
 
@@ -3538,7 +2815,7 @@ if (data.url || data.method || data.stream) result.push(data);
         };
 
         this.getChoice = function (name) {
-            return Lampa.Storage.get('lumio_choice_' + (name || balanser), {
+            return Lampa.Storage.get('nexus_choice_' + (name || balanser), {
                 season: 0,
                 voice: 0,
                 voice_url: '',
@@ -3547,7 +2824,7 @@ if (data.url || data.method || data.stream) result.push(data);
         };
 
         this.saveChoice = function (val, name) {
-            Lampa.Storage.set('lumio_choice_' + (name || balanser), val);
+            Lampa.Storage.set('nexus_choice_' + (name || balanser), val);
         };
 
         this.replaceChoice = function (val) {
@@ -3569,7 +2846,7 @@ if (data.url || data.method || data.stream) result.push(data);
         });
     }
 
-
+// ====== КНОПКА ======
 var nexusCardButtonHtml =
     '<div class="full-start__button selector view--nexus nexus--button" data-stable-id="nexus_online_button" data-subtitle="V' + NEXUS_VERSION + '">' +
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
@@ -3580,7 +2857,24 @@ var nexusCardButtonHtml =
         '<span>' + NEXUS_TITLE + '</span>' +
     '</div>';
 
-var nexusButtonObserverTimer = null;
+// ====== ВСТАВКА КНОПКИ ======
+function addNexusButton(e) {
+    if (e.render.find('.nexus--button').length) return;
+    
+    var btn = $(nexusCardButtonHtml);
+    var movie = e.movie || getActiveMovie();
+    
+    if (movie) preloadSources(movie);
+    
+    btn.on('hover:enter', function() {
+        var activeMovie = getActiveMovie();
+        if (activeMovie) openNexus(activeMovie);
+    });
+    
+    // Вставляем после кнопки Torrent
+    e.render.after(btn);
+    nexusLog('[Lumio] button inserted (style)');
+}
 
 function getActiveMovie() {
     try {
@@ -3592,86 +2886,27 @@ function getActiveMovie() {
     }
 }
 
-function insertNexusButton() {
-    try {
-        var act = Lampa.Activity.active();
-        if (!act || act.component !== 'full') return false;
-
-        var anchor = $('.full-start__button.view--online:not(.nexus--button), .view--online:not(.nexus--button)').filter(function () {
-            return !$(this).closest('.modal, .selectbox, .settings, .menu, .nexus-container').length;
-        }).first();
-
-        if (!anchor.length) return false;
-
-        var holder = anchor.parent();
-        var current = holder.children('.nexus--button');
-
-        var movie = getActiveMovie();
-        if (movie) preloadSources(movie);
-
-        $('.full-start__button.nexus--button').not(current).remove();
-
-        if (current.length) return true;
-
-        var btn = $(nexusCardButtonHtml);
-
-        btn.on('hover:enter', function () {
-            var activeMovie = getActiveMovie();
-            if (activeMovie) openNexus(activeMovie);
+// ====== НАБЛЮДАТЕЛЬ СОБЫТИЙ ======
+Lampa.Listener.follow('full', function(e) {
+    if (e.type === 'complite') {
+        addNexusButton({
+            render: e.object.activity.render().find('.view--torrent'),
+            movie: e.data.movie
         });
-
-        anchor.after(btn);
-        nexusLog('[Lumio] button inserted after view--online');
-        return true;
-    } catch (e) {
-        console.error('[Lumio] insertNexusButton error:', e);
-        return false;
     }
-}
+});
 
-function startNexusButtonWatcher() {
-    try {
-        if (nexusButtonObserverTimer) clearInterval(nexusButtonObserverTimer);
-
-        var attempts = 0;
-
-        nexusButtonObserverTimer = setInterval(function () {
-            attempts++;
-
-            var inserted = insertNexusButton();
-
-            if (inserted || attempts >= 40) {
-                clearInterval(nexusButtonObserverTimer);
-                nexusButtonObserverTimer = null;
-                nexusLog('[Lumio] watcher stop, inserted:', inserted, 'attempts:', attempts);
-            }
-        }, 250);
-    } catch (e) {
-        console.error('[Lumio] startNexusButtonWatcher error:', e);
+// ====== ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА ======
+try {
+    if (Lampa.Activity.active().component === 'full') {
+        addNexusButton({
+            render: Lampa.Activity.active().activity.render().find('.view--torrent'),
+            movie: Lampa.Activity.active().card
+        });
     }
-}
+} catch (e) {}
 
-if (Lampa.Listener && Lampa.Listener.follow) {
-    Lampa.Listener.follow('app', function (e) {
-        if (e.type === 'ready') {
-            setTimeout(startNexusButtonWatcher, 0);
-            setTimeout(startNexusButtonWatcher, 500);
-            setTimeout(startNexusButtonWatcher, 1500);
-        }
-    });
-
-    Lampa.Listener.follow('full', function (e) {
-        nexusLog('[Lumio] full event:', e.type);
-        setTimeout(startNexusButtonWatcher, 0);
-        setTimeout(startNexusButtonWatcher, 300);
-        setTimeout(startNexusButtonWatcher, 1000);
-    });
-
-    Lampa.Listener.follow('activity', function (e) {
-        setTimeout(startNexusButtonWatcher, 0);
-        setTimeout(startNexusButtonWatcher, 500);
-    });
-    
+// ====== ПРЕЛОАД ДЛЯ КАРТОЧКИ ======
 var nexusCardPreloadTimer = null;
 
 if (Lampa.Listener && Lampa.Listener.follow) {
@@ -3684,20 +2919,17 @@ if (Lampa.Listener && Lampa.Listener.follow) {
         }, 350);
     });
 }
-}
 
     var manifst = {
         type:    'video',
         version: NEXUS_VERSION,
         name:    NEXUS_TITLE,
         description: 'Онлайн просмотр через Lampac',
-        icon:    NEXUS_MENU_ICON,
         component: NEXUS_COMPONENT,
         onContextMenu: function (obj) {
             return {
                 name:        NEXUS_TITLE,
-                description: Lampa.Lang.translate('lumio_watch') || 'Смотреть онлайн',
-                icon:        NEXUS_MENU_ICON
+                description: Lampa.Lang.translate('lampac_watch') || 'Смотреть онлайн'
             };
         },
         onContextLauch: function (obj) {
@@ -3707,6 +2939,7 @@ if (Lampa.Listener && Lampa.Listener.follow) {
 
     function registerNexusManifest() {
         var plugins = Lampa.Manifest.plugins;
+        var found   = false;
 
         Lampa.Component.add(NEXUS_COMPONENT, component);
         resetTemplates();
@@ -3717,36 +2950,44 @@ if (Lampa.Listener && Lampa.Listener.follow) {
 
         for (var i = plugins.length - 1; i >= 0; i--) {
             if (plugins[i] && plugins[i].component === manifst.component) {
-                plugins.splice(i, 1);
+                if (found) {
+                    plugins.splice(i, 1);
+                    continue;
+                }
+                plugins[i].type           = manifst.type;
+                plugins[i].version        = manifst.version;
+                plugins[i].name           = manifst.name;
+                plugins[i].description    = manifst.description;
+                plugins[i].onContextMenu  = manifst.onContextMenu;
+                plugins[i].onContextLauch = manifst.onContextLauch;
+                found = true;
             }
         }
 
-        plugins.unshift(manifst);
+        if (!found) plugins.push(manifst);
         Lampa.Manifest.plugins = plugins;
     }
 
     registerNexusManifest();
 
-
-
     if (Lampa.Lang && Lampa.Lang.add) {
     Lampa.Lang.add({
-        lumio_watch: {
+        lampac_watch: {
             ru: 'Смотреть онлайн',
             uk: 'Дивитися онлайн',
             en: 'Watch online'
         },
-        lumio_balanser: {
+        lampac_balanser: {
             ru: 'Источник',
             uk: 'Джерело',
             en: 'Source'
         },
-        lumio_no_sources: {
+        lampac_doesnotanswer_text: {
             ru: 'Нет соединения с сервером или сервер не вернул источники',
             uk: 'Немає зʼєднання з сервером або сервер не повернув джерела',
             en: 'No connection to server or no sources returned'
         },
-        lumio_error_title: {
+        title_error: {
             ru: 'Ошибка',
             uk: 'Помилка',
             en: 'Error'
