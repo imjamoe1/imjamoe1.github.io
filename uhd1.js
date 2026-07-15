@@ -1,6 +1,8 @@
 (function() {
   'use strict';
 
+  var GUEST_UID = 'guest';
+
   var Defined = {
     api: 'lampac',
     localhost: 'https://lampa.azharkov.ru/',
@@ -9,10 +11,61 @@
 
   var balansers_with_search;
   
-  var unic_id = Lampa.Storage.get('lampac_unic_id', '');
-  if (!unic_id) {
-    unic_id = Lampa.Utils.uid(8).toLowerCase();
-    Lampa.Storage.set('lampac_unic_id', guest);
+  var unic_id = GUEST_UID;
+
+  function hasUrlComponent(url, name) {
+    return new RegExp('([?&])' + name + '=', 'i').test(url + '');
+  }
+
+  function addUrlComponentSafe(url, component) {
+    url = url + '';
+
+    if (window.Lampa && Lampa.Utils && typeof Lampa.Utils.addUrlComponent == 'function') {
+      return Lampa.Utils.addUrlComponent(url, component);
+    }
+
+    var hash = '';
+    var hashIndex = url.indexOf('#');
+
+    if (hashIndex >= 0) {
+      hash = url.substring(hashIndex);
+      url = url.substring(0, hashIndex);
+    }
+
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') + component + hash;
+  }
+
+  function setUrlComponent(url, name, value) {
+    url = url + '';
+
+    var encoded = encodeURIComponent(value);
+    var regexp = new RegExp('([?&])' + name + '=[^&#]*', 'i');
+
+    if (regexp.test(url)) {
+      return url.replace(regexp, '$1' + name + '=' + encoded);
+    }
+
+    return addUrlComponentSafe(url, name + '=' + encoded);
+  }
+
+  function removeUrlComponent(url, name) {
+    url = url + '';
+
+    var hash = '';
+    var hashIndex = url.indexOf('#');
+
+    if (hashIndex >= 0) {
+      hash = url.substring(hashIndex);
+      url = url.substring(0, hashIndex);
+    }
+
+    url = url.replace(new RegExp('([?&])' + name + '=[^&]*', 'ig'), function(match, separator) {
+      return separator == '?' ? '?' : '';
+    });
+
+    url = url.replace('?&', '?').replace(/[?&]$/, '');
+
+    return url + hash;
   }
   
     function getAndroidVersion() {
