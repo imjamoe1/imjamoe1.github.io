@@ -37,12 +37,12 @@
 		if ($('style[data-rezka-pro]').length) return;
 		$('body').append(
 			'<style data-rezka-pro>' +
-				'.rezka-item.focus { background: #e67e22 !important; box-shadow: 0 0 0 0.15em #fff; transform: scale(1.01); }' +
+				'.rezka-item.focus { box-shadow: 0 0 0 0.15em #fff; transform: scale(1.01); }' +
 				'.rezka-item.focus div { color: #fff !important; }' +
 				'.rezka-voice.focus { box-shadow: 0 0 0 0.2em #fff; }' +
 				'.rezka-badge { display: inline-block; margin-left: 0.6em; padding: 0 0.4em; border-radius: 0.2em; background: #e67e22; color: #fff; font-size: 0.75em; vertical-align: middle; }' +
 				'.rezka-item .time-line { margin-top: 0.6em; }' +
-				'.rezka-spinner { width: 2em; height: 2em; margin: 2em auto 0; border: 0.25em solid rgba(255,255,255,0.3); border-top-color: #e67e22; border-radius: 50%; animation: rezka-spin 0.8s linear infinite; }' +
+				'.rezka-spinner { width: 2em; height: 2em; margin: 2em auto 0; border: 0.25em solid rgba(255,255,255,0.3); border-top-color: #ffffff; border-radius: 50%; animation: rezka-spin 0.8s linear infinite; }' +
 				'@keyframes rezka-spin { to { transform: rotate(360deg); } }' +
 				'</style>',
 		);
