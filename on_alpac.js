@@ -3,7 +3,7 @@
 
   var Defined = {
     api: 'lampac',
-    localhost: 'https://lampa.li/',
+    localhost: 'https://beta.l-vid.online/',
     apn: ''
   };
 
@@ -28,7 +28,7 @@
   }
 }
 
-var hostkey = 'https://lampa.li'.replace('http://', '').replace('https://', '');
+var hostkey = 'https://beta.l-vid.online'.replace('http://', '').replace('https://', '');
 
 if (!window.rch_nws || !window.rch_nws[hostkey]) {
   if (!window.rch_nws) window.rch_nws = {};
@@ -53,7 +53,7 @@ window.rch_nws[hostkey].typeInvoke = function rchtypeInvoke(host, call) {
     if (Lampa.Platform.is('android') || Lampa.Platform.is('tizen')) check(true);
     else {
       var net = new Lampa.Reguest();
-      net.silent('https://lampa.li'.indexOf(location.host) >= 0 ? 'https://github.com/' : host + '/cors/check', function() {
+      net.silent('https://beta.l-vid.online'.indexOf(location.host) >= 0 ? 'https://github.com/' : host + '/cors/check', function() {
         check(true);
       }, function() {
         check(false);
@@ -65,7 +65,7 @@ window.rch_nws[hostkey].typeInvoke = function rchtypeInvoke(host, call) {
 };
 
 window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection) {
-  window.rch_nws[hostkey].typeInvoke('https://lampa.li', function() {
+  window.rch_nws[hostkey].typeInvoke('https://beta.l-vid.online', function() {
 
     client.invoke("RchRegistry", JSON.stringify({
       version: 151,
@@ -95,7 +95,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
 	  
 	  function sendResult(uri, html) {
 	    $.ajax({
-	      url: 'https://lampa.li/rch/' + uri + '?id=' + rchId,
+	      url: 'https://beta.l-vid.online/rch/' + uri + '?id=' + rchId,
 	      type: 'POST',
 	      data: html,
 	      async: true,
@@ -176,7 +176,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
     });
   });
 };
-  window.rch_nws[hostkey].typeInvoke('https://lampa.li', function() {});
+  window.rch_nws[hostkey].typeInvoke('https://beta.l-vid.online', function() {});
 
   function rchInvoke(json, call) {
     if (window.nwsClient && window.nwsClient[hostkey] && window.nwsClient[hostkey]._shouldReconnect){
@@ -199,7 +199,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
 
   function rchRun(json, call) {
     if (typeof NativeWsClient == 'undefined') {
-      Lampa.Utils.putScript(["https://lampa.li/js/nws-client-es5.js?v18112025"], function() {}, false, function() {
+      Lampa.Utils.putScript(["https://beta.l-vid.online/js/nws-client-es5.js?v18112025"], function() {}, false, function() {
         rchInvoke(json, call);
       }, true);
     } else {
@@ -365,7 +365,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
 	
     if (balansers_with_search == undefined) {
       network.timeout(10000);
-      network.silent(account('https://lampa.li/lite/withsearch'), function(json) {
+      network.silent(account('https://beta.l-vid.online/lite/withsearch'), function(json) {
         balansers_with_search = json;
       }, function() {
 		  balansers_with_search = [];
@@ -918,7 +918,7 @@ else if (element.url) {
   if (false) {
     if (Platform.is('browser') && location.host.indexOf("127.0.0.1") !== -1) {
       Noty.show('Видео открыто в playerInner', {time: 3000});
-      $.get('https://lampa.li/player-inner/' + element.url);
+      $.get('https://beta.l-vid.online/player-inner/' + element.url);
       return;
     }
 
