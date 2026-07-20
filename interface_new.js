@@ -1313,7 +1313,7 @@
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: absolute !important;
-                        right: -5em !important;
+                        right: -4em !important;
                     }
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
