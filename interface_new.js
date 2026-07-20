@@ -1064,6 +1064,10 @@
                     body.menu--always .new-interface .full-start__background {
                         left: 2em;
                     }
+                    body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
+                        position: absolute !important;
+                        right: -4em !important;
+                    }
                     .full-start-new__title {
                         padding-top: 0.2em;
                     }
