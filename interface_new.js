@@ -1312,7 +1312,7 @@
                         left: 2em;
                     }
                     body.menu--always .items-line__more {
-                        margin-left: 2em !important;
+                        margin-right: -2em !important;
                     }
                     body.menu--always .new-interface .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
