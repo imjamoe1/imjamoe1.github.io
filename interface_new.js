@@ -1065,7 +1065,7 @@
                         left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
-                        position: absolute !important;
+                        position: relative !important;
                         margin-right: -4em !important;
                     }
                     .card__quality {
