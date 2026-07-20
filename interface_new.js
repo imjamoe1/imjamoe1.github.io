@@ -1312,6 +1312,7 @@
                         left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
+                        display: flex !important;
                         margin-right: 2em !important;
                     }
                     body.menu--always .new-interface .card.card--small {
