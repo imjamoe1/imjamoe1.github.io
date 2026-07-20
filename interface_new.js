@@ -1065,12 +1065,9 @@
                         left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
-                        //position: absolute !important;
+                        position: absolute !important;
                         margin-right: -4em !important;
                     }
-                    //.full-start-new__title {
-                        //padding-top: 0.2em;
-                    //}
                     .card__quality {
                         font-weight: bold !important;
                     } 
