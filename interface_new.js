@@ -1066,7 +1066,7 @@
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
-                        right: -4em !important;
+                        right: -6em !important;
                     }
                     .card__quality {
                         font-weight: bold !important;
@@ -1313,7 +1313,7 @@
                         left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
-                        position: absolute !important;
+                        position: relative !important;
                         right: -4em !important;
                     }
                     body.menu--always .new-interface .card.card--small {
