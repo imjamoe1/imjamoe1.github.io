@@ -500,8 +500,7 @@
     var JACRED_API_KEY = '333';
     //var JACRED_URL = 'parser.ruzha.ru';
     //var JACRED_API_KEY = 'BCqr1JX01ISh';
-    var PROXY_LIST = [  // Корс прокси для запросов
-        'https://cors.kp556.workers.dev:8443/',     		
+    var PROXY_LIST = [  // Корс прокси для запросов     		
         'http://cors.bwa.workers.dev/',
         'http://api.allorigins.win/raw?url='
     ];
