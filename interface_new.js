@@ -1309,8 +1309,8 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    body.menu--always .new-interface .full-start__background {
-                        //left: 2em;
+                    body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
+                        left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
