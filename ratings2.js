@@ -2665,7 +2665,7 @@ Lampa.Listener.follow('full', function(e) {
                             });
                             
                             // 3. Добавляем отступ для head, чтобы не наезжал
-                            head.css('margin-top', '5px');
+                            head.css('margin-top', '10px');
                             
                             console.log('MAXSM-RATINGS: Rate line positioned above head');
                         }
