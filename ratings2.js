@@ -286,6 +286,9 @@
     $('body').append(Lampa.Template.get('maxsm_ratings_modal', {}, true));
     
     var style = "<style id=\"maxsm_ratings\">" +
+        ".full-start-new__head {" +
+        "bottom: 0.3em !important;" +
+        "}" +
         ".full-start-new__rate-line {" +
         "visibility: hidden;" +
         "left: 0.5em !important;" +
@@ -2659,7 +2662,7 @@ Lampa.Listener.follow('full', function(e) {
                             rateLine.css({
                                 'visibility': 'visible',
                                 'margin-left': '-10px',
-                                'margin-bottom': '20px',
+                                'margin-bottom': '10px',
                                 'display': 'flex',
                                 'flex-wrap': 'wrap'
                             });
