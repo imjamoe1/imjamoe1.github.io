@@ -1,4 +1,5 @@
 /*
+
 Для получения данных с кинопоиск используется https://kinopoiskapiunofficial.tech/ - получите API ключ 
 Для получения данных Metacritic, Tomatoes, наград испольузется https://www.omdbapi.com/ - получите API ключ 
 
@@ -13,6 +14,7 @@
     var JACRED_PROTOCOL = 'https://'; // Протокол JacRed
     var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
     var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
+
 */
 
 (function() {
@@ -28,7 +30,7 @@
     var kp_svg = '<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="120" height="120" fill="black"/><path d="M120 0L31.5771 47.3297L77.6571 0H52.1143L20.7429 43.5446V0H0V120H20.7429V76.5257L52.1143 120H77.6571L32.7737 74.1583L120 120V97.7143L40.4434 65.7977L120 71.1429V48.8571L40.9474 53.9966L120 22.2857V0Z" fill="url(#paint0_radial_4902_370)"/><defs><radialGradient id="paint0_radial_4902_370" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="rotate(45) scale(169.706)"><stop offset="0.5" stop-color="#FF5500"/><stop offset="1" stop-color="#BBFF00"/></radialGradient></defs></svg>';
     var lampa_svg = '<svg width="110" height="110" viewBox="0 -3 110 110" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="53" cy="53" r="53" fill="black"/><path d="M81.6744 103.11C98.5682 93.7234 110 75.6967 110 55C110 24.6243 85.3757 0 55 0C24.6243 0 0 24.6243 0 55C0 75.6967 11.4318 93.7234 28.3255 103.11C14.8869 94.3724 6 79.224 6 62C6 34.938 27.938 13 55 13C82.062 13 104 34.938 104 62C104 79.224 95.1131 94.3725 81.6744 103.11Z" fill="white"/><path d="M92.9546 80.0076C95.5485 74.5501 97 68.4446 97 62C97 38.804 78.196 20 55 20C31.804 20 13 38.804 13 62C13 68.4446 14.4515 74.5501 17.0454 80.0076C16.3618 77.1161 16 74.1003 16 71C16 49.4609 33.4609 32 55 32C76.5391 32 94 49.4609 94 71C94 74.1003 93.6382 77.1161 92.9546 80.0076Z" fill="white"/><path d="M55 89C69.3594 89 81 77.3594 81 63C81 57.9297 79.5486 53.1983 77.0387 49.1987C82.579 54.7989 86 62.5 86 71C86 88.1208 72.1208 102 55 102C37.8792 102 24 88.1208 24 71C24 62.5 27.421 54.7989 32.9613 49.1987C30.4514 53.1983 29 57.9297 29 63C29 77.3594 40.6406 89 55 89Z" fill="white"/><path d="M73 63C73 72.9411 64.9411 81 55 81C45.0589 81 37 72.9411 37 63C37 53.0589 45.0589 45 55 45C64.9411 45 73 53.0589 73 63Z" fill="white"/></svg>';
     var bylampa_svg = '<svg width="32" height="32" viewBox="0 1 21 23" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ecc440"/><stop offset="25%" stop-color="#fffa8a"/><stop offset="50%" stop-color="#ddac17"/><stop offset="100%" stop-color="#ffff95"/></linearGradient><linearGradient id="shineGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffff95" stop-opacity="0"><animate attributeName="stop-opacity" values="0;0.8;0" dur="4s" repeatCount="indefinite"/></stop><stop offset="50%" stop-color="#ffffff" stop-opacity="0"><animate attributeName="stop-opacity" values="0;1;0" dur="4s" repeatCount="indefinite" begin="0.5s"/></stop><stop offset="100%" stop-color="#fffa8a" stop-opacity="0"><animate attributeName="stop-opacity" values="0;0.6;0" dur="4s" repeatCount="indefinite" begin="1s"/></stop></linearGradient><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter></defs><g transform="translate(12,12)"><g><animateTransform attributeName="transform" type="scale" values="1,1;0.05,1;1,1" dur="3s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/><path d="M0 -7L2.1 -2.1L7.5 -2.1L3.4 1L4.5 6.5L0 3.8L-4.5 6.5L-3.4 1L-7.5 -2.1L-2.1 -2.1L0 -7Z" fill="url(#starGradient)" stroke="#ddac17" stroke-width="0.5" filter="url(#glow)"/><path d="M0 -7L2.1 -2.1L7.5 -2.1L3.4 1L4.5 6.5L0 3.8L-4.5 6.5L-3.4 1L-7.5 -2.1L-2.1 -2.1L0 -7Z" fill="url(#shineGradient)" stroke="none"/></g></g></svg>';
-    var rt_svg = '<svg id="svg3390" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="141.25" viewBox="0 0 138.75 141.25" width="138.75" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"> <metadata id="metadata3396">  <rdf:RDF>   <cc:Work rdf:about="">    <dc:format>image/svg+xml</dc:format>    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>    <dc:title/>   </cc:Work>  </rdf:RDF> </metadata> <g id="layer1" fill="#f93208">  <path id="path3412" d="m20.154 40.829c-28.149 27.622-13.657 61.011-5.734 71.931 35.254 41.954 92.792 25.339 111.89-5.9071 4.7608-8.2027 22.554-53.467-23.976-78.009z"/>  <path id="path3471" d="m39.613 39.265 4.7778-8.8607 28.406-5.0384 11.119 9.2082z"/> </g> <g id="layer2">  <path id="path3437" d="m39.436 8.5696 8.9682-5.2826 6.7569 15.479c3.7925-6.3226 13.79-16.316 24.939-4.6684-4.7281 1.2636-7.5161 3.8553-7.7397 8.4768 15.145-4.1697 31.343 3.2127 33.539 9.0911-10.951-4.314-27.695 10.377-41.771 2.334 0.009 15.045-12.617 16.636-17.076 2.077-4.996 5.591-9.994 1.474-14.987-7.618 8.171-13.874 10.668-33.17 4.668 4.876-1.679 14.843-11.39 24.448-11.425-6.775-2.467-12.29-2.087-17.814-1.475 2.917-3.961 12.149-15.197 28.625-8.476z" fill="#02902e"/> </g></svg>';
+    var rt_svg = '<svg id="svg3390" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="141.25" viewBox="0 0 138.75 141.25" width="138.75" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"> <metadata id="metadata3396">  <rdf:RDF>   <cc:Work rdf:about="">    <dc:format>image/svg+xml</dc:format>    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>    <dc:title/>   </cc:Work>  </rdf:RDF> </metadata> <g id="layer1" fill="#f93208">  <path id="path3412" d="m20.154 40.829c-28.149 27.622-13.657 61.011-5.734 71.931 35.254 41.954 92.792 25.339 111.89-5.9071 4.7608-8.2027 22.554-53.467-23.976-78.009z"/>  <path id="path3471" d="m39.613 39.265 4.7778-8.8607 28.406-5.0384 11.119 9.2082z"/> </g> <g id="layer2">  <path id="path3437" d="m39.436 8.5696 8.9682-5.2826 6.7569 15.479c3.7925-6.3226 13.79-16.316 24.939-4.6684-4.7281 1.2636-7.5161 3.8553-7.7397 8.4768 15.145-4.1697 31.343 3.2127 33.539 9.0911-10.951-4.314-27.695 10.377-41.771 2.334 0.009 15.045-12.617 16.636-19.902 17.076 2.077-4.996 5.591-9.994 1.474-14.987-7.618 8.171-13.874 10.668-33.17 4.668 4.876-1.679 14.843-11.39 24.448-11.425-6.775-2.467-12.29-2.087-17.814-1.475 2.917-3.961 12.149-15.197 28.625-8.476z" fill="#02902e"/> </g></svg>';
     var mc_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88"><circle fill="#001B36" stroke="#FC0" stroke-width="4.6" cx="44" cy="44" r="41.6"/><path transform="translate(-10,-961) matrix(1.2756629,-1.3487733,1.3685717,1.2634987,-267.04706,1066.0743)" fill="#FFF"d="m126.73438,92.087002 5.05859,0 0,2.832031 c 1.80989-2.200501 3.96483-3.30076 6.46484-3.300781 1.32811,2.1e-5 2.48045,.273458 3.45703,.820312 .97655,.546895 1.77733,1.373717 2.40235,2.480469 .91144-1.106752 1.89451-1.933574 2.94922-2.480469 1.05466-0.546854 2.18096-0.820291 3.3789-0.820312 1.52341,2.1e-5 2.81247,.309265 3.86719,.927734 1.05466,.618509 1.84242,1.526711 2.36328,2.724609 .37757,.885434 .56637,2.317724 .56641,4.296875 l 0,13.26172-5.48828,0 0-11.85547 c-3e-5-2.057277-0.18883-3.385401-0.56641-3.984375-0.50784-0.781233-1.28909-1.171858-2.34375-1.171875-0.76825,1.7e-5-1.49091,.234392-2.16797,.703125-0.6771,.468766-1.16538,1.155614-1.46484,2.060547-0.2995,.904961-0.44924,2.333998-0.44922,4.287108 l 0,9.96094-5.48828,0 0-11.36719 c-2e-5-2.018214-0.0977-3.320296-0.29297-3.906248-0.19533-0.585922-0.49806-1.02212-0.9082-1.308594-0.41017-0.286442-0.96681-0.429671-1.66993-0.429688-0.84636,1.7e-5-1.60808,.227882-2.28515,.683594-0.6771,.455745-1.16212,1.113297-1.45508,1.972656-0.29298,.859389-0.43946,2.28517-0.43945,4.27734 l 0,10.07813-5.48828,0z"/></svg>';
     
     Lampa.Lang.add({
@@ -253,7 +255,7 @@
         }
     });
 
-    // Стили (оставляем как есть)
+    // Стили
     var modalStyle = "<style id=\"maxsm_ratings_modal\">" +
         ".maxsm-quality {" +
         "background: #FFD700;" +
@@ -287,15 +289,17 @@
         ".full-start-new__rate-line {" +
         "visibility: hidden;" +
         "left: 0.5em !important;" +
+        //"flex-wrap: wrap !important;" +
+        //"gap: 0.4em 0;" +  
         "}" +
         ".full-start-new__rate-line > * {" +
         "margin-right: 0.3em !important;" +
         "}" +
         ".full-start__rate {" +
-        "background-color: rgba(0, 0, 0, 0.25) !important;" +
-        "border-radius: 15px !important;" +
+        "background-color: rgba(0, 0, 0, 0.25) !important;" + // Добавлено: фон для каждого рейтинга
+        "border-radius: 15px !important;" + // Добавлено: скругление углов
         "font-weight: bold !important;" +
-        "padding: 0.1px 1px !important;" +
+        "padding: 0.1px 1px !important;" + // Добавлено: внутренние отступы
         "}" +
         ".full-start__rate > div:first-child {" +
         "border: none !important;" +
@@ -355,6 +359,7 @@
         "    justify-content: center !important;" +
         "    gap: 0.1em !important;" +
         "    height: 2.9em !important;" +
+        //"    min-width: 4em !important;" +
         "    margin-right: 1.8em !important;" +
         "    top: 0.02em !important;" +
         "    position: relative !important;" +
@@ -368,6 +373,7 @@
         ".info__rate span {" +
         "    font-size: 1.9em !important;" +
         "    margin-right: 2.5em !important;" +
+        //"    top: -0.1em !important;" +
         "    font-weight: bold !important;" +
         "    line-height: 1 !important;" +
         "    text-align: center !important;" +
@@ -392,6 +398,7 @@
         "    position: relative;" +
         "    margin-bottom: 3em !important;" +
         "}" +
+        /* Стили для логотипов качества внутри карточки */
         ".maxsm-quality {" +
         "    min-width: auto !important;" +
         "    height: 1.9em !important;" +
@@ -467,46 +474,341 @@
                     "@media screen and (max-width: 480px) { .loading-dots-container { -webkit-justify-content: center; justify-content: center; text-align: center; max-width: 100%; }}" +
                     "</style>";
 
+
     Lampa.Template.add('maxsm_ratings_loading_animation_css', loadingStyles);
     $('body').append(Lampa.Template.get('maxsm_ratings_loading_animation_css', {}, true));
     
-    // Глобальная переменная
+    // Глобальная переменная текущей карточки (сейчас не используется)
     var globalCurrentCard = null;
 
-    // Настройки
-    var C_LOGGING = false;
-    var Q_LOGGING = false;
-    var Q_CACHE_TIME = 24 * 60 * 60 * 1000;
+    // Перепемнные настройки 
+    var C_LOGGING = false;  // Общий логгинг 
+    var Q_LOGGING = false;  // Логгинг качества
+    var Q_CACHE_TIME = 24 * 60 * 60 * 1000;  // Время, которое кеш считается валидным
     var CACHE_TIME = 3 * 60 * 60 * 1000;
     var OMDB_CACHE = 'maxsm_ratings_omdb_cache';
     var KP_CACHE = 'maxsm_ratings_kp_cache';
     var ID_MAPPING_CACHE = 'maxsm_ratings_id_mapping_cache';
     var QUALITY_CACHE = 'maxsm_ratings_quality_cache';
-    var OMDB_API_KEYS = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEYS) || ['18a1eec9', 'd3a7a896'];
-    var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a', '5421e2f6-e0ed-4c08-aee9-492334f88937', '34abd082-4543-44a2-84fb-2169f49ce93e'];
-    var PROXY_TIMEOUT = 1000;
-    var JACRED_PROTOCOL = 'http://';
+    var OMDB_API_KEYS = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEYS) || ['18a1eec9', 'd3a7a896']; // api ключи массивом
+    var KP_API_KEYS   = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.KP_API_KEYS)   || ['ae8d6b29-b4ea-4f44-ad64-e99cb243289a', '5421e2f6-e0ed-4c08-aee9-492334f88937', '34abd082-4543-44a2-84fb-2169f49ce93e']; // api ключи массивом
+    var kp_prox = 'https://cors.kp556.workers.dev:8443/';
+    var PROXY_TIMEOUT = 1000; // Таймаут прокси
+    var JACRED_PROTOCOL = 'http://'; // Протокол JacRed
+    //var JACRED_URL = Lampa.Storage.get('jackett_url'); // Адрес JacRed для получения информации о карточках без протокола (jacred.xyz)
+    //var JACRED_API_KEY = Lampa.Storage.get('jackett_key'); // api ключ JacRed
     var JACRED_URL = '87.120.84.218:9117';
     var JACRED_API_KEY = '333';
-    var PROXY_LIST = [ 		
+    //var JACRED_URL = 'parser.ruzha.ru';
+    //var JACRED_API_KEY = 'BCqr1JX01ISh';
+    var PROXY_LIST = [  // Корс прокси для запросов     		
         'http://cors.bwa.workers.dev/',
         'http://api.allorigins.win/raw?url='
     ];
     
+    // Словарь возрастных рейтингов
     var AGE_RATINGS = {
-        'G': '3+', 'PG': '6+', 'PG-13': '13+', 'R': '17+', 'NC-17': '18+',
-        'TV-Y': '0+', 'TV-Y7': '7+', 'TV-G': '3+', 'TV-PG': '6+', 'TV-14': '14+', 'TV-MA': '17+'
+        'G': '3+',
+        'PG': '6+',
+        'PG-13': '13+',
+        'R': '17+',
+        'NC-17': '18+',
+        'TV-Y': '0+',
+        'TV-Y7': '7+',
+        'TV-G': '3+',
+        'TV-PG': '6+',
+        'TV-14': '14+',
+        'TV-MA': '17+'
     };
     
-    var WEIGHTS = { imdb: 0.35, tmdb: 0.15, kp: 0.20, mc: 0.15, rt: 0.15 };
+    // Весовые коэффициенты для источников рейтингов
+    var WEIGHTS = {
+        imdb: 0.35,
+        tmdb: 0.15,
+        kp: 0.20,
+        mc: 0.15,
+        rt: 0.15
+    };
     
-    // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
-    
+    // Берем случайный токен из массива
     function getRandomToken(arr) {
       if (!arr || !arr.length) return '';
       return arr[Math.floor(Math.random() * arr.length)];
     }
     
+    // Получаем количество наград
+    function parseAwards(awardsText, localCurrentCard) {
+        if (typeof awardsText !== 'string') return null;
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Parse awards: " + awardsText);
+    
+        var result = {
+            oscars: 0,
+            awards: 0
+        };
+    
+        var oscarMatch = awardsText.match(/Won (\d+) Oscars?/i);
+        if (oscarMatch && oscarMatch[1]) {
+            result.oscars = parseInt(oscarMatch[1], 10);
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Oscars: " + result.oscars);
+        }
+
+        var emmyMatch = awardsText.match(/Won (\d+) Primetime Emmys?/i);
+        if (emmyMatch && emmyMatch[1]) {
+            result.emmy = parseInt(emmyMatch[1], 10);
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Emmy: " + result.emmy);
+        }
+    
+        var otherMatch = awardsText.match(/Another (\d+) wins?/i);
+        if (otherMatch && otherMatch[1]) {
+            result.awards = parseInt(otherMatch[1], 10);
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Awards (Another): " + result.awards);
+        }
+    
+        if (result.awards === 0) {
+            var simpleMatch = awardsText.match(/(\d+) wins?/i);
+            if (simpleMatch && simpleMatch[1]) {
+                result.awards = parseInt(simpleMatch[1], 10);
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Awards (Simple): " + result.awards);
+            }
+        }
+
+        return result;
+    }
+    
+    // Получение данных через прокси   
+    function fetchWithProxy(url, localCurrentCard, callback) {
+        var currentProxy = 0;
+        var callbackCalled = false;
+        function tryNextProxy() {
+            if (currentProxy >= PROXY_LIST.length) {
+                if (!callbackCalled) {
+                    callbackCalled = true;
+                    callback(new Error('All proxies failed'));
+                }
+                return;
+            }
+            var proxyUrl = PROXY_LIST[currentProxy] + encodeURIComponent(url);
+            if (C_LOGGING)
+                console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Fetch with proxy: " + proxyUrl);
+            var timeoutId = setTimeout(function () {
+                if (!callbackCalled) {
+                    currentProxy++;
+                    tryNextProxy();
+                }
+            }, PROXY_TIMEOUT);
+            fetch(proxyUrl)
+                .then(function (response) {
+                clearTimeout(timeoutId);
+                if (!response.ok)
+                    throw new Error('Proxy error: ' + response.status);
+                return response.text();
+            })
+                .then(function (data) {
+                if (!callbackCalled) {
+                    callbackCalled = true;
+                    clearTimeout(timeoutId);
+                    callback(null, data);
+                }
+            })
+                .catch(function () {
+                clearTimeout(timeoutId);
+                if (!callbackCalled) {
+                    currentProxy++;
+                    tryNextProxy();
+                }
+            });
+        }
+        tryNextProxy();
+    }
+	
+//-----------------------------------------------------get---kinopoisk-------------------------------------
+    function getKPRatings(normalizedCard, apiKey, localCurrentCard, callback) {
+        // Если есть kinopoisk_id - сразу переходим к запросу рейтингов
+        if (normalizedCard.kinopoisk_id) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Using provided kinopoisk_id: " + normalizedCard.kinopoisk_id);
+            return fetchRatings(normalizedCard.kinopoisk_id, localCurrentCard);
+        }
+    
+        // Старая логика поиска по названию/году
+        var queryTitle = (normalizedCard.original_title || normalizedCard.title || '').replace(/[:\-–—]/g, ' ').trim();
+        var year = '';
+        if (normalizedCard.release_date && typeof normalizedCard.release_date === 'string') {
+            year = normalizedCard.release_date.split('-')[0];
+        }
+        
+        if (!year) {
+            callback(null);
+            return;
+        }
+        
+        var encodedTitle = encodeURIComponent(queryTitle);
+        var searchUrl = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=' + encodedTitle;
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Find information in KP by title and year");        
+        fetch(searchUrl, {
+            method: 'GET',
+            headers: {
+                'X-API-KEY': apiKey,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(response) {
+            if (!response.ok) throw new Error('HTTP error: ' + response.status);
+            return response.json();
+        })
+        .then(function(data) {
+            if (!data.films || !data.films.length) {
+                callback(null);
+                return;
+            }
+            
+            var bestMatch = null;
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Match KP inf");
+            var filmYear;
+            var targetYear;
+            var film2;
+            // Сначала пытаемся найти точное совпадение
+            for (var j = 0; j < data.films.length; j++) {
+                film2 = data.films[j];
+                if (!film2.year) continue;
+                
+                filmYear = parseInt(film2.year.substring(0, 4), 10);
+                targetYear = parseInt(year, 10);
+                
+                // Двойная проверка на валидность чисел
+                if (isNaN(filmYear)) continue;
+                if (isNaN(targetYear)) continue;
+                
+                if (filmYear === targetYear) {
+                    bestMatch = film2;
+                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", KP EXACT match for: " + queryTitle + " / " + year + " is id: " + bestMatch.filmId + " / " + film2.nameRu + " / " + film2.nameEn + " / " + film2.year);
+                    break;
+                }
+            }
+            
+            // Если точное совпадение не найдено, ищем +- год
+            if (!bestMatch) {
+                for (var k = 0; k < data.films.length; k++) {
+                    film2 = data.films[k];
+                    if (!film2.year) continue;
+                    
+                    filmYear = parseInt(film2.year.substring(0, 4), 10);
+                    targetYear = parseInt(year, 10);
+                    
+                    // Двойная проверка на валидность чисел
+                    if (isNaN(filmYear)) continue;
+                    if (isNaN(targetYear)) continue;
+                    
+                    if (Math.abs(filmYear - targetYear) <= 1) {
+                        bestMatch = film2;
+                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", KP APPROXIMATE match for: " + queryTitle + " / " + year + " is id: " + bestMatch.filmId + " / " + film2.nameRu + " / " + film2.nameEn + " / " + film2.year);
+                        break;
+                    }
+                }
+            }
+            
+            if (!bestMatch || !bestMatch.filmId) {
+                callback(null);
+                return;
+            }
+            
+            fetchRatings(bestMatch.filmId, localCurrentCard);
+        })
+        .catch(function() {
+            console.warn("MAXSM-RATINGS", "card: " + localCurrentCard + "Kinopoisk API request failed");
+            callback(null);
+        });
+    
+        // Общая функция получения рейтингов по ID
+        function fetchRatings(filmId, localCurrentCard) {
+            var xmlUrl = 'https://rating.kinopoisk.ru/' + filmId + '.xml';
+            
+            fetchWithProxy(xmlUrl, localCurrentCard, function(error, xmlText) {
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Try to get KP ratings from XML");
+                if (!error && xmlText) {
+                    try {
+                        var parser = new DOMParser();
+                        var xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                        var kpRatingNode = xmlDoc.getElementsByTagName("kp_rating")[0];
+                        var imdbRatingNode = xmlDoc.getElementsByTagName("imdb_rating")[0];
+                        
+                        var kpRating = kpRatingNode ? parseFloat(kpRatingNode.textContent) : null;
+                        var imdbRating = imdbRatingNode ? parseFloat(imdbRatingNode.textContent) : null;
+                        
+                        var hasValidKp = !isNaN(kpRating) && kpRating > 0;
+                        var hasValidImdb = !isNaN(imdbRating) && imdbRating > 0;
+                        
+                        if (hasValidKp || hasValidImdb) {
+                            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Got KP ratings from XML");
+                            return callback({
+                                kinopoisk: hasValidKp ? kpRating : null,
+                                imdb: hasValidImdb ? imdbRating : null
+                            });
+                        }
+                    } catch (e) {
+                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", XML parse error, fallback to API");
+                    }
+                }
+                
+                // Fallback к API
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Try to get KP ratings from API");
+                fetch('https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId, {
+                    headers: { 'X-API-KEY': apiKey }
+                })
+                    .then(function(response) {
+                        if (!response.ok) throw new Error('API error');
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Got KP ratings from API");
+                        callback({
+                            kinopoisk: data.ratingKinopoisk || null,
+                            imdb: data.ratingImdb || null
+                        });
+                    })
+                    .catch(function() {
+                        callback(null);
+                    });
+            });
+        }
+    }
+//-------------------------------------------------end---get---kinopoisk-----------------------------------
+    function addLoadingAnimation(localCurrentCard, render) {
+        //var render = Lampa.Activity.active().activity.render();
+        if (!render) return;
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Add loading animation");
+        var rateLine = $('.full-start-new__rate-line', render);
+        if (!rateLine.length || $('.loading-dots-container', rateLine).length) return;
+
+        rateLine.append(
+            '<div class="loading-dots-container">' +
+                '<div class="loading-dots">' +
+                    '<span class="loading-dots__text">' + Lampa.Lang.translate("maxsm_ratings_loading") + '</span>' +
+                    '<span class="loading-dots__dot"></span>' +
+                    '<span class="loading-dots__dot"></span>' +
+                    '<span class="loading-dots__dot"></span>' +
+                '</div>' +
+            '</div>'
+        );
+
+        $('.loading-dots-container', rateLine).css({
+            'opacity': '1',
+            'visibility': 'visible'
+        });
+    }
+
+    // Улучшенная функция удаления анимации
+    function removeLoadingAnimation(localCurrentCard, render) {
+        if (!render) return;
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Remove animation");
+        // Ищем контейнеры с анимацией только внутри render
+        var containers = $('.loading-dots-container', render);
+        containers.each(function(index, element) {
+            element.parentNode.removeChild(element);
+        });
+    }
+
+    
+    // Вспомогательные функции
     function getCardType(card) {
         var type = card.media_type || card.type;
         if (type === 'movie' || type === 'tv') return type;
@@ -520,301 +822,71 @@
         return 'rate--red';
     }
     
-    function parseAwards(awardsText, localCurrentCard) {
-        if (typeof awardsText !== 'string') return null;
-        var result = { oscars: 0, awards: 0 };
-        var oscarMatch = awardsText.match(/Won (\d+) Oscars?/i);
-        if (oscarMatch && oscarMatch[1]) { result.oscars = parseInt(oscarMatch[1], 10); }
-        var emmyMatch = awardsText.match(/Won (\d+) Primetime Emmys?/i);
-        if (emmyMatch && emmyMatch[1]) { result.emmy = parseInt(emmyMatch[1], 10); }
-        var otherMatch = awardsText.match(/Another (\d+) wins?/i);
-        if (otherMatch && otherMatch[1]) { result.awards = parseInt(otherMatch[1], 10); }
-        if (result.awards === 0) {
-            var simpleMatch = awardsText.match(/(\d+) wins?/i);
-            if (simpleMatch && simpleMatch[1]) { result.awards = parseInt(simpleMatch[1], 10); }
-        }
-        return result;
-    }
-    
-    function extractRating(ratings, source) {
-        if (!ratings || !Array.isArray(ratings)) return null;
-        for (var i = 0; i < ratings.length; i++) {
-            if (ratings[i].Source === source) {
-                try {
-                    return source === 'Rotten Tomatoes' 
-                        ? parseFloat(ratings[i].Value.replace('%', '')) 
-                        : parseFloat(ratings[i].Value.split('/')[0]);
-                } catch(e) { return null; }
-            }
-        }
-        return null;
-    }
-    
-    // --- ФУНКЦИИ КЭШИРОВАНИЯ ---
-    
-    function getOmdbCache(key) {
-        var cache = Lampa.Storage.get(OMDB_CACHE) || {};
-        var item = cache[key];
-        return item && (Date.now() - item.timestamp < CACHE_TIME) ? item : null;
-    }
-    
-    function saveOmdbCache(key, data) {
-        var cache = Lampa.Storage.get(OMDB_CACHE) || {};
-        cache[key] = { 
-            rt: data.rt, mc: data.mc, imdb: data.imdb,
-            ageRating: data.ageRating, oscars: data.oscars || null,
-            emmy: data.emmy || null, awards: data.awards || null,
-            timestamp: Date.now() 
-        };
-        Lampa.Storage.set(OMDB_CACHE, cache);
-    }
-    
-    function getKpCache(key) {
-        var cache = Lampa.Storage.get(KP_CACHE) || {};
-        var item = cache[key];
-        return item && (Date.now() - item.timestamp < CACHE_TIME) ? item : null;
-    }
-    
-    function saveKpCache(key, data) {
-        var cache = Lampa.Storage.get(KP_CACHE) || {};
-        cache[key] = {
-            kp: data.kp || null, imdb: data.imdb || null,
-            timestamp: Date.now()
-        };
-        Lampa.Storage.set(KP_CACHE, cache);
-    }
-    
-    function getQualityCache(key) {
-        var cache = Lampa.Storage.get(QUALITY_CACHE) || {};
-        var item = cache[key];
-        return item && (Date.now() - item.timestamp < Q_CACHE_TIME) ? item : null;
-    }
-    
-    function saveQualityCache(key, data) {
-        var cache = Lampa.Storage.get(QUALITY_CACHE) || {};
-        cache[key] = {
-            quality: data.quality || null,
-            timestamp: Date.now()
-        };
-        Lampa.Storage.set(QUALITY_CACHE, cache); 
-    }
-    
-    // --- ЗАПРОСЫ К API ---
-    
-    function fetchWithProxy(url, localCurrentCard, callback) {
-        var currentProxy = 0;
-        var callbackCalled = false;
-        function tryNextProxy() {
-            if (currentProxy >= PROXY_LIST.length) {
-                if (!callbackCalled) { callbackCalled = true; callback(new Error('All proxies failed')); }
-                return;
-            }
-            var proxyUrl = PROXY_LIST[currentProxy] + encodeURIComponent(url);
-            var timeoutId = setTimeout(function () {
-                if (!callbackCalled) { currentProxy++; tryNextProxy(); }
-            }, PROXY_TIMEOUT);
-            fetch(proxyUrl)
-                .then(function (response) {
-                    clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error('Proxy error: ' + response.status);
-                    return response.text();
-                })
-                .then(function (data) {
-                    if (!callbackCalled) { callbackCalled = true; clearTimeout(timeoutId); callback(null, data); }
-                })
-                .catch(function () {
-                    clearTimeout(timeoutId);
-                    if (!callbackCalled) { currentProxy++; tryNextProxy(); }
-                });
-        }
-        tryNextProxy();
-    }
-    
-    function getKPRatings(normalizedCard, apiKey, localCurrentCard, callback) {
-        if (normalizedCard.kinopoisk_id) {
-            return fetchRatings(normalizedCard.kinopoisk_id, localCurrentCard, apiKey, callback);
-        }
-    
-        var queryTitle = (normalizedCard.original_title || normalizedCard.title || '').replace(/[:\-–—]/g, ' ').trim();
-        var year = '';
-        if (normalizedCard.release_date && typeof normalizedCard.release_date === 'string') {
-            year = normalizedCard.release_date.split('-')[0];
-        }
-        if (!year) { callback(null); return; }
-        
-        var encodedTitle = encodeURIComponent(queryTitle);
-        var searchUrl = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=' + encodedTitle;
-        
-        fetch(searchUrl, {
-            method: 'GET',
-            headers: { 'X-API-KEY': apiKey, 'Content-Type': 'application/json' }
-        })
-        .then(function(response) {
-            if (!response.ok) throw new Error('HTTP error: ' + response.status);
-            return response.json();
-        })
-        .then(function(data) {
-            if (!data.films || !data.films.length) { callback(null); return; }
-            
-            var bestMatch = null;
-            var filmYear, targetYear, film2;
-            for (var j = 0; j < data.films.length; j++) {
-                film2 = data.films[j];
-                if (!film2.year) continue;
-                filmYear = parseInt(film2.year.substring(0, 4), 10);
-                targetYear = parseInt(year, 10);
-                if (isNaN(filmYear) || isNaN(targetYear)) continue;
-                if (filmYear === targetYear) { bestMatch = film2; break; }
-            }
-            if (!bestMatch) {
-                for (var k = 0; k < data.films.length; k++) {
-                    film2 = data.films[k];
-                    if (!film2.year) continue;
-                    filmYear = parseInt(film2.year.substring(0, 4), 10);
-                    targetYear = parseInt(year, 10);
-                    if (isNaN(filmYear) || isNaN(targetYear)) continue;
-                    if (Math.abs(filmYear - targetYear) <= 1) { bestMatch = film2; break; }
-                }
-            }
-            if (!bestMatch || !bestMatch.filmId) { callback(null); return; }
-            
-            fetchRatings(bestMatch.filmId, localCurrentCard, apiKey, callback);
-        })
-        .catch(function() { callback(null); });
-    
-        function fetchRatings(filmId, localCurrentCard, apiKey, callback) {
-            var xmlUrl = 'https://rating.kinopoisk.ru/' + filmId + '.xml';
-            
-            fetchWithProxy(xmlUrl, localCurrentCard, function(error, xmlText) {
-                if (!error && xmlText) {
-                    try {
-                        var parser = new DOMParser();
-                        var xmlDoc = parser.parseFromString(xmlText, "text/xml");
-                        var kpRatingNode = xmlDoc.getElementsByTagName("kp_rating")[0];
-                        var imdbRatingNode = xmlDoc.getElementsByTagName("imdb_rating")[0];
-                        var kpRating = kpRatingNode ? parseFloat(kpRatingNode.textContent) : null;
-                        var imdbRating = imdbRatingNode ? parseFloat(imdbRatingNode.textContent) : null;
-                        var hasValidKp = !isNaN(kpRating) && kpRating > 0;
-                        var hasValidImdb = !isNaN(imdbRating) && imdbRating > 0;
-                        if (hasValidKp || hasValidImdb) {
-                            return callback({ kinopoisk: hasValidKp ? kpRating : null, imdb: hasValidImdb ? imdbRating : null });
-                        }
-                    } catch (e) {}
-                }
-                
-                fetch('https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId, {
-                    headers: { 'X-API-KEY': apiKey }
-                })
-                .then(function(response) {
-                    if (!response.ok) throw new Error('API error');
-                    return response.json();
-                })
-                .then(function(data) {
-                    callback({ kinopoisk: data.ratingKinopoisk || null, imdb: data.ratingImdb || null });
-                })
-                .catch(function() { callback(null); });
-            });
-        }
-    }
-    
-    function getImdbIdFromTmdb(tmdbId, type, localCurrentCard, callback) {
-        if (!tmdbId) { callback(null); return; }
-        var cleanType = type === 'movie' ? 'movie' : 'tv';
-        var cacheKey = cleanType + '_' + tmdbId;
-        var cache = Lampa.Storage.get(ID_MAPPING_CACHE) || {};
-        if (cache[cacheKey] && (Date.now() - cache[cacheKey].timestamp < CACHE_TIME)) {
-            return callback(cache[cacheKey].imdb_id);
-        }
-        
-        var mainUrl = Lampa.TMDB.api(cleanType + '/' + tmdbId + '/external_ids?api_key=' + Lampa.TMDB.key());
-        new Lampa.Reguest().silent(mainUrl, function(data) {
-            if (data && data.imdb_id) {
-                cache[cacheKey] = { imdb_id: data.imdb_id, timestamp: Date.now() };
-                Lampa.Storage.set(ID_MAPPING_CACHE, cache);
-                callback(data.imdb_id);
-            } else {
-                if (cleanType === 'tv') {
-                    var altUrl = Lampa.TMDB.api('tv/' + tmdbId + '?api_key=' + Lampa.TMDB.key());
-                    new Lampa.Reguest().silent(altUrl, function(altData) {
-                        var imdbId = (altData && altData.external_ids && altData.external_ids.imdb_id) || null;
-                        if (imdbId) {
-                            cache[cacheKey] = { imdb_id: imdbId, timestamp: Date.now() };
-                            Lampa.Storage.set(ID_MAPPING_CACHE, cache);
-                        }
-                        callback(imdbId);
-                    }, function() { callback(null); });
-                } else { callback(null); }
-            }
-        }, function() { callback(null); });
-    }
-    
-    function fetchOmdbRatings(card, cacheKey, localCurrentCard, render, callback) {
-        if (!card.imdb_id) { callback(null); return; }
-        var cachedData = getOmdbCache(cacheKey);
-        if (cachedData) { callback(cachedData); return; }
-        
-        var url = 'https://www.omdbapi.com/?apikey=' + getRandomToken(OMDB_API_KEYS) + '&i=' + card.imdb_id;
-        new Lampa.Reguest().silent(url, function(data) {
-            if (data && data.Response === 'True' && (data.Ratings || data.imdbRating)) {
-                var parsedAwards = parseAwards(data.Awards || '', localCurrentCard);
-                var result = {
-                    rt: extractRating(data.Ratings, 'Rotten Tomatoes'),
-                    mc: extractRating(data.Ratings, 'Metacritic'),
-                    imdb: data.imdbRating || null,
-                    ageRating: data.Rated || null,
-                    oscars: parsedAwards.oscars,
-                    emmy: parsedAwards.emmy,
-                    awards: parsedAwards.awards
-                };
-                saveOmdbCache(cacheKey, result);
-                callback(result);
-            } else { callback(null); }
-        }, function() { callback(null); });
-    }
-    
-    // --- ФУНКЦИИ ДЛЯ КАЧЕСТВА ---
-    
+// ------------------------------------------------------------JacRed------------------------------------------------------------------------------   
     function getBestReleaseFromJacred(normalizedCard, localCurrentCard, callback) {
-        if (Q_LOGGING) console.log("JacRed: поиск качества");
+        if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Optimized search");
+    
         var MAX_QUALITY = 2160;
         var stopWords = ['camrip', 'камрип', 'ts', 'telecine', 'telesync', 'telesynch', 'upscale', 'tc', 'тс'];
         var stopWordsPatterns = null;
-        
+    
+        // Упрощенная функция перевода качества (работает с числами)
         function translateQuality(quality) {
             switch(quality) {
                 case 2160: return '4K';
                 case 1080: return 'FHD';
                 case 720: return 'HD';
-                case 'TS': return 'TS';
-                default: return quality >= 720 ? 'HD' : 'SD';
+                case 'TS': return 'TS'; // Специальный случай
+                default: 
+                    // Для всех остальных числовых значений
+                    return quality >= 720 ? 'HD' : 'SD';
             }
         }
-        
-        function hasLetters(str) { return /[a-zа-яё]/i.test(str || ''); }
-        function onlyDigits(str) { return /^\d+$/.test(str); }
+    
+        function hasLetters(str) {
+            return /[a-zа-яё]/i.test(str || '');
+        }
+        function onlyDigits(str) {
+            return /^\d+$/.test(str);
+        }
         function isScreenCopy(title) {
             if (!title) return false;
             var lower = title.toLowerCase();
+            
             if (stopWordsPatterns === null) {
                 stopWordsPatterns = stopWords.map(function(word) {
                     return new RegExp('\\b' + word + '\\b', 'i');
                 });
             }
+    
             for (var i = 0; i < stopWordsPatterns.length; i++) {
-                if (stopWordsPatterns[i].test(lower)) { return true; }
+                if (stopWordsPatterns[i].test(lower)) {
+                    return true;
+                }
             }
             return false;
         }
-        
+    
+        // Извлечение года
         var year = '';
         var dateStr = normalizedCard.release_date || '';
-        if (dateStr.length >= 4) { year = dateStr.substring(0, 4); }
-        if (!year || isNaN(year)) { callback(null); return; }
-        
+        if (dateStr.length >= 4) {
+            year = dateStr.substring(0, 4);
+        }
+    
+        if (!year || isNaN(year)) {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Missing/invalid year");
+            callback(null);
+            return;
+        }
+    
         var uid = Lampa.Storage.get('lampac_unic_id', '');
         var apiUrl = JACRED_PROTOCOL + JACRED_URL + '/api/v2.0/indexers/all/results?' +
-                     'apikey=' + JACRED_API_KEY + '&uid=' + uid + '&year=' + year;
-        
+                     'apikey=' + JACRED_API_KEY +
+                     '&uid=' + uid +
+                     '&year=' + year;
+    
+        // Добавляем оба заголовка если они есть
         var hasTitle = false;
         if (normalizedCard.title && (hasLetters(normalizedCard.title) || onlyDigits(normalizedCard.title))) {
             apiUrl += '&title=' + encodeURIComponent(normalizedCard.title.trim());
@@ -824,210 +896,515 @@
             apiUrl += '&title_original=' + encodeURIComponent(normalizedCard.original_title.trim());
             hasTitle = true;
         }
-        if (!hasTitle) { callback(null); return; }
-        
+    
+        if (!hasTitle) {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: No valid titles");
+            callback(null);
+            return;
+        }
+    
+        if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Unified Request URL: " + apiUrl);
+    
         new Lampa.Reguest().silent(apiUrl, function(response) {
-            if (!response) { callback(null); return; }
+            if (!response) {
+                if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Request failed");
+                callback(null);
+                return;
+            }
+    
             try {
+                
+                // ЛОГИРОВАНИЕ ПОЛНОГО ОТВЕТА
+                /*
+                if (Q_LOGGING) {
+                    console.log("MAXSM-RATINGS JacRed FULL RESPONSE", response);
+        
+                }
+                */
+                
+                // Парсим ответ и извлекаем Results
                 var data = typeof response === 'string' ? JSON.parse(response) : response;
                 var torrents = data.Results || [];
-                if (!Array.isArray(torrents) || torrents.length === 0) { callback(null); return; }
                 
-                var bestQuality = -1, bestTorrent = null, findStopWords = false;
-                var searchYearNum = parseInt(year, 10), prevYear = searchYearNum - 1;
-                
+                if (!Array.isArray(torrents)) {
+                    torrents = [];
+                }
+    
+                if (torrents.length === 0) {
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Empty response");
+                    callback(null);
+                    return;
+                }
+    
+                var bestQuality = -1;
+                var bestTorrent = null;
+                var findStopWords = false;
+                var searchYearNum = parseInt(year, 10);
+                var prevYear = searchYearNum - 1;
+    
                 for (var i = 0; i < torrents.length; i++) {
                     var t = torrents[i];
-                    var info = t.info || {};
+                    var info = t.info || t.Info || {};
                     var usedQuality = info.quality;
                     var usedYear = info.relased;
                     var titleForCheck = t.Title || '';
-                    if (typeof usedQuality !== 'number' || usedQuality === 0) { continue; }
-                    var yearValid = false, parsedYear = 0;
+                    
+                    // ЛОГИРОВАНИЕ ДЕТАЛЕЙ ТОРРЕНТА
+                    /*
+                    if (Q_LOGGING) {
+                        console.log('MAXSM-RATINGS Processing torrent [${i+1}/${torrents.length}]: ${titleForCheck');
+                        console.log("Raw data:", {
+                            quality: usedQuality,
+                            year: usedYear,
+                            title: titleForCheck,
+                            info: info
+                        });
+                    } 
+                    */
+    
+                    // Пропускаем торренты без информации о качестве
+                    if (typeof usedQuality !== 'number' || usedQuality === 0) {
+                        continue;
+                    }
+    
+                    // Проверяем валидность года
+                    var yearValid = false;
+                    var parsedYear = 0;
+                    
                     if (usedYear && !isNaN(usedYear)) {
                         parsedYear = parseInt(usedYear, 10);
-                        if (parsedYear > 1900) { yearValid = true; }
+                        if (parsedYear > 1900) {
+                            yearValid = true;
+                        }
                     }
-                    if (!yearValid) { continue; }
-                    if (parsedYear !== searchYearNum && parsedYear !== prevYear) { continue; }
-                    if (isScreenCopy(titleForCheck)) { findStopWords = true; continue; }
+                    
+                    if (!yearValid) {
+                        continue;
+                    }
+    
+                    // Проверяем соответствие года (текущий или предыдущий)
+                    if (parsedYear !== searchYearNum && parsedYear !== prevYear) {
+                        continue;
+                    }
+    
+                    // Проверяем на стоп-слова
+                    if (isScreenCopy(titleForCheck)) {
+                        findStopWords = true;
+                        continue;
+                    }
+    
+                    // Проверяем максимальное качество
                     if (usedQuality === MAX_QUALITY) {
-                        callback({ quality: translateQuality(usedQuality), title: titleForCheck });
+                        if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Found MAX quality: " + usedQuality);
+                        callback({ 
+                            quality: translateQuality(usedQuality),
+                            title: titleForCheck 
+                        });
                         return;
                     }
+    
+                    // Обновляем лучший торрент
                     if (usedQuality > bestQuality) {
                         bestQuality = usedQuality;
-                        bestTorrent = { title: titleForCheck, quality: usedQuality };
+                        bestTorrent = {
+                            title: titleForCheck,
+                            quality: usedQuality,
+                            year: parsedYear
+                        };
                     }
                 }
+    
                 if (bestTorrent) {
-                    callback({ quality: translateQuality(bestTorrent.quality), title: bestTorrent.title });
+                    var translatedQuality = translateQuality(bestTorrent.quality);
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + 
+                        ", quality: JacRed: Found torrent: " + bestTorrent.title + 
+                        " quality: " + translatedQuality + " (" + bestTorrent.quality + "p)" +
+                        " year: " + bestTorrent.year);
+                    callback({ 
+                        quality: translatedQuality, 
+                        title: bestTorrent.title 
+                    });
                 } else if (findStopWords) {
-                    callback({ quality: translateQuality('TS'), title: "NOT SAVED" });
-                } else { callback(null); }
-            } catch (e) { callback(null); }
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Screen copy detected");
+                    callback({ 
+                        quality: translateQuality('TS'),
+                        title: "NOT SAVED" 
+                    });
+                } else {
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: No suitable torrents found");
+                    callback(null);
+                }
+            } catch (e) {
+                if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Processing error: " + e.message);
+                callback(null);
+            }
         });
     }
+// v1
+/*
+    function getBestReleaseFromJacred(normalizedCard, localCurrentCard, callback) {
+        if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Optimized search");
     
-    // --- ФУНКЦИИ UI ---
+        var MAX_QUALITY = 2160;
+        var stopWords = ['camrip', 'камрип', 'ts', 'telecine', 'telesync', 'telesynch', 'upscale']; // Релизы с данными словами игнорируются
+        var findStopWords = false;
+        var stopWordsPatterns = null;
     
-    function addLoadingAnimation(localCurrentCard, render) {
-        if (!render) return;
-        var rateLine = $('.full-start-new__rate-line', render);
-        if (!rateLine.length || $('.loading-dots-container', rateLine).length) return;
-        rateLine.append(
-            '<div class="loading-dots-container">' +
-                '<div class="loading-dots">' +
-                    '<span class="loading-dots__text">' + Lampa.Lang.translate("maxsm_ratings_loading") + '</span>' +
-                    '<span class="loading-dots__dot"></span>' +
-                    '<span class="loading-dots__dot"></span>' +
-                    '<span class="loading-dots__dot"></span>' +
-                '</div>' +
-            '</div>'
-        );
-        $('.loading-dots-container', rateLine).css({ 'opacity': '1', 'visibility': 'visible' });
+        function hasLetters(str) {
+            return /[a-zа-яё]/i.test(str || '');
+        }
+        function onlyDigits(str) {
+            return /^\d+$/.test(str);
+        }
+        function isScreenCopy(title) {
+            if (!title) return false;
+            var lower = title.toLowerCase();
+            
+            if (stopWordsPatterns === null) {
+                stopWordsPatterns = stopWords.map(function(word) {
+                    return new RegExp('\\b' + word + '\\b', 'i');
+                });
+            }
+    
+            for (var i = 0; i < stopWordsPatterns.length; i++) {
+                if (stopWordsPatterns[i].test(lower)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    
+        // Извлечение года
+        var year = '';
+        var dateStr = normalizedCard.release_date || '';
+        if (dateStr.length >= 4) {
+            year = dateStr.substring(0, 4);
+        }
+    
+        if (!year || isNaN(year)) {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Missing/invalid year");
+            callback(null);
+            return;
+        }
+    
+        // Основная функция поиска
+        function searchJacred(searchTitle, searchYear, exact, stepName, callback) {
+            var uid = Lampa.Storage.get('lampac_unic_id', '');
+            var apiUrl = JACRED_PROTOCOL + JACRED_URL + '/api/v1.0/torrents?search=' + 
+                         encodeURIComponent(searchTitle) + 
+                         '&year=' + searchYear + 
+                         '&apikey=' + JACRED_API_KEY +
+                         (exact ? '&exact=true' : '') +
+                         '&uid=' + uid;
+        
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: " + stepName + " URL: " + apiUrl);
+        
+            new Lampa.Reguest().silent(apiUrl, function(response) {
+                if (!response) {
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: " + stepName + " failed");
+                    callback(null);
+                    return;
+                }
+        
+                try {
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: analizing answer...");
+                    var torrents = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (!Array.isArray(torrents) || torrents.length === 0) {
+                        callback(null);
+                        return;
+                    }
+        
+                    var bestQuality = -1;
+                    var bestTorrent = null;
+                    var findStopWords = false;
+                    var searchYearNum = parseInt(searchYear, 10);
+                        
+
+        
+                    for (var i = 0; i < torrents.length; i++) {
+                        var t = torrents[i];
+                        var usedQuality = t.quality;
+                        var usedYear = t.relased;
+                        var qualitySource = "original";
+                        var yearSource = "original";
+                        var yearStatus = "valid";
+                        
+                        // Обработка качества: если оригинальное качество 0 - пропускаем
+                        if (typeof t.quality !== 'number' || t.quality === 0) {
+                            // Временное отключение парсинга качества
+                            continue; // Пропускаем релизы без качества
+                        }
+                        
+                        // Обработка года: если оригинальный год невалиден - пропускаем
+                        var yearValid = false;
+                        var parsedYear = 0;
+                        
+                        if (usedYear && !isNaN(usedYear)) {
+                            parsedYear = parseInt(usedYear, 10);
+                            if (parsedYear > 1900) {
+                                yearValid = true;
+                            }
+                        }
+                        
+
+                        
+                        if (!yearValid) {
+                            yearStatus = "invalid/missing";
+                            continue; // Пропускаем релизы без года
+                        }
+                        
+                        // Проверка соответствия года (если год известен)
+                        if (yearValid) {
+                            if (!isNaN(searchYearNum)) {
+                                if (parsedYear === searchYearNum) {
+                                    yearStatus = "match (" + parsedYear + " vs " + searchYearNum + ")";
+                                } else {
+                                    yearStatus = "mismatch (" + parsedYear + " vs " + searchYearNum + ")";
+                                    continue; // Пропускаем торренты с несоответствующим годом
+                                }
+                            } else {
+                                yearStatus = "no_search_year";
+                            }
+                        }
+                        
+                        // Проверка на screen copy
+                        if (isScreenCopy(t.title)) {
+                            findStopWords = true;
+                            continue;
+                        }
+                        
+                        
+                        if (usedQuality === MAX_QUALITY) {
+                            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Found MAX quality in " + stepName);
+                            callback({
+                                quality: usedQuality,
+                                title: t.title
+                            });
+                            return;
+                        }
+                        
+                        if (usedQuality > bestQuality) {
+                            bestQuality = usedQuality;
+                            bestTorrent = t;
+                        }
+                    }
+        
+                    if (bestTorrent) {
+                        if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Found in " + stepName + ": torrent: " + bestTorrent.title + " quality: " + bestQuality + "p");
+                        callback({
+                            quality: bestQuality,
+                            title: bestTorrent.title
+                        });
+                    } else {
+                        if (findStopWords) {
+                            callback({
+                                quality: "TS",
+                                title: "NOT SAVED"
+                            });                            
+                        } else {
+                            callback(null);
+                        }
+                    }
+                } catch (e) {
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: " + stepName + " error: " + e.message);
+                    callback(null);
+                }
+            });
+        }
+        
+        // Последовательные стратегии поиска
+        var searchStrategies = [];
+        
+        // Стратегия 1: По original_title (точное совпадение)
+        if (normalizedCard.original_title && (hasLetters(normalizedCard.original_title) || onlyDigits(normalizedCard.original_title))) {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: Strategy added: OriginalTitle Exact Year");
+            searchStrategies.push({
+                title: normalizedCard.original_title.trim(),
+                year: year,
+                exact: true,
+                name: "OriginalTitle Exact Year"
+            });
+        }
+        
+        // Стратегия 2: По original_title (точное совпадение) -1год
+        if (normalizedCard.original_title && (hasLetters(normalizedCard.original_title) || onlyDigits(normalizedCard.original_title))) {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: Strategy added: OriginalTitle Exact Year-1");
+            searchStrategies.push({
+                title: normalizedCard.original_title.trim(),
+                year: String(Number(year) - 1),
+                exact: true,
+                name: "OriginalTitle Exact Year-1"
+            });
+        }
+        
+        // Стратегия 3: По title (точное совпадение)
+        if (normalizedCard.title && (hasLetters(normalizedCard.title) || onlyDigits(normalizedCard.title))) {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: Strategy added: Title Exact Year");
+            searchStrategies.push({
+                title: normalizedCard.title.trim(),
+                year: year,
+                exact: true,
+                name: "Title Exact Year"
+            });
+        }
+        
+        // Стратегия 4: По title (точное совпадение) -1год
+        if (normalizedCard.title && (hasLetters(normalizedCard.title) || onlyDigits(normalizedCard.title))) {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: Strategy added: Title Exact Year-1");
+            searchStrategies.push({
+                title: normalizedCard.title.trim(),
+                year: String(Number(year) - 1),
+                exact: true,
+                name: "Title Exact Year-1"
+            });
+        }
+        
+        // Рекурсивная проверка стратегий
+        function tryNextStrategy(index) {
+            if (index >= searchStrategies.length) {
+                if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: All strategies failed");
+                callback(null);
+                return;
+            }
+            
+            var strategy = searchStrategies[index];
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Trying " + strategy.name);
+            
+            searchJacred(strategy.title, strategy.year, strategy.exact, strategy.name, function(result) {
+                if (result !== null) {
+                    // ДОБАВЛЕН ЛОГ С НАЗВАНИЕМ РАЗДАЧИ
+                    // if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: Selected torrent: \"" + result.title + "\"");
+                    callback({ quality: result.quality + "p" });
+                } else {
+                    tryNextStrategy(index + 1);
+                }
+            });
+        }
+        
+        // Запуск первой стратегии
+        if (searchStrategies.length > 0) {
+            tryNextStrategy(0);
+        } else {
+            if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: JacRed: No valid titles");
+            callback(null);
+        }
     }
-    
-    function removeLoadingAnimation(localCurrentCard, render) {
-        if (!render) return;
-        $('.loading-dots-container', render).remove();
-    }
-    
+    */
+// ------------------------------------------------------------END--JacRed-------------------------------------------------------------------------     
+    // Функции работы с качеством
+    // Удаляем качество с карточки если есть
     function clearQualityElements(localCurrentCard, render) {
         if (render) $('.maxsm-quality', render).remove();
     }
-    
+    // Плейсхолдер качества
     function showQualityPlaceholder(localCurrentCard, render) {
         if (!render) return;
+        
         var rateLine = $('.full-start-new__rate-line', render);
         if (!rateLine.length) return;
+        
+        // Проверяем, не добавлен ли уже плейсхолдер
         if (!$('.maxsm-quality', render).length) {
             var placeholder = document.createElement('div');
             placeholder.className = 'maxsm-quality';
             placeholder.textContent = '...';
             placeholder.style.opacity = '0.7';
             rateLine.append(placeholder);
-        }
+        } 
     }
-    
-    function updateQualityElement(quality, localCurrentCard, render) {
-        if (!render) return;
-        var element = $('.maxsm-quality', render);
-        var rateLine = $('.full-start-new__rate-line', render);
-        if (!rateLine.length) return;
-        
-        if (element.length) {
-            element.text(quality);
-            element.css('opacity', '1');
-        } else {
-            var div = document.createElement('div');
-            div.className = 'maxsm-quality';
-            div.textContent = quality;
-            rateLine.append(div);
-        }
-    }
-    
+    // Получаем касество
     function fetchQualitySequentially(normalizedCard, localCurrentCard, qCacheKey, render) {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Starting JacRed request');
         getBestReleaseFromJacred(normalizedCard, localCurrentCard, function(jrResult) {
+            if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: JacRed callback received');
             var quality = (jrResult && jrResult.quality) || null;
             if (quality && quality !== 'NO') {
-                saveQualityCache(qCacheKey, { quality: quality });
+                if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: JacRed found quality: ' + quality);
+                saveQualityCache(qCacheKey, { quality: quality }, localCurrentCard);
                 updateQualityElement(quality, localCurrentCard, render);
                 return;
             }
             clearQualityElements(localCurrentCard, render);
         });
     }
+    // Обновляем качество в карточке
+function updateQualityElement(quality, localCurrentCard, render) {
+    if (!render) return;
     
-    function updateHiddenElements(ratings, localCurrentCard, render) {
-        if (!render) return;
-        
-        var pgElement = $('.full-start__pg', render);
-        if (pgElement.length && ratings.ageRating) {
-            var invalidRatings = ['N/A', 'Not Rated', 'Unrated', 'NR'];
-            var isValid = invalidRatings.indexOf(ratings.ageRating) === -1;
-            var showPg = localStorage.getItem('maxsm_ratings_pg') === 'true';
-            if (isValid && showPg) {
-                var localizedRating = AGE_RATINGS[ratings.ageRating] || ratings.ageRating;
-                pgElement.removeClass('hide').text(localizedRating);
-            } else { pgElement.addClass('hide'); }
-        }
-        
-        var statusElement = $('.full-start__status', render);
-        if (statusElement.length) {
-            var showStatus = localStorage.getItem('maxsm_ratings_status') === 'true';
-            if (showStatus) { statusElement.removeClass('hide'); } else { statusElement.addClass('hide'); }
-        }
-        
-        var imdbElement = $('.rate--imdb', render);
-        if (imdbElement.length) {
-            var imdbRating;
-            if (ratings.imdb && !isNaN(ratings.imdb)) {
-                imdbRating = parseFloat(ratings.imdb).toFixed(1);
-                imdbElement.removeClass('hide').find('> div').eq(0).text(imdbRating);
-            } else if (ratings.imdb_kp && !isNaN(ratings.imdb_kp)) {
-                imdbRating = parseFloat(ratings.imdb_kp).toFixed(1);
-                imdbElement.removeClass('hide').find('> div').eq(0).text(imdbRating);
-            }
-        }
-        
-        var kpElement = $('.rate--kp', render);
-        if (kpElement.length && ratings.kp && !isNaN(ratings.kp)) {
-            var kpRating = parseFloat(ratings.kp).toFixed(1);
-            kpElement.removeClass('hide').find('> div').eq(0).text(kpRating);
-        }
+    var element = $('.maxsm-quality', render);
+    var rateLine = $('.full-start-new__rate-line', render);
+    if (!rateLine.length) return;
+    
+    // Определяем URL иконки на основе качества
+    var qualityIcon = '';
+    switch(quality) {
+        case '4K':
+            qualityIcon = 'https://imjamoe1.github.io/quality/4K.png';
+            break;
+        case 'FHD':
+            qualityIcon = 'https://imjamoe1.github.io/quality/FHD.png';
+            break;
+        case 'HD':
+            qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+            break;
+        case 'SD':
+            qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+            break;
+        case 'TS':
+            qualityIcon = 'https://imjamoe1.github.io/quality/HD.png';
+            break;
+        default:
+            // Для других значений качества
+            qualityIcon = '';
     }
     
-    function insertRatings(rtRating, mcRating, oscars, awards, emmy, localCurrentCard, render) {
-        if (!render) return;
-        var rateLine = $('.full-start-new__rate-line', render);
-        if (!rateLine.length) return;
-        var lastRate = $('.full-start__rate:last', rateLine);
-        var showRT = localStorage.getItem('maxsm_ratings_critic') === 'true';
-        var showMC = localStorage.getItem('maxsm_ratings_critic') === 'true';
-        var showAwards = localStorage.getItem('maxsm_ratings_awards') === 'true';
-        var showOscar = localStorage.getItem('maxsm_ratings_awards') === 'true';
-        var showColors = localStorage.getItem('maxsm_ratings_colors') === 'true';
-        var showEmmy = localStorage.getItem('maxsm_ratings_awards') === 'true';
+    if (element.length) {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + 
+            ', quality: Updating existing element with quality "' + quality + '"');
         
-        if (showRT && rtRating && !isNaN(rtRating) && !$('.rate--rt', rateLine).length) {
-            var rtElement = $('<div class="full-start__rate rate--rt"><div>' + rtRating + '</div><div class="source--name">Tomatoes</div></div>');
-            if (lastRate.length) { rtElement.insertAfter(lastRate); } else { rateLine.prepend(rtElement); }
+        if (qualityIcon) {
+            element.html('<img src="' + qualityIcon + '" alt="' + quality + 
+                '" style="height: 1.2em; vertical-align: middle;">');
+        } else {
+            element.text(quality);
         }
-        if (showMC && mcRating && !isNaN(mcRating) && !$('.rate--mc', rateLine).length) {
-            var insertAfter = $('.rate--rt', rateLine).length ? $('.rate--rt', rateLine) : lastRate;
-            var mcElement = $('<div class="full-start__rate rate--mc"><div>' + mcRating + '</div><div class="source--name">Metacritic</div></div>');
-            if (insertAfter.length) { mcElement.insertAfter(insertAfter); } else { rateLine.prepend(mcElement); }
+        element.css('opacity', '1');
+    } else {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + 
+            ', quality: Creating new element with quality "' + quality + '"');
+        
+        var div = document.createElement('div');
+        div.className = 'maxsm-quality';
+        
+        if (qualityIcon) {
+            div.innerHTML = '<img src="' + qualityIcon + '" alt="' + quality + 
+                '" style="height: 1.2em; vertical-align: middle;">';
+        } else {
+            div.textContent = quality;
         }
-        if (showAwards && awards && !isNaN(awards) && awards > 0 && !$('.rate--awards', rateLine).length) {
-            var awardsElement = $('<div class="full-start__rate rate--awards' + (showColors ? ' rate--gold' : '') + '"><div>' + awards + '</div><div class="source--name">' + Lampa.Lang.translate("maxsm_ratings_awards") + '</div></div>');
-            rateLine.prepend(awardsElement);
-        }
-        if (showOscar && oscars && !isNaN(oscars) && oscars > 0 && !$('.rate--oscars', rateLine).length) {
-            var oscarsElement = $('<div class="full-start__rate rate--oscars' + (showColors ? ' rate--gold' : '') + '"><div>' + oscars + '</div><div class="source--name">' + Lampa.Lang.translate("maxsm_ratings_oscars") + '</div></div>');
-            rateLine.prepend(oscarsElement);
-        }
-        if (showEmmy && emmy && !isNaN(emmy) && emmy > 0 && !$('.rate--emmy', rateLine).length) {
-            var emmyElement = $('<div class="full-start__rate rate--emmy' + (showColors ? ' rate--gold' : '') + '"><div>' + emmy + '</div><div class="source--name">' + Lampa.Lang.translate("maxsm_ratings_emmy") + '</div></div>');
-            rateLine.prepend(emmyElement);
-        }
+        
+        rateLine.append(div);
     }
-    
-    // --- ОСНОВНАЯ ФУНКЦИЯ (ПАРАЛЛЕЛЬНАЯ ЗАГРУЗКА) ---
-    
+}
+
+    // Основная функция
     function fetchAdditionalRatings(card, render) {
         if (!render) return;
-        var localCurrentCard = card.id;
-        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Start");
+        var localCurrentCard = card.id; 
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Start - card data: ", card);
         
         var normalizedCard = {
-            id: card.id, tmdb: card.vote_average || null,
-            kinopoisk_id: card.kinopoisk_id, imdb_id: card.imdb_id || card.imdb || null,
+            id: card.id,
+            tmdb: card.vote_average || null,
+            kinopoisk_id: card.kinopoisk_id,
+            imdb_id: card.imdb_id || card.imdb || null,
             title: card.title || card.name || '',
             original_title: card.original_title || card.original_name || '',
             type: getCardType(card),
             release_date: card.release_date || card.first_air_date || ''
         };
+        
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", imdb id: " + normalizedCard.imdb_id + " title: " + normalizedCard.title + " orig: " + normalizedCard.original_title + " type: " + normalizedCard.type + " date: " + normalizedCard.release_date);
         
         var rateLine = $('.full-start-new__rate-line', render);
         if (rateLine.length) {
@@ -1037,118 +1414,140 @@
         }
         
         var cacheKey = normalizedCard.type + '_' + (normalizedCard.imdb_id || normalizedCard.id);
-        var qCacheKey = normalizedCard.type + '_' + (normalizedCard.id || normalizedCard.imdb_id);
-        var ratingsData = {};
-        var completedRequests = 0;
-        var totalRequests = 0;
-        
-        if (normalizedCard.imdb_id) totalRequests++;
-        totalRequests++;
-        
-        function checkComplete() {
-            completedRequests++;
-            if (completedRequests >= totalRequests) { updateUI(); }
-        }
-        
-        // 1. KP (параллельно)
+        var qCacheKey = normalizedCard.type + '_' + (normalizedCard.id || normalizedCard.imdb_id); 
+        var cachedData = getOmdbCache(cacheKey);
         var cachedKpData = getKpCache(cacheKey);
+        var cacheQualityData = getQualityCache(qCacheKey);
+        var ratingsData = {};
+        
+        // Оптимищируем ли запросы 1 - экономия, 0 - точность (не избегаем запросов ксли на карточке есть IMDb и KP)
+        // var optimize = parseInt(localStorage.getItem('maxsm_ratings_optimize'));
+
+        // Статусы рейтингов
+        var kpElement = $('.rate--kp:not(.hide)', render);
+        var imdbElement = $('.rate--imdb:not(.hide)', render);
+        
+        // Проверяем, что оба рейтинга уже есть и содержат числовые значения
+        var kpExists = kpElement.length > 0 && !!kpElement.find('> div').eq(0).text().trim();
+        var imdbExists = imdbElement.length > 0 && !!imdbElement.find('> div').eq(0).text().trim();
+            // Асинхронно ищем качество 
+            if (localStorage.getItem('maxsm_ratings_quality') === 'true' && !(localStorage.getItem('maxsm_ratings_quality_tv') === 'false' && normalizedCard.type === 'tv')) {
+                if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', quality: Start quality');
+                // 1. Обрабатываем кеш качества
+                if (cacheQualityData) {
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: Get Quality data from cache");
+                    updateQualityElement(cacheQualityData.quality, localCurrentCard, render);
+                } else {
+                    clearQualityElements(localCurrentCard, render);
+                    showQualityPlaceholder(localCurrentCard, render);
+                    fetchQualitySequentially(normalizedCard, localCurrentCard, qCacheKey, render);
+                }
+            } 
+                
+        // 1. Обрабатываем кеш Кинопоиска
         if (cachedKpData) {
             ratingsData.kp = cachedKpData.kp;
-            ratingsData.imdb_kp = cachedKpData.imdb;
-            checkComplete();
+            ratingsData.imdb_kp = cachedKpData.imdb; 
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Get KP ratings from cache");
+            processNextStep();
         } else {
             getKPRatings(normalizedCard, getRandomToken(KP_API_KEYS), localCurrentCard, function(kpRatings) {
                 if (kpRatings) {
-                    if (kpRatings.kinopoisk) { ratingsData.kp = kpRatings.kinopoisk; }
-                    if (kpRatings.imdb) { ratingsData.imdb_kp = kpRatings.imdb; }
-                    saveKpCache(cacheKey, { kp: kpRatings.kinopoisk, imdb: kpRatings.imdb });
+                    if (kpRatings.kinopoisk) {
+                        ratingsData.kp = kpRatings.kinopoisk;
+                    }
+                    if (kpRatings.imdb) {
+                        ratingsData.imdb_kp = kpRatings.imdb; // если хочешь сохранить отдельно, или сравнить
+                    }
+                    saveKpCache(cacheKey, { kp: kpRatings.kinopoisk, imdb: kpRatings.imdb }, localCurrentCard);
                 }
-                checkComplete();
+                processNextStep();
             });
+            return; // Выходим, продолжим в колбэке
         }
         
-        // 2. OMDB (параллельно)
-        var cachedData = getOmdbCache(cacheKey);
-        if (cachedData) {
-            ratingsData.rt = cachedData.rt;
-            ratingsData.mc = cachedData.mc;
-            ratingsData.imdb = cachedData.imdb;
-            ratingsData.ageRating = cachedData.ageRating;
-            ratingsData.oscars = cachedData.oscars;
-            ratingsData.emmy = cachedData.emmy;
-            ratingsData.awards = cachedData.awards;
-            checkComplete();
-        } else if (normalizedCard.imdb_id) {
-            fetchOmdbRatings(normalizedCard, cacheKey, localCurrentCard, render, function(omdbData) {
-                if (omdbData) {
-                    ratingsData.rt = omdbData.rt;
-                    ratingsData.mc = omdbData.mc;
-                    ratingsData.imdb = omdbData.imdb;
-                    ratingsData.ageRating = omdbData.ageRating;
-                    ratingsData.oscars = omdbData.oscars;
-                    ratingsData.emmy = omdbData.emmy;
-                    ratingsData.awards = omdbData.awards;
-                    saveOmdbCache(cacheKey, omdbData);
-                }
-                checkComplete();
-            });
-        } else {
-            getImdbIdFromTmdb(normalizedCard.id, normalizedCard.type, localCurrentCard, function(newImdbId) {
-                if (newImdbId) {
-                    normalizedCard.imdb_id = newImdbId;
-                    var newCacheKey = normalizedCard.type + '_' + newImdbId;
-                    fetchOmdbRatings(normalizedCard, newCacheKey, localCurrentCard, render, function(omdbData) {
-                        if (omdbData) {
-                            ratingsData.rt = omdbData.rt;
-                            ratingsData.mc = omdbData.mc;
-                            ratingsData.imdb = omdbData.imdb;
-                            ratingsData.ageRating = omdbData.ageRating;
-                            ratingsData.oscars = omdbData.oscars;
-                            ratingsData.emmy = omdbData.emmy;
-                            ratingsData.awards = omdbData.awards;
-                            saveOmdbCache(newCacheKey, omdbData);
-                        }
-                        checkComplete();
-                    });
-                } else { checkComplete(); }
-            });
-        }
-        
-        // 3. Качество (в фоне)
-        if (localStorage.getItem('maxsm_ratings_quality') === 'true' && 
-            !(localStorage.getItem('maxsm_ratings_quality_tv') === 'false' && normalizedCard.type === 'tv')) {
-            var cacheQualityData = getQualityCache(qCacheKey);
-            if (cacheQualityData) {
-                updateQualityElement(cacheQualityData.quality, localCurrentCard, render);
+        function processNextStep() {
+
+            updateHiddenElements(ratingsData, localCurrentCard, render);
+            // 2. Обрабатываем кеш OMDB
+            if (cachedData) {
+                ratingsData.rt = cachedData.rt;
+                ratingsData.mc = cachedData.mc;
+                ratingsData.imdb = cachedData.imdb;
+                ratingsData.ageRating = cachedData.ageRating;
+                ratingsData.oscars = cachedData.oscars;
+                ratingsData.emmy = cachedData.emmy;
+                ratingsData.awards = cachedData.awards;
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Get OMDB ratings from cache");
+                updateUI();
+            } else if (normalizedCard.imdb_id) {
+                fetchOmdbRatings(normalizedCard, cacheKey, localCurrentCard, render, function(omdbData) {
+                    if (omdbData) {
+                        ratingsData.rt = omdbData.rt;
+                        ratingsData.mc = omdbData.mc;
+                        ratingsData.imdb = omdbData.imdb;
+                        ratingsData.ageRating = omdbData.ageRating;
+                        ratingsData.oscars = omdbData.oscars;
+                        ratingsData.emmy = omdbData.emmy;
+                        ratingsData.awards = omdbData.awards;
+                        saveOmdbCache(cacheKey, omdbData, localCurrentCard);
+                    }
+                    updateUI();
+                });
             } else {
-                clearQualityElements(localCurrentCard, render);
-                showQualityPlaceholder(localCurrentCard, render);
-                setTimeout(function() {
-                    fetchQualitySequentially(normalizedCard, localCurrentCard, qCacheKey, render);
-                }, 100);
+                getImdbIdFromTmdb(normalizedCard.id, normalizedCard.type, localCurrentCard, function(newImdbId) {
+                    if (newImdbId) {
+                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", imdb id is: " + newImdbId);
+                        normalizedCard.imdb_id = newImdbId;
+                        cacheKey = normalizedCard.type + '_' + newImdbId;
+                        fetchOmdbRatings(normalizedCard, cacheKey, localCurrentCard, render, function(omdbData) {
+                            if (omdbData) {
+                                ratingsData.rt = omdbData.rt;
+                                ratingsData.mc = omdbData.mc;
+                                ratingsData.imdb = omdbData.imdb;
+                                ratingsData.ageRating = omdbData.ageRating;
+                                ratingsData.oscars = omdbData.oscars;
+                                ratingsData.emmy = omdbData.emmy;
+                                ratingsData.awards = omdbData.awards;
+                                saveOmdbCache(cacheKey, omdbData, localCurrentCard);
+                            }
+                            updateUI();
+                        });
+                    } else {
+                        updateUI();
+                    }
+                });
             }
         }
-        
+
         function updateUI() {
-            updateHiddenElements(ratingsData, localCurrentCard, render);
+            // Вставляем рейтинги RT и MC
             insertRatings(ratingsData.rt, ratingsData.mc, ratingsData.oscars, ratingsData.awards, ratingsData.emmy, localCurrentCard, render);
+
+            // Принудительно заменяем BYLAMPA на звездочку
             setTimeout(forceReplacebylampaWithStar, 50);
             setTimeout(replaceTmdbInFullStartDeta, 50);
+            
+            // Обновляем скрытые элементы
+            updateHiddenElements(ratingsData, localCurrentCard, render);
             
             var mode = parseInt(localStorage.getItem('maxsm_ratings_mode'), 10);
             var isPortrait = window.innerHeight > window.innerWidth;
             if (isPortrait) mode = 1;
             
-            if (mode !== 2) {
-                calculateAverageRatingOptimized(ratingsData, localCurrentCard, render);
-            }
+            // Считаем и отображаем средний рейтинг
+            if (mode !== 2)
+                calculateAverageRating(localCurrentCard, render);
             
-            var showIcons = localStorage.getItem('maxsm_ratings_icons') === 'true';
+            //Меняем лейблы на иконки если надо
+            var showIcons = localStorage.getItem('maxsm_ratings_icons')  === 'true';
             if (showIcons) insertIcons(localCurrentCard, render);
             
+            // Убираем анимацию и возвращаем строку рейтингов     
             removeLoadingAnimation(localCurrentCard, render);
             rateLine.css('visibility', 'visible');
             
+            // Добавляем обработчик для портретного режима
             if (isPortrait) {
                 var rateElement = $('.full-start__rate', render);
                 rateElement.off('click.ratings-modal').on('click.ratings-modal', function(e) {
@@ -1158,117 +1557,192 @@
             }
             
             if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", RATE DONE");
+       }
+    }
+
+function replaceTmdbInFullStartDeta() {
+    var elements = document.querySelectorAll('.full-start__deta .info__rate .source--name');
+    for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        var text = element.textContent || element.innerText || '';
+        var trimmedText = text.trim().toUpperCase();
+        
+        if (trimmedText === 'TMDB' || trimmedText === 'TMDb') {
+            element.innerHTML = tmdb_svg;
+            element.classList.add('rate--icon');
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "Replaced TMDB in full-start__deta with logo");
         }
     }
+}
+
+// Функция для принудительной замены текста BYLAMPA на звездочку
+function forceReplacebylampaWithStar(root) {
+    root = root || document;
+
+    var candidates = root.querySelectorAll(
+        '.rate--bylampa_full .source--name, ' +
+        '[class*="bylampa"] .source--name, ' +
+        '.full-start__rate .source--name'
+    );
+
+    for (var i = 0; i < candidates.length; i++) {
+        var element = candidates[i];
+        var text = (element.textContent || element.innerText || '').replace(/\s+/g, '').toUpperCase();
+
+        if (text === 'BYLAMPA' || text === 'BYLAMPAFULL') {
+            element.innerHTML = bylampa_svg;
+            element.classList.add('source--name');
+            element.classList.add('rate--icon');
+            element.classList.add('bylampa-replaced');
+        }
+    }
+}
+
+var bylampaReplaceObserver = new MutationObserver(function(mutations) {
+    for (var i = 0; i < mutations.length; i++) {
+        var node = mutations[i].target;
+
+        if (node && node.nodeType === 1) {
+            forceReplacebylampaWithStar(node);
+        }
+    }
+});
+
+function startBylampaReplaceObserver() {
+    forceReplacebylampaWithStar(document);
+
+    bylampaReplaceObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
+}
     
-    // --- ОПТИМИЗИРОВАННЫЙ ПОДСЧЕТ СРЕДНЕГО ---
-    
-    function calculateAverageRatingOptimized(ratingsData, localCurrentCard, render) {
-        if (!render) return;
+//-------------------------------------------MODALKA---------------------------------------------------------
+    function showRatingsModal(cardId, render) {
+        // Проверяем настройку цветов
+        var showColors = localStorage.getItem('maxsm_ratings_colors') === 'true';
+        
+        // Создаем контейнер для модального окна
+        var modalContent = $('<div class="maxsm-modal-ratings"></div>');
+        
+        // Находим строку рейтингов
         var rateLine = $('.full-start-new__rate-line', render);
         if (!rateLine.length) return;
         
-        var ratings = {
-            tmdb: parseFloat($('.rate--tmdb div:first', rateLine).text()) || 0,
-            imdb: parseFloat(ratingsData.imdb) || 0,
-            kp: parseFloat(ratingsData.kp) || 0,
-            mc: (parseFloat(ratingsData.mc) || 0) / 10,
-            rt: (parseFloat(ratingsData.rt) || 0) / 10
-        };
+        // Порядок отображения рейтингов
+        var ratingOrder = [
+            'rate--avg',
+            'rate--oscars',
+            'rate--emmy',
+            'rate--awards',
+            'rate--tmdb',
+            'rate--imdb',
+            'rate--kp',
+            'rate--rt',
+            'rate--mc'
+        ];
         
-        var totalWeight = 0, weightedSum = 0, ratingsCount = 0;
-        for (var key in ratings) {
-            if (ratings.hasOwnProperty(key) && !isNaN(ratings[key]) && ratings[key] > 0) {
-                weightedSum += ratings[key] * WEIGHTS[key];
-                totalWeight += WEIGHTS[key];
-                ratingsCount++;
+        // Собираем рейтинги в нужном порядке
+        ratingOrder.forEach(function(className) {
+            var element = $('.' + className, rateLine);
+            if (element.length) {
+                // Берем значение из первого дочернего элемента
+                var value = element.children().eq(0).text().trim();
+                var numericValue = parseFloat(value);
+                
+                // Определяем название рейтинга
+                var label = '';
+                switch(className) {
+                    case 'rate--avg': 
+                        label = Lampa.Lang.translate("maxsm_ratings_mode");
+                        break;
+                    case 'rate--oscars': 
+                        label = Lampa.Lang.translate("maxsm_ratings_oscars");
+                        break;
+                    case 'rate--emmy': 
+                        label = Lampa.Lang.translate("maxsm_ratings_emmy");
+                        break;
+                    case 'rate--awards': 
+                        label = Lampa.Lang.translate("maxsm_ratings_awards");
+                        break;
+                    case 'rate--tmdb': 
+                        label = 'TMDB';
+                        break;
+                    case 'rate--imdb': 
+                        label = 'IMDb';
+                        break;
+                    case 'rate--kp': 
+                        label = 'Кинопоиск';
+                        break;
+                    case 'rate--rt': 
+                        label = 'Rotten Tomatoes';
+                        break;
+                    case 'rate--mc': 
+                        label = 'Metacritic';
+                        break;
+                }
+                
+                // Создаем элемент строки с префиксными классами
+                var item = $('<div class="maxsm-modal-rating-line"></div>');
+                // Применяем цветовые классы если включена настройка
+                if (showColors) {                
+                var colorClass;
+                    // Для среднего рейтинга используем специальную функцию
+                    if (className === 'rate--avg') {
+                        colorClass = getRatingClass(numericValue);
+                        if (colorClass) {
+                            item.addClass(colorClass);
+                        }
+                    }
+                    // Для остальных рейтингов используем префиксные классы
+                    else {
+                        colorClass = 'maxsm-modal-' + className.replace('rate--', '');
+                        item.addClass(colorClass);
+                    }
+                }
+                item.text(value + ' - ' + label);
+                modalContent.append(item);
             }
-        }
-        $('.rate--avg', rateLine).remove();
+        });
         
-        var mode = parseInt(localStorage.getItem('maxsm_ratings_mode'), 10);
-        var isPortrait = window.innerHeight > window.innerWidth;
-        if (isPortrait) mode = 1;
-        
-        if (totalWeight > 0 && (ratingsCount > 1 || mode === 1)) {
-            var averageRating = (weightedSum / totalWeight).toFixed(1);
-            var colorClass = getRatingClass(averageRating);
-            var showColors = localStorage.getItem('maxsm_ratings_colors') === 'true';
-            var avgLabel = mode === 1 ? Lampa.Lang.translate("maxsm_ratings_avg_simple") : Lampa.Lang.translate("maxsm_ratings_avg");
-            var avgElement = $('<div class="full-start__rate rate--avg' + (showColors ? ' ' + colorClass : '') + '"><div>' + averageRating + '</div><div class="source--name">' + avgLabel + '</div></div>');
-            if (mode === 1) {
-                $('.full-start__rate', rateLine).not('.rate--oscars, .rate--avg, .rate--awards').hide();
+        // Создаем модальное окно
+        Lampa.Modal.open({
+            title: Lampa.Lang.translate("maxsm_ratings_avg_simple"),
+            html: modalContent,
+            width: 600,
+            onBack: function() {
+                Lampa.Modal.close();
+                Lampa.Controller.toggle('content');
+                return true;
             }
-            $('.full-start__rate:first', rateLine).before(avgElement);
-        }
-    }
-    
-    // --- ИКОНКИ ---
-    
-    function replaceTmdbInFullStartDeta() {
-        var elements = document.querySelectorAll('.full-start__deta .info__rate .source--name');
-        for (var i = 0; i < elements.length; i++) {
-            var element = elements[i];
-            var text = element.textContent || element.innerText || '';
-            var trimmedText = text.trim().toUpperCase();
-            if (trimmedText === 'TMDB' || trimmedText === 'TMDb') {
-                element.innerHTML = tmdb_svg;
-                element.classList.add('rate--icon');
-            }
-        }
-    }
-    
-    function forceReplacebylampaWithStar(root) {
-        root = root || document;
-        var candidates = root.querySelectorAll(
-            '.rate--bylampa_full .source--name, ' +
-            '[class*="bylampa"] .source--name, ' +
-            '.full-start__rate .source--name'
-        );
-        for (var i = 0; i < candidates.length; i++) {
-            var element = candidates[i];
-            var text = (element.textContent || element.innerText || '').replace(/\s+/g, '').toUpperCase();
-            if (text === 'BYLAMPA' || text === 'BYLAMPAFULL') {
-                element.innerHTML = bylampa_svg;
-                element.classList.add('source--name');
-                element.classList.add('rate--icon');
-                element.classList.add('bylampa-replaced');
-            }
-        }
-    }
-    
-    var bylampaReplaceObserver = new MutationObserver(function(mutations) {
-        for (var i = 0; i < mutations.length; i++) {
-            var node = mutations[i].target;
-            if (node && node.nodeType === 1) {
-                forceReplacebylampaWithStar(node);
-            }
-        }
-    });
-    
-    function startBylampaReplaceObserver() {
-        forceReplacebylampaWithStar(document);
-        bylampaReplaceObserver.observe(document.body, {
-            childList: true, subtree: true, characterData: true
         });
     }
-    
+//------------------------------------------------------------------------------------------------------------------------
+    //Меняем лейблы на иконки
     function insertIcons(localCurrentCard, render) {
-        if (!render) return;
+        if (!render) return;   
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert icons");       
+        
         function replaceIcon(className, svg) {
             var Element = $('.' + className, render);
+            //var Element = $('.' + className);
             if (Element.length) {
                 var sourceNameElement = Element.find('.source--name');
                 if (sourceNameElement.length) {
                     sourceNameElement.html(svg).addClass('rate--icon');
+                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert " + className);
                 } else {
+                    // Если не нашли .source--name, пробуем найти второй дочерний div
                     var childDivs = Element.children('div');
                     if (childDivs.length >= 2) {
                         $(childDivs[1]).html(svg).addClass('rate--icon');
+                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert " + className);
                     }
                 }
             }
         }
+        
         replaceIcon('rate--imdb', imdb_svg);
         replaceIcon('rate--kp', kp_svg);
         replaceIcon('rate--tmdb', tmdb_svg);
@@ -1282,67 +1756,459 @@
         replaceIcon('rate--avg', avg_svg);
     }
     
-    // --- МОДАЛЬНОЕ ОКНО ---
+    // Функции работы с кешем
+    function getOmdbCache(key) {
+        var cache = Lampa.Storage.get(OMDB_CACHE) || {};
+        var item = cache[key];
+        return item && (Date.now() - item.timestamp < CACHE_TIME) ? item : null;
+    }
+
+    function saveOmdbCache(key, data, localCurrentCard) {
+        // Проверяем валидные рейтинги
+        var hasValidRating = (
+            (data.rt && data.rt !== "N/A") ||
+            (data.mc && data.mc !== "N/A") ||
+            (data.imdb && data.imdb !== "N/A")
+        );
+        
+        // Проверяем валидный возрастной рейтинг
+        var hasValidAgeRating = (
+            data.ageRating && 
+            data.ageRating !== "N/A" && 
+            data.ageRating !== "Not Rated"
+        );
+        
+        // Также считаем наличие Оскаров поводом кешировать
+        var hasOscars = typeof data.oscars === 'number' && data.oscars > 0;
+        var hasEmmy = typeof data.emmy === 'number' && data.emmy > 0;
+        var hasAwards = typeof data.awards === 'number' && data.awards > 0;
+        
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Save OMDB cache");
+        
+        var cache = Lampa.Storage.get(OMDB_CACHE) || {};
+        cache[key] = { 
+            rt: data.rt,
+            mc: data.mc,
+            imdb: data.imdb,
+            ageRating: data.ageRating,
+            oscars: data.oscars || null,
+            emmy: data.emmy || null,
+            awards: data.awards || null,
+            timestamp: Date.now() 
+        };
+        Lampa.Storage.set(OMDB_CACHE, cache);
+    }
+
+    // Функции для работы с кешем Кинопоиска
+    function getKpCache(key) {
+        var cache = Lampa.Storage.get(KP_CACHE) || {};
+        var item = cache[key];
+        return item && (Date.now() - item.timestamp < CACHE_TIME) ? item : null;
+    }
     
-    function showRatingsModal(cardId, render) {
-        var showColors = localStorage.getItem('maxsm_ratings_colors') === 'true';
-        var modalContent = $('<div class="maxsm-modal-ratings"></div>');
-        var rateLine = $('.full-start-new__rate-line', render);
-        if (!rateLine.length) return;
+    function saveKpCache(key, data, localCurrentCard) {
+        // Оптимищируем ли запросы 1 - экономия, 0 - точность (Сохраняем в кеш на N  дней и пустые результаты)
+        //var optimize = parseInt(localStorage.getItem('maxsm_ratings_optimize'));
         
-        var ratingOrder = ['rate--avg', 'rate--oscars', 'rate--emmy', 'rate--awards', 'rate--tmdb', 'rate--imdb', 'rate--kp', 'rate--rt', 'rate--mc'];
+        // if (optimize === 0 && (!data || (!data.kp && !data.imdb))) return;
         
-        ratingOrder.forEach(function(className) {
-            var element = $('.' + className, rateLine);
-            if (element.length) {
-                var value = element.children().eq(0).text().trim();
-                var numericValue = parseFloat(value);
-                var label = '';
-                switch(className) {
-                    case 'rate--avg': label = Lampa.Lang.translate("maxsm_ratings_mode"); break;
-                    case 'rate--oscars': label = Lampa.Lang.translate("maxsm_ratings_oscars"); break;
-                    case 'rate--emmy': label = Lampa.Lang.translate("maxsm_ratings_emmy"); break;
-                    case 'rate--awards': label = Lampa.Lang.translate("maxsm_ratings_awards"); break;
-                    case 'rate--tmdb': label = 'TMDB'; break;
-                    case 'rate--imdb': label = 'IMDb'; break;
-                    case 'rate--kp': label = 'Кинопоиск'; break;
-                    case 'rate--rt': label = 'Rotten Tomatoes'; break;
-                    case 'rate--mc': label = 'Metacritic'; break;
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Save KP cache");
+    
+        var cache = Lampa.Storage.get(KP_CACHE) || {};
+    
+        cache[key] = {
+            kp: data.kp || null,
+            imdb: data.imdb || null,
+            timestamp: Date.now()
+        };
+    
+        Lampa.Storage.set(KP_CACHE, cache);
+    }
+    
+    // Функции для работы с кешем качества
+    function getQualityCache(key) {
+        var cache = Lampa.Storage.get(QUALITY_CACHE) || {};
+        var item = cache[key];
+        return item && (Date.now() - item.timestamp < Q_CACHE_TIME) ? item : null;
+    }
+    
+    function saveQualityCache(key, data, localCurrentCard) {
+        if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: Save quality cache");
+    
+        var cache = Lampa.Storage.get(QUALITY_CACHE) || {};
+    
+        cache[key] = {
+            quality: data.quality || null,
+            timestamp: Date.now()
+        };
+    
+        Lampa.Storage.set(QUALITY_CACHE, cache); 
+    }
+    
+    // Получаем IMDB id из TMDB id по API
+    function getImdbIdFromTmdb(tmdbId, type, localCurrentCard, callback) {
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Get IMDb id From TMDB");
+        if (!tmdbId) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", TMDB id is empty - aborting");
+            return callback(null);
+        }
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Get IMDb id From TMDB for id:" + tmdbId);
+        
+        var cleanType = type === 'movie' ? 'movie' : 'tv';
+        var cacheKey = cleanType + '_' + tmdbId;
+        var cache = Lampa.Storage.get(ID_MAPPING_CACHE) || {};
+        
+        if (cache[cacheKey] && (Date.now() - cache[cacheKey].timestamp < CACHE_TIME)) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", find in cache imdb id is: " + cache[cacheKey].imdb_id);
+            return callback(cache[cacheKey].imdb_id);
+        }
+        else if (cache[cacheKey]) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", cached entry expired for: " + cacheKey);
+        }
+    
+        // Формируем основной URL с использованием Lampa.TMDB.api()
+        var mainPath = cleanType + '/' + tmdbId + '/external_ids?api_key=' + Lampa.TMDB.key();
+        var mainUrl = Lampa.TMDB.api(mainPath);
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", formed main API URL: " + mainUrl);
+    
+        // Используем только silent запрос
+        new Lampa.Reguest().silent(mainUrl, function(data) {
+            if (data && data.imdb_id) {
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", received IMDb id: " + data.imdb_id);
+                cache[cacheKey] = {
+                    imdb_id: data.imdb_id,
+                    timestamp: Date.now()
+                };
+                Lampa.Storage.set(ID_MAPPING_CACHE, cache);
+                callback(data.imdb_id);
+            } else {
+                if (C_LOGGING) {
+                    console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", no IMDb id in main response");
+                    if (data) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", main response data:", data);
                 }
-                var item = $('<div class="maxsm-modal-rating-line"></div>');
-                if (showColors) {
-                    var colorClass;
-                    if (className === 'rate--avg') {
-                        colorClass = getRatingClass(numericValue);
-                        if (colorClass) { item.addClass(colorClass); }
-                    } else {
-                        colorClass = 'maxsm-modal-' + className.replace('rate--', '');
-                        item.addClass(colorClass);
-                    }
+                
+                if (cleanType === 'tv') {
+                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", trying alternative TV method");
+                    
+                    // Формируем альтернативный URL для TV
+                    var altPath = 'tv/' + tmdbId + '?api_key=' + Lampa.TMDB.key();
+                    var altUrl = Lampa.TMDB.api(altPath);
+                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", formed alternative API URL: " + altUrl);
+                    
+                    new Lampa.Reguest().silent(altUrl, function(altData) {
+                        var imdbId = (altData && altData.external_ids && altData.external_ids.imdb_id) || null;
+                        if (imdbId) {
+                            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", alternative method found IMDb: " + imdbId);
+                            cache[cacheKey] = {
+                                imdb_id: imdbId,
+                                timestamp: Date.now()
+                            };
+                            Lampa.Storage.set(ID_MAPPING_CACHE, cache);
+                        } else {
+                            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", alternative method NO IMDb id");
+                        }
+                        callback(imdbId);
+                    }, function() {
+                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", alternative request failed");
+                        callback(null);
+                    });
+                } else {
+                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", not TV type - skipping alternative");
+                    callback(null);
                 }
-                item.text(value + ' - ' + label);
-                modalContent.append(item);
             }
-        });
-        
-        Lampa.Modal.open({
-            title: Lampa.Lang.translate("maxsm_ratings_avg_simple"),
-            html: modalContent,
-            width: 600,
-            onBack: function() {
-                Lampa.Modal.close();
-                Lampa.Controller.toggle('content');
-                return true;
-            }
+        }, function(xhr) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", main request failed. Status: " + (xhr ? xhr.status : 'unknown'));
+            callback(null);
         });
     }
     
-    // --- КАРТОЧКИ КАЧЕСТВА ---
+    // Модифицируем fetchOmdbRatings для поддержки callback
+    function fetchOmdbRatings(card, cacheKey, localCurrentCard, render, callback) {
+        //var render = Lampa.Activity.active().activity.render();
+        if (!render) return;   
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Fetch OMDB ratings");        
+        // Статусы рейтингов
+        var pgElement = $('.full-start__pg:not(.hide)', render);
+        var imdbElement = $('.rate--imdb:not(.hide)', render);
+        
+        // Проверяем, что оба рейтинга уже есть и содержат числовые значения
+        var pgExists = pgElement.length > 0 && !!pgElement.text().trim();
+        var imdbExists = imdbElement.length > 0 && !!imdbElement.find('> div').eq(0).text().trim();
+        
+        if (!card.imdb_id) {
+            callback(null);
+            return;
+        }
+        
+        var url = 'https://www.omdbapi.com/?apikey=' + getRandomToken(OMDB_API_KEYS) + '&i=' + card.imdb_id;
+        
+        new Lampa.Reguest().silent(url, function(data) {
+            if (data && data.Response === 'True' && (data.Ratings || data.imdbRating)) {
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Got OMDB ratings from API");
+                var parsedAwards = parseAwards(data.Awards || '', localCurrentCard);
+                callback({
+                    rt: extractRating(data.Ratings, 'Rotten Tomatoes'),
+                    mc: extractRating(data.Ratings, 'Metacritic'),
+                    imdb: data.imdbRating || null,
+                    ageRating: data.Rated || null,
+                    oscars: parsedAwards.oscars,
+                    emmy: parsedAwards.emmy,
+                    awards: parsedAwards.awards
+                });
+            } else {
+                if (data && data.Response === 'False' && data.Error) {
+                    if (C_LOGGING) console.warn("MAXSM-RATINGS", "card: " + localCurrentCard + ", OMDB error: " + data.Error);
+                }
+                callback(null);
+            }
+        }, function() {
+            if (C_LOGGING) console.warn("MAXSM-RATINGS", "card: " + localCurrentCard + ", OMDB request failed");
+            callback(null);
+        });
+    }
     
+function updateHiddenElements(ratings, localCurrentCard, render) {
+    if (!render) return;
+    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Update hidden elements");        
+    
+    // Обновление возрастного рейтинга
+    var pgElement = $('.full-start__pg', render);
+    if (pgElement.length && ratings.ageRating) {
+        var invalidRatings = ['N/A', 'Not Rated', 'Unrated', 'NR'];
+        var isValid = invalidRatings.indexOf(ratings.ageRating) === -1;
+        
+        var showPg = localStorage.getItem('maxsm_ratings_pg') === 'true';
+        
+        if (isValid && showPg) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert PG");
+            var localizedRating = AGE_RATINGS[ratings.ageRating] || ratings.ageRating;
+            pgElement.removeClass('hide').text(localizedRating);
+        } else {
+            // Скрываем, но НЕ удаляем
+            pgElement.addClass('hide');
+        }
+    }
+
+    var statusElement = $('.full-start__status', render);
+    if (statusElement.length) {
+        var showStatus = localStorage.getItem('maxsm_ratings_status') === 'true';
+        
+        if (showStatus) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Show status");
+            statusElement.removeClass('hide');
+        } else {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Hide status");
+            statusElement.addClass('hide');
+        }
+    }
+        
+        // Заполняем IMDb рейтинга
+        var imdbElement = $('.rate--imdb', render);
+        if (imdbElement.length) {
+            var imdbRating;
+            if (ratings.imdb && !isNaN(ratings.imdb)) {
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert IMDB from OMDB");
+                imdbRating = parseFloat(ratings.imdb).toFixed(1);
+                imdbElement.removeClass('hide').find('> div').eq(0).text(imdbRating);
+            }
+            else if (ratings.imdb_kp && !isNaN(ratings.imdb_kp)) {
+                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert IMDB from KP");
+                imdbRating = parseFloat(ratings.imdb_kp).toFixed(1);
+                imdbElement.removeClass('hide').find('> div').eq(0).text(imdbRating);
+            }
+        }
+        
+        var kpElement = $('.rate--kp', render);
+        if (kpElement.length && ratings.kp && !isNaN(ratings.kp)) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert KP");
+            var kpRating = parseFloat(ratings.kp).toFixed(1);
+            kpElement.removeClass('hide').find('> div').eq(0).text(kpRating);
+        }
+    }
+    
+    // Вспомогательные функции
+    function extractRating(ratings, source) {
+        if (!ratings || !Array.isArray(ratings)) return null;
+        
+        for (var i = 0; i < ratings.length; i++) {
+            if (ratings[i].Source === source) {
+                try {
+                    return source === 'Rotten Tomatoes' 
+                        ? parseFloat(ratings[i].Value.replace('%', '')) 
+                        : parseFloat(ratings[i].Value.split('/')[0]);
+                } catch(e) {
+                    console.warn('Ошибка при парсинге рейтинга:', e);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+    
+    function insertRatings(rtRating, mcRating, oscars, awards, emmy, localCurrentCard, render) {
+        if (!render) return;
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert OMDB ratings");  
+        
+        var rateLine = $('.full-start-new__rate-line', render);
+        if (!rateLine.length) return;
+
+        var lastRate = $('.full-start__rate:last', rateLine);
+        
+        var showRT = localStorage.getItem('maxsm_ratings_critic')  === 'true';
+        var showMC = localStorage.getItem('maxsm_ratings_critic')  === 'true';
+        var showAwards = localStorage.getItem('maxsm_ratings_awards') === 'true';
+        var showOscar =  localStorage.getItem('maxsm_ratings_awards')  === 'true';
+        var showColors = localStorage.getItem('maxsm_ratings_colors')  === 'true';    
+        var showEmmy = localStorage.getItem('maxsm_ratings_awards')  === 'true';
+        
+        var elemLabel;
+        
+        if (showRT && rtRating && !isNaN(rtRating) && !$('.rate--rt', rateLine).length) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert Tomatoes");
+            var rtElement = $(
+                '<div class="full-start__rate rate--rt">' +
+                    '<div>' + rtRating + '</div>' +
+                    '<div class="source--name">Tomatoes</div>' +
+                '</div>'
+            );
+            
+            if (lastRate.length) {
+                rtElement.insertAfter(lastRate);
+            } else {
+                rateLine.prepend(rtElement);
+            }
+        }
+    
+        if (showMC && mcRating && !isNaN(mcRating) && !$('.rate--mc', rateLine).length) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert Metacritic");
+            var insertAfter = $('.rate--rt', rateLine).length ? $('.rate--rt', rateLine) : lastRate;
+            var mcElement = $(
+                '<div class="full-start__rate rate--mc">' +
+                    '<div>' + mcRating + '</div>' +
+                    '<div class="source--name">Metacritic</div>' +
+                '</div>'
+            );
+            
+            if (insertAfter.length) {
+                mcElement.insertAfter(insertAfter);
+            } else {
+                rateLine.prepend(mcElement);
+            }
+        }
+
+        if (showAwards && awards && !isNaN(awards) && awards > 0 && !$('.rate--awards', rateLine).length) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert Awards");
+            var awardsElement = $(
+                '<div class="full-start__rate rate--awards rate--gold">' +
+                    '<div>' + awards + '</div>' +
+                    '<div class="source--name">' + Lampa.Lang.translate("maxsm_ratings_awards") + '</div>' +
+                '</div>'
+            );
+            if (!showColors) { 
+                awardsElement.removeClass('rate--gold'); 
+            }
+            rateLine.prepend(awardsElement); // Просто вставляем в начало
+        }
+    
+        if (showOscar && oscars && !isNaN(oscars) && oscars > 0 && !$('.rate--oscars', rateLine).length) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert Oscars");
+            var oscarsElement = $(
+                '<div class="full-start__rate rate--oscars rate--gold">' +
+                    '<div>' + oscars + '</div>' +
+                    '<div class="source--name">' + Lampa.Lang.translate("maxsm_ratings_oscars") + '</div>' +
+                '</div>'
+            );
+            if (!showColors) { 
+                oscarsElement.removeClass('rate--gold'); 
+            }
+            rateLine.prepend(oscarsElement); // Просто вставляем в начало
+        }
+        
+        if (showEmmy && emmy && !isNaN(emmy) && emmy > 0 && !$('.rate--emmy', rateLine).length) {
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Insert Emmy");
+            var emmyElement = $(
+                '<div class="full-start__rate rate--emmy rate--gold">' +
+                    '<div>' + emmy + '</div>' +
+                    '<div class="source--name">' + Lampa.Lang.translate("maxsm_ratings_emmy") + '</div>' +
+                '</div>'
+            );
+            if (!showColors) { 
+                emmyElement.removeClass('rate--gold'); 
+            }
+            rateLine.prepend(emmyElement); // Просто вставляем в начало
+        }
+    }
+    
+    function calculateAverageRating(localCurrentCard, render) {
+        if (!render) return;
+        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Calculate avarage rating");   
+    
+        var rateLine = $('.full-start-new__rate-line', render);
+        if (!rateLine.length) return;
+    
+        var ratings = {
+            tmdb: parseFloat($('.rate--tmdb div:first', rateLine).text()) || 0,
+            imdb: parseFloat($('.rate--imdb div:first', rateLine).text()) || 0,
+            kp: parseFloat($('.rate--kp div:first', rateLine).text()) || 0,
+            mc: (parseFloat($('.rate--mc div:first', rateLine).text()) || 0) / 10,
+            rt: (parseFloat($('.rate--rt div:first', rateLine).text()) || 0) / 10
+        };
+    
+        var totalWeight = 0;
+        var weightedSum = 0;
+        var ratingsCount = 0;
+        
+        for (var key in ratings) {
+            if (ratings.hasOwnProperty(key) && !isNaN(ratings[key]) && ratings[key] > 0) {
+                weightedSum += ratings[key] * WEIGHTS[key];
+                totalWeight += WEIGHTS[key];
+                ratingsCount++;
+            }
+        }
+    
+        $('.rate--avg', rateLine).remove();
+        
+        var mode = parseInt(localStorage.getItem('maxsm_ratings_mode'), 10);
+        var isPortrait = window.innerHeight > window.innerWidth;
+        if (isPortrait) mode = 1;
+        
+        if (totalWeight > 0 && (ratingsCount > 1 ||  mode === 1)) {
+            var averageRating = ( weightedSum / totalWeight ).toFixed(1);
+            var colorClass = getRatingClass(averageRating);
+            
+            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Average rating: " + averageRating);
+            
+            var avgLabel = Lampa.Lang.translate("maxsm_ratings_avg");
+            
+            if (mode === 1) {
+                avgLabel = Lampa.Lang.translate("maxsm_ratings_avg_simple");
+                $('.full-start__rate', rateLine).not('.rate--oscars, .rate--avg, .rate--awards').hide();
+            } 
+
+            var avgElement = $(
+                '<div class="full-start__rate rate--avg ' + colorClass + '">' +
+                    '<div>' + averageRating + '</div>' +
+                    '<div class="source--name">' + avgLabel + '</div>' +
+                '</div>'
+            );
+
+            var showColors = localStorage.getItem('maxsm_ratings_colors')  === 'true';
+            
+            if (!showColors) { 
+                avgElement.removeClass(colorClass); 
+            }
+            
+            $('.full-start__rate:first', rateLine).before(avgElement);
+        }
+
+    }
+//------------------------------------------------- Лепим на карточки ярлыки качества (через получение с JacRed)
     function updateCards(cards) {
         for (var i = 0; i < cards.length; i++) {
             var card = cards[i];
             if (card.hasAttribute('data-quality-added')) continue;
+            
             var cardView = card.querySelector('.card__view');
             if (localStorage.getItem('maxsm_ratings_quality_tv') === 'false') {
                 if (cardView) {
@@ -1350,24 +2216,36 @@
                     if (typeElements.length > 0) continue;
                 }
             }
+    
             (function(currentCard) {
                 var data = currentCard.card_data;
                 if (!data) return;
+                
+                if (Q_LOGGING) console.log("MAXSM-RATINGS", "CARDLIST: card data: ", data);
+                
                 var normalizedCard = {
-                    id: data.id || '', title: data.title || data.name || '',
+                    id: data.id || '',
+                    title: data.title || data.name || '',
                     original_title: data.original_title || data.original_name || '',
                     release_date: data.release_date || data.first_air_date || '',
                     imdb_id: data.imdb_id || data.imdb || null,
                     type: getCardType(data)
-                };
+                };     
+                
                 var localCurrentCard = normalizedCard.id;
-                var qCacheKey = normalizedCard.type + '_' + (normalizedCard.id || normalizedCard.imdb_id);
-                var cacheQualityData = getQualityCache(qCacheKey);
+                var qCacheKey = normalizedCard.type + '_' + (normalizedCard.id || normalizedCard.imdb_id); 
+                var cacheQualityData = getQualityCache(qCacheKey); 
+                
+                // Если есть кеш - сразу применяем
                 if (cacheQualityData) {
+                    if (Q_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", quality: Get Quality data from cache");
                     applyQualityToCard(currentCard, cacheQualityData.quality, 'Cache');
-                } else {
+                } 
+                // Если нет кеша - запрашиваем у JacRed
+                else {
                     applyQualityToCard(currentCard, '...', 'Pending');
-                    getBestReleaseFromJacred(normalizedCard, localCurrentCard, function(jrResult) {
+					getBestReleaseFromJacred(normalizedCard, localCurrentCard, function(jrResult) {
+                        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + localCurrentCard + ', CARDLIST: JacRed callback received');
                         var quality = (jrResult && jrResult.quality) || null;
                         applyQualityToCard(currentCard, quality, 'JacRed', qCacheKey);
                     });
@@ -1375,50 +2253,74 @@
             })(card);
         }
     }
+
+    // Общая функция для применения качества к карточке
+function applyQualityToCard(card, quality, source, qCacheKey) {
+    if (!document.body.contains(card)) {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', 'Card removed from DOM:', card.card_data?.id);
+        return;
+    }
     
-    function applyQualityToCard(card, quality, source, qCacheKey) {
-        if (!document.body.contains(card)) { return; }
-        card.setAttribute('data-quality-added', 'true');
-        var cardView = card.querySelector('.card__view');
-        if (source === 'JacRed' && quality && quality !== 'NO') {
-            saveQualityCache(qCacheKey, { quality: quality });
-        }
-        if (quality && quality !== 'NO' && quality !== '...') {
-            if (cardView) {
-                var qualityElements = cardView.getElementsByClassName('card__quality');
-                var qualityDiv;
-                if (!qualityElements.length) {
-                    qualityDiv = document.createElement('div');
-                    qualityDiv.className = 'card__quality';
-                    qualityDiv.textContent = quality;
-                    cardView.appendChild(qualityDiv);
+    card.setAttribute('data-quality-added', 'true');
+    var cardView = card.querySelector('.card__view');
+    var qualityElements = null;
+    
+    // Сохраняем в кеш если данные от JacRed
+    if (source === 'JacRed' && quality && quality !== 'NO') {
+        saveQualityCache(qCacheKey, { quality: quality }, card.card_data?.id);
+    }
+    
+    if (quality && quality !== 'NO' && quality !== '...') {
+        if (Q_LOGGING) console.log('MAXSM-RATINGS', ' card: ' + (card.card_data?.id) + 
+            ', CARDLIST: ' + source + ' found quality: ' + quality);
+        
+        if (cardView) {
+            var hasQuality = false;
+            qualityElements = cardView.getElementsByClassName('card__quality');
+            if (qualityElements.length > 0) hasQuality = true;
+            
+            var qualityDiv;
+            var innerElement;
+            
+            if (!hasQuality) {
+                qualityDiv = document.createElement('div');
+                qualityDiv.className = 'card__quality';
+                
+                // НА ПОСТЕРАХ: ТОЛЬКО ТЕКСТ, БЕЗ ЛОГОТИПОВ
+                qualityDiv.textContent = quality;
+                
+                cardView.appendChild(qualityDiv);
+            } else {
+                qualityDiv = qualityElements[0];
+                innerElement = qualityDiv.firstElementChild;
+                
+                if (innerElement) {
+                    // НА ПОСТЕРАХ: ТОЛЬКО ТЕКСТ, БЕЗ ЛОГОТИПОВ
+                    innerElement.textContent = quality;
                 } else {
-                    qualityDiv = qualityElements[0];
-                    var innerElement = qualityDiv.firstElementChild;
-                    if (innerElement) {
-                        innerElement.textContent = quality;
-                    } else {
-                        qualityDiv.textContent = quality;
-                    }
+                    qualityDiv.textContent = quality;
                 }
             }
-        } else {
-            if (cardView) {
-                var qualityElements = cardView.getElementsByClassName('card__quality');
-                var elementsToRemove = [];
-                for (var j = 0; j < qualityElements.length; j++) {
-                    elementsToRemove.push(qualityElements[j]);
-                }
-                for (var k = 0; k < elementsToRemove.length; k++) {
-                    var el = elementsToRemove[k];
-                    if (el.parentNode) { el.parentNode.removeChild(el); }
+        }
+    } else {
+        // Удаляем качество если его нет
+        if (cardView) {
+            qualityElements = cardView.getElementsByClassName('card__quality');
+            var elementsToRemove = [];
+            for (var j = 0; j < qualityElements.length; j++) {
+                elementsToRemove.push(qualityElements[j]);
+            }
+            for (var k = 0; k < elementsToRemove.length; k++) {
+                var el = elementsToRemove[k];
+                if (el.parentNode) {
+                    el.parentNode.removeChild(el);
                 }
             }
         }
     }
+}
     
-    // --- ОБСЕРВЕР ---
-    
+    // Обсервер DOM для новых карт
     var observer = new MutationObserver(function(mutations) {
         var newCards = [];
         for (var m = 0; m < mutations.length; m++) {
@@ -1427,9 +2329,11 @@
                 for (var j = 0; j < mutation.addedNodes.length; j++) {
                     var node = mutation.addedNodes[j];
                     if (node.nodeType !== 1) continue;
+                    
                     if (node.classList && node.classList.contains('card')) {
                         newCards.push(node);
                     }
+                    
                     var nestedCards = node.querySelectorAll('.card');
                     for (var k = 0; k < nestedCards.length; k++) {
                         newCards.push(nestedCards[k]);
@@ -1437,52 +2341,61 @@
                 }
             }
         }
+        
         if (newCards.length) updateCards(newCards);
     });
-    
-    // --- ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ---
-    
-    function fetchWithTimeout(url, options, timeout) {
-        timeout = timeout || 5000;
-        return Promise.race([
-            fetch(url, options),
-            new Promise(function(_, reject) {
-                setTimeout(function() { reject(new Error('Request timeout')); }, timeout);
-            })
-        ]);
-    }
-    
-    // --- ИНИЦИАЛИЗАЦИЯ ---
-    
+        
+    // Инициализация плагина
     function startPlugin() {
-        if (C_LOGGING) console.log("MAXSM-RATINGS: плагин запущен");
+        if (C_LOGGING) console.log("MAXSM-RATINGS", " Hello!"); 
         window.maxsmRatingsPlugin = true;
         startBylampaReplaceObserver();
         
-        var defaults = {
-            'maxsm_ratings_awards': 'true',
-            'maxsm_ratings_critic': 'true',
-            'maxsm_ratings_colors': 'true',
-            'maxsm_ratings_icons': 'true',
-            'maxsm_ratings_mode': '0',
-            'maxsm_ratings_pg': 'true',
-            'maxsm_ratings_status': 'true',
-            'maxsm_ratings_quality': 'true',
-            'maxsm_ratings_quality_inlist': 'true',
-            'maxsm_ratings_quality_tv': 'false'
-        };
-        for (var key in defaults) {
-            if (!localStorage.getItem(key)) {
-                localStorage.setItem(key, defaults[key]);
-            }
+        if (!localStorage.getItem('maxsm_ratings_awards')) {
+            localStorage.setItem('maxsm_ratings_awards', 'true');
         }
+        if (!localStorage.getItem('maxsm_ratings_critic')) {
+            localStorage.setItem('maxsm_ratings_critic', 'true');
+        }
+        if (!localStorage.getItem('maxsm_ratings_colors')) {
+            localStorage.setItem('maxsm_ratings_colors', 'true');
+        }
+        
+        if (!localStorage.getItem('maxsm_ratings_icons')) {
+            localStorage.setItem('maxsm_ratings_icons', 'true');
+        }
+    
+        if (!localStorage.getItem('maxsm_ratings_mode')) {
+            localStorage.setItem('maxsm_ratings_mode', '0');
+        }
+
+        if (!localStorage.getItem('maxsm_ratings_pg')) {
+            localStorage.setItem('maxsm_ratings_pg', 'true');
+        }
+
+        if (!localStorage.getItem('maxsm_ratings_status')) {
+            localStorage.setItem('maxsm_ratings_status', 'true');
+        }
+        
+        if (!localStorage.getItem('maxsm_ratings_quality')) {
+            localStorage.setItem('maxsm_ratings_quality', 'true');
+        }  
+
+        if (!localStorage.getItem('maxsm_ratings_quality_inlist')) {
+            localStorage.setItem('maxsm_ratings_quality_inlist', 'true');
+        }  
+        
+        if (!localStorage.getItem('maxsm_ratings_quality_tv')) {
+            localStorage.setItem('maxsm_ratings_quality_tv', 'false');
+        }  
         
         Lampa.SettingsApi.addComponent({
             component: "maxsm_ratings",
             name: Lampa.Lang.translate("maxsm_ratings"),
             icon: star_svg
         });
-        
+
+        // Создание объекта для значений выбора режима
         var modeValue = {};
         modeValue[0] = Lampa.Lang.translate("maxsm_ratings_mode_normal");
         modeValue[1] = Lampa.Lang.translate("maxsm_ratings_mode_simple");
@@ -1492,67 +2405,174 @@
         if (!isPortrait) {
             Lampa.SettingsApi.addParam({
                 component: "maxsm_ratings",
-                param: { name: "maxsm_ratings_mode", type: 'select', values: modeValue, default: 0 },
-                field: { name: Lampa.Lang.translate("maxsm_ratings_mode"), description: '' }
+                param: {
+                    name: "maxsm_ratings_mode",
+                    type: 'select',
+                    values: modeValue,
+                    default: 0
+                },
+                field: {
+                    name: Lampa.Lang.translate("maxsm_ratings_mode"),
+                    description: ''
+                },
+                onChange: function(value) {
+    
+                }
             });
         }
+
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_awards",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_awards"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
         
         Lampa.SettingsApi.addParam({
             component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_awards", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_awards"), description: '' }
-        });
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_critic", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_critic"), description: '' }
-        });
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_colors", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_colors"), description: '' }
-        });
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_icons", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_icons"), description: '' }
-        });
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_pg", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_pg"), description: '' }
-        });
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_status", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_status"), description: '' }
-        });
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_quality", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_quality"), description: '' }
-        });
-        Lampa.SettingsApi.addParam({
-            component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_quality_inlist", type: "trigger", default: true },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_quality_inlist"), description: '' },
+            param: {
+                name: "maxsm_ratings_critic",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_critic"),
+                description: ''
+            },
             onChange: function(value) {
+            }
+        });
+        
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_colors",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_colors"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
+        
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_icons",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_icons"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
+
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_pg",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_pg"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
+
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_status",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_status"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
+        
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_quality",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_quality"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
+        });
+        
+        Lampa.SettingsApi.addParam({
+            component: "maxsm_ratings",
+            param: {
+                name: "maxsm_ratings_quality_inlist",
+                type: "trigger",
+                default: true
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_quality_inlist"),
+                description: ''
+            },
+            onChange: function(value) {
+                console.log('MAXSM-RATINGS: observer value' + value);
                 if (value === 'true') {
                     observer.observe(document.body, { childList: true, subtree: true });
+                    console.log('MAXSM-RATINGS: observer Start');
                 } else {
                     observer.disconnect();
+                    console.log('MAXSM-RATINGS: observer Stop');
                 }
             }
         });
+        
         Lampa.SettingsApi.addParam({
             component: "maxsm_ratings",
-            param: { name: "maxsm_ratings_quality_tv", type: "trigger", default: false },
-            field: { name: Lampa.Lang.translate("maxsm_ratings_quality_tv"), description: '' }
+            param: {
+                name: "maxsm_ratings_quality_tv",
+                type: "trigger",
+                default: false
+            },
+            field: {
+                name: Lampa.Lang.translate("maxsm_ratings_quality_tv"),
+                description: ''
+            },
+            onChange: function(value) {
+            }
         });
+        
         Lampa.SettingsApi.addParam({
             component: 'maxsm_ratings',
-            param: { name: 'maxsm_ratings_cc', type: 'button' },
-            field: { name: Lampa.Lang.translate('maxsm_ratings_cc') },
+            param: {
+                name: 'maxsm_ratings_cc',
+                type: 'button'
+            },
+            field: {
+                name: Lampa.Lang.translate('maxsm_ratings_cc')
+            },
             onChange: function() {
                 localStorage.removeItem(OMDB_CACHE);
                 localStorage.removeItem(KP_CACHE);
@@ -1562,36 +2582,40 @@
             }
         });
         
-        Lampa.SettingsApi.addParam({
-            component: 'interface',
-            param: {
-                name: 'maxsm_ratings_old_interface',
-                type: 'trigger',
-                default: true
-            },
-            field: {
-                name: Lampa.Lang.translate('maxsm_ratings_old_interface')
-            },
-            onRender: function(item) {
-                setTimeout(function() {
-                    var target = $('div[data-name="card_interfice_poster"]');
-                    if (target.length) {
-                        var parent = target.closest('.settings-param');
-                        if (parent.length) item.insertBefore(parent);
-                    }
-                    var value = Lampa.Storage.field('maxsm_ratings_old_interface');
-                    item.find('.settings-param__value').text(
-                        Lampa.Lang.translate(value ? 'settings_param_yes' : 'settings_param_no')
-                    );
-                }, 50);
-            }
-        });
-        
         if (localStorage.getItem('maxsm_ratings_quality_inlist') === 'true') {
+            // Вызов наблюдателя
             observer.observe(document.body, { childList: true, subtree: true });
+            console.log('MAXSM-RATINGS: observer Start');
         }
+
+    Lampa.SettingsApi.addParam({
+        component: 'interface',
+        param: {
+            name: 'maxsm_ratings_old_interface',
+            type: 'trigger',
+            default: true
+        },
+        field: {
+            name: Lampa.Lang.translate('maxsm_ratings_old_interface')
+        },
+        onRender: function(item) {
+            setTimeout(function() {
+                let target = $('div[data-name="card_interfice_poster"]');
+                if (target.length) {
+                    let parent = target.closest('.settings-param');
+                    if (parent.length) item.insertBefore(parent);
+                }
+                            
+                let value = Lampa.Storage.field('maxsm_ratings_old_interface');
+                item.find('.settings-param__value').text(
+                    Lampa.Lang.translate(value ? 'settings_param_yes' : 'settings_param_no')
+                );
+            }, 50);
+        }
+    });
         
-        Lampa.Listener.follow('full', function(e) {
+	// Попадания внутри карточки
+	Lampa.Listener.follow('full', function (e) {
             if (e.type == 'complite') {
                 var render = e.object.activity.render();
                 forceReplacebylampaWithStar(render[0] || render);
@@ -1599,239 +2623,407 @@
                 fetchAdditionalRatings(e.data.movie, render);
             }
         });
+    }
+
+// Добавление рейтинга Lampa на страницу полного описания
+Lampa.Listener.follow('full', function(e) {
+    if (e.type === 'complite') {
+        const render = e.object.activity.render();
+        const method = e.object.method;
+        const id = e.object.id;
         
-        // Добавление рейтинга Lampa
-        Lampa.Listener.follow('full', function(e) {
-            if (e.type === 'complite') {
-                var render = e.object.activity.render();
-                var method = e.object.method;
-                var id = e.object.id;
-                if (window.location.href.indexOf('sisi') === -1) {
-                    fetchWithTimeout('http://cub.rip/api/reactions/get/' + method + '_' + id)
-                        .then(function(response) { return response.json(); })
-                        .then(function(data) {
-                            var result = data.result;
-                            var positive = 0, negative = 0;
-                            result.forEach(function(item) {
-                                if (item.type === 'fire' || item.type === 'nice') {
-                                    positive += parseInt(item.counter, 10);
-                                }
-                                if (item.type === "think" || item.type === "bore" || item.type === 'shit') {
-                                    negative += parseInt(item.counter, 10);
-                                }
-                            });
-                            var total = positive + negative;
-                            var rating = total > 0 ? (positive / total * 10).toFixed(1) : 0;
-                            var ratingElement = $('<div class="full-start__rate rate--lampa"></div>');
-                            var ratingValue = $('<div></div>').text(rating);
-                            var sourceIcon = $('<div class="source--name rate--icon" style="transform: scale(1.1);">' + lampa_svg + '</div>');
-                            ratingElement.append(ratingValue);
-                            ratingElement.append(sourceIcon);
-                            $(".rate--kp", render).after(ratingElement);
-                        })
-                        .catch(function() {});
-                }
-            }
-        });
-        
-        // Перемещение rateLine над head
-        Lampa.Listener.follow('full', function(e) {
-            if (e.type == 'complite') {
-                if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
-                    setTimeout(function() {
-                        try {
-                            var render = e.object.activity.render();
-                            var rateLine = $('.full-start-new__rate-line', render);
-                            var head = $('.full-start-new__head', render);
-                            if (rateLine.length && head.length) {
-                                var parentContainer = head.parent();
-                                if (parentContainer.length) {
-                                    rateLine.insertBefore(head);
-                                    rateLine.css({
-                                        'visibility': 'visible',
-                                        'margin-left': '-10px',
-                                        'margin-bottom': '10px',
-                                        'display': 'flex',
-                                        'flex-wrap': 'wrap'
-                                    });
-                                    head.css('margin-top', '5px');
-                                }
-                            }
-                        } catch(err) {}
-                    }, 100);
-                }
-            }
-        });
-        
-        // Преобразование details в теги
-        Lampa.Listener.follow('full', function(e) {
-            if (e.type == 'complite') {
-                if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
-                    setTimeout(function() {
-                        var render = e.object.activity.render();
-                        var head = render.find('.full-start-new__head');
-                        var details = render.find('.full-start-new__details');
-                        if (!head.length || !details.length) return;
-                        var originalDetailsHTML = details.html();
-                        var timeSVG = '<svg width="1em" height="1em" viewBox="0 0 512 512"><path fill="#fff" d="M256,0C114.845,0,0,114.839,0,256s114.845,256,256,256c141.161,0,256-114.839,256-256S397.155,0,256,0z M256,474.628C135.45,474.628,37.372,376.55,37.372,256S135.45,37.372,256,37.372s218.628,98.077,218.628,218.622C474.628,376.55,376.55,474.628,256,474.628z M343.202,256h-80.973V143.883c0-10.321-8.365-18.686-18.686-18.686s-18.686,8.365-18.686,18.686v130.803c0,10.321,8.365,18.686,18.686,18.686h99.659c10.321,0,18.686-8.365,18.686-18.686S353.523,256,343.202,256z"/></svg>';
-                        var headText = head.text();
-                        var detailsText = details.text();
-                        var isSeries = false;
-                        var seriesInfo = [];
-                        var durationElement = null;
-                        var nextEpisodeInfo = null;
-                        var tempDiv = $('<div>').html(originalDetailsHTML);
-                        var seriesElements = tempDiv.find('span, div');
-                        seriesElements.each(function() {
-                            var text = $(this).text().trim();
-                            if (text.includes('Сезон') || text.includes('сезон') || 
-                                text.includes('Серии') || text.includes('серии') ||
-                                text.includes('Следующ') || text.includes('следующ')) {
-                                isSeries = true;
-                                var parts = text.split(/[●·]/).map(function(p) { return p.trim(); }).filter(function(p) { return p; });
-                                seriesInfo = seriesInfo.concat(parts);
-                            }
-                        });
-                        if (seriesInfo.length === 0) {
-                            var lines = detailsText.split('●');
-                            for (var i = 0; i < lines.length; i++) {
-                                var line = lines[i].trim();
-                                if (line.includes('Сезон') || line.includes('сезон') || 
-                                    line.includes('Серии') || line.includes('серии') ||
-                                    line.includes('Следующ') || line.includes('следующ')) {
-                                    isSeries = true;
-                                    var parts = line.split(/[●·]/).map(function(p) { return p.trim(); }).filter(function(p) { return p; });
-                                    seriesInfo = seriesInfo.concat(parts);
-                                }
-                            }
+        // Проверяем, не находится ли мы в разделе
+        if (window.location.href.indexOf('sisi') === -1) {
+            fetchWithTimeout(`http://cub.rip/api/reactions/get/${method}_${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const result = data.result;
+                    let positive = 0, negative = 0;
+                    
+                    result.forEach(item => {
+                        if (item.type === 'fire' || item.type === 'nice') {
+                            positive += parseInt(item.counter, 10);
                         }
-                        var year = headText.match(/(\d{4})/);
-                        var country = headText.match(/,\s*([^,]+)/);
-                        var tags = [];
-                        if (year) tags.push({icon: '', text: year[1]});
-                        if (country) tags.push({icon: '', text: country[1].trim()});
-                        var parts = detailsText.split('●').map(function(p) { return p.trim(); }).filter(function(p) { return p; });
-                        parts.forEach(function(part) {
-                            if (part.includes('|')) {
-                                var isSeriesPart = false;
-                                for (var i = 0; i < seriesInfo.length; i++) {
-                                    if (part.includes(seriesInfo[i])) { isSeriesPart = true; break; }
-                                }
-                                if (!isSeriesPart) {
-                                    var formattedGenres = part.replace(/\s*\|\s*/g, ' , ');
-                                    tags.push({icon: '', text: formattedGenres});
-                                }
-                            }
-                            if (part.match(/\d{2}:\d{2}/)) {
-                                var isSeriesTime = false;
-                                for (var i = 0; i < seriesInfo.length; i++) {
-                                    if (part.includes(seriesInfo[i]) || seriesInfo[i].includes(part)) { isSeriesTime = true; break; }
-                                }
-                                if (!isSeriesTime && !part.includes('Следующ') && !part.includes('следующ')) {
-                                    durationElement = {icon: timeSVG, text: part};
-                                }
-                                if (part.includes('Следующ') || part.includes('следующ')) {
-                                    nextEpisodeInfo = {icon: timeSVG, text: part};
-                                }
-                            }
-                        });
-                        if (durationElement) { tags.push(durationElement); }
-                        var tagsHtml = '';
-                        if (tags.length > 0) {
-                            tagsHtml = tags.map(function(tag) {
-                                var content = tag.icon ? tag.icon + ' ' + tag.text : tag.text;
-                                return '<span class="maxsm-tag-item">' + content + '</span>';
-                            }).join('');
+                        if (item.type === "think" || item.type === "bore" || item.type === 'shit') {
+                            negative += parseInt(item.counter, 10);
                         }
-                        if (isSeries && seriesInfo.length > 0) {
-                            var uniqueSeriesInfo = [];
-                            seriesInfo.forEach(function(item) {
-                                if (uniqueSeriesInfo.indexOf(item) === -1 && item) { uniqueSeriesInfo.push(item); }
-                            });
-                            var seriesTagsHtml = '';
-                            uniqueSeriesInfo.forEach(function(item) {
-                                if (!item.match(/^\d{2}:\d{2}$/)) {
-                                    if (item.includes('Следующ') || item.includes('следующ')) {
-                                        seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + item + '</span>';
-                                    } else {
-                                        seriesTagsHtml += '<span class="maxsm-tag-item">' + item + '</span>';
-                                    }
-                                }
-                            });
-                            if (nextEpisodeInfo && !seriesTagsHtml.includes('Следующ') && !seriesTagsHtml.includes('следующ')) {
-                                seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + nextEpisodeInfo.text + '</span>';
-                            }
-                            if (seriesTagsHtml) {
-                                tagsHtml += '<div class="maxsm-series-container">' + seriesTagsHtml + '</div>';
-                            }
-                        }
-                        if (tagsHtml) {
-                            details.html('<div class="maxsm-tags-container">' + tagsHtml + '</div>');
-                            var style = '<style id="maxsm-tags-equal">' +
-                                '.maxsm-tags-container { display: flex !important; align-items: center !important; flex-wrap: wrap !important; gap: 0.5em !important; margin: 0.75em 0 1em 0 !important; }' +
-                                '.maxsm-tag-item { display: inline-flex !important; align-items: center !important; gap: 0.3em !important; padding: 0.25em 0.75em !important; background: rgba(0, 0, 0, 0.2) !important; border-radius: 0.6em !important; font-size: 1.1em !important; color: rgba(255, 255, 255, 0.95) !important; line-height: 1 !important; min-height: 1.5em !important; box-sizing: border-box !important; }' +
-                                '.maxsm-tag-item svg { flex-shrink: 0 !important; width: 1em !important; height: 1em !important; }' +
-                                '.maxsm-series-container { width: 100% !important; display: flex !important; flex-wrap: wrap !important; gap: 0.5em !important; margin-top: 0.5em !important; }' +
-                                '.maxsm-series-container .full-start-new__buttons { position: absolute !important; bottom: 3em !important; }' +
-                                '</style>';
-                            if (!$('#maxsm-tags-equal').length) { $('head').append(style); }
-                            var rateLine = head.find('.full-start-new__rate-line');
-                            if (rateLine.length) {
-                                head.html(rateLine);
-                                rateLine.css('visibility', 'visible');
-                            } else { head.remove(); }
-                        }
-                    }, 300);
-                }
-            }
-        });
-        
-        // Перемещение original-title над title
-        Lampa.Listener.follow('full', function(e) {
-            if (e.type == 'complite') {
-                if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
-                    setTimeout(function() {
-                        try {
-                            var render = e.object.activity.render();
-                            var originalTitleElement = $('.original-title', render);
-                            var titleElement = $('.full-start-new__title', render);
-                            if (originalTitleElement.length && titleElement.length) {
-                                var parentContainer = titleElement.parent();
-                                if (parentContainer.length) {
-                                    titleElement.before(originalTitleElement);
-                                    originalTitleElement.css({ 'font-size': '1.5em', 'margin-top': '0.3em', 'margin-bottom': '0.3em' });
-                                    titleElement.css('margin-top', '5px');
-                                }
-                            }
-                        } catch(err) {}
-                    }, 100);
-                }
-            }
-        });
-        
-        // Отступы для сериалов
-        Lampa.Listener.follow('full', function(e) {
-            if (e.type == 'complite') {
-                setTimeout(function() {
+                    });
+                    
+                    const total = positive + negative;
+                    const rating = total > 0 ? (positive / total * 10).toFixed(1) : 0;
+                    
+                    const ratingElement = $(`<div class="full-start__rate rate--lampa"></div>`);
+                    const ratingValue = $(`<div></div>`).text(rating);
+                    const sourceIcon = $(`<div class="source--name rate--icon" style="transform: scale(1.1);">${lampa_svg}</div>`);
+                    
+                    ratingElement.append(ratingValue);
+                    ratingElement.append(sourceIcon);
+                    
+                    $(".rate--kp", render).after(ratingElement);
+                })
+                .catch(() => {});
+        }
+    }
+});
+
+    function fetchWithTimeout(url, options = {}, timeout = 5000) {
+    return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Request timeout')), timeout)
+        )
+    ]);
+}
+
+// Перемещение rateLine над head
+Lampa.Listener.follow('full', function(e) {
+    if (e.type == 'complite') {
+        // Проверяем, включен ли старый интерфейс
+        if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
+            setTimeout(function() {
+                try {
                     var render = e.object.activity.render();
-                    var details = $('.full-start-new__details', render);
-                    var reactions = $('.full-start-new__reactions', render);
-                    var buttons = $('.full-start-new__buttons', render);
-                    var networks = $('.items-line__body', render).parent();
-                    var movie = e.data.movie;
-                    var isSeries = (movie.media_type === 'tv' || movie.type === 'tv' || movie.name || movie.original_name);
-                    if (isSeries) {
-                        details.css({ 'position': 'relative', 'bottom': '2em' });
-                        reactions.css({ 'position': 'relative', 'bottom': '3em' });
-                        buttons.css({ 'position': 'relative', 'bottom': '2.5em' });
-                        networks.css({ 'position': 'relative', 'bottom': '2.8em' });
+                    var rateLine = $('.full-start-new__rate-line', render);
+                    var head = $('.full-start-new__head', render);
+                    
+                    if (rateLine.length && head.length) {
+                        // Находим общий родительский контейнер
+                        var parentContainer = head.parent();
+                        
+                        if (parentContainer.length) {
+                            // 1. Перемещаем rateLine перед head внутри их общего родителя
+                            rateLine.insertBefore(head);
+                            
+                            // 2. Применяем стили
+                            rateLine.css({
+                                'visibility': 'visible',
+                                'margin-left': '-10px',
+                                'margin-bottom': '10px',
+                                'display': 'flex',
+                                'flex-wrap': 'wrap'
+                            });
+                            
+                            // 3. Добавляем отступ для head, чтобы не наезжал
+                            head.css('margin-top', '5px');
+                            
+                            console.log('MAXSM-RATINGS: Rate line positioned above head');
+                        }
+                    }
+                } catch(err) {
+                    console.error('MAXSM-RATINGS: Error:', err);
+                }
+            }, 100);
+        }
+    }
+});
+
+// Преобразование details в теги
+Lampa.Listener.follow('full', function(e) {
+    if (e.type == 'complite') {
+        // Проверяем, включен ли старый интерфейс
+        if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
+            setTimeout(function() {
+                var render = e.object.activity.render();
+                var head = render.find('.full-start-new__head');
+                var details = render.find('.full-start-new__details');
+                
+                if (!head.length || !details.length) return;
+                
+                // Сохраняем оригинальный контент details
+                var originalDetailsHTML = details.html();
+                
+                // SVG иконки - для длительности и следующей серии
+                var timeSVG = '<svg width="1em" height="1em" viewBox="0 0 512 512"><path fill="#fff" d="M256,0C114.845,0,0,114.839,0,256s114.845,256,256,256c141.161,0,256-114.839,256-256S397.155,0,256,0z M256,474.628C135.45,474.628,37.372,376.55,37.372,256S135.45,37.372,256,37.372s218.628,98.077,218.628,218.622C474.628,376.55,376.55,474.628,256,474.628z M343.202,256h-80.973V143.883c0-10.321-8.365-18.686-18.686-18.686s-18.686,8.365-18.686,18.686v130.803c0,10.321,8.365,18.686,18.686,18.686h99.659c10.321,0,18.686-8.365,18.686-18.686S353.523,256,343.202,256z"/></svg>';
+                
+                // Получаем текст
+                var headText = head.text();
+                var detailsText = details.text();
+                
+                // Проверяем, это сериал или фильм
+                var isSeries = false;
+                var seriesInfo = [];
+                var durationElement = null;
+                var nextEpisodeInfo = null;
+                
+                // Ищем всю информацию о сериалах
+                var tempDiv = $('<div>').html(originalDetailsHTML);
+                var seriesElements = tempDiv.find('span, div');
+                
+                // Собираем все части информации о сериале
+                seriesElements.each(function() {
+                    var text = $(this).text().trim();
+                    if (text.includes('Сезон') || text.includes('сезон') || 
+                        text.includes('Серии') || text.includes('серии') ||
+                        text.includes('Следующ') || text.includes('следующ')) {
+                        isSeries = true;
+                        // Разбиваем на отдельные части если есть разделители
+                        var parts = text.split(/[●·]/).map(p => p.trim()).filter(p => p);
+                        seriesInfo = seriesInfo.concat(parts);
                     }
                 });
-            }
-        });
+                
+                // Если не нашли в спанах, ищем в тексте details
+                if (seriesInfo.length === 0) {
+                    var lines = detailsText.split('●');
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i].trim();
+                        if (line.includes('Сезон') || line.includes('сезон') || 
+                            line.includes('Серии') || line.includes('серии') ||
+                            line.includes('Следующ') || line.includes('следующ')) {
+                            isSeries = true;
+                            var parts = line.split(/[●·]/).map(p => p.trim()).filter(p => p);
+                            seriesInfo = seriesInfo.concat(parts);
+                        }
+                    }
+                }
+                
+                // Извлекаем данные из head
+                var year = headText.match(/(\d{4})/);
+                var country = headText.match(/,\s*([^,]+)/);
+                
+                var tags = [];
+                
+                // Год (БЕЗ иконки)
+                if (year) tags.push({icon: '', text: year[1]});
+                
+                // Страна (БЕЗ иконки)
+                if (country) tags.push({icon: '', text: country[1].trim()});
+                
+                // Разбиваем details на части
+                var parts = detailsText.split('●').map(p => p.trim()).filter(p => p);
+                
+                // Добавляем жанры (исключая информацию о сериалах)
+                parts.forEach(function(part) {
+                    if (part.includes('|')) {
+                        // Проверяем, что это не информация о сериале
+                        var isSeriesPart = false;
+                        for (var i = 0; i < seriesInfo.length; i++) {
+                            if (part.includes(seriesInfo[i])) {
+                                isSeriesPart = true;
+                                break;
+                            }
+                        }
+            
+                        if (!isSeriesPart) {
+                            var formattedGenres = part.replace(/\s*\|\s*/g, ' , ');
+                            tags.push({icon: '', text: formattedGenres});
+                        }
+                    }
         
-        if (C_LOGGING) console.log("MAXSM-RATINGS: готов");
+                    // Находим время (длительность) - отдельно от информации о сериалах
+                    if (part.match(/\d{2}:\d{2}/)) {
+                        // Проверяем, что это не "Следующая HH:MM" и не часть информации о сезонах
+                        var isSeriesTime = false;
+                        for (var i = 0; i < seriesInfo.length; i++) {
+                            if (part.includes(seriesInfo[i]) || seriesInfo[i].includes(part)) {
+                                isSeriesTime = true;
+                                break;
+                            }
+                        }
+            
+                        if (!isSeriesTime && !part.includes('Следующ') && !part.includes('следующ')) {
+                            durationElement = {icon: timeSVG, text: part};
+                        }
+            
+                        // Отдельно сохраняем информацию о следующей серии
+                        if (part.includes('Следующ') || part.includes('следующ')) {
+                            nextEpisodeInfo = {icon: timeSVG, text: part};
+                        }
+                    }
+                });
+                
+                // Добавляем длительность в конец (если есть) С ИКОНКОЙ
+                if (durationElement) {
+                    tags.push(durationElement);
+                }
+                
+                // Создаем HTML для первой строки
+                var tagsHtml = '';
+                
+                if (tags.length > 0) {
+                    tagsHtml = tags.map(function(tag) {
+                        var content = tag.icon ? tag.icon + ' ' + tag.text : tag.text;
+                        return '<span class="maxsm-tag-item">' + content + '</span>';
+                    }).join('');
+                }
+                
+                // Для сериалов добавляем отдельные теги для сезонов, серий и следующей серии
+                if (isSeries && seriesInfo.length > 0) {
+                    // Фильтруем уникальные значения
+                    var uniqueSeriesInfo = [];
+                    seriesInfo.forEach(function(item) {
+                        if (uniqueSeriesInfo.indexOf(item) === -1 && item) {
+                            uniqueSeriesInfo.push(item);
+                        }
+                    });
+                    
+                    // Создаем отдельные теги для каждой части информации
+                    var seriesTagsHtml = '';
+                    uniqueSeriesInfo.forEach(function(item) {
+                        // Проверяем, что это не длительность (формат HH:MM)
+                        if (!item.match(/^\d{2}:\d{2}$/)) {
+                            // Для "Следующая HH:MM" добавляем иконку часов
+                            if (item.includes('Следующ') || item.includes('следующ')) {
+                                seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + item + '</span>';
+                            } else {
+                                // Для сезонов и серий без иконки
+                                seriesTagsHtml += '<span class="maxsm-tag-item">' + item + '</span>';
+                            }
+                        }
+                    });
+                    
+                    // Если у нас есть отдельная информация о следующей серии, добавляем её
+                    if (nextEpisodeInfo && !seriesTagsHtml.includes('Следующ') && !seriesTagsHtml.includes('следующ')) {
+                        seriesTagsHtml += '<span class="maxsm-tag-item">' + timeSVG + ' ' + nextEpisodeInfo.text + '</span>';
+                    }
+                    
+                    if (seriesTagsHtml) {
+                        tagsHtml += '<div class="maxsm-series-container">' + seriesTagsHtml + '</div>';
+                    }
+                }
+                
+                if (tagsHtml) {
+                    details.html('<div class="maxsm-tags-container">' + tagsHtml + '</div>');
+                    
+                    // Стили
+                    var style = '<style id="maxsm-tags-equal">' +
+                        '.maxsm-tags-container {' +
+                        '    display: flex !important;' +
+                        '    align-items: center !important;' +
+                        '    flex-wrap: wrap !important;' +
+                        '    gap: 0.5em !important;' +
+                        '    margin: 0.75em 0 1em 0 !important;' +
+                        '}' +
+                        '.maxsm-tag-item {' +
+                        '    display: inline-flex !important;' +
+                        '    align-items: center !important;' +
+                        '    gap: 0.3em !important;' +
+                        '    padding: 0.25em 0.75em !important;' +
+                        '    background: rgba(0, 0, 0, 0.2) !important;' +
+                        '    border-radius: 0.6em !important;' +
+                        '    font-size: 1.1em !important;' +
+                        '    color: rgba(255, 255, 255, 0.95) !important;' +
+                        '    line-height: 1 !important;' +
+                        '    min-height: 1.5em !important;' +
+                        '    box-sizing: border-box !important;' +
+                        '}' +
+                        '.maxsm-tag-item svg {' +
+                        '    flex-shrink: 0 !important;' +
+                        '    width: 1em !important;' +
+                        '    height: 1em !important;' +
+                        '}' +
+                        '.maxsm-series-container {' +
+                        '    width: 100% !important;' +
+                        '    display: flex !important;' +
+                        '    flex-wrap: wrap !important;' +
+                        '    gap: 0.5em !important;' +
+                        '    margin-top: 0.5em !important;' +
+                        '}' +
+                        '.maxsm-series-container .full-start-new__buttons {' +
+                        '    position: absolute !important;' +
+                        '    bottom: 3em !important;' +
+                        '}' +
+                        '</style>';
+                    
+                    if (!$('#maxsm-tags-equal').length) {
+                        $('head').append(style);
+                    }
+                    
+                    // Очищаем head
+                    var rateLine = head.find('.full-start-new__rate-line');
+                    if (rateLine.length) {
+                        head.html(rateLine);
+                        rateLine.css('visibility', 'visible');
+                    } else {
+                        head.remove();
+                    }
+                }
+                
+            }, 300);
+        }
     }
+});
+
+// Перемещение original-title над title
+Lampa.Listener.follow('full', function(e) {
+    if (e.type == 'complite') {
+        // Проверяем, включен ли старый интерфейс
+        if (Lampa.Storage.get('maxsm_ratings_old_interface') === true) {
+            setTimeout(function() {
+                try {
+                    var render = e.object.activity.render();
+                    var originalTitleElement = $('.original-title', render);
+                    var titleElement = $('.full-start-new__title', render);
+                    
+                    if (originalTitleElement.length && titleElement.length) {
+                        // Находим общий родительский контейнер
+                        var parentContainer = titleElement.parent();
+                        
+                        if (parentContainer.length) {
+                            // 1. Перемещаем originalTitleElement перед titleElement
+                            titleElement.before(originalTitleElement);
+                            
+                            // 2. Применяем стили
+                            originalTitleElement.css({
+                                'font-size': '1.5em',
+                                'margin-top': '0.3em',
+                                'margin-bottom': '0.3em'
+                            });
+                            
+                            // 3. Добавляем отступ для titleElement, чтобы не наезжал
+                            titleElement.css('margin-top', '5px');
+                            
+                            console.log('MAXSM-RATINGS: Original title positioned above titleElement');
+                        }
+                    }
+                } catch(err) {
+                    console.error('MAXSM-RATINGS: Error:', err);
+                }
+            }, 100);
+        }
+    }
+});
+
+    Lampa.Listener.follow('full', function(e) {
+        if (e.type == 'complite') {
+            setTimeout(function() {
+                var render = e.object.activity.render();
+                var details = $('.full-start-new__details', render);
+                var reactions = $('.full-start-new__reactions', render);
+                var buttons = $('.full-start-new__buttons', render);
+                var networks = $('.items-line__body', render).parent();
+                var movie = e.data.movie;
+            
+                // Проверяем, является ли контент сериалом
+                var isSeries = (movie.media_type === 'tv' || 
+                               movie.type === 'tv' || 
+                               movie.name || 
+                               movie.original_name);
+            
+                if (isSeries) {
+                    details.css({
+                        'position': 'relative',
+                        'bottom': '2em'
+                    });
+                
+                    reactions.css({
+                        'position': 'relative',
+                        'bottom': '3em'
+                    });
+
+                    buttons.css({
+                        'position': 'relative',
+                        'bottom': '2.5em'
+                    });
+
+                    networks.css({
+                        'position': 'relative',
+                        'bottom': '2.8em'
+                    });
+                }
+            });
+        }
+    });
     
     startPlugin();
     
