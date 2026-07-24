@@ -321,9 +321,9 @@
         ".full-start-new__reactions {" +
         "padding-bottom: 2em !important;" +
         "}" +
-        ".full-start-new__buttons {" +
-        "padding-bottom: 0.8em !important;" +
-        "}" +
+        //".full-start-new__buttons {" +
+        //"padding-bottom: 0.8em !important;" +
+        //"}" +
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
         "   position: absolute !important; " +
