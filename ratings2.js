@@ -636,7 +636,7 @@
     
     var encodedTitle = encodeURIComponent(queryTitle);
     // ИСПОЛЬЗУЕМ ПРОКСИ ДЛЯ ПОИСКА
-    var searchUrl = kp_prox + 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=' + encodedTitle;
+    var searchUrl = KP_PROX + 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=' + encodedTitle;
     
     fetch(searchUrl, {
         method: 'GET',
@@ -677,7 +677,7 @@
 
     function fetchRatings(filmId, localCurrentCard, apiKey, callback) {
         // ИСПОЛЬЗУЕМ ПРОКСИ ДЛЯ XML
-        var xmlUrl = kp_prox + 'https://rating.kinopoisk.ru/' + filmId + '.xml';
+        var xmlUrl = KP_PROX + 'https://rating.kinopoisk.ru/' + filmId + '.xml';
         
         // Прямой fetch через прокси (быстрее чем через fetchWithProxy)
         fetch(xmlUrl)
@@ -701,7 +701,7 @@
                 throw new Error('No valid ratings in XML');
             } catch (e) {
                 // Fallback к API через прокси
-                var apiUrl = kp_prox + 'https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId;
+                var apiUrl = KP_PROX + 'https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId;
                 fetch(apiUrl, {
                     headers: { 'X-API-KEY': apiKey }
                 })
@@ -717,7 +717,7 @@
         })
         .catch(function() {
             // Если XML через прокси не работает - пробуем API
-            var apiUrl = kp_prox + 'https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId;
+            var apiUrl = KP_PROX + 'https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId;
             fetch(apiUrl, {
                 headers: { 'X-API-KEY': apiKey }
             })
