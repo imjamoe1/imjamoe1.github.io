@@ -462,7 +462,7 @@
         
         if (!customOrder.length) {
             regular.sort(function(a, b) {
-                var typeOrder = ['online', 'torrent', 'trailer', //'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
+                var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
                 var typeA = getButtonType(a);
                 var typeB = getButtonType(b);
                 var indexA = typeOrder.indexOf(typeA);
@@ -1261,7 +1261,7 @@
                 if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden') && buttonsInColors.indexOf(btnId) === -1) {
                     var insertBefore = null;
                     var btnType = getButtonType(btn);
-                    var typeOrder = ['online', 'torrent', 'trailer', //'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
+                    var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
                     var btnTypeIndex = typeOrder.indexOf(btnType);
                     if (btnTypeIndex === -1) btnTypeIndex = 999;
                     
@@ -1678,7 +1678,7 @@
                     if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden')) {
                         var insertBefore = null;
                         var btnType = getButtonType(btn);
-                        var typeOrder = ['online', 'torrent', 'trailer', //'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
+                        var typeOrder = ['online', 'torrent', 'trailer', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
                         var btnTypeIndex = typeOrder.indexOf(btnType);
                         if (btnTypeIndex === -1) btnTypeIndex = 999;
                         
