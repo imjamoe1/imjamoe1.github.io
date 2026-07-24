@@ -322,7 +322,7 @@
         "padding-bottom: 2em !important;" +
         "}" +
         ".full-start-new__buttons {" +
-        "padding-bottom: 0.8em !important;" +
+        "padding-bottom: 0.3em !important;" +
         "}" +
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
