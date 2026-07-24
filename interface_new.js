@@ -1061,7 +1061,7 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    body.menu--always .new-interface .full-start__background {
+                    body.menu--always:not(.hide-compact).(.menu--open) .full-start__background {
                         left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
@@ -1310,10 +1310,10 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
-                        left: 0;
+                        left: 2em;
                     }
                     body.menu--always:not(.hide-compact).(.menu--open) .full-start__background {
-                        left: 2em;
+                        left: 4em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
