@@ -2659,13 +2659,13 @@ Lampa.Listener.follow('full', function(e) {
                             rateLine.css({
                                 'visibility': 'visible',
                                 'margin-left': '-10px',
-                                'margin-bottom': '10px',
+                                'margin-bottom': '20px',
                                 'display': 'flex',
                                 'flex-wrap': 'wrap'
                             });
                             
                             // 3. Добавляем отступ для head, чтобы не наезжал
-                            head.css('margin-top', '10px');
+                            head.css('margin-top', '5px');
                             
                             console.log('MAXSM-RATINGS: Rate line positioned above head');
                         }
