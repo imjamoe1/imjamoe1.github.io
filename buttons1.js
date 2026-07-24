@@ -7,7 +7,8 @@
         REORDER_DELAY: 150,
         RENDER_DELAY: 150,
         MAX_BUTTONS: 20,
-        STORAGE_PREFIX: 'button_'
+        STORAGE_PREFIX: 'button_',
+        LONG_PRESS_DELAY: 800 // Задержка для долгого нажатия
     };
 
     // ========== МОДУЛЬ ХРАНЕНИЯ ==========
@@ -55,7 +56,9 @@
         container: null,
         focusButtonId: null,
         isProcessing: false,
-        initialized: false
+        initialized: false,
+        longPressTimer: null,
+        isLongPress: false
     };
 
     var observers = {
@@ -612,6 +615,48 @@
         });
     }
 
+    // ========== ОБРАБОТЧИК ДОЛГОГО НАЖАТИЯ ==========
+
+    function setupLongPress(button) {
+        if (!button || !button.length) return;
+        if (button.hasClass('button--edit-order') || button.hasClass('button--color')) return;
+        
+        var timer = null;
+        var isLongPress = false;
+        
+        button.on('pointerdown', function(e) {
+            isLongPress = false;
+            timer = setTimeout(function() {
+                isLongPress = true;
+                e.preventDefault();
+                e.stopPropagation();
+                openEditDialog();
+            }, CONFIG.LONG_PRESS_DELAY);
+        });
+        
+        button.on('pointerup pointerleave', function(e) {
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+            // Если это был не долгий клик, пропускаем событие дальше
+            if (!isLongPress) {
+                // Симулируем обычный клик
+                var handlers = $._data(button[0], 'events');
+                if (handlers && handlers['hover:enter']) {
+                    var lastHandler = handlers['hover:enter'][handlers['hover:enter'].length - 1];
+                    if (lastHandler && lastHandler.handler) {
+                        lastHandler.handler.call(button[0], e);
+                    }
+                }
+            }
+            isLongPress = false;
+        });
+        
+        // Сохраняем обработчик в данных кнопки
+        button.data('longpress-setup', true);
+    }
+
     // ========== ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ==========
 
     function createEditButton() {
@@ -963,7 +1008,7 @@
                     setTimeout(function() {
                         if (STATE.container) {
                             STATE.container.data('buttons-processed', false);
-                            reorderButtons(STATE.container);
+                            renderButtons(STATE.container);
                             setTimeout(function() {
                                 openEditDialog();
                             }, 100);
@@ -1175,7 +1220,7 @@
                 
                 setTimeout(function() {
                     if (STATE.container) {
-                        STATE.container.find('button--edit-order', 'button--color', 'button--play').remove();
+                        STATE.container.find('button--edit-order, .button--color, .button--play').remove();
                         STATE.container.data('buttons-processed', false);
                         
                         var targetContainer = STATE.container.find('.full-start-new__buttons');
@@ -1352,6 +1397,13 @@
             }
         });
         
+        // Настраиваем долгое нажатие для всех кнопок
+        allButtons.forEach(function(btn) {
+            if (!btn.data('longpress-setup')) {
+                setupLongPress(btn);
+            }
+        });
+        
         if (itemOrder.length > 0) {
             var addedColors = [];
             var addedButtons = [];
@@ -1381,63 +1433,7 @@
             STATE.buttons.forEach(function(btn) {
                 var btnId = getButtonId(btn);
                 if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden') && buttonsInColors.indexOf(btnId) === -1) {
-                    var insertBefore = null;
-                    var btnType = getButtonType(btn);
-                    var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
-                    var btnTypeIndex = typeOrder.indexOf(btnType);
-                    if (btnTypeIndex === -1) btnTypeIndex = 999;
-                    
-                    if (btnId === 'modss_online_button' || btnId === 'showy_online_button') {
-                        var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').filter(function() {
-                            var id = getButtonId($(this));
-                            return id !== 'modss_online_button' && id !== 'showy_online_button';
-                        }).first();
-                        
-                        if (firstNonPriority.length) {
-                            insertBefore = firstNonPriority;
-                        }
-                        
-                        if (btnId === 'showy_online_button') {
-                            var modsBtn = targetContainer.find('.full-start__button').filter(function() {
-                                return getButtonId($(this)) === 'modss_online_button';
-                            });
-                            if (modsBtn.length) {
-                                insertBefore = modsBtn.next();
-                                if (!insertBefore.length || insertBefore.hasClass('button--edit-order')) {
-                                    insertBefore = null;
-                                }
-                            }
-                        }
-                    } else {
-                        targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').each(function() {
-                            var existingBtn = $(this);
-                            var existingId = getButtonId(existingBtn);
-                            
-                            if (existingId === 'modss_online_button' || existingId === 'showy_online_button') {
-                                return true;
-                            }
-                            
-                            var existingType = getButtonType(existingBtn);
-                            var existingTypeIndex = typeOrder.indexOf(existingType);
-                            if (existingTypeIndex === -1) existingTypeIndex = 999;
-                            
-                            if (btnTypeIndex < existingTypeIndex) {
-                                insertBefore = existingBtn;
-                                return false;
-                            }
-                        });
-                    }
-                    
-                    if (insertBefore && insertBefore.length) {
-                        btn.insertBefore(insertBefore);
-                    } else {
-                        var editBtn = targetContainer.find('.button--edit-order');
-                        if (editBtn.length) {
-                            btn.insertBefore(editBtn);
-                        } else {
-                            targetContainer.append(btn);
-                        }
-                    }
+                    targetContainer.append(btn);
                     visibleButtons.push(btn);
                 }
             });
@@ -1788,6 +1784,13 @@
                 }
             });
             
+            // Настраиваем долгое нажатие для всех кнопок
+            allButtons.forEach(function(btn) {
+                if (!btn.data('longpress-setup')) {
+                    setupLongPress(btn);
+                }
+            });
+            
             // Создаем фрагмент для оптимизации
             var fragment = document.createDocumentFragment();
             
@@ -1859,7 +1862,7 @@
             // Убеждаемся, что кнопки видимы
             visibleButtons.forEach(function(btn) {
                 btn.css('opacity', '1');
-                btn.css('display', '');
+                btn.css('display', 'flex');
                 btn.css('visibility', 'visible');
             });
 
@@ -2069,7 +2072,7 @@
                 default: true
             },
             field: {
-                name: 'Редактор кнопок'
+                name: 'Редактор кнопок (долгое нажатие)'
             },
             onChange: function(value) {
                 setTimeout(function() {
@@ -2106,7 +2109,8 @@
         STATE: STATE,
         Storage: Storage,
         renderButtons: renderButtons,
-        setupRatingButton: setupRatingButton
+        setupRatingButton: setupRatingButton,
+        openEditDialog: openEditDialog
     };
 
     init();
