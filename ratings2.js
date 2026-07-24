@@ -287,7 +287,7 @@
     
     var style = "<style id=\"maxsm_ratings\">" +
         ".full-start-new__head {" +
-        "margin-bottom: 0.3em !important;" +
+        "margin-bottom: 0.5em !important;" +
         "}" +
         ".full-start-new__rate-line {" +
         "visibility: hidden;" +
