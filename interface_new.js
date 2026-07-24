@@ -1310,14 +1310,14 @@
                         opacity: 1;
                     }
                     body.menu--always .new-interface .full-start__background {
-                        left: 2em;
+                        //left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
                         right: -5.5em !important;
                     }
                     body.menu--always .new-interface .card.card--small {
-                        width: calc(11.5em - 1.5em) !important;
+                        //width: calc(11.5em - 1.5em) !important;
                     }
                     .full-start-new__title {
                         padding-top: 0.2em;
