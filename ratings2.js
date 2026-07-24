@@ -623,154 +623,115 @@
 	
 //-----------------------------------------------------get---kinopoisk-------------------------------------
     function getKPRatings(normalizedCard, apiKey, localCurrentCard, callback) {
-        // Если есть kinopoisk_id - сразу переходим к запросу рейтингов
-        if (normalizedCard.kinopoisk_id) {
-            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Using provided kinopoisk_id: " + normalizedCard.kinopoisk_id);
-            return fetchRatings(normalizedCard.kinopoisk_id, localCurrentCard);
-        }
+    if (normalizedCard.kinopoisk_id) {
+        return fetchRatings(normalizedCard.kinopoisk_id, localCurrentCard, apiKey, callback);
+    }
+
+    var queryTitle = (normalizedCard.original_title || normalizedCard.title || '').replace(/[:\-–—]/g, ' ').trim();
+    var year = '';
+    if (normalizedCard.release_date && typeof normalizedCard.release_date === 'string') {
+        year = normalizedCard.release_date.split('-')[0];
+    }
+    if (!year) { callback(null); return; }
     
-        // Старая логика поиска по названию/году
-        var queryTitle = (normalizedCard.original_title || normalizedCard.title || '').replace(/[:\-–—]/g, ' ').trim();
-        var year = '';
-        if (normalizedCard.release_date && typeof normalizedCard.release_date === 'string') {
-            year = normalizedCard.release_date.split('-')[0];
-        }
+    var encodedTitle = encodeURIComponent(queryTitle);
+    // ИСПОЛЬЗУЕМ ПРОКСИ ДЛЯ ПОИСКА
+    var searchUrl = kp_prox + 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=' + encodedTitle;
+    
+    fetch(searchUrl, {
+        method: 'GET',
+        headers: { 'X-API-KEY': apiKey, 'Content-Type': 'application/json' }
+    })
+    .then(function(response) {
+        if (!response.ok) throw new Error('HTTP error: ' + response.status);
+        return response.json();
+    })
+    .then(function(data) {
+        if (!data.films || !data.films.length) { callback(null); return; }
         
-        if (!year) {
-            callback(null);
-            return;
+        var bestMatch = null;
+        var filmYear, targetYear, film2;
+        for (var j = 0; j < data.films.length; j++) {
+            film2 = data.films[j];
+            if (!film2.year) continue;
+            filmYear = parseInt(film2.year.substring(0, 4), 10);
+            targetYear = parseInt(year, 10);
+            if (isNaN(filmYear) || isNaN(targetYear)) continue;
+            if (filmYear === targetYear) { bestMatch = film2; break; }
         }
-        
-        var encodedTitle = encodeURIComponent(queryTitle);
-        var searchUrl = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=' + encodedTitle;
-        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Find information in KP by title and year");        
-        fetch(searchUrl, {
-            method: 'GET',
-            headers: {
-                'X-API-KEY': apiKey,
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(function(response) {
-            if (!response.ok) throw new Error('HTTP error: ' + response.status);
-            return response.json();
-        })
-        .then(function(data) {
-            if (!data.films || !data.films.length) {
-                callback(null);
-                return;
-            }
-            
-            var bestMatch = null;
-            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Match KP inf");
-            var filmYear;
-            var targetYear;
-            var film2;
-            // Сначала пытаемся найти точное совпадение
-            for (var j = 0; j < data.films.length; j++) {
-                film2 = data.films[j];
+        if (!bestMatch) {
+            for (var k = 0; k < data.films.length; k++) {
+                film2 = data.films[k];
                 if (!film2.year) continue;
-                
                 filmYear = parseInt(film2.year.substring(0, 4), 10);
                 targetYear = parseInt(year, 10);
-                
-                // Двойная проверка на валидность чисел
-                if (isNaN(filmYear)) continue;
-                if (isNaN(targetYear)) continue;
-                
-                if (filmYear === targetYear) {
-                    bestMatch = film2;
-                    if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", KP EXACT match for: " + queryTitle + " / " + year + " is id: " + bestMatch.filmId + " / " + film2.nameRu + " / " + film2.nameEn + " / " + film2.year);
-                    break;
-                }
+                if (isNaN(filmYear) || isNaN(targetYear)) continue;
+                if (Math.abs(filmYear - targetYear) <= 1) { bestMatch = film2; break; }
             }
-            
-            // Если точное совпадение не найдено, ищем +- год
-            if (!bestMatch) {
-                for (var k = 0; k < data.films.length; k++) {
-                    film2 = data.films[k];
-                    if (!film2.year) continue;
-                    
-                    filmYear = parseInt(film2.year.substring(0, 4), 10);
-                    targetYear = parseInt(year, 10);
-                    
-                    // Двойная проверка на валидность чисел
-                    if (isNaN(filmYear)) continue;
-                    if (isNaN(targetYear)) continue;
-                    
-                    if (Math.abs(filmYear - targetYear) <= 1) {
-                        bestMatch = film2;
-                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", KP APPROXIMATE match for: " + queryTitle + " / " + year + " is id: " + bestMatch.filmId + " / " + film2.nameRu + " / " + film2.nameEn + " / " + film2.year);
-                        break;
-                    }
-                }
-            }
-            
-            if (!bestMatch || !bestMatch.filmId) {
-                callback(null);
-                return;
-            }
-            
-            fetchRatings(bestMatch.filmId, localCurrentCard);
+        }
+        if (!bestMatch || !bestMatch.filmId) { callback(null); return; }
+        
+        fetchRatings(bestMatch.filmId, localCurrentCard, apiKey, callback);
+    })
+    .catch(function() { callback(null); });
+
+    function fetchRatings(filmId, localCurrentCard, apiKey, callback) {
+        // ИСПОЛЬЗУЕМ ПРОКСИ ДЛЯ XML
+        var xmlUrl = kp_prox + 'https://rating.kinopoisk.ru/' + filmId + '.xml';
+        
+        // Прямой fetch через прокси (быстрее чем через fetchWithProxy)
+        fetch(xmlUrl)
+        .then(function(response) {
+            if (!response.ok) throw new Error('XML request failed');
+            return response.text();
         })
-        .catch(function() {
-            console.warn("MAXSM-RATINGS", "card: " + localCurrentCard + "Kinopoisk API request failed");
-            callback(null);
-        });
-    
-        // Общая функция получения рейтингов по ID
-        function fetchRatings(filmId, localCurrentCard) {
-            var xmlUrl = 'https://rating.kinopoisk.ru/' + filmId + '.xml';
-            
-            fetchWithProxy(xmlUrl, localCurrentCard, function(error, xmlText) {
-                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Try to get KP ratings from XML");
-                if (!error && xmlText) {
-                    try {
-                        var parser = new DOMParser();
-                        var xmlDoc = parser.parseFromString(xmlText, "text/xml");
-                        var kpRatingNode = xmlDoc.getElementsByTagName("kp_rating")[0];
-                        var imdbRatingNode = xmlDoc.getElementsByTagName("imdb_rating")[0];
-                        
-                        var kpRating = kpRatingNode ? parseFloat(kpRatingNode.textContent) : null;
-                        var imdbRating = imdbRatingNode ? parseFloat(imdbRatingNode.textContent) : null;
-                        
-                        var hasValidKp = !isNaN(kpRating) && kpRating > 0;
-                        var hasValidImdb = !isNaN(imdbRating) && imdbRating > 0;
-                        
-                        if (hasValidKp || hasValidImdb) {
-                            if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Got KP ratings from XML");
-                            return callback({
-                                kinopoisk: hasValidKp ? kpRating : null,
-                                imdb: hasValidImdb ? imdbRating : null
-                            });
-                        }
-                    } catch (e) {
-                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", XML parse error, fallback to API");
-                    }
+        .then(function(xmlText) {
+            try {
+                var parser = new DOMParser();
+                var xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                var kpRatingNode = xmlDoc.getElementsByTagName("kp_rating")[0];
+                var imdbRatingNode = xmlDoc.getElementsByTagName("imdb_rating")[0];
+                var kpRating = kpRatingNode ? parseFloat(kpRatingNode.textContent) : null;
+                var imdbRating = imdbRatingNode ? parseFloat(imdbRatingNode.textContent) : null;
+                var hasValidKp = !isNaN(kpRating) && kpRating > 0;
+                var hasValidImdb = !isNaN(imdbRating) && imdbRating > 0;
+                if (hasValidKp || hasValidImdb) {
+                    return callback({ kinopoisk: hasValidKp ? kpRating : null, imdb: hasValidImdb ? imdbRating : null });
                 }
-                
-                // Fallback к API
-                if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Try to get KP ratings from API");
-                fetch('https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId, {
+                throw new Error('No valid ratings in XML');
+            } catch (e) {
+                // Fallback к API через прокси
+                var apiUrl = kp_prox + 'https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId;
+                fetch(apiUrl, {
                     headers: { 'X-API-KEY': apiKey }
                 })
-                    .then(function(response) {
-                        if (!response.ok) throw new Error('API error');
-                        return response.json();
-                    })
-                    .then(function(data) {
-                        if (C_LOGGING) console.log("MAXSM-RATINGS", "card: " + localCurrentCard + ", Got KP ratings from API");
-                        callback({
-                            kinopoisk: data.ratingKinopoisk || null,
-                            imdb: data.ratingImdb || null
-                        });
-                    })
-                    .catch(function() {
-                        callback(null);
-                    });
-            });
-        }
+                .then(function(response) {
+                    if (!response.ok) throw new Error('API error');
+                    return response.json();
+                })
+                .then(function(data) {
+                    callback({ kinopoisk: data.ratingKinopoisk || null, imdb: data.ratingImdb || null });
+                })
+                .catch(function() { callback(null); });
+            }
+        })
+        .catch(function() {
+            // Если XML через прокси не работает - пробуем API
+            var apiUrl = kp_prox + 'https://kinopoiskapiunofficial.tech/api/v2.2/films/' + filmId;
+            fetch(apiUrl, {
+                headers: { 'X-API-KEY': apiKey }
+            })
+            .then(function(response) {
+                if (!response.ok) throw new Error('API error');
+                return response.json();
+            })
+            .then(function(data) {
+                callback({ kinopoisk: data.ratingKinopoisk || null, imdb: data.ratingImdb || null });
+            })
+            .catch(function() { callback(null); });
+        });
     }
+}
 //-------------------------------------------------end---get---kinopoisk-----------------------------------
     function addLoadingAnimation(localCurrentCard, render) {
         //var render = Lampa.Activity.active().activity.render();
