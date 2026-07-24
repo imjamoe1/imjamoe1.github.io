@@ -54,7 +54,8 @@
         originalButtons: [],
         container: null,
         focusButtonId: null,
-        isProcessing: false
+        isProcessing: false,
+        initialized: false
     };
 
     var observers = {
@@ -1201,7 +1202,7 @@
                             }
                         });
                         
-                        reorderButtons(STATE.container);
+                        renderButtons(STATE.container);
                         refreshController();
                     }
                 }, 100);
@@ -1725,6 +1726,8 @@
             if (!targetContainer.length) return false;
 
             STATE.container = container;
+            
+            // Удаляем старые кнопки редактирования
             container.find('.button--edit-order, .button--color, .button--play').remove();
 
             var categories = categorizeButtons(container);
@@ -1766,7 +1769,11 @@
             applyHiddenButtons(filteredButtons);
             applyButtonDisplayModes(filteredButtons);
 
-            targetContainer.children().detach();
+            // Очищаем контейнер
+            targetContainer.empty();
+            
+            // Устанавливаем видимость контейнера
+            targetContainer.css('display', 'flex');
             
             var visibleButtons = [];
             var itemOrder = getItemOrder();
@@ -1781,6 +1788,9 @@
                 }
             });
             
+            // Создаем фрагмент для оптимизации
+            var fragment = document.createDocumentFragment();
+            
             if (itemOrder.length > 0) {
                 var addedColors = [];
                 var addedButtons = [];
@@ -1790,14 +1800,14 @@
                         var color = colors.find(function(f) { return f.id === item.id; });
                         if (color) {
                             var colorBtn = createColorButton(color);
-                            targetContainer.append(colorBtn);
+                            fragment.appendChild(colorBtn[0]);
                             visibleButtons.push(colorBtn);
                             addedColors.push(color.id);
                         }
                     } else if (item.type === 'button') {
                         var btn = filteredButtons.find(function(b) { return getButtonId(b) === item.id; });
                         if (btn && !btn.hasClass('hidden')) {
-                            targetContainer.append(btn);
+                            fragment.appendChild(btn[0]);
                             visibleButtons.push(btn);
                             addedButtons.push(getButtonId(btn));
                         }
@@ -1807,58 +1817,7 @@
                 filteredButtons.forEach(function(btn) {
                     var btnId = getButtonId(btn);
                     if (addedButtons.indexOf(btnId) === -1 && !btn.hasClass('hidden')) {
-                        var insertBefore = null;
-                        var btnType = getButtonType(btn);
-                        var typeOrder = ['online', 'torrent', 'trailer', 'rating', 'favorite', 'subscribe', 'book', 'reaction', 'other'];
-                        var btnTypeIndex = typeOrder.indexOf(btnType);
-                        if (btnTypeIndex === -1) btnTypeIndex = 999;
-                        
-                        if (btnId === 'modss_online_button' || btnId === 'showy_online_button') {
-                            var firstNonPriority = targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').filter(function() {
-                                var id = getButtonId($(this));
-                                return id !== 'modss_online_button' && id !== 'showy_online_button';
-                            }).first();
-                            
-                            if (firstNonPriority.length) {
-                                insertBefore = firstNonPriority;
-                            }
-                            
-                            if (btnId === 'showy_online_button') {
-                                var modsBtn = targetContainer.find('.full-start__button').filter(function() {
-                                    return getButtonId($(this)) === 'modss_online_button';
-                                });
-                                if (modsBtn.length) {
-                                    insertBefore = modsBtn.next();
-                                    if (!insertBefore.length || insertBefore.hasClass('button--edit-order')) {
-                                        insertBefore = null;
-                                    }
-                                }
-                            }
-                        } else {
-                            targetContainer.find('.full-start__button').not('.button--edit-order, .button--color').each(function() {
-                                var existingBtn = $(this);
-                                var existingId = getButtonId(existingBtn);
-                                
-                                if (existingId === 'modss_online_button' || existingId === 'showy_online_button') {
-                                    return true;
-                                }
-                                
-                                var existingType = getButtonType(existingBtn);
-                                var existingTypeIndex = typeOrder.indexOf(existingType);
-                                if (existingTypeIndex === -1) existingTypeIndex = 999;
-                                
-                                if (btnTypeIndex < existingTypeIndex) {
-                                    insertBefore = existingBtn;
-                                    return false;
-                                }
-                            });
-                        }
-                        
-                        if (insertBefore && insertBefore.length) {
-                            btn.insertBefore(insertBefore);
-                        } else {
-                            targetContainer.append(btn);
-                        }
+                        fragment.appendChild(btn[0]);
                         visibleButtons.push(btn);
                     }
                 });
@@ -1866,36 +1825,49 @@
                 colors.forEach(function(color) {
                     if (addedColors.indexOf(color.id) === -1) {
                         var colorBtn = createColorButton(color);
-                        targetContainer.append(colorBtn);
+                        fragment.appendChild(colorBtn[0]);
                         visibleButtons.push(colorBtn);
                     }
                 });
             } else {
                 colors.forEach(function(color) {
                     var colorBtn = createColorButton(color);
-                    targetContainer.append(colorBtn);
+                    fragment.appendChild(colorBtn[0]);
                     visibleButtons.push(colorBtn);
                 });
                 
                 filteredButtons.forEach(function(btn) {
                     if (!btn.hasClass('hidden')) {
-                        targetContainer.append(btn);
+                        fragment.appendChild(btn[0]);
                         visibleButtons.push(btn);
                     }
                 });
             }
 
             var editButton = createEditButton();
-            targetContainer.append(editButton);
+            fragment.appendChild(editButton[0]);
             visibleButtons.push(editButton);
+
+            // Добавляем все кнопки в контейнер
+            targetContainer.append(fragment);
 
             var viewmode = getViewMode();
             targetContainer.removeClass('icons-only always-text');
             if (viewmode === 'icons') targetContainer.addClass('icons-only');
             if (viewmode === 'always') targetContainer.addClass('always-text');
 
-            applyButtonAnimation(visibleButtons);
-            
+            // Убеждаемся, что кнопки видимы
+            visibleButtons.forEach(function(btn) {
+                btn.css('opacity', '1');
+                btn.css('display', '');
+                btn.css('visibility', 'visible');
+            });
+
+            // Применяем анимацию только если включена
+            if (!options || options.animate !== false) {
+                applyButtonAnimation(visibleButtons);
+            }
+
             if (getColoredLogos()) {
                 setTimeout(function() {
                     replaceIcons();
@@ -1908,6 +1880,9 @@
             }, 100);
 
             return true;
+        } catch(e) {
+            console.error('[Buttons Plugin] Render error:', e);
+            return false;
         } finally {
             STATE.isProcessing = false;
         }
@@ -1948,7 +1923,7 @@
             '.btns-plugin-open .modal .modal__content { max-width: 27.5em !important; width: 27.5em !important; top: 5% !important; margin-left: auto !important; margin-right: auto !important; left: 50% !important; transform: translateX(-50%) !important; position: relative !important; }' +
             '.btns-plugin-open .modal .modal__body { max-height: 78vh !important; overflow-y: auto !important; }' +
             '@media screen and (max-width: 520px) { .btns-plugin-open .modal .modal__content { width: 96vw !important; max-width: 96vw !important; left: 2vw !important; transform: none !important; margin-left: 0 !important; margin-right: 0 !important; } }' +
-            '.full-start-new__buttons .full-start__button { opacity: 0; }' +
+            '.full-start-new__buttons .full-start__button { opacity: 1; display: flex; visibility: visible; }' +
             '.full-start__button.hidden { display: none !important; }' +
             '.button--color { cursor: pointer; }' +
             '.full-start-new__buttons { ' +
@@ -1956,6 +1931,7 @@
                 'flex-direction: row !important; ' +
                 'flex-wrap: wrap !important; ' +
                 'gap: 0.5em !important; ' +
+                'align-items: center !important; ' +
             '}' +
             '.full-start-new__buttons.icons-only .full-start__button:not(.button--color):not(.button-mode-2):not(.button-mode-3) span,' +
             '.full-start-new__buttons.icons-only .button--color:not(.button-mode-2):not(.button-mode-3) span {' +
@@ -2030,6 +2006,7 @@
 
             var container = e.object.activity.render();
             var targetContainer = container.find('.full-start-new__buttons');
+            
             if (targetContainer.length) {
                 targetContainer.addClass('buttons-loading');
             }
@@ -2038,10 +2015,16 @@
                 try {
                     if (!container.data('buttons-processed')) {
                         container.data('buttons-processed', true);
-                        if (renderButtons(container)) {
+                        if (renderButtons(container, { animate: false })) {
                             if (targetContainer.length) {
                                 setTimeout(function() {
                                     targetContainer.removeClass('buttons-loading');
+                                    // Принудительно показываем кнопки
+                                    targetContainer.find('.full-start__button').css({
+                                        'opacity': '1',
+                                        'visibility': 'visible',
+                                        'display': 'flex'
+                                    });
                                 }, 200);
                                 refreshController();
                             }
@@ -2051,9 +2034,27 @@
                     console.error('[Buttons Plugin] Render error:', err);
                     if (targetContainer.length) {
                         targetContainer.removeClass('buttons-loading');
+                        // Показываем кнопки даже при ошибке
+                        targetContainer.find('.full-start__button').css({
+                            'opacity': '1',
+                            'visibility': 'visible',
+                            'display': 'flex'
+                        });
                     }
                 }
             }, CONFIG.RENDER_DELAY);
+        });
+        
+        // Дополнительный обработчик для принудительного показа кнопок
+        $(document).on('DOMNodeInserted', '.full-start-new__buttons', function() {
+            var container = $(this);
+            setTimeout(function() {
+                container.find('.full-start__button').css({
+                    'opacity': '1',
+                    'visibility': 'visible',
+                    'display': 'flex'
+                });
+            }, 50);
         });
     }
 
