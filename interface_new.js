@@ -1310,6 +1310,9 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
+                        left: 0;
+                    }
+                    body.menu--always:not(.hide-compact).(.menu--open) .full-start__background {
                         left: 2em;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
