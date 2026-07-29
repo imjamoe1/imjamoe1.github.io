@@ -25,6 +25,7 @@
     var allButtonsCache = [];
     var allButtonsOriginal = [];
     var currentContainer = null;
+    var currentFocusedButtonId = null;
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
@@ -593,9 +594,14 @@
         setItemOrder(order);
     }
 
-    // ========== ДИАЛОГИ ==========
+    // ========== ГЛАВНАЯ ФУНКЦИЯ РЕДАКТОРА (как в первом плагине _0x30864c) ==========
 
-    function openEditDialog() {
+    function openEditor(container, focusedButtonId) {
+        // Сохраняем контейнер
+        if (container) {
+            currentContainer = container;
+        }
+        
         if (!currentContainer || !currentContainer.length) {
             Lampa.Noty.show('Откройте карточку контента');
             return;
@@ -607,7 +613,7 @@
             return;
         }
 
-        // Собираем кнопки
+        // Собираем все кнопки
         var categories = categorizeButtons(currentContainer);
         var allButtons = []
             .concat(categories.online)
@@ -643,6 +649,7 @@
         var colors = getColors();
         var itemOrder = getItemOrder();
 
+        // Переключатель режима отображения
         var currentMode = getViewMode();
         var modeBtn = $('<div class="selector viewmode-switch">' +
             '<div style="text-align: center; padding: 1em;">Вид кнопок: ' + MODES[currentMode] + '</div>' +
@@ -666,6 +673,7 @@
         
         list.append(modeBtn);
 
+        // Переключатель цветных логотипов
         var coloredLogos = getColoredLogos();
         var logosBtn = $('<div class="selector colored-logos-switch">' +
             '<div style="text-align: center; padding: 1em;">Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет') + '</div>' +
@@ -680,6 +688,7 @@
         
         list.append(logosBtn);
 
+        // Заголовок
         var header = $('<div class="menu-edit-list__header">' +
             '<div class="menu-edit-list__header-spacer"></div>' +
             '<div class="menu-edit-list__header-move">Сдвиг</div>' +
@@ -780,7 +789,7 @@
                                 Lampa.Noty.show('Цвет переименован');
                             }
                         }
-                        openEditDialog();
+                        openEditor();
                     });
                 }, 100);
             });
@@ -839,7 +848,7 @@
                         currentContainer.data('buttons-processed', false);
                         reorderButtons(currentContainer);
                         setTimeout(function() {
-                            openEditDialog();
+                            openEditor();
                         }, 100);
                     }
                 }, 50);
@@ -957,7 +966,7 @@
                             setRenamedButtons(renamedButtons);
                             Lampa.Noty.show('Кнопка переименована');
                         }
-                        openEditDialog();
+                        openEditor();
                     });
                 }, 100);
             });
@@ -1027,6 +1036,7 @@
             });
         }
 
+        // Кнопка сброса
         var resetBtn = $('<div class="selector color-reset-button">' +
             '<div style="text-align: center; padding: 1em;">Сбросить по умолчанию</div>' +
         '</div>');
@@ -1082,6 +1092,7 @@
 
         $('body').addClass('btns-plugin-open');
         
+        // Открываем модальное окно как в первом плагине
         Lampa.Modal.open({
             title: 'Редактор кнопок',
             html: list,
@@ -1497,7 +1508,7 @@
             onBack: function() {
                 Lampa.Modal.close();
                 updateColorIcon(color);
-                openEditDialog();
+                openEditor();
             }
         });
     }
@@ -1881,34 +1892,27 @@
             }, 400);
         });
 
-        // ========== ГЛАВНОЕ: ОБРАБОТЧИК ДОЛГОГО НАЖАТИЯ ==========
-        // Вешаем обработчик на все кнопки в карточке как в первом плагине
-        $(document).on('hover:long', '.full-start__button:not(.button--edit-order):not(.button--color):not(.button--play)', function() {
+        // ========== ГЛАВНОЕ: ОБРАБОТЧИК ДОЛГОГО НАЖАТИЯ КАК В ПЕРВОМ ПЛАГИНЕ ==========
+        // Используем делегирование на body для всех кнопок
+        $(document).on('hover:long', '.full-start__button:not(.button--edit-order):not(.button--color):not(.button--play)', function(e) {
             var $btn = $(this);
+            // Находим контейнер карточки
             var container = $btn.closest('.full-start-card, .activity-container');
             
-            if (container.length) {
-                currentContainer = container;
-                openEditDialog();
-            } else {
-                // Если не нашли контейнер, ищем через активную карточку
-                var activeCard = $('.full-start-card.active, .full-start-card.focus');
-                if (activeCard.length) {
-                    currentContainer = activeCard;
-                    openEditDialog();
-                }
+            if (container && container.length) {
+                // Сохраняем контейнер и открываем редактор (как в первом плагине)
+                openEditor(container);
             }
         });
     }
 
-    // ========== ЭКСПОРТ ФУНКЦИИ ==========
+    // ========== ЭКСПОРТ ФУНКЦИИ ДЛЯ ВНЕШНЕГО ВЫЗОВА ==========
 
-    // Экспортируем функцию для вызова из консоли или других плагинов
+    // Экспортируем функцию для вызова из консоли (как в первом плагине)
     window.openButtonEditor = function() {
         var activeCard = $('.full-start-card.active, .full-start-card.focus, .activity-container .active');
         if (activeCard.length) {
-            currentContainer = activeCard;
-            openEditDialog();
+            openEditor(activeCard);
         } else {
             Lampa.Noty.show('Откройте карточку контента');
         }
