@@ -26,6 +26,7 @@
     var allButtonsOriginal = [];
     var currentContainer = null;
     var currentFocusedButtonId = null;
+    var currentPageName = null;
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
@@ -594,27 +595,40 @@
         setItemOrder(order);
     }
 
-    // ========== ГЛАВНАЯ ФУНКЦИЯ РЕДАКТОРА (как в первом плагине _0x30864c) ==========
+    // ========== ГЛАВНАЯ ФУНКЦИЯ РЕДАКТОРА ==========
 
-    function openEditor(container, focusedButtonId) {
-        // Сохраняем контейнер
-        if (container) {
-            currentContainer = container;
-        }
-        
-        if (!currentContainer || !currentContainer.length) {
-            Lampa.Noty.show('Откройте карточку контента');
+    function openEditor(cardElement, focusedButtonId, pageName) {
+        if (!cardElement || !cardElement.length || !cardElement[0]) {
             return;
         }
 
-        var targetContainer = currentContainer.find('.full-start-new__buttons');
+        // Сохраняем текущее состояние
+        currentContainer = cardElement;
+        
+        if (pageName) {
+            currentPageName = pageName;
+        } else {
+            var enabled = Lampa.Controller.enabled();
+            currentPageName = enabled ? enabled.name : 'content';
+        }
+
+        if (!focusedButtonId) {
+            var focused = cardElement.find('.full-start__button.focus');
+            if (focused && focused.length) {
+                currentFocusedButtonId = getButtonId(focused);
+            }
+        } else {
+            currentFocusedButtonId = focusedButtonId;
+        }
+
+        var targetContainer = cardElement.find('.full-start-new__buttons');
         if (!targetContainer.length) {
             Lampa.Noty.show('В карточке нет кнопок');
             return;
         }
 
-        // Собираем все кнопки
-        var categories = categorizeButtons(currentContainer);
+        // Собираем кнопки
+        var categories = categorizeButtons(cardElement);
         var allButtons = []
             .concat(categories.online)
             .concat(categories.torrent)
@@ -649,7 +663,6 @@
         var colors = getColors();
         var itemOrder = getItemOrder();
 
-        // Переключатель режима отображения
         var currentMode = getViewMode();
         var modeBtn = $('<div class="selector viewmode-switch">' +
             '<div style="text-align: center; padding: 1em;">Вид кнопок: ' + MODES[currentMode] + '</div>' +
@@ -673,7 +686,6 @@
         
         list.append(modeBtn);
 
-        // Переключатель цветных логотипов
         var coloredLogos = getColoredLogos();
         var logosBtn = $('<div class="selector colored-logos-switch">' +
             '<div style="text-align: center; padding: 1em;">Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет') + '</div>' +
@@ -688,7 +700,6 @@
         
         list.append(logosBtn);
 
-        // Заголовок
         var header = $('<div class="menu-edit-list__header">' +
             '<div class="menu-edit-list__header-spacer"></div>' +
             '<div class="menu-edit-list__header-move">Сдвиг</div>' +
@@ -789,7 +800,7 @@
                                 Lampa.Noty.show('Цвет переименован');
                             }
                         }
-                        openEditor();
+                        openEditor(currentContainer, currentFocusedButtonId, currentPageName);
                     });
                 }, 100);
             });
@@ -848,7 +859,7 @@
                         currentContainer.data('buttons-processed', false);
                         reorderButtons(currentContainer);
                         setTimeout(function() {
-                            openEditor();
+                            openEditor(currentContainer, currentFocusedButtonId, currentPageName);
                         }, 100);
                     }
                 }, 50);
@@ -966,7 +977,7 @@
                             setRenamedButtons(renamedButtons);
                             Lampa.Noty.show('Кнопка переименована');
                         }
-                        openEditor();
+                        openEditor(currentContainer, currentFocusedButtonId, currentPageName);
                     });
                 }, 100);
             });
@@ -1036,7 +1047,6 @@
             });
         }
 
-        // Кнопка сброса
         var resetBtn = $('<div class="selector color-reset-button">' +
             '<div style="text-align: center; padding: 1em;">Сбросить по умолчанию</div>' +
         '</div>');
@@ -1092,7 +1102,6 @@
 
         $('body').addClass('btns-plugin-open');
         
-        // Открываем модальное окно как в первом плагине
         Lampa.Modal.open({
             title: 'Редактор кнопок',
             html: list,
@@ -1508,7 +1517,7 @@
             onBack: function() {
                 Lampa.Modal.close();
                 updateColorIcon(color);
-                openEditor();
+                openEditor(currentContainer, currentFocusedButtonId, currentPageName);
             }
         });
     }
@@ -1862,6 +1871,7 @@
         '</style>');
         $('body').append(style);
 
+        // Слушаем событие "full" для перехвата рендеринга карточки
         Lampa.Listener.follow('full', function(e) {
             if (e.type !== 'complite') return;
 
@@ -1892,15 +1902,28 @@
             }, 400);
         });
 
-        // ========== ГЛАВНОЕ: ОБРАБОТЧИК ДОЛГОГО НАЖАТИЯ КАК В ПЕРВОМ ПЛАГИНЕ ==========
-        // Используем делегирование на body для всех кнопок
-        $(document).on('hover:long', '.full-start__button:not(.button--edit-order):not(.button--color):not(.button--play)', function(e) {
+        // ========== КЛЮЧЕВОЕ: ОБРАБОТЧИК ДОЛГОГО НАЖАТИЯ КАК В ОРИГИНАЛЕ ==========
+        // В оригинале обработчик навешивается на кнопки через .on("hover:long")
+        // после того как карточка отрендерена
+        
+        // Используем делегирование на весь документ, но только для кнопок в карточках
+        $(document).on('hover:long', '.full-start__button:not(.button--edit-order):not(.button--color):not(.button--play)', function() {
             var $btn = $(this);
             // Находим контейнер карточки
             var container = $btn.closest('.full-start-card, .activity-container');
             
             if (container && container.length) {
-                // Сохраняем контейнер и открываем редактор (как в первом плагине)
+                // ТОЧНО КАК В ОРИГИНАЛЕ - вызываем openEditor с контейнером
+                openEditor(container);
+            }
+        });
+
+        // Для папок тоже добавляем обработчик (в оригинале он добавляется при создании папки)
+        // Но на всякий случай через делегирование
+        $(document).on('hover:long', '.full-start__button.button--folder', function() {
+            var $btn = $(this);
+            var container = $btn.closest('.full-start-card, .activity-container');
+            if (container && container.length) {
                 openEditor(container);
             }
         });
@@ -1908,7 +1931,7 @@
 
     // ========== ЭКСПОРТ ФУНКЦИИ ДЛЯ ВНЕШНЕГО ВЫЗОВА ==========
 
-    // Экспортируем функцию для вызова из консоли (как в первом плагине)
+    // Экспортируем функцию для вызова из консоли
     window.openButtonEditor = function() {
         var activeCard = $('.full-start-card.active, .full-start-card.focus, .activity-container .active');
         if (activeCard.length) {
