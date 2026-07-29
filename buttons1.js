@@ -502,8 +502,6 @@
 
     // ========== ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ==========
 
-    // Функция создания кнопки-карандаша УДАЛЕНА - больше не нужна
-
     function capitalize(str) {
         if (!str) return str;
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -598,39 +596,64 @@
 
     // ========== ДИАЛОГИ ==========
 
-    // Функция открытия редактора оставлена, но теперь вызывается через window для внешнего доступа
+    // Открытие редактора - теперь с поиском контейнера
     function openEditDialog() {
-        if (currentContainer) {
-            var categories = categorizeButtons(currentContainer);
-            var allButtons = []
-                .concat(categories.online)
-                .concat(categories.torrent)
-                .concat(categories.trailer)
-                .concat(categories.rating)
-                .concat(categories.favorite)
-                .concat(categories.subscribe)
-                .concat(categories.book)
-                .concat(categories.reaction)
-                .concat(categories.other);
-            
-            allButtons = sortByCustomOrder(allButtons);
-            allButtons = mergeOriginalButtons(allButtons);
-            allButtons = sortByCustomOrder(allButtons);
-            allButtonsCache = allButtons;
-            
-            var colors = getColors();
-            var buttonsInColors = [];
-            colors.forEach(function(color) {
-                buttonsInColors = buttonsInColors.concat(color.buttons);
-            });
-            
-            var filteredButtons = allButtons.filter(function(btn) {
-                return buttonsInColors.indexOf(getButtonId(btn)) === -1;
-            });
-            
-            currentButtons = filteredButtons;
+        // Если контейнер не установлен, пытаемся найти активную карточку
+        if (!currentContainer) {
+            // Ищем активную карточку
+            var activeCard = $('.full-start-card.active, .full-start-card.focus, .activity-container .active');
+            if (activeCard.length) {
+                currentContainer = activeCard;
+            } else {
+                // Пробуем найти любую карточку с кнопками
+                var anyCard = $('.full-start-new__buttons').closest('.full-start-card, .activity-container');
+                if (anyCard.length) {
+                    currentContainer = anyCard;
+                } else {
+                    Lampa.Noty.show('Откройте карточку контента');
+                    return;
+                }
+            }
         }
+
+        // Проверяем, что контейнер содержит кнопки
+        var targetContainer = currentContainer.find('.full-start-new__buttons');
+        if (!targetContainer.length) {
+            Lampa.Noty.show('В карточке нет кнопок');
+            return;
+        }
+
+        // Собираем кнопки
+        var categories = categorizeButtons(currentContainer);
+        var allButtons = []
+            .concat(categories.online)
+            .concat(categories.torrent)
+            .concat(categories.trailer)
+            .concat(categories.rating)
+            .concat(categories.favorite)
+            .concat(categories.subscribe)
+            .concat(categories.book)
+            .concat(categories.reaction)
+            .concat(categories.other);
         
+        allButtons = sortByCustomOrder(allButtons);
+        allButtons = mergeOriginalButtons(allButtons);
+        allButtons = sortByCustomOrder(allButtons);
+        allButtonsCache = allButtons;
+        
+        var colors = getColors();
+        var buttonsInColors = [];
+        colors.forEach(function(color) {
+            buttonsInColors = buttonsInColors.concat(color.buttons);
+        });
+        
+        var filteredButtons = allButtons.filter(function(btn) {
+            return buttonsInColors.indexOf(getButtonId(btn)) === -1;
+        });
+        
+        currentButtons = filteredButtons;
+        
+        // Строим интерфейс редактора
         var list = $('<div class="menu-edit-list"></div>');
         var hidden = getHiddenButtons();
         var colors = getColors();
@@ -1325,8 +1348,6 @@
 
         applyButtonAnimation(visibleButtons);
 
-        // Кнопка-карандаш НЕ ДОБАВЛЯЕТСЯ
-
         saveOrder();
         
         if (getColoredLogos()) {
@@ -1723,8 +1744,6 @@
                 });
             }
 
-            // Кнопка-карандаш НЕ ДОБАВЛЯЕТСЯ
-
             var viewmode = getViewMode();
             targetContainer.removeClass('icons-only always-text');
             if (viewmode === 'icons') targetContainer.addClass('icons-only');
@@ -1884,16 +1903,33 @@
         });
     }
 
-    // ========== УДАЛЕН РАЗДЕЛ НАСТРОЕК (Lampa.SettingsApi) ==========
+    // ========== ЭКСПОРТ ФУНКЦИИ ==========
 
-    // Экспортируем функцию открытия редактора для внешнего использования (например, через консоль)
+    // Экспортируем функцию открытия редактора
     window.openButtonEditor = function() {
-        if (currentContainer) {
+        // Пытаемся найти активную карточку
+        var card = $('.full-start-card.active, .full-start-card.focus, .activity-container .active');
+        if (card.length) {
+            currentContainer = card;
             openEditDialog();
         } else {
-            Lampa.Noty.show('Нет активной карточки');
+            // Если активной нет, ищем любую карточку
+            var anyCard = $('.full-start-new__buttons').closest('.full-start-card, .activity-container');
+            if (anyCard.length) {
+                currentContainer = anyCard;
+                openEditDialog();
+            } else {
+                Lampa.Noty.show('Откройте карточку контента');
+            }
         }
     };
+
+    // Добавляем вызов через глобальный объект для совместимости
+    if (!window.cardButtonsEditor) {
+        window.cardButtonsEditor = {
+            open: window.openButtonEditor
+        };
+    }
 
     init();
 
