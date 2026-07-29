@@ -189,7 +189,6 @@
     function replaceIcons() {
         if (!currentContainer) return;
         
-        // Замена иконки Онлайн
         currentContainer.find('.full-start__button.view--online svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -200,7 +199,6 @@
             }
         });
 
-        // Замена иконки Торренты
         currentContainer.find('.full-start__button.view--torrent svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -214,7 +212,6 @@
             }
         });
 
-        // Замена иконки Трейлеры
         currentContainer.find('.full-start__button.view--trailer svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -225,7 +222,6 @@
             }
         });
 
-        // Замена иконки Платформы
         currentContainer.find('.full-start__button.button--plaftorms svg, .full-start__button.button--platforms svg').each(function() {
             var svg = $(this);
             if (!svg.attr('data-replaced')) {
@@ -319,6 +315,11 @@
             return 'showy_online_button';
         }
         
+        // Особый случай для кнопки рейтинга - используем фиксированный ID
+        if (classes.indexOf('button--rating') !== -1 || classes.indexOf('view--rating') !== -1) {
+            return 'button--rating';
+        }
+        
         var viewClasses = classes.split(' ').filter(function(c) { 
             return c.indexOf('view--') === 0 || c.indexOf('button--') === 0; 
         }).join('_');
@@ -337,6 +338,13 @@
     }
 
     function getButtonId(button) {
+        // Проверяем, является ли кнопка кнопкой рейтинга
+        var classes = button.attr('class') || '';
+        if (classes.indexOf('button--rating') !== -1 || classes.indexOf('view--rating') !== -1) {
+            // Для кнопки рейтинга всегда используем фиксированный ID
+            return 'button--rating';
+        }
+        
         var stableId = button.attr('data-stable-id');
         if (!stableId) {
             stableId = generateButtonId(button);
@@ -525,6 +533,11 @@
         var text = btn.find('span').text().trim();
         var classes = btn.attr('class') || '';
         var subtitle = btn.attr('data-subtitle') || '';
+        
+        // Для кнопки рейтинга используем специальное название
+        if (btnId === 'button--rating') {
+            return 'Оценить';
+        }
         
         if (!text) {
             var viewClass = classes.split(' ').find(function(c) { 
@@ -1873,7 +1886,7 @@
         '</style>');
         $('body').append(style);
 
-        // ========== СЛУШАЕМ СОБЫТИЕ "full" КАК В ОРИГИНАЛЕ ==========
+        // Слушаем событие "full" для перехвата рендеринга карточки
         Lampa.Listener.follow('full', function(e) {
             if (e.type !== 'complite') return;
 
@@ -1903,8 +1916,7 @@
                 }
             }, 400);
 
-            // ========== КЛЮЧЕВОЕ: НАВЕШИВАЕМ ОБРАБОТЧИК НА КНОПКИ КАК В ОРИГИНАЛЕ ==========
-            // ТОЧНО КАК В ОРИГИНАЛЬНОМ ПЛАГИНЕ
+            // Навешиваем обработчик долгого нажатия для всех кнопок (как в оригинале)
             setTimeout(function() {
                 try {
                     var buttons = container.find('.full-start__button');
