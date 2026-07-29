@@ -2,7 +2,6 @@
     'use strict';
 
     var EXCLUDED_CLASSES = ['button--edit-order', 'button--color', 'button--play'];
-    var BUTTONS_CONTAINER_SELECTOR = '.full-start-new__buttons, .full-start__buttons';
     
     var DEFAULT_GROUPS = [
         { name: 'online', patterns: ['online', 'lampac', 'modss', 'showy'], label: 'Онлайн' },
@@ -27,13 +26,6 @@
     var allButtonsOriginal = [];
     var currentContainer = null;
     var platformsObserver = null;
-    var lastOpenedButtonId = null;
-    var focusRestoreTimer = null;
-    var controllerTogglePatched = false;
-    var focusObserver = null;
-    var lastOpenedButtonElement = null;
-    var currentFullCardKey = null;
-    var isEditorOpen = false;
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
@@ -186,7 +178,6 @@
             setupIconObserver();
         } else {
             restoreOriginalIcons();
-            
             if (window.iconObserver) {
                 window.iconObserver.disconnect();
                 window.iconObserver = null;
@@ -349,273 +340,10 @@
         return stableId;
     }
 
-    function getFocusButtonId(button) {
-        var $btn = $(button);
-        if ($btn.hasClass('button--color')) {
-            return 'color:' + ($btn.attr('data-color-id') || '');
-        }
-
-        return 'button:' + getButtonId($btn);
-    }
-
-    function rememberOpenedButton(button) {
-        var $btn = $(button);
-        var focusId = getFocusButtonId($btn);
-
-        if (focusId && focusId !== 'button:unknown_button') {
-            lastOpenedButtonId = focusId;
-            lastOpenedButtonElement = $btn[0] || null;
-
-            if (Lampa.Utils && typeof Lampa.Utils.trigger === 'function') {
-                try { Lampa.Utils.trigger(lastOpenedButtonElement, 'hover:focus'); } catch(e) {}
-            }
-        }
-    }
-
-    function getVisibleFocusButtons(container) {
-        return $(container).find(BUTTONS_CONTAINER_SELECTOR).find('.full-start__button.selector')
-            .not('.hidden, .button--edit-order, .button--play')
-            .filter(function() {
-                return $(this).is(':visible');
-            });
-    }
-
-    function findFocusButton(container, focusId) {
-        if (!focusId) return $();
-
-        return getVisibleFocusButtons(container).filter(function() {
-            return getFocusButtonId($(this)) === focusId;
-        }).first();
-    }
-
-    function updateFocusCollection(container) {
-        var root = $(container);
-        var buttons = getVisibleFocusButtons(container);
-        var elements = buttons.toArray();
-
-        if (Lampa.Controller && typeof Lampa.Controller.collectionSet === 'function') {
-            try { Lampa.Controller.collectionSet(root, false, true); } catch(e) {}
-        }
-
-        if (Lampa.Controller && Lampa.Controller.collection && typeof Lampa.Controller.collection.setCollection === 'function') {
-            try { Lampa.Controller.collection.setCollection(elements); } catch(e) {}
-        }
-
-        if (Lampa.Controller && Lampa.Controller.navigator && typeof Lampa.Controller.navigator.setCollection === 'function') {
-            try { Lampa.Controller.navigator.setCollection(elements); } catch(e) {}
-        }
-
-        if (Lampa.Controller && Lampa.Controller.spatial && typeof Lampa.Controller.spatial.setCollection === 'function') {
-            try { Lampa.Controller.spatial.setCollection(elements); } catch(e) {}
-        }
-
-        if (typeof Navigator !== 'undefined' && Navigator && typeof Navigator.setCollection === 'function') {
-            try { Navigator.setCollection(elements); } catch(e) {}
-        }
-    }
-
-    function focusButton(button) {
-        var $btn = $(button);
-        if (!$btn.length) return false;
-
-        var elem = $btn[0];
-        var attempts = [];
-
-        if (Lampa.Controller && typeof Lampa.Controller.collectionFocus === 'function' && currentContainer) {
-            attempts.push(function() { Lampa.Controller.collectionFocus(elem, currentContainer, true); });
-            attempts.push(function() { Lampa.Controller.collectionFocus($btn, currentContainer, true); });
-        }
-
-        if (Lampa.Controller && typeof Lampa.Controller.focus === 'function') {
-            attempts.push(function() { Lampa.Controller.focus(elem); });
-            attempts.push(function() { Lampa.Controller.focus($btn); });
-        }
-
-        if (Lampa.Controller && Lampa.Controller.collection && typeof Lampa.Controller.collection.focus === 'function') {
-            attempts.push(function() { Lampa.Controller.collection.focus(elem); });
-        }
-
-        if (Lampa.Controller && Lampa.Controller.navigator && typeof Lampa.Controller.navigator.focus === 'function') {
-            attempts.push(function() { Lampa.Controller.navigator.focus(elem); });
-        }
-
-        if (Lampa.Controller && Lampa.Controller.spatial && typeof Lampa.Controller.spatial.focus === 'function') {
-            attempts.push(function() { Lampa.Controller.spatial.focus(elem); });
-        }
-
-        if (typeof Navigator !== 'undefined' && Navigator && typeof Navigator.focus === 'function') {
-            attempts.push(function() { Navigator.focus(elem); });
-        }
-
-        for (var i = 0; i < attempts.length; i++) {
-            try {
-                attempts[i]();
-                $('.selector.focus, .selector.hover').removeClass('focus hover');
-                $btn.addClass('focus hover');
-                return true;
-            } catch(e) {}
-        }
-
-        try {
-            $('.selector.focus, .selector.hover').removeClass('focus hover');
-            $btn.addClass('focus hover');
-            return true;
-        } catch(err) {}
-
-        return false;
-    }
-
-    function restoreButtonFocus(container) {
-        if (!container) return;
-
-        clearTimeout(focusRestoreTimer);
-        focusRestoreTimer = setTimeout(function() {
-            var target = $();
-
-            if (lastOpenedButtonElement && $.contains($(container)[0], lastOpenedButtonElement)) {
-                target = $(lastOpenedButtonElement);
-            }
-
-            if (!target.length) {
-                target = findFocusButton(container, lastOpenedButtonId);
-            }
-
-            if (target.length) {
-                focusButton(target);
-            }
-        }, 80);
-    }
-
-    function setupRememberOpenedButtons(container) {
-        var buttons = getVisibleFocusButtons(container);
-        var targetContainer = $(container).find(BUTTONS_CONTAINER_SELECTOR);
-
-        buttons.each(function() {
-            var btn = $(this);
-            btn.attr('data-focus-button-id', getFocusButtonId(btn));
-        });
-
-        buttons.off('.focus-remember')
-            .on('hover.focus-remember hover:enter.focus-remember mouseenter.focus-remember focus.focus-remember keydown.focus-remember keyup.focus-remember click.focus-remember', function() {
-                rememberOpenedButton($(this));
-            });
-
-        targetContainer.off('.focus-remember', '.full-start__button.selector')
-            .on('hover.focus-remember hover:enter.focus-remember mouseenter.focus-remember focusin.focus-remember keydown.focus-remember keyup.focus-remember click.focus-remember', '.full-start__button.selector', function() {
-                var btn = $(this);
-                if (!btn.hasClass('button--edit-order') && !btn.hasClass('button--play')) {
-                    rememberOpenedButton(btn);
-                }
-            });
-
-        if (focusObserver) {
-            try {
-                focusObserver.disconnect();
-            } catch(e) {}
-        }
-
-        if (targetContainer.length && typeof MutationObserver !== 'undefined') {
-            focusObserver = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    var btn = $(mutation.target);
-                    if (btn.hasClass('full-start__button') && btn.hasClass('selector') && (btn.hasClass('focus') || btn.hasClass('hover'))) {
-                        if (!btn.hasClass('button--edit-order') && !btn.hasClass('button--play')) {
-                            rememberOpenedButton(btn);
-                        }
-                    }
-                });
-            });
-
-            targetContainer.find('.full-start__button.selector').each(function() {
-                focusObserver.observe(this, {
-                    attributes: true,
-                    attributeFilter: ['class']
-                });
-            });
-        }
-    }
-
-    function patchControllerFocusRestore() {
-        if (controllerTogglePatched || !Lampa.Controller || typeof Lampa.Controller.toggle !== 'function') return;
-
-        var originalToggle = Lampa.Controller.toggle;
-        Lampa.Controller.toggle = function(name) {
-            var result = originalToggle.apply(this, arguments);
-
-            if (name === 'full_start' && currentContainer) {
-                setTimeout(function() {
-                    setupRememberOpenedButtons(currentContainer);
-                    restoreButtonFocus(currentContainer);
-                }, 0);
-            }
-
-            return result;
-        };
-
-        controllerTogglePatched = true;
-    }
-
-    function getFullCardKey(e, container) {
-        var candidates = [];
-        var activity = e && e.object && e.object.activity;
-
-        if (activity) {
-            candidates.push(activity.card);
-            candidates.push(activity.movie);
-            candidates.push(activity.params);
-            if (typeof activity.card === 'function') {
-                try { candidates.push(activity.card()); } catch(err) {}
-            }
-        }
-
-        if (e && e.object) {
-            candidates.push(e.object.card);
-            candidates.push(e.object.movie);
-            candidates.push(e.object.params);
-        }
-
-        for (var i = 0; i < candidates.length; i++) {
-            var item = candidates[i];
-            if (!item || typeof item !== 'object') continue;
-
-            var id = item.id || item.movie_id || item.kinopoisk_id || item.kp_id || item.imdb_id || item.tmdb_id || item.url;
-            if (id) {
-                return 'id:' + id;
-            }
-
-            var title = item.title || item.name || item.original_title || item.original_name;
-            var year = item.year || item.release_year || item.date || item.release_date || '';
-            if (title) {
-                return 'title:' + title + ':' + year;
-            }
-        }
-
-        var root = $(container);
-        var domTitle = root.find('.full-start__title, .full-start-new__title, .full-start__name, h1').first().text().trim();
-        var domYear = root.find('.full-start__year, .full-start-new__year, .full-start__details').first().text().trim();
-
-        if (domTitle) {
-            return 'dom:' + domTitle + ':' + domYear;
-        }
-
-        return null;
-    }
-
     function applyRenamedButtons(buttons) {
         var renamed = getRenamedButtons();
         buttons.forEach(function(btn) {
             var id = getButtonId(btn);
-            
-            // Для кнопки оценки - проверяем, не является ли она кнопкой с рейтингом
-            if (id === 'button--rating') {
-                // Проверяем, содержит ли кнопка span с числом (рейтинг)
-                var span = btn.find('span').first();
-                if (span.length && span.text().trim().match(/^\d+$/)) {
-                    // Это кнопка с рейтингом, оставляем как есть
-                    return;
-                }
-            }
-            
             if (renamed.hasOwnProperty(id)) {
                 if (renamed[id] === '') {
                     btn.addClass('button-empty');
@@ -774,18 +502,16 @@
 
     // ========== ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ==========
 
+    // Функция создания кнопки-карандаша УДАЛЕНА - больше не нужна
+
+    function capitalize(str) {
+        if (!str) return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     function getButtonDisplayName(btn, allButtons) {
         var btnId = getButtonId(btn);
         var renamedButtons = getRenamedButtons();
-
-        // Для кнопки оценки - проверяем, не показывает ли она рейтинг
-        if (btnId === 'button--rating') {
-            var span = btn.find('span').first();
-            if (span.length && span.text().trim().match(/^\d+$/)) {
-                // Это кнопка с рейтингом, показываем как есть
-                return span.text().trim();
-            }
-        }
 
         if (renamedButtons.hasOwnProperty(btnId)) {
             if (renamedButtons[btnId] === '') {
@@ -804,7 +530,7 @@
             });
             if (viewClass) {
                 text = viewClass.replace('view--', '').replace('button--', '').replace(/_/g, ' ');
-                text = text.charAt(0).toUpperCase() + text.slice(1);
+                text = capitalize(text);
             } else {
                 text = 'Кнопка';
             }
@@ -828,7 +554,7 @@
             });
             if (viewClass) {
                 var identifier = viewClass.replace('view--', '').replace(/_/g, ' ');
-                identifier = identifier.charAt(0).toUpperCase() + identifier.slice(1);
+                identifier = capitalize(identifier);
                 return text + ' <span style="opacity:0.5">(' + identifier + ')</span>';
             }
         }
@@ -872,505 +598,494 @@
 
     // ========== ДИАЛОГИ ==========
 
+    // Функция открытия редактора оставлена, но теперь вызывается через window для внешнего доступа
     function openEditDialog() {
-        if (isEditorOpen) return;
-        isEditorOpen = true;
-
-        try {
-            if (currentContainer) {
-                var categories = categorizeButtons(currentContainer);
-                var allButtons = []
-                    .concat(categories.online)
-                    .concat(categories.torrent)
-                    .concat(categories.trailer)
-                    .concat(categories.rating)
-                    .concat(categories.favorite)
-                    .concat(categories.subscribe)
-                    .concat(categories.book)
-                    .concat(categories.reaction)
-                    .concat(categories.other);
-                
-                allButtons = sortByCustomOrder(allButtons);
-                allButtons = mergeOriginalButtons(allButtons);
-                allButtons = sortByCustomOrder(allButtons);
-                allButtonsCache = allButtons;
-                
-                var colors = getColors();
-                var buttonsInColors = [];
-                colors.forEach(function(color) {
-                    buttonsInColors = buttonsInColors.concat(color.buttons);
-                });
-                
-                var filteredButtons = allButtons.filter(function(btn) {
-                    return buttonsInColors.indexOf(getButtonId(btn)) === -1;
-                });
-                
-                currentButtons = filteredButtons;
-            }
+        if (currentContainer) {
+            var categories = categorizeButtons(currentContainer);
+            var allButtons = []
+                .concat(categories.online)
+                .concat(categories.torrent)
+                .concat(categories.trailer)
+                .concat(categories.rating)
+                .concat(categories.favorite)
+                .concat(categories.subscribe)
+                .concat(categories.book)
+                .concat(categories.reaction)
+                .concat(categories.other);
             
-            var list = $('<div class="menu-edit-list"></div>');
-            var hidden = getHiddenButtons();
+            allButtons = sortByCustomOrder(allButtons);
+            allButtons = mergeOriginalButtons(allButtons);
+            allButtons = sortByCustomOrder(allButtons);
+            allButtonsCache = allButtons;
+            
             var colors = getColors();
-            var itemOrder = getItemOrder();
-
-            // Добавляем переключатель режимов отображения
-            var currentMode = getViewMode();
-            var modeBtn = $('<div class="selector viewmode-switch">' +
-                '<div style="text-align: center; padding: 1em;">Вид кнопок: ' + MODES[currentMode] + '</div>' +
-                '</div>');
-            
-            modeBtn.on('hover:enter', function() {
-                var modes = Object.keys(MODES);
-                var idx = modes.indexOf(currentMode);
-                idx = (idx + 1) % modes.length;
-                currentMode = modes[idx];
-                setViewMode(currentMode);
-                $(this).find('div').text('Вид кнопок: ' + MODES[currentMode]);
-                
-                if (currentContainer) {
-                    var target = currentContainer.find(BUTTONS_CONTAINER_SELECTOR);
-                    target.removeClass('icons-only always-text');
-                    if (currentMode === 'icons') target.addClass('icons-only');
-                    if (currentMode === 'always') target.addClass('always-text');
-                }
+            var buttonsInColors = [];
+            colors.forEach(function(color) {
+                buttonsInColors = buttonsInColors.concat(color.buttons);
             });
             
-            list.append(modeBtn);
-
-            // Добавляем переключатель цветных логотипов
-            var coloredLogos = getColoredLogos();
-            var logosBtn = $('<div class="selector colored-logos-switch">' +
-                '<div style="text-align: center; padding: 1em;">Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет') + '</div>' +
-                '</div>');
-            
-            logosBtn.on('hover:enter', function() {
-                var newValue = !coloredLogos;
-                setColoredLogos(newValue);
-                coloredLogos = newValue;
-                $(this).find('div').text('Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет'));
+            var filteredButtons = allButtons.filter(function(btn) {
+                return buttonsInColors.indexOf(getButtonId(btn)) === -1;
             });
             
-            list.append(logosBtn);
+            currentButtons = filteredButtons;
+        }
+        
+        var list = $('<div class="menu-edit-list"></div>');
+        var hidden = getHiddenButtons();
+        var colors = getColors();
+        var itemOrder = getItemOrder();
 
-            var header = $('<div class="menu-edit-list__header">' +
-                '<div class="menu-edit-list__header-spacer"></div>' +
-                '<div class="menu-edit-list__header-move">Сдвиг</div>' +
-                '<div class="menu-edit-list__header-edit">Ред</div>' +
-                '<div class="menu-edit-list__header-mode">Вид</div>' +
-                '<div class="menu-edit-list__header-toggle">Показ</div>' +
-                '</div>');
-            list.append(header);
-
-            function createColorItem(color) {
-                var item = $('<div class="menu-edit-list__item color-item">' +
-                    '<div class="menu-edit-list__icon">' +
-                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-                            '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__title">' + (color.name || 'Цвет') + ' <span style="opacity:0.5">(' + color.buttons.length + ')</span></div>' +
-                    '<div class="menu-edit-list__move move-up selector">' +
-                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__move move-down selector">' +
-                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<path d="M2 2L11 11L20 2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__edit-content selector">' +
-                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                            '<line x1="8" y1="6" x2="21" y2="6"></line>' +
-                            '<line x1="8" y1="12" x2="21" y2="12"></line>' +
-                            '<line x1="8" y1="18" x2="21" y2="18"></line>' +
-                            '<line x1="3" y1="6" x2="3.01" y2="6"></line>' +
-                            '<line x1="3" y1="12" x2="3.01" y2="12"></line>' +
-                            '<line x1="3" y1="18" x2="3.01" y2="18"></line>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__rename selector">' +
-                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 18" fill="none"><use xlink:href="#sprite-edit"></use></svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__delete selector">' +
-                        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
-                            '<path d="M9.5 9.5L16.5 16.5M16.5 9.5L9.5 16.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                '</div>');
-
-                item.data('colorId', color.id);
-                item.data('itemType', 'color');
-
-                item.find('.menu-edit-list__edit-content').on('hover:enter', function() {
-                    Lampa.Modal.close();
-                    setTimeout(function() {
-                        openColorEditDialog(color);
-                    }, 100);
-                });
-
-                item.find('.move-up').on('hover:enter', function() {
-                    var prev = item.prev();
-                    while (prev.length && (prev.hasClass('colored-logos-switch') || prev.hasClass('viewmode-switch'))) {
-                        prev = prev.prev();
-                    }
-                    if (prev.length) {
-                        item.insertBefore(prev);
-                        saveItemOrder();
-                    }
-                });
-
-                item.find('.move-down').on('hover:enter', function() {
-                    var next = item.next();
-                    while (next.length && next.hasClass('color-reset-button')) {
-                        next = next.next();
-                    }
-                    if (next.length && !next.hasClass('color-reset-button')) {
-                        item.insertAfter(next);
-                        saveItemOrder();
-                    }
-                });
-
-                item.find('.menu-edit-list__rename').on('hover:enter', function() {
-                    Lampa.Modal.close();
-                    setTimeout(function() {
-                        Lampa.Input.edit({
-                            title: 'Переименовать цвет',
-                            value: color.name || '',
-                            free: true,
-                            nosave: true,
-                            nomic: true,
-                            placeholder: 'Оставьте пустым для цвета без названия'
-                        }, function(newName) {
-                            if (newName !== null) {
-                                var colors = getColors();
-                                var targetColor = colors.find(function(f) { return f.id === color.id; });
-                                if (targetColor) {
-                                    targetColor.name = newName.trim();
-                                    setColors(colors);
-                                    Lampa.Noty.show('Цвет переименован');
-                                }
-                            }
-                            openEditDialog();
-                        });
-                    }, 100);
-                });
-
-                item.find('.menu-edit-list__delete').on('hover:enter', function() {
-                    var colorId = color.id;
-                    var colorButtons = color.buttons.slice();
-                    
-                    deleteColor(colorId);
-                    
-                    var itemOrder = getItemOrder();
-                    var newItemOrder = [];
-                    
-                    for (var i = 0; i < itemOrder.length; i++) {
-                        if (itemOrder[i].type === 'color' && itemOrder[i].id === colorId) {
-                            continue;
-                        }
-                        if (itemOrder[i].type === 'button') {
-                            var isInColor = false;
-                            for (var j = 0; j < colorButtons.length; j++) {
-                                if (itemOrder[i].id === colorButtons[j]) {
-                                    isInColor = true;
-                                    break;
-                                }
-                            }
-                            if (isInColor) {
-                                continue;
-                            }
-                        }
-                        newItemOrder.push(itemOrder[i]);
-                    }
-                    
-                    setItemOrder(newItemOrder);
-                    
-                    var customOrder = getCustomOrder();
-                    var newCustomOrder = [];
-                    for (var i = 0; i < customOrder.length; i++) {
-                        var found = false;
-                        for (var j = 0; j < colorButtons.length; j++) {
-                            if (customOrder[i] === colorButtons[j]) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            newCustomOrder.push(customOrder[i]);
-                        }
-                    }
-                    setCustomOrder(newCustomOrder);
-                    
-                    item.remove();
-                    Lampa.Noty.show('Цвет удален');
-                    
-                    setTimeout(function() {
-                        if (currentContainer) {
-                            currentContainer.data('buttons-processed', false);
-                            reorderButtons(currentContainer);
-                            setTimeout(function() {
-                                openEditDialog();
-                            }, 100);
-                        }
-                    }, 50);
-                });
-                
-                return item;
-            }
-
-            function createButtonItem(btn) {
-                var displayName = getButtonDisplayName(btn, currentButtons);
-                var icon = btn.find('svg').clone();
-                var btnId = getButtonId(btn);
-                var isHidden = hidden.indexOf(btnId) !== -1;
-                var displayMode = getButtonDisplayMode(btnId);
-
-                var item = $('<div class="menu-edit-list__item' + (isHidden ? ' item-hidden' : '') + '">' +
-                    '<div class="menu-edit-list__icon"></div>' +
-                    '<div class="menu-edit-list__title">' + displayName + '</div>' +
-                    '<div class="menu-edit-list__move move-up selector">' +
-                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__move move-down selector">' +
-                        '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<path d="M2 2L11 11L20 2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__rename selector">' +
-                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 18" fill="none"><use xlink:href="#sprite-edit"></use></svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__display-mode selector" data-mode="' + displayMode + '">' +
-                        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
-                            '<text x="13" y="17" text-anchor="middle" fill="currentColor" font-size="12" font-weight="bold" class="mode-number">' + displayMode + '</text>' +
-                        '</svg>' +
-                    '</div>' +
-                    '<div class="menu-edit-list__toggle toggle selector">' +
-                        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                            '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
-                            '<path d="M7.44873 12.9658L10.8179 16.3349L18.1269 9.02588" stroke="currentColor" stroke-width="3" class="dot" opacity="' + (isHidden ? '0' : '1') + '" stroke-linecap="round"/>' +
-                        '</svg>' +
-                    '</div>' +
-                '</div>');
-
-                item.find('.menu-edit-list__icon').append(icon);
-                item.data('button', btn);
-                item.data('buttonId', btnId);
-                item.data('itemType', 'button');
-
-                // Обработчик для кнопки 1/2/3
-                item.find('.menu-edit-list__display-mode').on('hover:enter', function() {
-                    var currentMode = parseInt($(this).attr('data-mode')) || 1;
-                    var newMode = currentMode >= 3 ? 1 : currentMode + 1;
-                    
-                    $(this).attr('data-mode', newMode);
-                    $(this).find('.mode-number').text(newMode);
-                    
-                    setButtonDisplayMode(btnId, newMode);
-                    
-                    btn.removeClass('button-mode-1 button-mode-2 button-mode-3');
-                    btn.addClass('button-mode-' + newMode);
-                    
-                    applyButtonDisplayModes([btn]);
-                });
-
-                item.find('.move-up').on('hover:enter', function() {
-                    var prev = item.prev();
-                    while (prev.length && (prev.hasClass('colored-logos-switch') || prev.hasClass('viewmode-switch'))) {
-                        prev = prev.prev();
-                    }
-                    if (prev.length) {
-                        item.insertBefore(prev);
-                        var btnIndex = currentButtons.indexOf(btn);
-                        if (btnIndex > 0) {
-                            currentButtons.splice(btnIndex, 1);
-                            currentButtons.splice(btnIndex - 1, 0, btn);
-                        }
-                        saveItemOrder();
-                    }
-                });
-
-                item.find('.move-down').on('hover:enter', function() {
-                    var next = item.next();
-                    while (next.length && next.hasClass('color-reset-button')) {
-                        next = next.next();
-                    }
-                    if (next.length && !next.hasClass('color-reset-button')) {
-                        item.insertAfter(next);
-                        var btnIndex = currentButtons.indexOf(btn);
-                        if (btnIndex < currentButtons.length - 1) {
-                            currentButtons.splice(btnIndex, 1);
-                            currentButtons.splice(btnIndex + 1, 0, btn);
-                        }
-                        saveItemOrder();
-                    }
-                });
-
-                item.find('.menu-edit-list__rename').on('hover:enter', function() {
-                    var currentName = getButtonDisplayName(btn, currentButtons).replace(/<[^>]*>/g, '');
-                    currentName = currentName.replace('(без текста)', '').trim();
-                    
-                    Lampa.Modal.close();
-                    setTimeout(function() {
-                        Lampa.Input.edit({
-                            free: true,
-                            title: 'Новое название кнопки',
-                            nosave: true,
-                            value: currentName,
-                            nomic: true,
-                            placeholder: 'Оставьте пустым для удаления текста'
-                        }, function(newName) {
-                            if (newName !== null) {
-                                var renamedButtons = getRenamedButtons();
-                                renamedButtons[btnId] = newName.trim();
-                                setRenamedButtons(renamedButtons);
-                                Lampa.Noty.show('Кнопка переименована');
-                            }
-                            openEditDialog();
-                        });
-                    }, 100);
-                });
-
-                item.find('.toggle').on('hover:enter', function() {
-                    var hidden = getHiddenButtons();
-                    var index = hidden.indexOf(btnId);
-                    
-                    if (index !== -1) {
-                        hidden.splice(index, 1);
-                        btn.removeClass('hidden');
-                        item.removeClass('item-hidden');
-                        item.find('.dot').attr('opacity', '1');
-                    } else {
-                        hidden.push(btnId);
-                        btn.addClass('hidden');
-                        item.addClass('item-hidden');
-                        item.find('.dot').attr('opacity', '0');
-                    }
-                    
-                    setHiddenButtons(hidden);
-                });
-                
-                return item;
-            }
-            
-            if (itemOrder.length > 0) {
-                itemOrder.forEach(function(item) {
-                    if (item.type === 'color') {
-                        var color = colors.find(function(f) { return f.id === item.id; });
-                        if (color) {
-                            list.append(createColorItem(color));
-                        }
-                    } else if (item.type === 'button') {
-                        var btn = currentButtons.find(function(b) { return getButtonId(b) === item.id; });
-                        if (btn) {
-                            list.append(createButtonItem(btn));
-                        }
-                    }
-                });
-                
-                currentButtons.forEach(function(btn) {
-                    var btnId = getButtonId(btn);
-                    var found = itemOrder.some(function(item) {
-                        return item.type === 'button' && item.id === btnId;
-                    });
-                    if (!found) {
-                        list.append(createButtonItem(btn));
-                    }
-                });
-                
-                colors.forEach(function(color) {
-                    var found = itemOrder.some(function(item) {
-                        return item.type === 'color' && item.id === color.id;
-                    });
-                    if (!found) {
-                        list.append(createColorItem(color));
-                    }
-                });
-            } else {
-                colors.forEach(function(color) {
-                    list.append(createColorItem(color));
-                });
-                
-                currentButtons.forEach(function(btn) {
-                    list.append(createButtonItem(btn));
-                });
-            }
-
-            var resetBtn = $('<div class="selector color-reset-button">' +
-                '<div style="text-align: center; padding: 1em;">Сбросить по умолчанию</div>' +
+        var currentMode = getViewMode();
+        var modeBtn = $('<div class="selector viewmode-switch">' +
+            '<div style="text-align: center; padding: 1em;">Вид кнопок: ' + MODES[currentMode] + '</div>' +
             '</div>');
+        
+        modeBtn.on('hover:enter', function() {
+            var modes = Object.keys(MODES);
+            var idx = modes.indexOf(currentMode);
+            idx = (idx + 1) % modes.length;
+            currentMode = modes[idx];
+            setViewMode(currentMode);
+            $(this).find('div').text('Вид кнопок: ' + MODES[currentMode]);
             
-            resetBtn.on('hover:enter', function() {
-                Lampa.Storage.set('button_renamed', {});
-                Lampa.Storage.set('button_custom_order', []);
-                Lampa.Storage.set('button_hidden', []);
-                Lampa.Storage.set('button_colors', []);
-                Lampa.Storage.set('button_item_order', []);
-                Lampa.Storage.set('buttons_viewmode', 'default');
-                Lampa.Storage.set('buttons_colored_logos', false);
-                Lampa.Storage.set('button_display_modes', {});
+            if (currentContainer) {
+                var target = currentContainer.find('.full-start-new__buttons');
+                target.removeClass('icons-only always-text');
+                if (currentMode === 'icons') target.addClass('icons-only');
+                if (currentMode === 'always') target.addClass('always-text');
+            }
+        });
+        
+        list.append(modeBtn);
+
+        var coloredLogos = getColoredLogos();
+        var logosBtn = $('<div class="selector colored-logos-switch">' +
+            '<div style="text-align: center; padding: 1em;">Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет') + '</div>' +
+            '</div>');
+        
+        logosBtn.on('hover:enter', function() {
+            var newValue = !coloredLogos;
+            setColoredLogos(newValue);
+            coloredLogos = newValue;
+            $(this).find('div').text('Цветные лого: ' + (coloredLogos ? 'Да' : 'Нет'));
+        });
+        
+        list.append(logosBtn);
+
+        var header = $('<div class="menu-edit-list__header">' +
+            '<div class="menu-edit-list__header-spacer"></div>' +
+            '<div class="menu-edit-list__header-move">Сдвиг</div>' +
+            '<div class="menu-edit-list__header-edit">Ред</div>' +
+            '<div class="menu-edit-list__header-mode">Вид</div>' +
+            '<div class="menu-edit-list__header-toggle">Показ</div>' +
+            '</div>');
+        list.append(header);
+
+        function createColorItem(color) {
+            var item = $('<div class="menu-edit-list__item color-item">' +
+                '<div class="menu-edit-list__icon">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                        '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__title">' + (color.name || 'Цвет') + ' <span style="opacity:0.5">(' + color.buttons.length + ')</span></div>' +
+                '<div class="menu-edit-list__move move-up selector">' +
+                    '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__move move-down selector">' +
+                    '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<path d="M2 2L11 11L20 2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__edit-content selector">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                        '<line x1="8" y1="6" x2="21" y2="6"></line>' +
+                        '<line x1="8" y1="12" x2="21" y2="12"></line>' +
+                        '<line x1="8" y1="18" x2="21" y2="18"></line>' +
+                        '<line x1="3" y1="6" x2="3.01" y2="6"></line>' +
+                        '<line x1="3" y1="12" x2="3.01" y2="12"></line>' +
+                        '<line x1="3" y1="18" x2="3.01" y2="18"></line>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__rename selector">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 18" fill="none"><use xlink:href="#sprite-edit"></use></svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__delete selector">' +
+                    '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
+                        '<path d="M9.5 9.5L16.5 16.5M16.5 9.5L9.5 16.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
+                    '</svg>' +
+                '</div>' +
+            '</div>');
+
+            item.data('colorId', color.id);
+            item.data('itemType', 'color');
+
+            item.find('.menu-edit-list__edit-content').on('hover:enter', function() {
                 Lampa.Modal.close();
-                Lampa.Noty.show('Настройки сброшены');
-                
                 setTimeout(function() {
-                    if (currentContainer) {
-                        currentContainer.find('button--edit-order', 'button--color', 'button--play').remove();
-                        currentContainer.data('buttons-processed', false);
-                        
-                        var targetContainer = currentContainer.find(BUTTONS_CONTAINER_SELECTOR);
-                        var existingButtons = targetContainer.find('.full-start__button').toArray();
-                        
-                        allButtonsOriginal.forEach(function(originalBtn) {
-                            var btnId = getButtonId(originalBtn);
-                            var exists = false;
-                            
-                            for (var i = 0; i < existingButtons.length; i++) {
-                                if (getButtonId($(existingButtons[i])) === btnId) {
-                                    exists = true;
-                                    break;
-                                }
-                            }
-                            
-                            if (!exists) {
-                                var clonedBtn = originalBtn.clone(true, true);
-                                clonedBtn.css({
-                                    'opacity': '1',
-                                    'animation': 'none'
-                                });
-                                targetContainer.append(clonedBtn);
-                            }
-                        });
-                        
-                        reorderButtons(currentContainer);
-                        refreshController();
-                    }
+                    openColorEditDialog(color);
                 }, 100);
             });
 
-            list.append(resetBtn);
-
-            $('body').addClass('btns-plugin-open');
-            
-            Lampa.Modal.open({
-                title: 'Порядок кнопок',
-                html: list,
-                size: 'small',
-                scroll_to_center: true,
-                onBack: function() {
-                    Lampa.Modal.close();
-                    isEditorOpen = false;
-                    applyChanges();
-                    Lampa.Controller.toggle('full_start');
+            item.find('.move-up').on('hover:enter', function() {
+                var prev = item.prev();
+                while (prev.length && (prev.hasClass('colored-logos-switch') || prev.hasClass('viewmode-switch'))) {
+                    prev = prev.prev();
+                }
+                if (prev.length) {
+                    item.insertBefore(prev);
+                    saveItemOrder();
                 }
             });
-        } catch(e) {
-            console.error('Error opening editor:', e);
-            isEditorOpen = false;
+
+            item.find('.move-down').on('hover:enter', function() {
+                var next = item.next();
+                while (next.length && next.hasClass('color-reset-button')) {
+                    next = next.next();
+                }
+                if (next.length && !next.hasClass('color-reset-button')) {
+                    item.insertAfter(next);
+                    saveItemOrder();
+                }
+            });
+
+            item.find('.menu-edit-list__rename').on('hover:enter', function() {
+                Lampa.Modal.close();
+                setTimeout(function() {
+                    Lampa.Input.edit({
+                        title: 'Переименовать цвет',
+                        value: color.name || '',
+                        free: true,
+                        nosave: true,
+                        nomic: true,
+                        placeholder: 'Оставьте пустым для цвета без названия'
+                    }, function(newName) {
+                        if (newName !== null) {
+                            var colors = getColors();
+                            var targetColor = colors.find(function(f) { return f.id === color.id; });
+                            if (targetColor) {
+                                targetColor.name = newName.trim();
+                                setColors(colors);
+                                Lampa.Noty.show('Цвет переименован');
+                            }
+                        }
+                        openEditDialog();
+                    });
+                }, 100);
+            });
+
+            item.find('.menu-edit-list__delete').on('hover:enter', function() {
+                var colorId = color.id;
+                var colorButtons = color.buttons.slice();
+                
+                deleteColor(colorId);
+                
+                var itemOrder = getItemOrder();
+                var newItemOrder = [];
+                
+                for (var i = 0; i < itemOrder.length; i++) {
+                    if (itemOrder[i].type === 'color' && itemOrder[i].id === colorId) {
+                        continue;
+                    }
+                    if (itemOrder[i].type === 'button') {
+                        var isInColor = false;
+                        for (var j = 0; j < colorButtons.length; j++) {
+                            if (itemOrder[i].id === colorButtons[j]) {
+                                isInColor = true;
+                                break;
+                            }
+                        }
+                        if (isInColor) {
+                            continue;
+                        }
+                    }
+                    newItemOrder.push(itemOrder[i]);
+                }
+                
+                setItemOrder(newItemOrder);
+                
+                var customOrder = getCustomOrder();
+                var newCustomOrder = [];
+                for (var i = 0; i < customOrder.length; i++) {
+                    var found = false;
+                    for (var j = 0; j < colorButtons.length; j++) {
+                        if (customOrder[i] === colorButtons[j]) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        newCustomOrder.push(customOrder[i]);
+                    }
+                }
+                setCustomOrder(newCustomOrder);
+                
+                item.remove();
+                Lampa.Noty.show('Цвет удален');
+                
+                setTimeout(function() {
+                    if (currentContainer) {
+                        currentContainer.data('buttons-processed', false);
+                        reorderButtons(currentContainer);
+                        setTimeout(function() {
+                            openEditDialog();
+                        }, 100);
+                    }
+                }, 50);
+            });
+            
+            return item;
         }
+
+        function createButtonItem(btn) {
+            var displayName = getButtonDisplayName(btn, currentButtons);
+            var icon = btn.find('svg').clone();
+            var btnId = getButtonId(btn);
+            var isHidden = hidden.indexOf(btnId) !== -1;
+            var displayMode = getButtonDisplayMode(btnId);
+
+            var item = $('<div class="menu-edit-list__item' + (isHidden ? ' item-hidden' : '') + '">' +
+                '<div class="menu-edit-list__icon"></div>' +
+                '<div class="menu-edit-list__title">' + displayName + '</div>' +
+                '<div class="menu-edit-list__move move-up selector">' +
+                    '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<path d="M2 12L11 3L20 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__move move-down selector">' +
+                    '<svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<path d="M2 2L11 11L20 2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__rename selector">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 18" fill="none"><use xlink:href="#sprite-edit"></use></svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__display-mode selector" data-mode="' + displayMode + '">' +
+                    '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
+                        '<text x="13" y="17" text-anchor="middle" fill="currentColor" font-size="12" font-weight="bold" class="mode-number">' + displayMode + '</text>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="menu-edit-list__toggle toggle selector">' +
+                    '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                        '<rect x="1.89111" y="1.78369" width="21.793" height="21.793" rx="3.5" stroke="currentColor" stroke-width="3"/>' +
+                        '<path d="M7.44873 12.9658L10.8179 16.3349L18.1269 9.02588" stroke="currentColor" stroke-width="3" class="dot" opacity="' + (isHidden ? '0' : '1') + '" stroke-linecap="round"/>' +
+                    '</svg>' +
+                '</div>' +
+            '</div>');
+
+            item.find('.menu-edit-list__icon').append(icon);
+            item.data('button', btn);
+            item.data('buttonId', btnId);
+            item.data('itemType', 'button');
+
+            item.find('.menu-edit-list__display-mode').on('hover:enter', function() {
+                var currentMode = parseInt($(this).attr('data-mode')) || 1;
+                var newMode = currentMode >= 3 ? 1 : currentMode + 1;
+                
+                $(this).attr('data-mode', newMode);
+                $(this).find('.mode-number').text(newMode);
+                
+                setButtonDisplayMode(btnId, newMode);
+                
+                btn.removeClass('button-mode-1 button-mode-2 button-mode-3');
+                btn.addClass('button-mode-' + newMode);
+                
+                applyButtonDisplayModes([btn]);
+            });
+
+            item.find('.move-up').on('hover:enter', function() {
+                var prev = item.prev();
+                while (prev.length && (prev.hasClass('colored-logos-switch') || prev.hasClass('viewmode-switch'))) {
+                    prev = prev.prev();
+                }
+                if (prev.length) {
+                    item.insertBefore(prev);
+                    var btnIndex = currentButtons.indexOf(btn);
+                    if (btnIndex > 0) {
+                        currentButtons.splice(btnIndex, 1);
+                        currentButtons.splice(btnIndex - 1, 0, btn);
+                    }
+                    saveItemOrder();
+                }
+            });
+
+            item.find('.move-down').on('hover:enter', function() {
+                var next = item.next();
+                while (next.length && next.hasClass('color-reset-button')) {
+                    next = next.next();
+                }
+                if (next.length && !next.hasClass('color-reset-button')) {
+                    item.insertAfter(next);
+                    var btnIndex = currentButtons.indexOf(btn);
+                    if (btnIndex < currentButtons.length - 1) {
+                        currentButtons.splice(btnIndex, 1);
+                        currentButtons.splice(btnIndex + 1, 0, btn);
+                    }
+                    saveItemOrder();
+                }
+            });
+
+            item.find('.menu-edit-list__rename').on('hover:enter', function() {
+                var currentName = getButtonDisplayName(btn, currentButtons).replace(/<[^>]*>/g, '');
+                currentName = currentName.replace('(без текста)', '').trim();
+                
+                Lampa.Modal.close();
+                setTimeout(function() {
+                    Lampa.Input.edit({
+                        free: true,
+                        title: 'Новое название кнопки',
+                        nosave: true,
+                        value: currentName,
+                        nomic: true,
+                        placeholder: 'Оставьте пустым для удаления текста'
+                    }, function(newName) {
+                        if (newName !== null) {
+                            var renamedButtons = getRenamedButtons();
+                            renamedButtons[btnId] = newName.trim();
+                            setRenamedButtons(renamedButtons);
+                            Lampa.Noty.show('Кнопка переименована');
+                        }
+                        openEditDialog();
+                    });
+                }, 100);
+            });
+
+            item.find('.toggle').on('hover:enter', function() {
+                var hidden = getHiddenButtons();
+                var index = hidden.indexOf(btnId);
+                
+                if (index !== -1) {
+                    hidden.splice(index, 1);
+                    btn.removeClass('hidden');
+                    item.removeClass('item-hidden');
+                    item.find('.dot').attr('opacity', '1');
+                } else {
+                    hidden.push(btnId);
+                    btn.addClass('hidden');
+                    item.addClass('item-hidden');
+                    item.find('.dot').attr('opacity', '0');
+                }
+                
+                setHiddenButtons(hidden);
+            });
+            
+            return item;
+        }
+        
+        if (itemOrder.length > 0) {
+            itemOrder.forEach(function(item) {
+                if (item.type === 'color') {
+                    var color = colors.find(function(f) { return f.id === item.id; });
+                    if (color) {
+                        list.append(createColorItem(color));
+                    }
+                } else if (item.type === 'button') {
+                    var btn = currentButtons.find(function(b) { return getButtonId(b) === item.id; });
+                    if (btn) {
+                        list.append(createButtonItem(btn));
+                    }
+                }
+            });
+            
+            currentButtons.forEach(function(btn) {
+                var btnId = getButtonId(btn);
+                var found = itemOrder.some(function(item) {
+                    return item.type === 'button' && item.id === btnId;
+                });
+                if (!found) {
+                    list.append(createButtonItem(btn));
+                }
+            });
+            
+            colors.forEach(function(color) {
+                var found = itemOrder.some(function(item) {
+                    return item.type === 'color' && item.id === color.id;
+                });
+                if (!found) {
+                    list.append(createColorItem(color));
+                }
+            });
+        } else {
+            colors.forEach(function(color) {
+                list.append(createColorItem(color));
+            });
+            
+            currentButtons.forEach(function(btn) {
+                list.append(createButtonItem(btn));
+            });
+        }
+
+        var resetBtn = $('<div class="selector color-reset-button">' +
+            '<div style="text-align: center; padding: 1em;">Сбросить по умолчанию</div>' +
+        '</div>');
+        
+        resetBtn.on('hover:enter', function() {
+            Lampa.Storage.set('button_renamed', {});
+            Lampa.Storage.set('button_custom_order', []);
+            Lampa.Storage.set('button_hidden', []);
+            Lampa.Storage.set('button_colors', []);
+            Lampa.Storage.set('button_item_order', []);
+            Lampa.Storage.set('buttons_viewmode', 'default');
+            Lampa.Storage.set('buttons_colored_logos', false);
+            Lampa.Storage.set('button_display_modes', {});
+            Lampa.Modal.close();
+            Lampa.Noty.show('Настройки сброшены');
+            
+            setTimeout(function() {
+                if (currentContainer) {
+                    currentContainer.find('button--edit-order', 'button--color', 'button--play').remove();
+                    currentContainer.data('buttons-processed', false);
+                    
+                    var targetContainer = currentContainer.find('.full-start-new__buttons');
+                    var existingButtons = targetContainer.find('.full-start__button').toArray();
+                    
+                    allButtonsOriginal.forEach(function(originalBtn) {
+                        var btnId = getButtonId(originalBtn);
+                        var exists = false;
+                        
+                        for (var i = 0; i < existingButtons.length; i++) {
+                            if (getButtonId($(existingButtons[i])) === btnId) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!exists) {
+                            var clonedBtn = originalBtn.clone(true, true);
+                            clonedBtn.css({
+                                'opacity': '1',
+                                'animation': 'none'
+                            });
+                            targetContainer.append(clonedBtn);
+                        }
+                    });
+                    
+                    reorderButtons(currentContainer);
+                    refreshController();
+                }
+            }, 100);
+        });
+
+        list.append(resetBtn);
+
+        $('body').addClass('btns-plugin-open');
+        
+        Lampa.Modal.open({
+            title: 'Порядок кнопок',
+            html: list,
+            size: 'small',
+            scroll_to_center: true,
+            onBack: function() {
+                Lampa.Modal.close();
+                applyChanges();
+                Lampa.Controller.toggle('full_start');
+            }
+        });
     }
 
     // ========== ОСНОВНАЯ ЛОГИКА ==========
@@ -1474,7 +1189,7 @@
         applyHiddenButtons(filteredButtons);
         applyButtonDisplayModes(filteredButtons);
         
-        var targetContainer = currentContainer.find(BUTTONS_CONTAINER_SELECTOR);
+        var targetContainer = currentContainer.find('.full-start-new__buttons');
         if (!targetContainer.length) return;
 
         targetContainer.find('.full-start__button').not('.button--edit-order').detach();
@@ -1569,7 +1284,12 @@
                     if (insertBefore && insertBefore.length) {
                         btn.insertBefore(insertBefore);
                     } else {
-                        targetContainer.append(btn);
+                        var editBtn = targetContainer.find('.button--edit-order');
+                        if (editBtn.length) {
+                            btn.insertBefore(editBtn);
+                        } else {
+                            targetContainer.append(btn);
+                        }
                     }
                     visibleButtons.push(btn);
                 }
@@ -1604,6 +1324,8 @@
         if (viewmode === 'always') targetContainer.addClass('always-text');
 
         applyButtonAnimation(visibleButtons);
+
+        // Кнопка-карандаш НЕ ДОБАВЛЯЕТСЯ
 
         saveOrder();
         
@@ -1843,7 +1565,7 @@
     }
 
     function reorderButtons(container) {
-        var targetContainer = container.find(BUTTONS_CONTAINER_SELECTOR);
+        var targetContainer = container.find('.full-start-new__buttons');
         if (!targetContainer.length) return false;
 
         currentContainer = container;
@@ -2001,6 +1723,8 @@
                 });
             }
 
+            // Кнопка-карандаш НЕ ДОБАВЛЯЕТСЯ
+
             var viewmode = getViewMode();
             targetContainer.removeClass('icons-only always-text');
             if (viewmode === 'icons') targetContainer.addClass('icons-only');
@@ -2028,10 +1752,7 @@
     function setupButtonNavigation(container) {
         if (Lampa.Controller && typeof Lampa.Controller.toggle === 'function') {
             try {
-                patchControllerFocusRestore();
-                setupRememberOpenedButtons(container);
                 Lampa.Controller.toggle('full_start');
-                restoreButtonFocus(container);
             } catch(e) {}
         }
     }
@@ -2055,57 +1776,46 @@
     // ========== ИНИЦИАЛИЗАЦИЯ ==========
 
     function init() {
-        patchControllerFocusRestore();
-
         var style = $('<style>' +
             '@keyframes button-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }' +
             '.btns-plugin-open .modal .modal__content { max-width: 27.5em !important; width: 27.5em !important; top: 5% !important; margin-left: auto !important; margin-right: auto !important; left: 50% !important; transform: translateX(-50%) !important; position: relative !important; }' +
             '.btns-plugin-open .modal .modal__body { max-height: 78vh !important; overflow-y: auto !important; }' +
             '@media screen and (max-width: 520px) { .btns-plugin-open .modal .modal__content { width: 96vw !important; max-width: 96vw !important; left: 2vw !important; transform: none !important; margin-left: 0 !important; margin-right: 0 !important; } }' +
-            '.full-start-new__buttons .full-start__button, .full-start__buttons .full-start__button { opacity: 0; }' +
+            '.full-start-new__buttons .full-start__button { opacity: 0; }' +
             '.full-start__button.hidden { display: none !important; }' +
             '.button--color { cursor: pointer; }' +
-            '.full-start-new__buttons, .full-start__buttons { ' +
+            '.full-start-new__buttons { ' +
                 'display: flex !important; ' +
                 'flex-direction: row !important; ' +
                 'flex-wrap: wrap !important; ' +
                 'gap: 0.5em !important; ' +
             '}' +
             '.full-start-new__buttons.icons-only .full-start__button:not(.button--color):not(.button-mode-2):not(.button-mode-3) span,' +
-            '.full-start-new__buttons.icons-only .button--color:not(.button-mode-2):not(.button-mode-3) span,' +
-            '.full-start__buttons.icons-only .full-start__button:not(.button--color):not(.button-mode-2):not(.button-mode-3) span,' +
-            '.full-start__buttons.icons-only .button--color:not(.button-mode-2):not(.button-mode-3) span {' +
+            '.full-start-new__buttons.icons-only .button--color:not(.button-mode-2):not(.button-mode-3) span {' +
                 'display: none !important;' +
             '}' +
-            '.full-start-new__buttons.always-text .full-start__button:not(.button-mode-1):not(.button-mode-2) span, .full-start__buttons.always-text .full-start__button:not(.button-mode-1):not(.button-mode-2) span {' +
+            '.full-start-new__buttons.always-text .full-start__button:not(.button-mode-1):not(.button-mode-2) span {' +
                 'display: block !important;' +
             '}' +
-            '.full-start-new__buttons .full-start__button.button-mode-1 span, .full-start__buttons .full-start__button.button-mode-1 span {' +
+            '.full-start-new__buttons .full-start__button.button-mode-1 span {' +
                 'display: none !important;' +
             '}' +
-            '.full-start-new__buttons .full-start__button.button-mode-2 span, .full-start__buttons .full-start__button.button-mode-2 span {' +
+            '.full-start-new__buttons .full-start__button.button-mode-2 span {' +
                 'display: none !important;' +
             '}' +
             '.full-start-new__buttons .full-start__button.button-mode-2.focus span,' +
             '.full-start-new__buttons .full-start__button.button-mode-2.hover span,' +
-            '.full-start-new__buttons .full-start__button.button-mode-2:hover span,' +
-            '.full-start__buttons .full-start__button.button-mode-2.focus span,' +
-            '.full-start__buttons .full-start__button.button-mode-2.hover span,' +
-            '.full-start__buttons .full-start__button.button-mode-2:hover span {' +
+            '.full-start-new__buttons .full-start__button.button-mode-2:hover span {' +
                 'display: inline !important;' +
             '}' +
             '.full-start-new__buttons.icons-only .full-start__button.button-mode-2.focus span,' +
             '.full-start-new__buttons.icons-only .full-start__button.button-mode-2.hover span,' +
-            '.full-start-new__buttons.icons-only .full-start__button.button-mode-2:hover span,' +
-            '.full-start__buttons.icons-only .full-start__button.button-mode-2.focus span,' +
-            '.full-start__buttons.icons-only .full-start__button.button-mode-2.hover span,' +
-            '.full-start__buttons.icons-only .full-start__button.button-mode-2:hover span {' +
+            '.full-start-new__buttons.icons-only .full-start__button.button-mode-2:hover span {' +
                 'display: inline !important;' +
             '}' +
-            '.full-start-new__buttons .full-start__button.button-mode-3 span, .full-start__buttons .full-start__button.button-mode-3 span {' +
+            '.full-start-new__buttons .full-start__button.button-mode-3 span {' +
                 'display: inline !important;' +
             '}' +         
-            // Стили для кнопок в редакторе
             '.colored-logos-switch, .viewmode-switch { background: rgba(100,100,255,0.3); margin: 0 0 1em 0; border-radius: 0.3em; }' +
             '.colored-logos-switch.focus, .viewmode-switch.focus { border: 3px solid rgba(255,255,255,0.8); }' +
             '.menu-edit-list__delete, .menu-edit-list__rename, .menu-edit-list__edit-content { width: 2.4em; height: 2.4em; display: flex; align-items: center; justify-content: center; cursor: pointer; }' +
@@ -2143,35 +1853,11 @@
         '</style>');
         $('body').append(style);
 
-        // Добавляем обработчик долгого тапа на кнопки
-        function setupLongPressHandler(container) {
-            var targetContainer = container.find(BUTTONS_CONTAINER_SELECTOR);
-            if (!targetContainer.length) return;
-
-            // Удаляем старые обработчики
-            targetContainer.off('.longpress');
-            
-            // Добавляем обработчик долгого тапа на все кнопки
-            targetContainer.on('hover:long.longpress', '.full-start__button.selector', function(e) {
-                e.stopPropagation();
-                // Открываем редактор
-                openEditDialog();
-            });
-        }
-
         Lampa.Listener.follow('full', function(e) {
             if (e.type !== 'complite') return;
 
             var container = e.object.activity.render();
-            var fullCardKey = getFullCardKey(e, container);
-            if (currentFullCardKey && fullCardKey && currentFullCardKey !== fullCardKey) {
-                lastOpenedButtonId = null;
-                lastOpenedButtonElement = null;
-            }
-            if (fullCardKey) {
-                currentFullCardKey = fullCardKey;
-            }
-            var targetContainer = container.find(BUTTONS_CONTAINER_SELECTOR);
+            var targetContainer = container.find('.full-start-new__buttons');
             if (targetContainer.length) {
                 targetContainer.addClass('buttons-loading');
             }
@@ -2181,9 +1867,6 @@
                     if (!container.data('buttons-processed')) {
                         container.data('buttons-processed', true);
                         if (reorderButtons(container)) {
-                            // Настраиваем обработчик долгого тапа
-                            setupLongPressHandler(container);
-                            
                             if (targetContainer.length) {
                                 setTimeout(function() {
                                     targetContainer.removeClass('buttons-loading');
@@ -2201,7 +1884,16 @@
         });
     }
 
-    // ========== УБИРАЕМ НАСТРОЙКИ ==========
+    // ========== УДАЛЕН РАЗДЕЛ НАСТРОЕК (Lampa.SettingsApi) ==========
+
+    // Экспортируем функцию открытия редактора для внешнего использования (например, через консоль)
+    window.openButtonEditor = function() {
+        if (currentContainer) {
+            openEditDialog();
+        } else {
+            Lampa.Noty.show('Нет активной карточки');
+        }
+    };
 
     init();
 
