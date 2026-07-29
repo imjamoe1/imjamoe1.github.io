@@ -26,6 +26,7 @@
     var allButtonsOriginal = [];
     var currentContainer = null;
     var platformsObserver = null;
+    var currentFocusedButtonId = null;
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
@@ -596,19 +597,19 @@
 
     // ========== ДИАЛОГИ ==========
 
-    // Открытие редактора - теперь с поиском контейнера
+    // Функция открытия редактора - точно как в первом плагине
     function openEditDialog() {
-        // Если контейнер не установлен, пытаемся найти активную карточку
-        if (!currentContainer) {
-            // Ищем активную карточку
+        // Если контейнер не установлен, пытаемся найти
+        if (!currentContainer || !currentContainer.length) {
+            // Ищем через активную карточку как в первом плагине
             var activeCard = $('.full-start-card.active, .full-start-card.focus, .activity-container .active');
             if (activeCard.length) {
                 currentContainer = activeCard;
             } else {
-                // Пробуем найти любую карточку с кнопками
-                var anyCard = $('.full-start-new__buttons').closest('.full-start-card, .activity-container');
-                if (anyCard.length) {
-                    currentContainer = anyCard;
+                // Ищем любой контейнер с кнопками
+                var anyContainer = $('.full-start-new__buttons').closest('.full-start-card, .activity-container');
+                if (anyContainer.length) {
+                    currentContainer = anyContainer;
                 } else {
                     Lampa.Noty.show('Откройте карточку контента');
                     return;
@@ -616,7 +617,6 @@
             }
         }
 
-        // Проверяем, что контейнер содержит кнопки
         var targetContainer = currentContainer.find('.full-start-new__buttons');
         if (!targetContainer.length) {
             Lampa.Noty.show('В карточке нет кнопок');
@@ -653,7 +653,7 @@
         
         currentButtons = filteredButtons;
         
-        // Строим интерфейс редактора
+        // Строим интерфейс
         var list = $('<div class="menu-edit-list"></div>');
         var hidden = getHiddenButtons();
         var colors = getColors();
@@ -1099,7 +1099,7 @@
         $('body').addClass('btns-plugin-open');
         
         Lampa.Modal.open({
-            title: 'Порядок кнопок',
+            title: 'Редактор кнопок',
             html: list,
             size: 'small',
             scroll_to_center: true,
@@ -1307,12 +1307,7 @@
                     if (insertBefore && insertBefore.length) {
                         btn.insertBefore(insertBefore);
                     } else {
-                        var editBtn = targetContainer.find('.button--edit-order');
-                        if (editBtn.length) {
-                            btn.insertBefore(editBtn);
-                        } else {
-                            targetContainer.append(btn);
-                        }
+                        targetContainer.append(btn);
                     }
                     visibleButtons.push(btn);
                 }
@@ -1901,11 +1896,33 @@
                 }
             }, 400);
         });
+
+        // Добавляем обработчик долгого нажатия как в первом плагине
+        // Навешиваем на body через делегирование, чтобы ловить все кнопки
+        $(document).on('hover:long', '.full-start__button:not(.button--edit-order):not(.button--color):not(.button--play)', function() {
+            var $btn = $(this);
+            var container = $btn.closest('.full-start-card, .activity-container');
+            
+            if (container.length) {
+                currentContainer = container;
+                // Запоминаем ID кнопки, на которой было долгое нажатие
+                currentFocusedButtonId = getButtonId($btn);
+                openEditDialog();
+            } else {
+                // Если не нашли контейнер, пробуем через глобальный поиск
+                var anyCard = $('.full-start-card.active, .full-start-card.focus');
+                if (anyCard.length) {
+                    currentContainer = anyCard;
+                    currentFocusedButtonId = getButtonId($btn);
+                    openEditDialog();
+                }
+            }
+        });
     }
 
     // ========== ЭКСПОРТ ФУНКЦИИ ==========
 
-    // Экспортируем функцию открытия редактора
+    // Экспортируем функцию открытия редактора как в первом плагине
     window.openButtonEditor = function() {
         // Пытаемся найти активную карточку
         var card = $('.full-start-card.active, .full-start-card.focus, .activity-container .active');
@@ -1913,7 +1930,7 @@
             currentContainer = card;
             openEditDialog();
         } else {
-            // Если активной нет, ищем любую карточку
+            // Если активной нет, ищем любую карточку с кнопками
             var anyCard = $('.full-start-new__buttons').closest('.full-start-card, .activity-container');
             if (anyCard.length) {
                 currentContainer = anyCard;
@@ -1924,7 +1941,7 @@
         }
     };
 
-    // Добавляем вызов через глобальный объект для совместимости
+    // Добавляем вызов через глобальный объект
     if (!window.cardButtonsEditor) {
         window.cardButtonsEditor = {
             open: window.openButtonEditor
