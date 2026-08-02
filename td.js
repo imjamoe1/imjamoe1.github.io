@@ -25,27 +25,37 @@
     i((t = t.apply(a, e)).next())
   });
 
-  // Android TV Network Helper - добавляем в начало
+  // Android TV Network Helper с улучшенной обработкой
   class AndroidTVNetwork {
-    static async fetchWithTimeout(url, options = {}, timeout = 30000) {
+    static async fetchWithTimeout(url, options = {}, timeout = 45000) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
 
       try {
         const headers = {
-          'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Android TV) Lampa/1.0',
+          'Accept': '*/*',
+          'User-Agent': 'Mozilla/5.0 (Android TV) Lampa/2.0',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
           ...options.headers
         };
 
-        const response = await fetch(url, {
+        // Для Android TV добавляем специальные настройки
+        const fetchOptions = {
           ...options,
           headers,
           signal: controller.signal,
           mode: 'cors',
-          cache: 'no-cache'
-        });
+          cache: 'no-cache',
+          credentials: 'include'
+        };
 
+        // Для POST запросов с FormData убираем Content-Type
+        if (options.body && options.body instanceof FormData) {
+          delete fetchOptions.headers['Content-Type'];
+        }
+
+        const response = await fetch(url, fetchOptions);
         clearTimeout(timeoutId);
         return response;
       } catch (error) {
@@ -55,6 +65,17 @@
         }
         throw error;
       }
+    }
+
+    static async postFormData(url, formData, options = {}) {
+      return this.fetchWithTimeout(url, {
+        method: 'POST',
+        headers: {
+          ...options.headers
+        },
+        body: formData,
+        ...options
+      });
     }
 
     static async postJSON(url, data, options = {}) {
@@ -1073,7 +1094,7 @@
     q = ["w200", "w342", "w500", "w780", "w1280"];
 
   function Ce() {
-    Lampa.SettingsApi.addComponent({ component: d.component, name: d.name, icon: y }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: J, type: "select", placeholder: "2s", values: ["2s", "5s", "10s", "30s", "1m", "5m", "15m"], default: 0 }, field: { name: "Update interval" }, onChange(a) { Lampa.Settings.update(), _.start() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: B, type: "select", placeholder: "", values: ["Open actions menu", "Play if done, Resume if in progress", "Play", "Resume / Pause download"], default: 0 }, field: { name: "Default press action", description: "Long press always opens the actions menu." }, onChange(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: Q, type: "trigger", default: !1 }, field: { name: "Keep torrents screen open after download", description: "After selecting a torrent, the app does not return back and keeps the add screen open, allowing you to add multiple torrents in a row." }, onChange(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: K, type: "select", placeholder: "", values: ["Low", "Medium", "High", "Very High", "Ultra"], default: 1 }, field: { name: "Poster quality" }, onChange(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: "transmission-title", type: "title", default: "" }, field: { name: "Server settings:" } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: ee, type: "select", placeholder: "", values: ["Transmission", "qBitTorrent"], default: "0" }, field: { name: "Torrent Client" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: I, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Url" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: Z, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Login" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: X, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Password" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: "jellyfin-title", type: "title", default: "" }, field: { name: "Jellyfin / Plex integration:" } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: te, type: "trigger", default: !1 }, field: { name: "Download movies and TV shows into separate directories" }, onChange() { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: P, type: "trigger", default: !1 }, field: { name: "Download into a subfolder with title" }, onChange() { Lampa.Storage.field(P) !== !0 && (Lampa.Storage.set(N, !1), Lampa.Storage.set(k, !1)), Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: N, type: "trigger", default: !1 }, field: { name: "Add (year) to folder name" }, onRender(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange() { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: k, type: "trigger", default: !1 }, field: { name: "Add [tmdbid-***] to folder name" }, onRender(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange() { Lampa.Settings.update() } })
+    Lampa.SettingsApi.addComponent({ component: d.component, name: d.name, icon: y }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: J, type: "select", placeholder: "2s", values: ["2s", "5s", "10s", "30s", "1m", "5m", "15m"], default: 0 }, field: { name: "Update interval" }, onChange(a) { Lampa.Settings.update(), _.start() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: B, type: "select", placeholder: "", values: ["Open actions menu", "Play if done, Resume if in progress", "Play", "Resume / Pause download"], default: 0 }, field: { name: "Default press action", description: "Long press always opens the actions menu." }, onChange(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: Q, type: "trigger", default: !1 }, field: { name: "Keep torrents screen open after download", description: "After selecting a torrent, the app does not return back and keeps the add screen open, allowing you to add multiple torrents in a row." }, onChange(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: K, type: "select", placeholder: "", values: ["Low", "Medium", "High", "Very High", "Ultra"], default: 1 }, field: { name: "Poster quality" }, onChange(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: "transmission-title", type: "title", default: "" }, field: { name: "Server settings:" } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: ee, type: "select", placeholder: "", values: ["Transmission", "qBitTorrent"], default: "0" }, field: { name: "Torrent Client" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: I, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Url" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: Z, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Login" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: X, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Password" }, onChange(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: "jellyfin-title", type: "title", default: "" }, field: { name: "Jellyfin / Plex integration:" } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: te, type: "trigger", default: !1 }, field: { name: "Download movies and TV shows into separate directories" }, onChange() { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: P, type: "trigger", default: !1 }, field: { name: "Download into a subfolder with title" }, onChange() { Lampa.Storage.field(P) !== !0 && (Lampa.Storage.set(N, !1), Lampa.Storage.set(k, !1)), Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: N, type: "trigger", default: !1 }, field: { name: "Add (year) to folder name" }, onRender(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange() { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: k, type: "trigger", default: !1 }, field: { name: "Add [tmdbid-***] to folder name" }, onRender(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange() { Lampa.Settings.update() } }))
   }
 
   var Pe = "lampa:";
@@ -1095,40 +1116,51 @@
 
   function ke(a) { return Array.isArray(a.seasons) || a.season !== void 0 || a.episode_number !== void 0 }
 
-  // Исправленный класс qBittorrent
+  // Исправленный класс qBittorrent для Android TV
   var U = class {
     constructor(e, t, o, n) {
       this.url = e;
-      this.login = t;
-      this.password = o;
+      this.login = t || '';
+      this.password = o || '';
       this.cookie = n;
       this.network = AndroidTVNetwork;
+      this.isAuthorized = false;
     }
+    
     fetchWithAuth(e, t = {}) {
       return l(this, arguments, function*(e, t = {}) {
         try {
+          // Проверяем авторизацию перед запросом
+          if (!this.isAuthorized) {
+            yield this.authorize();
+          }
+
           let response = yield this.network.fetchWithTimeout(this.url + e, {
             ...t,
             credentials: 'include',
             headers: {
-              ...t.headers,
-              'Accept': 'application/json'
+              'Accept': '*/*',
+              ...t.headers
             }
           });
 
-          if (!response.ok && response.status === 403) {
+          // Если 403, пробуем авторизоваться снова
+          if (response.status === 403) {
+            this.isAuthorized = false;
             yield this.authorize();
             response = yield this.network.fetchWithTimeout(this.url + e, {
               ...t,
               credentials: 'include',
               headers: {
-                ...t.headers,
-                'Accept': 'application/json'
+                'Accept': '*/*',
+                ...t.headers
               }
             });
           }
 
-          if (!response.ok) throw new Error(`Failed to get ${e}: ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
 
           const contentType = response.headers.get('content-type');
           if (contentType && contentType.includes('application/json')) {
@@ -1141,109 +1173,205 @@
         }
       });
     }
+
     authorize() {
       return l(this, null, function*() {
-        let e = new URLSearchParams;
-        e.append("username", this.login), e.append("password", this.password);
         try {
-          let t = yield this.network.fetchWithTimeout(this.url + "/api/v2/auth/login", {
-            method: "POST",
-            body: e.toString(),
-            credentials: "include",
+          if (!this.login || !this.password) {
+            throw new Error('Login and password required');
+          }
+
+          let formData = new URLSearchParams();
+          formData.append('username', this.login);
+          formData.append('password', this.password);
+
+          let response = yield this.network.fetchWithTimeout(this.url + '/api/v2/auth/login', {
+            method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            },
+            body: formData.toString(),
+            credentials: 'include'
           });
-          if (!t.ok) throw new Error(`qBittorrent login failed: ${t.status}`);
-          this.cookie = t.headers.get("set-cookie") || void 0
+
+          if (!response.ok) {
+            throw new Error(`Login failed: ${response.status}`);
+          }
+
+          this.cookie = response.headers.get('set-cookie') || undefined;
+          this.isAuthorized = true;
+          console.log('qBittorrent authorized successfully');
         } catch (error) {
           console.error('Authorization error:', error);
+          this.isAuthorized = false;
           throw error;
         }
-      })
+      });
     }
+
     getTorrents() {
       return l(this, null, function*() {
         try {
-          let e = yield this.fetchWithAuth("/api/v2/torrents/info"),
-            t = yield this.fetchWithAuth("/api/v2/app/preferences");
-          return this.formatTorrents(e, t)
+          let e = yield this.fetchWithAuth('/api/v2/torrents/info');
+          let t = yield this.fetchWithAuth('/api/v2/app/preferences');
+          return this.formatTorrents(e, t);
         } catch (error) {
           console.error('Get torrents error:', error);
           return [];
         }
-      })
+      });
     }
+
     getData() {
       return l(this, null, function*() {
         var n;
         try {
-          let e = yield this.fetchWithAuth("/api/v2/sync/maindata"),
-            t = (n = e.torrents) != null ? n : [];
+          let e = yield this.fetchWithAuth('/api/v2/sync/maindata');
+          let t = (n = e.torrents) != null ? n : [];
           t = Array.isArray(t) ? t : Object.keys(t).map(r => D(A({}, t[r]), { hash: r }));
-          let o = yield this.fetchWithAuth("/api/v2/app/preferences");
-          return { torrents: this.formatTorrents(t, o), info: { freeSpace: e.server_state.free_space_on_disk } }
+          let o = yield this.fetchWithAuth('/api/v2/app/preferences');
+          return { torrents: this.formatTorrents(t, o), info: { freeSpace: e.server_state.free_space_on_disk || 0 } };
         } catch (error) {
           console.error('Get data error:', error);
           return { torrents: [], info: { freeSpace: 0 } };
         }
-      })
+      });
     }
+
     addTorrent(e, t) {
       return l(this, null, function*() {
         try {
-          let o = new FormData,
-            n = new URL(t.MagnetUri || t.Link);
-          n.searchParams.delete("dn"), o.append("urls", n.toString()), o.append("tags", x(e).join(",")), o.append("sequentialDownload", "true");
-          let r = M(e);
-          if (r) {
-            let s = yield this.fetchWithAuth("/api/v2/app/preferences"),
-              i = s == null ? void 0 : s.save_path;
-            if (i) { let c = i.replace(/[\\/]+$/g, "") + r; o.append("savepath", c) }
+          // Для Android TV используем простой метод добавления
+          let url = t.MagnetUri || t.Link;
+          if (!url) {
+            throw new Error('No torrent URL provided');
           }
-          yield this.fetchWithAuth("/api/v2/torrents/add", { method: "POST", body: o })
+
+          // Очищаем URL от параметров
+          try {
+            let urlObj = new URL(url);
+            urlObj.searchParams.delete('dn');
+            url = urlObj.toString();
+          } catch (e) {
+            // Если не удалось парсить URL, используем как есть
+          }
+
+          let formData = new FormData();
+          formData.append('urls', url);
+          formData.append('sequentialDownload', 'true');
+          
+          // Добавляем теги
+          let tags = x(e);
+          if (tags && tags.length) {
+            formData.append('tags', tags.join(','));
+          }
+
+          // Добавляем путь сохранения
+          let savePath = M(e);
+          if (savePath) {
+            try {
+              let prefs = yield this.fetchWithAuth('/api/v2/app/preferences');
+              if (prefs && prefs.save_path) {
+                let basePath = prefs.save_path.replace(/[\\/]+$/g, '');
+                formData.append('savepath', basePath + savePath);
+              }
+            } catch (err) {
+              console.warn('Could not get save path:', err);
+            }
+          }
+
+          console.log('Adding torrent:', url, 'with tags:', tags);
+
+          let response = yield this.network.postFormData(this.url + '/api/v2/torrents/add', formData, {
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            let errorText = yield response.text();
+            throw new Error(`Add torrent failed: ${response.status} - ${errorText}`);
+          }
+
+          console.log('Torrent added successfully');
+          return true;
         } catch (error) {
           console.error('Add torrent error:', error);
           throw error;
         }
-      })
+      });
     }
+
     startTorrent(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams;
-        t.append("hashes", String(e.externalId)), yield this.fetchWithAuth("/api/v2/torrents/start", { method: "POST", body: t })
-      })
+        let t = new URLSearchParams();
+        t.append('hashes', String(e.externalId));
+        yield this.fetchWithAuth('/api/v2/torrents/start', { method: 'POST', body: t });
+      });
     }
+
     stopTorrent(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams;
-        t.append("hashes", String(e.externalId)), yield this.fetchWithAuth("/api/v2/torrents/stop", { method: "POST", body: t })
-      })
+        let t = new URLSearchParams();
+        t.append('hashes', String(e.externalId));
+        yield this.fetchWithAuth('/api/v2/torrents/stop', { method: 'POST', body: t });
+      });
     }
+
     hideTorrent(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams;
-        t.append("hashes", String(e.externalId)), t.append("tags", "hide"), yield this.fetchWithAuth("/api/v2/torrents/addTags", { method: "POST", body: t })
-      })
+        let t = new URLSearchParams();
+        t.append('hashes', String(e.externalId));
+        t.append('tags', 'hide');
+        yield this.fetchWithAuth('/api/v2/torrents/addTags', { method: 'POST', body: t });
+      });
     }
+
     removeTorrent(e, t = !1) {
       return l(this, null, function*() {
-        let o = new URLSearchParams;
-        o.append("hashes", String(e.externalId)), o.append("deleteFiles", t ? "true" : "false"), yield this.fetchWithAuth("/api/v2/torrents/delete", { method: "POST", body: o })
-      })
+        let o = new URLSearchParams();
+        o.append('hashes', String(e.externalId));
+        o.append('deleteFiles', t ? 'true' : 'false');
+        yield this.fetchWithAuth('/api/v2/torrents/delete', { method: 'POST', body: o });
+      });
     }
+
     getFiles(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams;
-        return t.append("hash", String(e.externalId)), (yield this.fetchWithAuth(`/api/v2/torrents/files?${t.toString()}`)).map(n => { var r, s; return { bytesCompleted: Math.floor(n.progress * n.size), length: n.size, name: n.name, begin_piece: (r = n.piece_range) == null ? void 0 : r[0], end_piece: (s = n.piece_range) == null ? void 0 : s[1] } })
-      })
+        let t = new URLSearchParams();
+        t.append('hash', String(e.externalId));
+        return (yield this.fetchWithAuth(`/api/v2/torrents/files?${t.toString()}`)).map(n => {
+          var r, s;
+          return {
+            bytesCompleted: Math.floor(n.progress * n.size),
+            length: n.size,
+            name: n.name,
+            begin_piece: (r = n.piece_range) == null ? void 0 : r[0],
+            end_piece: (s = n.piece_range) == null ? void 0 : s[1]
+          };
+        });
+      });
     }
+
     formatTorrents(e, t) {
-      return e.sort((o, n) => n.added_on - o.added_on).filter(o => !o.tags.includes("hide")).map(o => ({ id: O(o.tags), type: R(o.tags), externalId: o.hash, name: o.name, status: ue(o.state), percentDone: o.progress, totalSize: o.size, eta: o.eta, speed: o.dlspeed, files: [], seeders: o.num_seeds, activeSeeders: o.num_complete, hash: o.hash, path: o.save_path.replace(t.save_path, "") }))
+      return e.sort((o, n) => n.added_on - o.added_on).filter(o => !o.tags || !o.tags.includes('hide')).map(o => ({
+        id: O(o.tags),
+        type: R(o.tags),
+        externalId: o.hash,
+        name: o.name,
+        status: ue(o.state),
+        percentDone: o.progress || 0,
+        totalSize: o.size || 0,
+        eta: o.eta || 0,
+        speed: o.dlspeed || 0,
+        files: [],
+        seeders: o.num_seeds || 0,
+        activeSeeders: o.num_complete || 0,
+        hash: o.hash,
+        path: (o.save_path || '').replace(t.save_path || '', '')
+      }));
     }
   };
 
-  // Исправленный класс Transmission
+  // Исправленный класс Transmission для Android TV
   var z = class {
     constructor(e, t, o, n) {
       this.url = e;
@@ -1252,36 +1380,71 @@
       this.sessionId = n;
       this.network = AndroidTVNetwork;
     }
+    
     POST(e) {
       return l(this, null, function*() {
         try {
-          let t = yield this.network.postJSON(this.url, e, {
+          let response = yield this.network.postJSON(this.url, e, {
             headers: {
-              Authorization: `Basic ${btoa(this.login+":"+this.password)}`,
-              "X-Transmission-Session-Id": this.sessionId || ""
+              Authorization: `Basic ${btoa(this.login + ':' + this.password)}`,
+              'X-Transmission-Session-Id': this.sessionId || ''
             }
           });
 
-          if (t.status === 409) {
-            this.sessionId = t.headers.get("X-Transmission-Session-Id");
-            if (!this.sessionId) throw new Error("Can`t authorize to Transmission RPC");
-            return this.POST(e)
+          if (response.status === 409) {
+            this.sessionId = response.headers.get('X-Transmission-Session-Id');
+            if (!this.sessionId) {
+              throw new Error('Cannot get Transmission session ID');
+            }
+            return this.POST(e);
           }
-          if (!t.ok) throw { message: `Transmission RPC error: ${t.statusText}`, status: t.status };
-          return yield t.json()
+
+          if (!response.ok) {
+            throw new Error(`Transmission RPC error: ${response.statusText}`);
+          }
+
+          return yield response.json();
         } catch (error) {
           console.error('Transmission POST error:', error);
           throw error;
         }
-      })
+      });
     }
-    getSession() { let e = { method: "session-get" }; return this.POST(e) }
-    addTorrent(e) { let t = { method: "torrent-add", arguments: e }; return this.POST(t) }
-    getTorrents(e) { let t = { method: "torrent-get", arguments: e }; return this.POST(t) }
-    setTorrent(e) { let t = { method: "torrent-set", arguments: e }; return this.POST(t) }
-    startTorrent(e) { let t = { method: "torrent-start", arguments: e }; return this.POST(t) }
-    stopTorrent(e) { let t = { method: "torrent-stop", arguments: e }; return this.POST(t) }
-    removeTorrent(e) { let t = { method: "torrent-remove", arguments: e }; return this.POST(t) }
+
+    getSession() {
+      let e = { method: 'session-get' };
+      return this.POST(e);
+    }
+
+    addTorrent(e) {
+      let t = { method: 'torrent-add', arguments: e };
+      return this.POST(t);
+    }
+
+    getTorrents(e) {
+      let t = { method: 'torrent-get', arguments: e };
+      return this.POST(t);
+    }
+
+    setTorrent(e) {
+      let t = { method: 'torrent-set', arguments: e };
+      return this.POST(t);
+    }
+
+    startTorrent(e) {
+      let t = { method: 'torrent-start', arguments: e };
+      return this.POST(t);
+    }
+
+    stopTorrent(e) {
+      let t = { method: 'torrent-stop', arguments: e };
+      return this.POST(t);
+    }
+
+    removeTorrent(e) {
+      let t = { method: 'torrent-remove', arguments: e };
+      return this.POST(t);
+    }
   };
 
   var F = class {
@@ -1289,110 +1452,181 @@
       this.url = e;
       this.login = t;
       this.password = o;
-      this.client = new z(e + "/transmission/rpc", t, o);
+      this.client = new z(e + '/transmission/rpc', t, o);
       this.network = AndroidTVNetwork;
     }
+
     getTorrents() {
       return l(this, null, function*() {
         var n, r;
         try {
-          let e = yield this.client.getSession(),
-            t = ((n = e == null ? void 0 : e.arguments) == null ? void 0 : n["download-dir"]) || "";
-          return ((r = (yield this.client.getTorrents({ fields: ["id", "name", "status", "percentDone", "sizeWhenDone", "rateDownload", "eta", "labels", "files", "peersConnected", "peersSendingToUs", "trackerStats", "hashString", "downloadDir"] })).arguments) == null ? void 0 : r.torrents.filter(s => !Array.isArray(s.labels) || s.labels.indexOf("hide") === -1).map(s => {
+          let e = yield this.client.getSession();
+          let t = ((n = e == null ? void 0 : e.arguments) == null ? void 0 : n['download-dir']) || '';
+          return ((r = (yield this.client.getTorrents({
+            fields: ['id', 'name', 'status', 'percentDone', 'sizeWhenDone', 'rateDownload', 'eta', 'labels', 'files', 'peersConnected', 'peersSendingToUs', 'trackerStats', 'hashString', 'downloadDir']
+          })).arguments) == null ? void 0 : r.torrents.filter(s => !Array.isArray(s.labels) || s.labels.indexOf('hide') === -1).map(s => {
             var g;
             let i = 0,
               c = 0;
-            return Array.isArray(s.trackerStats) && (i = Math.max(...s.trackerStats.map(f => f.seederCount || 0), 0)), c = s.peersSendingToUs || 0, { id: O(s.labels), type: R(s.labels), externalId: s.id, name: s.name, status: me(s.status), percentDone: s.percentDone, totalSize: s.sizeWhenDone, eta: s.eta, speed: s.rateDownload, files: s.files, seeders: i, activeSeeders: c, hash: s.hashString, path: ((g = s.downloadDir) == null ? void 0 : g.replace(t, "")) || "" }
-          }).filter(s => s.id)) || []
+            if (Array.isArray(s.trackerStats)) {
+              i = Math.max(...s.trackerStats.map(f => f.seederCount || 0), 0);
+            }
+            c = s.peersSendingToUs || 0;
+            return {
+              id: O(s.labels),
+              type: R(s.labels),
+              externalId: s.id,
+              name: s.name,
+              status: me(s.status),
+              percentDone: s.percentDone || 0,
+              totalSize: s.sizeWhenDone || 0,
+              eta: s.eta || 0,
+              speed: s.rateDownload || 0,
+              files: s.files || [],
+              seeders: i,
+              activeSeeders: c,
+              hash: s.hashString,
+              path: ((g = s.downloadDir) == null ? void 0 : g.replace(t, '')) || ''
+            };
+          }).filter(s => s.id)) || [];
         } catch (error) {
           console.error('Get torrents error:', error);
           return [];
         }
-      })
+      });
     }
+
     addTorrent(e, t) {
       return l(this, null, function*() {
         var s, i;
         try {
-          let o = { paused: !1, sequential_download: !0, filename: t.MagnetUri || t.Link, labels: x(e) },
-            n = M(e);
+          let o = {
+            paused: !1,
+            sequential_download: !0,
+            filename: t.MagnetUri || t.Link,
+            labels: x(e)
+          };
+          
+          let n = M(e);
           if (n) {
-            let c = yield this.client.getSession(),
-              g = (s = c == null ? void 0 : c.arguments) == null ? void 0 : s["download-dir"];
-            g && (o["download-dir"] = g.replace(/[\\/]+$/g, "") + n)
+            let c = yield this.client.getSession();
+            let g = (s = c == null ? void 0 : c.arguments) == null ? void 0 : s['download-dir'];
+            if (g) {
+              o['download-dir'] = g.replace(/[\\/]+$/g, '') + n;
+            }
           }
+
+          console.log('Adding torrent:', o);
           let r = yield this.client.addTorrent(o);
-          (i = r.arguments) != null && i["torrent-added"] && (yield this.client.setTorrent({ ids: [r.arguments["torrent-added"].id], labels: x(e) }))
+          
+          if ((i = r.arguments) != null && i['torrent-added']) {
+            yield this.client.setTorrent({
+              ids: [r.arguments['torrent-added'].id],
+              labels: x(e)
+            });
+          }
+          console.log('Torrent added successfully');
         } catch (error) {
           console.error('Add torrent error:', error);
           throw error;
         }
-      })
+      });
     }
+
     startTorrent(e) {
       return l(this, null, function*() {
-        yield this.client.startTorrent({ ids: [e.externalId] })
-      })
+        yield this.client.startTorrent({ ids: [e.externalId] });
+      });
     }
+
     stopTorrent(e) {
       return l(this, null, function*() {
-        yield this.client.stopTorrent({ ids: [e.externalId] })
-      })
+        yield this.client.stopTorrent({ ids: [e.externalId] });
+      });
     }
+
     hideTorrent(e) {
       return l(this, null, function*() {
         var n, r;
-        let o = ((r = (n = (yield this.client.getTorrents({ ids: [e.externalId], fields: ["labels"] })).arguments) == null ? void 0 : n.torrents[0]) == null ? void 0 : r.labels) || [];
-        yield this.client.setTorrent({ ids: [e.externalId], labels: [...o, "hide"] })
-      })
+        let o = ((r = (n = (yield this.client.getTorrents({ ids: [e.externalId], fields: ['labels'] })).arguments) == null ? void 0 : n.torrents[0]) == null ? void 0 : r.labels) || [];
+        yield this.client.setTorrent({ ids: [e.externalId], labels: [...o, 'hide'] });
+      });
     }
+
     removeTorrent(e, t = !1) {
       return l(this, null, function*() {
-        yield this.client.removeTorrent({ ids: [e.externalId], "delete-local-data": t })
-      })
+        yield this.client.removeTorrent({ ids: [e.externalId], 'delete-local-data': t });
+      });
     }
+
     getFiles(e) {
       return l(this, null, function*() {
-        return e.files
-      })
+        return e.files || [];
+      });
     }
+
     getData() {
       return l(this, null, function*() {
         try {
-          return { torrents: yield this.getTorrents(), info: { freeSpace: 0 } }
+          return { torrents: yield this.getTorrents(), info: { freeSpace: 0 } };
         } catch (error) {
           console.error('Get data error:', error);
           return { torrents: [], info: { freeSpace: 0 } };
         }
-      })
+      });
     }
   };
 
   var m = class {
     static getClient() {
       if (!this.client) {
-        let t = (Lampa.Storage.field(I) || "").split(";").map(o => o.trim()).filter(Boolean);
-        this.buildClient(t[0] || ""), t.length > 1 && this.selectUrl(t)
+        let t = (Lampa.Storage.field(I) || '').split(';').map(o => o.trim()).filter(Boolean);
+        if (!t.length) {
+          console.warn('No server URL configured');
+          return null;
+        }
+        this.buildClient(t[0] || '');
+        if (t.length > 1) {
+          this.selectUrl(t);
+        }
       }
-      return this.client
+      return this.client;
     }
-    static reset() { this.client = void 0, this.selectionInFlight = !1 }
+
+    static reset() {
+      this.client = void 0;
+      this.selectionInFlight = !1;
+    }
+
     static buildClient(e) {
-      let t = Lampa.Storage.field(ee) === 1,
-        o = Lampa.Storage.field(Z),
-        n = Lampa.Storage.field(X);
-      this.client = t ? new U(e, o, n) : new F(e, o, n)
+      let t = Lampa.Storage.field(ee) === 1;
+      let o = Lampa.Storage.field(Z) || '';
+      let n = Lampa.Storage.field(X) || '';
+      this.client = t ? new U(e, o, n) : new F(e, o, n);
+      console.log('Client built for:', e);
     }
+
     static selectUrl(e) {
       if (this.selectionInFlight) return;
       this.selectionInFlight = !0;
-      let t = e.map(r => AndroidTVNetwork.fetchWithTimeout(r + "/ping", { cache: "no-cache" }).then(s => s.ok ? r : Promise.reject())),
-        o = 0,
+      let t = e.map(r => AndroidTVNetwork.fetchWithTimeout(r + '/ping', { cache: 'no-cache' }).then(s => s.ok ? r : Promise.reject()));
+      let o = 0,
         n = !1;
-      t.forEach(r => r.then(s => { n || (n = !0, this.selectionInFlight = !1, (!this.client || this.client.url !== s) && this.buildClient(s)) }).catch(() => { ++o === t.length && !n && (n = !0, this.selectionInFlight = !1) }))
+      t.forEach(r => r.then(s => {
+        if (!n) {
+          n = !0;
+          this.selectionInFlight = !1;
+          if (!this.client || this.client.url !== s) {
+            this.buildClient(s);
+          }
+        }
+      }).catch(() => {
+        ++o === t.length && !n && (n = !0, this.selectionInFlight = !1);
+      }));
     }
   };
-  m.selectionInFlight = !1, m.isConnected = !1;
+  m.selectionInFlight = !1;
+  m.isConnected = !1;
 
   var $e = `<div class="full-start__button selector button--download">
     {icon}
@@ -1400,60 +1634,133 @@
 </div>`;
 
   function nt(a) {
-    let e = $(".full-start-new__buttons");
-    if (e.find(".button--download").length) return;
-    let t = $(Lampa.Template.get("download-button", { icon: y, text: Lampa.Lang.translate("download") }));
-    t.on("hover:enter", o => {
-      Lampa.Activity.push({ url: "", title: Lampa.Lang.translate("download"), component: "torrents-download", search_one: a.movie.title, search_two: a.movie.original_title, movie: a.movie, page: 1 })
-    }), e.children().first().after(t)
+    let e = $('.full-start-new__buttons');
+    if (e.find('.button--download').length) return;
+    let t = $(Lampa.Template.get('download-button', { icon: y, text: Lampa.Lang.translate('download') }));
+    t.on('hover:enter', o => {
+      Lampa.Activity.push({
+        url: '',
+        title: Lampa.Lang.translate('download'),
+        component: 'torrents-download',
+        search_one: a.movie.title,
+        search_two: a.movie.original_title,
+        movie: a.movie,
+        page: 1
+      });
+    });
+    e.children().first().after(t);
   }
 
   function Oe() {
-    Lampa.Template.add("download-button", $e), Lampa.Component.add("torrents-download", Lampa.Component.get("torrents")), Lampa.Listener.follow("full", a => { if (a.type === "complite") { let e = a.data; nt(e) } }), Lampa.Listener.follow("torrent", a => {
+    Lampa.Template.add('download-button', $e);
+    Lampa.Component.add('torrents-download', Lampa.Component.get('torrents'));
+    
+    Lampa.Listener.follow('full', a => {
+      if (a.type === 'complite') {
+        let e = a.data;
+        nt(e);
+      }
+    });
+
+    Lampa.Listener.follow('torrent', a => {
       let e = Lampa.Activity.active();
-      a.type === "render" && e.component === "torrents-download" && ($(a.item).off("hover:enter"), $(a.item).on("hover:enter", t => l(this, null, function*() {
-        if (yield m.getClient().addTorrent(e.movie, a.element), Lampa.Noty.show(Lampa.Lang.translate("download-button.added")), e.activity.component.mark(a.element, a.item, !0), !Lampa.Storage.get(Q, !1)) {
-          Lampa.Activity.back();
-          let r = (yield m.getClient().getTorrents()).find(s => s.id === e.movie.id);
-          r && V(r, e.movie)
-        }
-      })))
-    })
+      if (a.type === 'render' && e.component === 'torrents-download') {
+        $(a.item).off('hover:enter');
+        $(a.item).on('hover:enter', t => l(this, null, function*() {
+          try {
+            let client = m.getClient();
+            if (!client) {
+              Lampa.Noty.show('Please configure server URL in settings');
+              return;
+            }
+
+            // Показываем уведомление о начале добавления
+            Lampa.Noty.show('Adding torrent...');
+            console.log('Adding torrent for movie:', e.movie);
+
+            yield client.addTorrent(e.movie, a.element);
+            Lampa.Noty.show(Lampa.Lang.translate('download-button.added'));
+            
+            // Отмечаем как добавленный
+            if (e.activity && e.activity.component) {
+              e.activity.component.mark(a.element, a.item, !0);
+            }
+
+            // Если не нужно оставаться на экране добавления
+            if (!Lampa.Storage.get(Q, !1)) {
+              Lampa.Activity.back();
+              // Пытаемся получить добавленный торрент
+              try {
+                let torrents = yield client.getTorrents();
+                let r = torrents.find(s => s.id === e.movie.id);
+                if (r) {
+                  V(r, e.movie);
+                }
+              } catch (err) {
+                console.warn('Could not fetch torrent after add:', err);
+              }
+            }
+          } catch (error) {
+            console.error('Add torrent error:', error);
+            Lampa.Noty.show('Failed to add torrent: ' + (error.message || 'Unknown error'));
+          }
+        }));
+      }
+    });
   }
 
   function initPlugin() {
     try {
-      console.log('Initializing Torrent Downloader plugin for Android TV...');
-      
+      console.log('Initializing Torrent Downloader for Android TV...');
+
       // Проверяем настройки
       const url = Lampa.Storage.field(I);
       if (!url) {
-        console.warn('Please configure Transmission server URL in settings');
+        console.warn('Server URL not configured');
         setTimeout(() => {
           Lampa.SettingsApi.open(d.component);
-        }, 3000);
+        }, 2000);
         return;
       }
 
       window.plugin_transmission_ready = !0;
       Lampa.Manifest.plugins = d;
       Lampa.Lang.add(re);
+      
+      // Инициализируем компоненты
       Ce();
       Oe();
       he();
       De();
       Le();
-      
-      // Запускаем с задержкой для Android TV
+
+      // Запускаем фоновый процесс с задержкой
       setTimeout(() => {
-        _.start();
-      }, 1000);
-      
+        try {
+          _.start();
+        } catch (error) {
+          console.error('Failed to start background worker:', error);
+        }
+      }, 2000);
+
       console.log('Plugin initialized successfully');
     } catch (error) {
       console.error('Plugin initialization error:', error);
     }
   }
 
-  window.plugin_transmission_ready || (window.appready ? initPlugin() : Lampa.Listener.follow("app", function(a) { a.type === "ready" && initPlugin() }));
+  // Точка входа
+  if (window.plugin_transmission_ready) {
+    return;
+  }
+
+  if (window.appready) {
+    initPlugin();
+  } else {
+    Lampa.Listener.follow('app', function(a) {
+      if (a.type === 'ready') {
+        initPlugin();
+      }
+    });
+  }
 })();
