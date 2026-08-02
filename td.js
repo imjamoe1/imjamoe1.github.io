@@ -63,7 +63,7 @@
     <path fill="currentcolor" d="M17.71,12.71a1,1,0,0,0-1.42,0L13,16V6a1,1,0,0,0-2,0V16L7.71,12.71a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.3,4.29A2,2,0,0,0,12,19h0a2,2,0,0,0,1.4-.59l4.3-4.29A1,1,0,0,0,17.71,12.71Z" />
   </svg>`;
   
-  var d={type:"other",version:"2.6.0",author:"https://github.com/kvart714",name:"Torrent Downloader",description:"Transmission RPC client",component:"t-downloader"};
+  var d={type:"other",version:"2.6.1",author:"https://github.com/kvart714",name:"Torrent Downloader",description:"Transmission RPC client",component:"t-downloader"};
   
   var ie=d.component+".torrents.data.v2",
   w=class{
@@ -79,7 +79,12 @@
     (window.navigator.userAgent.includes("Android") && 
     (window.navigator.userAgent.includes("TV") || 
      window.navigator.userAgent.includes("AFT") ||
-     window.navigator.userAgent.includes("BRAVIA")));
+     window.navigator.userAgent.includes("BRAVIA") ||
+     window.navigator.userAgent.includes("Android TV")));
+  
+  if (isAndroidTV) {
+    console.log("[Torrent Downloader] Android TV detected, using optimized settings");
+  }
   
   var de=`<div class="selector download-card full-start__button d-updatable" id="download-card-{id}">
     <div class="download-card__file-info">
@@ -686,7 +691,7 @@
   var at=10,
   u=class u{
     static start(){var o;let e=Lampa.Storage.field(J),t=(o=H[e])!=null?o:H[0];u.subscription&&clearInterval(u.subscription),u.consecutiveErrors=0,u.wasConnected=null,u.subscription=setInterval(u.tick,t*1e3)}
-    static tick(){return l(this,null,function*(){try{let e=yield m.getClient().getData();if(w.setData(e),$(".d-updatable").length)for(let o of e.torrents)we(o),ye(o),Ae(o);let t=m.getClient().url;u.consecutiveErrors=0,m.isConnected=!0,u.wasConnected!==!0&&(h("Connected to "+t),Lampa.Noty.show(Lampa.Lang.translate("background-worker.connection-success")+": "+t),u.wasConnected=!0)}catch(e){h("Error:",e),m.isConnected=!1,u.consecutiveErrors++,u.wasConnected!==!1&&(Lampa.Noty.show(Lampa.Lang.translate("background-worker.error-detected")),u.wasConnected=!1),u.consecutiveErrors>at&&(clearInterval(u.subscription),h("Stopping background worker due to too many consecutive errors"))}})}
+    static tick(){return l(this,null,function*(){try{let e=yield m.getClient().getData();if(w.setData(e),$(".d-updatable").length)for(let o of e.torrents)we(o),ye(o),Ae(o);let t=m.getClient().url;u.consecutiveErrors=0,m.isConnected=!0,u.wasConnected!==!0&&(h("Connected to "+t),Lampa.Noty.show(Lampa.Lang.translate("background-worker.connection-success")+": "+t),u.wasConnected=!0)}catch(e){h("Error:",e),m.isConnected=!1,u.consecutiveErrors++,u.wasConnected!==!1&&(Lampa.Noty.show(Lampa.Lang.translate("background-worker.error-detected")),Lampa.Noty.show(Lampa.Lang.translate("background-worker.no-connection")),u.wasConnected=!1),u.consecutiveErrors>at&&(clearInterval(u.subscription),h("Stopping background worker due to too many consecutive errors"))}})}
   };
   u.consecutiveErrors=0,u.wasConnected=null;
   var _=u;
@@ -706,7 +711,7 @@
   H=[2,5,10,30,60,5*60,15*60],
   q=["w200","w342","w500","w780","w1280"];
   
-  function Ce(){Lampa.SettingsApi.addComponent({component:d.component,name:d.name,icon:y}),Lampa.SettingsApi.addParam({component:d.component,param:{name:J,type:"select",placeholder:"2s",values:["2s","5s","10s","30s","1m","5m","15m"],default:0},field:{name:"Update interval"},onChange(a){Lampa.Settings.update(),_.start()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:B,type:"select",placeholder:"",values:["Open actions menu","Play if done, Resume if in progress","Play","Resume / Pause download"],default:0},field:{name:"Default press action",description:"Long press always opens the actions menu."},onChange(a){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:Q,type:"trigger",default:!1},field:{name:"Keep torrents screen open after download",description:"After selecting a torrent, the app does not return back and keeps the add screen open, allowing you to add multiple torrents in a row."},onChange(a){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:K,type:"select",placeholder:"",values:["Low","Medium","High","Very High","Ultra"],default:1},field:{name:"Poster quality"},onChange(a){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:"transmission-title",type:"title",default:""},field:{name:"Server settings:"}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:ee,type:"select",placeholder:"",values:["Transmission","qBitTorrent"],default:"0"},field:{name:"Torrent Client"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:I,type:"input",placeholder:"",values:"",default:""},field:{name:"Url"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:Z,type:"input",placeholder:"",values:"",default:""},field:{name:"Login"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:X,type:"input",placeholder:"",values:"",default:""},field:{name:"Password"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:"jellyfin-title",type:"title",default:""},field:{name:"Jellyfin / Plex integration:"}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:te,type:"trigger",default:!1},field:{name:"Download movies and TV shows into separate directories"},onChange(){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:P,type:"trigger",default:!1},field:{name:"Download into a subfolder with title"},onChange(){Lampa.Storage.field(P)!==!0&&(Lampa.Storage.set(N,!1),Lampa.Storage.set(k,!1)),Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:N,type:"trigger",default:!1},field:{name:"Add (year) to folder name"},onRender(a){Lampa.Storage.field(P)===!0?a.show():a.hide()},onChange(){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:k,type:"trigger",default:!1},field:{name:"Add [tmdbid-***] to folder name"},onRender(a){Lampa.Storage.field(P)===!0?a.show():a.hide()},onChange(){Lampa.Settings.update()}})}
+  function Ce(){Lampa.SettingsApi.addComponent({component:d.component,name:d.name,icon:y}),Lampa.SettingsApi.addParam({component:d.component,param:{name:J,type:"select",placeholder:"2s",values:["2s","5s","10s","30s","1m","5m","15m"],default:isAndroidTV?3:0},field:{name:"Update interval"},onChange(a){Lampa.Settings.update(),_.start()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:B,type:"select",placeholder:"",values:["Open actions menu","Play if done, Resume if in progress","Play","Resume / Pause download"],default:0},field:{name:"Default press action",description:"Long press always opens the actions menu."},onChange(a){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:Q,type:"trigger",default:!1},field:{name:"Keep torrents screen open after download",description:"After selecting a torrent, the app does not return back and keeps the add screen open, allowing you to add multiple torrents in a row."},onChange(a){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:K,type:"select",placeholder:"",values:["Low","Medium","High","Very High","Ultra"],default:1},field:{name:"Poster quality"},onChange(a){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:"transmission-title",type:"title",default:""},field:{name:"Server settings:"}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:ee,type:"select",placeholder:"",values:["Transmission","qBitTorrent"],default:"0"},field:{name:"Torrent Client"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:I,type:"input",placeholder:"",values:"",default:isAndroidTV?"http://192.168.1.100:8080":""},field:{name:"Url (for Android TV use LAN IP, not localhost)",placeholder:"http://192.168.1.100:8080"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:Z,type:"input",placeholder:"",values:"",default:""},field:{name:"Login"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:X,type:"input",placeholder:"",values:"",default:""},field:{name:"Password"},onChange(a){Lampa.Settings.update(),m.reset()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:"jellyfin-title",type:"title",default:""},field:{name:"Jellyfin / Plex integration:"}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:te,type:"trigger",default:!1},field:{name:"Download movies and TV shows into separate directories"},onChange(){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:P,type:"trigger",default:!1},field:{name:"Download into a subfolder with title"},onChange(){Lampa.Storage.field(P)!==!0&&(Lampa.Storage.set(N,!1),Lampa.Storage.set(k,!1)),Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:N,type:"trigger",default:!1},field:{name:"Add (year) to folder name"},onRender(a){Lampa.Storage.field(P)===!0?a.show():a.hide()},onChange(){Lampa.Settings.update()}}),Lampa.SettingsApi.addParam({component:d.component,param:{name:k,type:"trigger",default:!1},field:{name:"Add [tmdbid-***] to folder name"},onRender(a){Lampa.Storage.field(P)===!0?a.show():a.hide()},onChange(){Lampa.Settings.update()}})}
   
   var Pe="lampa:";
   
@@ -725,7 +730,7 @@
   var U=class{
     constructor(e,t,o,n){this.url=e;this.login=t;this.password=o;this.cookie=n}
     
-    fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 15000 : 10000) {
+    fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 20000 : 10000) {
       return new Promise((resolve, reject) => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
@@ -740,14 +745,18 @@
           })
           .catch(error => {
             clearTimeout(timeoutId);
-            reject(error);
+            if (error.name === 'AbortError') {
+              reject(new Error('Connection timeout - check server availability'));
+            } else {
+              reject(error);
+            }
           });
       });
     }
     
     fetchWithAuth(o){return l(this,arguments,function*(e,t={}){var r;try{let n=yield this.fetchWithTimeout(this.url+e, D(A({},t),{credentials:"include"}));if(!n.ok&&n.status===403&&(yield this.authorize(),n=yield this.fetchWithTimeout(this.url+e, D(A({},t),{credentials:"include"}))),!n.ok){if(n.status===0||n.status===undefined){throw new Error("Network error - check server availability")}throw new Error("Failed to get "+e+" - status "+n.status)}return(r=n.headers.get("content-type"))!=null&&r.includes("application/json")?yield n.json():yield n.text()}catch(n){h("qBittorrent fetch error:",n.message);throw n}})}
     
-    authorize(){return l(this,null,function*(){let e=new URLSearchParams;e.append("username",this.login),e.append("password",this.password);try{let t=yield this.fetchWithTimeout(this.url+"/api/v2/auth/login",{method:"POST",body:e,credentials:"include"});if(!t.ok)throw new Error("qBittorrent login failed");this.cookie=t.headers.get("set-cookie")||void 0}catch(t){h("qBittorrent auth error:",t.message);throw t}})}
+    authorize(){return l(this,null,function*(){let e=new URLSearchParams;e.append("username",this.login),e.append("password",this.password);try{let t=yield this.fetchWithTimeout(this.url+"/api/v2/auth/login",{method:"POST",body:e,credentials:"include"});if(!t.ok)throw new Error("qBittorrent login failed - status "+t.status);this.cookie=t.headers.get("set-cookie")||void 0;h("qBittorrent authorization successful")}catch(t){h("qBittorrent auth error:",t.message);throw t}})}
     
     getTorrents(){return l(this,null,function*(){let e=yield this.fetchWithAuth("/api/v2/torrents/info"),t=yield this.fetchWithAuth("/api/v2/app/preferences");return this.formatTorrents(e,t)})}
     
@@ -771,7 +780,7 @@
   var z=class{
     constructor(e,t,o){this.url=e;this.login=t;this.password=o;this.sessionId=""}
     
-    fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 15000 : 10000) {
+    fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 20000 : 10000) {
       return new Promise((resolve, reject) => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
@@ -786,7 +795,11 @@
           })
           .catch(error => {
             clearTimeout(timeoutId);
-            reject(error);
+            if (error.name === 'AbortError') {
+              reject(new Error('Connection timeout - check server availability'));
+            } else {
+              reject(error);
+            }
           });
       });
     }
@@ -827,7 +840,7 @@
     
     static reset(){this.client=void 0;this.selectionInFlight=!1}
     
-    static buildClient(e){let t=Lampa.Storage.field(ee)===1,o=Lampa.Storage.field(Z),n=Lampa.Storage.field(X);this.client=t?new U(e,o,n):new F(e,o,n)}
+    static buildClient(e){let t=Lampa.Storage.field(ee)===1,o=Lampa.Storage.field(Z),n=Lampa.Storage.field(X);this.client=t?new U(e,o,n):new F(e,o,n);h("Client built for: "+e)}
     
     static selectUrl(e){if(this.selectionInFlight)return;this.selectionInFlight=!0;let t=e.map(r=>{let s=r+"/ping";return fetch(s,{cache:"no-cache",signal:AbortSignal.timeout?AbortSignal.timeout(5000):undefined}).then(i=>i.ok?r:Promise.reject()).catch(()=>Promise.reject())}),o=0,n=!1;t.forEach(r=>r.then(s=>{n||(n=!0,this.selectionInFlight=!1,(!this.client||this.client.url!==s)&&this.buildClient(s))}).catch(()=>{++o===t.length&&!n&&(n=!0,this.selectionInFlight=!1)}))}
   };
@@ -842,7 +855,18 @@
   
   function Oe(){Lampa.Template.add("download-button",$e),Lampa.Component.add("torrents-download",Lampa.Component.get("torrents")),Lampa.Listener.follow("full",a=>{if(a.type==="complite"){let e=a.data;nt(e)}}),Lampa.Listener.follow("torrent",a=>{let e=Lampa.Activity.active();a.type==="render"&&e.component==="torrents-download"&&($(a.item).off("hover:enter"),$(a.item).on("hover:enter",t=>l(this,null,function*(){if(yield m.getClient().addTorrent(e.movie,a.element),Lampa.Noty.show(Lampa.Lang.translate("download-button.added")),e.activity.component.mark(a.element,a.item,!0),!Lampa.Storage.get(Q,!1)){Lampa.Activity.back();let r=(yield m.getClient().getTorrents()).find(s=>s.id===e.movie.id);r&&V(r,e.movie)}}))})}
   
-  function Re(){window.plugin_transmission_ready=!0,Lampa.Manifest.plugins=d,Lampa.Lang.add(re),Ce(),Oe(),he(),De(),Le(),Lampa.Storage.field(I)&&_.start()}
+  function Re(){window.plugin_transmission_ready=!0,Lampa.Manifest.plugins=d,Lampa.Lang.add(re),Ce(),Oe(),he(),De(),Le();let a=Lampa.Storage.field(I);if(a){h("Starting with URL:",a);_.start()}else{h("No server URL configured, please set it in settings")}}
   
-  window.plugin_transmission_ready||(window.appready?Re():Lampa.Listener.follow("app",function(a){a.type==="ready"&&Re()}));
+  function checkConnection() {
+    if (Lampa.Storage.field(I)) {
+      h("Checking connection to server...");
+      setTimeout(() => {
+        if (!m.isConnected) {
+          Lampa.Noty.show(Lampa.Lang.translate("background-worker.no-connection"));
+        }
+      }, 5000);
+    }
+  }
+  
+  window.plugin_transmission_ready||(window.appready?(()=>{Re();checkConnection()})():Lampa.Listener.follow("app",function(a){a.type==="ready"&&(()=>{Re();checkConnection()})()}));
 })();
