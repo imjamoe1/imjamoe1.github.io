@@ -730,8 +730,10 @@
   var U=class{
     constructor(e,t,o,n){this.url=e;this.login=t;this.password=o;this.cookie=n}
     
-    fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 20000 : 10000) {
-      return new Promise((resolve, reject) => {
+    fetchWithTimeout(url, options, timeout) {
+      if (timeout === undefined) timeout = isAndroidTV ? 20000 : 10000;
+      if (options === undefined) options = {};
+      return new Promise(function(resolve, reject) {
         var controller = new AbortController();
         var timeoutId = setTimeout(function() {
           controller.abort();
@@ -754,7 +756,7 @@
       });
     }
     
-    fetchWithAuth(o){return l(this,arguments,function*(e,t){var r;try{var n=yield this.fetchWithTimeout(this.url+e, Object.assign({}, t, {credentials:"include"}));if(!n.ok&&n.status===403&&(yield this.authorize(),n=yield this.fetchWithTimeout(this.url+e, Object.assign({}, t, {credentials:"include"}))),!n.ok){if(n.status===0||n.status===undefined){throw new Error("Network error - check server availability")}throw new Error("Failed to get "+e+" - status "+n.status)}return(r=n.headers.get("content-type"))!=null&&r.includes("application/json")?yield n.json():yield n.text()}catch(n){h("qBittorrent fetch error:",n.message);throw n}})}
+    fetchWithAuth(e,t){return l(this,arguments,function*(e,t){var r;try{var n=yield this.fetchWithTimeout(this.url+e, Object.assign({}, t, {credentials:"include"}));if(!n.ok&&n.status===403&&(yield this.authorize(),n=yield this.fetchWithTimeout(this.url+e, Object.assign({}, t, {credentials:"include"}))),!n.ok){if(n.status===0||n.status===undefined){throw new Error("Network error - check server availability")}throw new Error("Failed to get "+e+" - status "+n.status)}return(r=n.headers.get("content-type"))!=null&&r.includes("application/json")?yield n.json():yield n.text()}catch(n){h("qBittorrent fetch error:",n.message);throw n}})}
     
     authorize(){return l(this,null,function*(){var e=new URLSearchParams;e.append("username",this.login),e.append("password",this.password);try{var t=yield this.fetchWithTimeout(this.url+"/api/v2/auth/login",{method:"POST",body:e,credentials:"include"});if(!t.ok)throw new Error("qBittorrent login failed - status "+t.status);this.cookie=t.headers.get("set-cookie")||void 0;h("qBittorrent authorization successful")}catch(t){h("qBittorrent auth error:",t.message);throw t}})}
     
@@ -780,8 +782,10 @@
   var z=class{
     constructor(e,t,o){this.url=e;this.login=t;this.password=o;this.sessionId=""}
     
-    fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 20000 : 10000) {
-      return new Promise((resolve, reject) => {
+    fetchWithTimeout(url, options, timeout) {
+      if (timeout === undefined) timeout = isAndroidTV ? 20000 : 10000;
+      if (options === undefined) options = {};
+      return new Promise(function(resolve, reject) {
         var controller = new AbortController();
         var timeoutId = setTimeout(function() {
           controller.abort();
@@ -842,7 +846,7 @@
     
     static buildClient(e){var t=Lampa.Storage.field(ee)===1,o=Lampa.Storage.field(Z),n=Lampa.Storage.field(X);this.client=t?new U(e,o,n):new F(e,o,n);h("Client built for: "+e)}
     
-    static selectUrl(e){if(this.selectionInFlight)return;this.selectionInFlight=!0;var t=e.map(function(r){var s=r+"/ping";return fetch(s,{cache:"no-cache",signal:AbortSignal.timeout?AbortSignal.timeout(5000):undefined}).then(function(i){return i.ok?r:Promise.reject()}).catch(function(){return Promise.reject()})}),o=0,n=!1;t.forEach(function(r){return r.then(function(s){if(!n){n=!0;this.selectionInFlight=!1;if(!this.client||this.client.url!==s){this.buildClient(s)}}}.bind(this)).catch(function(){++o===t.length&&!n&&(n=!0,this.selectionInFlight=!1)}.bind(this))}.bind(this))}
+    static selectUrl(e){if(this.selectionInFlight)return;this.selectionInFlight=!0;var t=e.map(function(r){var s=r+"/ping";return fetch(s,{cache:"no-cache",signal:AbortSignal.timeout?AbortSignal.timeout(5000):undefined}).then(function(i){return i.ok?r:Promise.reject()}).catch(function(){return Promise.reject()})});var o=0,n=!1;t.forEach(function(r){r.then(function(s){if(!n){n=!0;this.selectionInFlight=!1;if(!this.client||this.client.url!==s){this.buildClient(s)}}}.bind(this)).catch(function(){++o===t.length&&!n&&(n=!0;this.selectionInFlight=!1)}.bind(this))}.bind(this))}
   };
   m.selectionInFlight=!1,m.isConnected=!1;
   
