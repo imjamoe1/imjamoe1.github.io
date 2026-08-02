@@ -732,18 +732,18 @@
     
     fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 20000 : 10000) {
       return new Promise((resolve, reject) => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => {
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function() {
           controller.abort();
-          reject(new Error(`Request timeout after ${timeout}ms`));
+          reject(new Error('Request timeout after ' + timeout + 'ms'));
         }, timeout);
         
-        fetch(url, { ...options, signal: controller.signal })
-          .then(response => {
+        fetch(url, Object.assign({}, options, { signal: controller.signal }))
+          .then(function(response) {
             clearTimeout(timeoutId);
             resolve(response);
           })
-          .catch(error => {
+          .catch(function(error) {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
               reject(new Error('Connection timeout - check server availability'));
@@ -754,27 +754,27 @@
       });
     }
     
-    fetchWithAuth(o){return l(this,arguments,function*(e,t={}){var r;try{let n=yield this.fetchWithTimeout(this.url+e, D(A({},t),{credentials:"include"}));if(!n.ok&&n.status===403&&(yield this.authorize(),n=yield this.fetchWithTimeout(this.url+e, D(A({},t),{credentials:"include"}))),!n.ok){if(n.status===0||n.status===undefined){throw new Error("Network error - check server availability")}throw new Error("Failed to get "+e+" - status "+n.status)}return(r=n.headers.get("content-type"))!=null&&r.includes("application/json")?yield n.json():yield n.text()}catch(n){h("qBittorrent fetch error:",n.message);throw n}})}
+    fetchWithAuth(o){return l(this,arguments,function*(e,t){var r;try{var n=yield this.fetchWithTimeout(this.url+e, Object.assign({}, t, {credentials:"include"}));if(!n.ok&&n.status===403&&(yield this.authorize(),n=yield this.fetchWithTimeout(this.url+e, Object.assign({}, t, {credentials:"include"}))),!n.ok){if(n.status===0||n.status===undefined){throw new Error("Network error - check server availability")}throw new Error("Failed to get "+e+" - status "+n.status)}return(r=n.headers.get("content-type"))!=null&&r.includes("application/json")?yield n.json():yield n.text()}catch(n){h("qBittorrent fetch error:",n.message);throw n}})}
     
-    authorize(){return l(this,null,function*(){let e=new URLSearchParams;e.append("username",this.login),e.append("password",this.password);try{let t=yield this.fetchWithTimeout(this.url+"/api/v2/auth/login",{method:"POST",body:e,credentials:"include"});if(!t.ok)throw new Error("qBittorrent login failed - status "+t.status);this.cookie=t.headers.get("set-cookie")||void 0;h("qBittorrent authorization successful")}catch(t){h("qBittorrent auth error:",t.message);throw t}})}
+    authorize(){return l(this,null,function*(){var e=new URLSearchParams;e.append("username",this.login),e.append("password",this.password);try{var t=yield this.fetchWithTimeout(this.url+"/api/v2/auth/login",{method:"POST",body:e,credentials:"include"});if(!t.ok)throw new Error("qBittorrent login failed - status "+t.status);this.cookie=t.headers.get("set-cookie")||void 0;h("qBittorrent authorization successful")}catch(t){h("qBittorrent auth error:",t.message);throw t}})}
     
-    getTorrents(){return l(this,null,function*(){let e=yield this.fetchWithAuth("/api/v2/torrents/info"),t=yield this.fetchWithAuth("/api/v2/app/preferences");return this.formatTorrents(e,t)})}
+    getTorrents(){return l(this,null,function*(){var e=yield this.fetchWithAuth("/api/v2/torrents/info"),t=yield this.fetchWithAuth("/api/v2/app/preferences");return this.formatTorrents(e,t)})}
     
-    getData(){return l(this,null,function*(){var n;try{let e=yield this.fetchWithAuth("/api/v2/sync/maindata"),t=(n=e.torrents)!=null?n:[];t=Array.isArray(t)?t:Object.keys(t).map(r=>D(A({},t[r]),{hash:r}));let o=yield this.fetchWithAuth("/api/v2/app/preferences");return{torrents:this.formatTorrents(t,o),info:{freeSpace:e.server_state.free_space_on_disk}}}catch(e){h("qBittorrent getData error:",e.message);throw e}})}
+    getData(){return l(this,null,function*(){var n;try{var e=yield this.fetchWithAuth("/api/v2/sync/maindata"),t=(n=e.torrents)!=null?n:[];t=Array.isArray(t)?t:Object.keys(t).map(function(r){return Object.assign({}, t[r], {hash:r})});var o=yield this.fetchWithAuth("/api/v2/app/preferences");return{torrents:this.formatTorrents(t,o),info:{freeSpace:e.server_state.free_space_on_disk}}}catch(e){h("qBittorrent getData error:",e.message);throw e}})}
     
-    addTorrent(e,t){return l(this,null,function*(){let o=new FormData,n=new URL(t.MagnetUri||t.Link);n.searchParams.delete("dn"),o.append("urls",n.toString()),o.append("tags",x(e).join(",")),o.append("sequentialDownload","true");let r=M(e);if(r){let s=yield this.fetchWithAuth("/api/v2/app/preferences"),i=s==null?void 0:s.save_path;if(i){let c=i.replace(/[\\/]+$/g,"")+r;o.append("savepath",c)}}yield this.fetchWithAuth("/api/v2/torrents/add",{method:"POST",body:o})})}
+    addTorrent(e,t){return l(this,null,function*(){var o=new FormData,n=new URL(t.MagnetUri||t.Link);n.searchParams.delete("dn"),o.append("urls",n.toString()),o.append("tags",x(e).join(",")),o.append("sequentialDownload","true");var r=M(e);if(r){var s=yield this.fetchWithAuth("/api/v2/app/preferences"),i=s==null?void 0:s.save_path;if(i){var c=i.replace(/[\\/]+$/g,"")+r;o.append("savepath",c)}}yield this.fetchWithAuth("/api/v2/torrents/add",{method:"POST",body:o})})}
     
-    startTorrent(e){return l(this,null,function*(){let t=new URLSearchParams;t.append("hashes",String(e.externalId)),yield this.fetchWithAuth("/api/v2/torrents/start",{method:"POST",body:t})})}
+    startTorrent(e){return l(this,null,function*(){var t=new URLSearchParams;t.append("hashes",String(e.externalId)),yield this.fetchWithAuth("/api/v2/torrents/start",{method:"POST",body:t})})}
     
-    stopTorrent(e){return l(this,null,function*(){let t=new URLSearchParams;t.append("hashes",String(e.externalId)),yield this.fetchWithAuth("/api/v2/torrents/stop",{method:"POST",body:t})})}
+    stopTorrent(e){return l(this,null,function*(){var t=new URLSearchParams;t.append("hashes",String(e.externalId)),yield this.fetchWithAuth("/api/v2/torrents/stop",{method:"POST",body:t})})}
     
-    hideTorrent(e){return l(this,null,function*(){let t=new URLSearchParams;t.append("hashes",String(e.externalId)),t.append("tags","hide"),yield this.fetchWithAuth("/api/v2/torrents/addTags",{method:"POST",body:t})})}
+    hideTorrent(e){return l(this,null,function*(){var t=new URLSearchParams;t.append("hashes",String(e.externalId)),t.append("tags","hide"),yield this.fetchWithAuth("/api/v2/torrents/addTags",{method:"POST",body:t})})}
     
-    removeTorrent(e,t=!1){return l(this,null,function*(){let o=new URLSearchParams;o.append("hashes",String(e.externalId)),o.append("deleteFiles",t?"true":"false"),yield this.fetchWithAuth("/api/v2/torrents/delete",{method:"POST",body:o})})}
+    removeTorrent(e,t){return l(this,null,function*(){var o=new URLSearchParams;o.append("hashes",String(e.externalId)),o.append("deleteFiles",t?"true":"false"),yield this.fetchWithAuth("/api/v2/torrents/delete",{method:"POST",body:o})})}
     
-    getFiles(e){return l(this,null,function*(){let t=new URLSearchParams;return t.append("hash",String(e.externalId)),(yield this.fetchWithAuth(`/api/v2/torrents/files?${t.toString()}`)).map(n=>{var r,s;return{bytesCompleted:Math.floor(n.progress*n.size),length:n.size,name:n.name,begin_piece:(r=n.piece_range)==null?void 0:r[0],end_piece:(s=n.piece_range)==null?void 0:s[1]}})})}
+    getFiles(e){return l(this,null,function*(){var t=new URLSearchParams;return t.append("hash",String(e.externalId)),(yield this.fetchWithAuth("/api/v2/torrents/files?"+t.toString())).map(function(n){var r,s;return{bytesCompleted:Math.floor(n.progress*n.size),length:n.size,name:n.name,begin_piece:(r=n.piece_range)==null?void 0:r[0],end_piece:(s=n.piece_range)==null?void 0:s[1]}})})}
     
-    formatTorrents(e,t){return e.sort((o,n)=>n.added_on-o.added_on).filter(o=>!o.tags.includes("hide")).map(o=>({id:O(o.tags),type:R(o.tags),externalId:o.hash,name:o.name,status:ue(o.state),percentDone:o.progress,totalSize:o.size,eta:o.eta,speed:o.dlspeed,files:[],seeders:o.num_seeds,activeSeeders:o.num_complete,hash:o.hash,path:o.save_path.replace(t.save_path,"")}))}
+    formatTorrents(e,t){return e.sort(function(o,n){return n.added_on-o.added_on}).filter(function(o){return !o.tags.includes("hide")}).map(function(o){return{id:O(o.tags),type:R(o.tags),externalId:o.hash,name:o.name,status:ue(o.state),percentDone:o.progress,totalSize:o.size,eta:o.eta,speed:o.dlspeed,files:[],seeders:o.num_seeds,activeSeeders:o.num_complete,hash:o.hash,path:o.save_path.replace(t.save_path,"")}})}
   };
   
   var z=class{
@@ -782,18 +782,18 @@
     
     fetchWithTimeout(url, options = {}, timeout = isAndroidTV ? 20000 : 10000) {
       return new Promise((resolve, reject) => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => {
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function() {
           controller.abort();
-          reject(new Error(`Request timeout after ${timeout}ms`));
+          reject(new Error('Request timeout after ' + timeout + 'ms'));
         }, timeout);
         
-        fetch(url, { ...options, signal: controller.signal })
-          .then(response => {
+        fetch(url, Object.assign({}, options, { signal: controller.signal }))
+          .then(function(response) {
             clearTimeout(timeoutId);
             resolve(response);
           })
-          .catch(error => {
+          .catch(function(error) {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
               reject(new Error('Connection timeout - check server availability'));
@@ -804,31 +804,31 @@
       });
     }
     
-    POST(e){return l(this,null,function*(){try{let t=yield this.fetchWithTimeout(this.url,{method:"POST",headers:{Authorization:`Basic ${btoa(this.login+":"+this.password)}`,"Content-Type":"application/json","X-Transmission-Session-Id":this.sessionId||""},body:JSON.stringify(e)});if(t.status===409){if(this.sessionId=t.headers.get("X-Transmission-Session-Id"),this.sessionId==null)throw new Error("Can`t authorize to Transmission RPC");return this.POST(e)}if(!t.ok){if(t.status===0||t.status===undefined){throw new Error("Network error - check server availability")}throw{message:`Transmission RPC error: ${t.statusText}`,status:t.status}}return yield t.json()}catch(t){h("Transmission fetch error:",t.message);throw t}})}
+    POST(e){return l(this,null,function*(){try{var t=yield this.fetchWithTimeout(this.url,{method:"POST",headers:{Authorization:"Basic "+btoa(this.login+":"+this.password),"Content-Type":"application/json","X-Transmission-Session-Id":this.sessionId||""},body:JSON.stringify(e)});if(t.status===409){if(this.sessionId=t.headers.get("X-Transmission-Session-Id"),this.sessionId==null)throw new Error("Can`t authorize to Transmission RPC");return this.POST(e)}if(!t.ok){if(t.status===0||t.status===undefined){throw new Error("Network error - check server availability")}throw{message:"Transmission RPC error: "+t.statusText,status:t.status}}return yield t.json()}catch(t){h("Transmission fetch error:",t.message);throw t}})}
     
-    getSession(){let e={method:"session-get"};return this.POST(e)}
-    addTorrent(e){let t={method:"torrent-add",arguments:e};return this.POST(t)}
-    getTorrents(e){let t={method:"torrent-get",arguments:e};return this.POST(t)}
-    setTorrent(e){let t={method:"torrent-set",arguments:e};return this.POST(t)}
-    startTorrent(e){let t={method:"torrent-start",arguments:e};return this.POST(t)}
-    stopTorrent(e){let t={method:"torrent-stop",arguments:e};return this.POST(t)}
-    removeTorrent(e){let t={method:"torrent-remove",arguments:e};return this.POST(t)}
+    getSession(){var e={method:"session-get"};return this.POST(e)}
+    addTorrent(e){var t={method:"torrent-add",arguments:e};return this.POST(t)}
+    getTorrents(e){var t={method:"torrent-get",arguments:e};return this.POST(t)}
+    setTorrent(e){var t={method:"torrent-set",arguments:e};return this.POST(t)}
+    startTorrent(e){var t={method:"torrent-start",arguments:e};return this.POST(t)}
+    stopTorrent(e){var t={method:"torrent-stop",arguments:e};return this.POST(t)}
+    removeTorrent(e){var t={method:"torrent-remove",arguments:e};return this.POST(t)}
   };
   
   var F=class{
     constructor(e,t,o){this.url=e;this.login=t;this.password=o;this.client=new z(e+"/transmission/rpc",t,o)}
     
-    getTorrents(){return l(this,null,function*(){var n,r;let e=yield this.client.getSession(),t=((n=e==null?void 0:e.arguments)==null?void 0:n["download-dir"])||"";return((r=(yield this.client.getTorrents({fields:["id","name","status","percentDone","sizeWhenDone","rateDownload","eta","labels","files","peersConnected","peersSendingToUs","trackerStats","hashString","downloadDir"]})).arguments)==null?void 0:r.torrents.filter(s=>!Array.isArray(s.labels)||s.labels.indexOf("hide")===-1).map(s=>{var g;let i=0,c=0;return Array.isArray(s.trackerStats)&&(i=Math.max(...s.trackerStats.map(f=>f.seederCount||0),0)),c=s.peersSendingToUs||0,{id:O(s.labels),type:R(s.labels),externalId:s.id,name:s.name,status:me(s.status),percentDone:s.percentDone,totalSize:s.sizeWhenDone,eta:s.eta,speed:s.rateDownload,files:s.files,seeders:i,activeSeeders:c,hash:s.hashString,path:((g=s.downloadDir)==null?void 0:g.replace(t,""))||""}}).filter(s=>s.id))||[]})}
+    getTorrents(){return l(this,null,function*(){var n,r;var e=yield this.client.getSession(),t=((n=e==null?void 0:e.arguments)==null?void 0:n["download-dir"])||"";return((r=(yield this.client.getTorrents({fields:["id","name","status","percentDone","sizeWhenDone","rateDownload","eta","labels","files","peersConnected","peersSendingToUs","trackerStats","hashString","downloadDir"]})).arguments)==null?void 0:r.torrents.filter(function(s){return !Array.isArray(s.labels)||s.labels.indexOf("hide")===-1}).map(function(s){var g;var i=0,c=0;return Array.isArray(s.trackerStats)&&(i=Math.max.apply(Math, s.trackerStats.map(function(f){return f.seederCount||0}))),c=s.peersSendingToUs||0,{id:O(s.labels),type:R(s.labels),externalId:s.id,name:s.name,status:me(s.status),percentDone:s.percentDone,totalSize:s.sizeWhenDone,eta:s.eta,speed:s.rateDownload,files:s.files,seeders:i,activeSeeders:c,hash:s.hashString,path:((g=s.downloadDir)==null?void 0:g.replace(t,""))||""}}).filter(function(s){return s.id}))||[]})}
     
-    addTorrent(e,t){return l(this,null,function*(){var s,i;let o={paused:!1,sequential_download:!0,filename:t.MagnetUri||t.Link,labels:x(e)},n=M(e);if(n){let c=yield this.client.getSession(),g=(s=c==null?void 0:c.arguments)==null?void 0:s["download-dir"];g&&(o["download-dir"]=g.replace(/[\\/]+$/g,"")+n)}let r=yield this.client.addTorrent(o);(i=r.arguments)!=null&&i["torrent-added"]&&(yield this.client.setTorrent({ids:[r.arguments["torrent-added"].id],labels:x(e)}))})}
+    addTorrent(e,t){return l(this,null,function*(){var s,i;var o={paused:!1,sequential_download:!0,filename:t.MagnetUri||t.Link,labels:x(e)},n=M(e);if(n){var c=yield this.client.getSession(),g=(s=c==null?void 0:c.arguments)==null?void 0:s["download-dir"];g&&(o["download-dir"]=g.replace(/[\\/]+$/g,"")+n)}var r=yield this.client.addTorrent(o);(i=r.arguments)!=null&&i["torrent-added"]&&(yield this.client.setTorrent({ids:[r.arguments["torrent-added"].id],labels:x(e)}))})}
     
     startTorrent(e){return l(this,null,function*(){yield this.client.startTorrent({ids:[e.externalId]})})}
     
     stopTorrent(e){return l(this,null,function*(){yield this.client.stopTorrent({ids:[e.externalId]})})}
     
-    hideTorrent(e){return l(this,null,function*(){var n,r;let o=((r=(n=(yield this.client.getTorrents({ids:[e.externalId],fields:["labels"]})).arguments)==null?void 0:n.torrents[0])==null?void 0:r.labels)||[];yield this.client.setTorrent({ids:[e.externalId],labels:[...o,"hide"]})})}
+    hideTorrent(e){return l(this,null,function*(){var n,r;var o=((r=(n=(yield this.client.getTorrents({ids:[e.externalId],fields:["labels"]})).arguments)==null?void 0:n.torrents[0])==null?void 0:r.labels)||[];yield this.client.setTorrent({ids:[e.externalId],labels:o.concat(["hide"])})})}
     
-    removeTorrent(e,t=!1){return l(this,null,function*(){yield this.client.removeTorrent({ids:[e.externalId],"delete-local-data":t})})}
+    removeTorrent(e,t){return l(this,null,function*(){yield this.client.removeTorrent({ids:[e.externalId],"delete-local-data":t})})}
     
     getFiles(e){return l(this,null,function*(){return e.files})}
     
@@ -836,13 +836,13 @@
   };
   
   var m=class{
-    static getClient(){if(!this.client){let t=(Lampa.Storage.field(I)||"").split(";").map(o=>o.trim()).filter(Boolean);this.buildClient(t[0]||"");if(t.length>1){this.selectUrl(t)}}return this.client}
+    static getClient(){if(!this.client){var t=(Lampa.Storage.field(I)||"").split(";").map(function(o){return o.trim()}).filter(Boolean);this.buildClient(t[0]||"");if(t.length>1){this.selectUrl(t)}}return this.client}
     
     static reset(){this.client=void 0;this.selectionInFlight=!1}
     
-    static buildClient(e){let t=Lampa.Storage.field(ee)===1,o=Lampa.Storage.field(Z),n=Lampa.Storage.field(X);this.client=t?new U(e,o,n):new F(e,o,n);h("Client built for: "+e)}
+    static buildClient(e){var t=Lampa.Storage.field(ee)===1,o=Lampa.Storage.field(Z),n=Lampa.Storage.field(X);this.client=t?new U(e,o,n):new F(e,o,n);h("Client built for: "+e)}
     
-    static selectUrl(e){if(this.selectionInFlight)return;this.selectionInFlight=!0;let t=e.map(r=>{let s=r+"/ping";return fetch(s,{cache:"no-cache",signal:AbortSignal.timeout?AbortSignal.timeout(5000):undefined}).then(i=>i.ok?r:Promise.reject()).catch(()=>Promise.reject())}),o=0,n=!1;t.forEach(r=>r.then(s=>{n||(n=!0,this.selectionInFlight=!1,(!this.client||this.client.url!==s)&&this.buildClient(s))}).catch(()=>{++o===t.length&&!n&&(n=!0,this.selectionInFlight=!1)}))}
+    static selectUrl(e){if(this.selectionInFlight)return;this.selectionInFlight=!0;var t=e.map(function(r){var s=r+"/ping";return fetch(s,{cache:"no-cache",signal:AbortSignal.timeout?AbortSignal.timeout(5000):undefined}).then(function(i){return i.ok?r:Promise.reject()}).catch(function(){return Promise.reject()})}),o=0,n=!1;t.forEach(function(r){return r.then(function(s){if(!n){n=!0;this.selectionInFlight=!1;if(!this.client||this.client.url!==s){this.buildClient(s)}}}.bind(this)).catch(function(){++o===t.length&&!n&&(n=!0,this.selectionInFlight=!1)}.bind(this))}.bind(this))}
   };
   m.selectionInFlight=!1,m.isConnected=!1;
   
@@ -851,16 +851,16 @@
       <span>{text}</span>
   </div>`;
   
-  function nt(a){let e=$(".full-start-new__buttons");if(e.find(".button--download").length)return;let t=$(Lampa.Template.get("download-button",{icon:y,text:Lampa.Lang.translate("download")}));t.on("hover:enter",o=>{Lampa.Activity.push({url:"",title:Lampa.Lang.translate("download"),component:"torrents-download",search_one:a.movie.title,search_two:a.movie.original_title,movie:a.movie,page:1})}),e.children().first().after(t)}
+  function nt(a){var e=$(".full-start-new__buttons");if(e.find(".button--download").length)return;var t=$(Lampa.Template.get("download-button",{icon:y,text:Lampa.Lang.translate("download")}));t.on("hover:enter",function(o){Lampa.Activity.push({url:"",title:Lampa.Lang.translate("download"),component:"torrents-download",search_one:a.movie.title,search_two:a.movie.original_title,movie:a.movie,page:1})}),e.children().first().after(t)}
   
-  function Oe(){Lampa.Template.add("download-button",$e),Lampa.Component.add("torrents-download",Lampa.Component.get("torrents")),Lampa.Listener.follow("full",a=>{if(a.type==="complite"){let e=a.data;nt(e)}}),Lampa.Listener.follow("torrent",a=>{let e=Lampa.Activity.active();a.type==="render"&&e.component==="torrents-download"&&($(a.item).off("hover:enter"),$(a.item).on("hover:enter",t=>l(this,null,function*(){if(yield m.getClient().addTorrent(e.movie,a.element),Lampa.Noty.show(Lampa.Lang.translate("download-button.added")),e.activity.component.mark(a.element,a.item,!0),!Lampa.Storage.get(Q,!1)){Lampa.Activity.back();let r=(yield m.getClient().getTorrents()).find(s=>s.id===e.movie.id);r&&V(r,e.movie)}}))})}
+  function Oe(){Lampa.Template.add("download-button",$e),Lampa.Component.add("torrents-download",Lampa.Component.get("torrents")),Lampa.Listener.follow("full",function(a){if(a.type==="complite"){var e=a.data;nt(e)}}),Lampa.Listener.follow("torrent",function(a){var e=Lampa.Activity.active();if(a.type==="render"&&e.component==="torrents-download"){$(a.item).off("hover:enter");$(a.item).on("hover:enter",function(t){return l(this,null,function*(){if(yield m.getClient().addTorrent(e.movie,a.element),Lampa.Noty.show(Lampa.Lang.translate("download-button.added")),e.activity.component.mark(a.element,a.item,!0),!Lampa.Storage.get(Q,!1)){Lampa.Activity.back();var r=(yield m.getClient().getTorrents()).find(function(s){return s.id===e.movie.id});r&&V(r,e.movie)}})}))}})}
   
-  function Re(){window.plugin_transmission_ready=!0,Lampa.Manifest.plugins=d,Lampa.Lang.add(re),Ce(),Oe(),he(),De(),Le();let a=Lampa.Storage.field(I);if(a){h("Starting with URL:",a);_.start()}else{h("No server URL configured, please set it in settings")}}
+  function Re(){window.plugin_transmission_ready=!0;Lampa.Manifest.plugins=d;Lampa.Lang.add(re);Ce();Oe();he();De();Le();var a=Lampa.Storage.field(I);if(a){h("Starting with URL:",a);_.start()}else{h("No server URL configured, please set it in settings")}}
   
   function checkConnection() {
     if (Lampa.Storage.field(I)) {
       h("Checking connection to server...");
-      setTimeout(() => {
+      setTimeout(function() {
         if (!m.isConnected) {
           Lampa.Noty.show(Lampa.Lang.translate("background-worker.no-connection"));
         }
@@ -868,5 +868,17 @@
     }
   }
   
-  window.plugin_transmission_ready||(window.appready?(()=>{Re();checkConnection()})():Lampa.Listener.follow("app",function(a){a.type==="ready"&&(()=>{Re();checkConnection()})()}));
+  if (!window.plugin_transmission_ready) {
+    if (window.appready) {
+      Re();
+      checkConnection();
+    } else {
+      Lampa.Listener.follow("app", function(a) {
+        if (a.type==="ready") {
+          Re();
+          checkConnection();
+        }
+      });
+    }
+  }
 })();
