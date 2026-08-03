@@ -1,110 +1,130 @@
 "use strict";
-(() => {
+(function() {
   var Me = Object.defineProperty,
     Ue = Object.defineProperties;
   var ze = Object.getOwnPropertyDescriptors;
   var ne = Object.getOwnPropertySymbols;
   var Fe = Object.prototype.hasOwnProperty,
     Ye = Object.prototype.propertyIsEnumerable;
-  var se = (a, e, t) => e in a ? Me(a, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : a[e] = t,
-    A = (a, e) => {
+  var se = function(a, e, t) { return e in a ? Me(a, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : a[e] = t },
+    A = function(a, e) {
       for (var t in e || (e = {})) Fe.call(e, t) && se(a, t, e[t]);
       if (ne)
         for (var t of ne(e)) Ye.call(e, t) && se(a, t, e[t]);
       return a
     },
-    D = (a, e) => Ue(a, ze(e));
-  var l = (a, e, t) => new Promise((o, n) => {
-    var r = c => {
-        try { i(t.next(c)) } catch (g) { n(g) }
-      },
-      s = c => {
-        try { i(t.throw(c)) } catch (g) { n(g) }
-      },
-      i = c => c.done ? o(c.value) : Promise.resolve(c.value).then(r, s);
-    i((t = t.apply(a, e)).next())
-  });
+    D = function(a, e) { return Ue(a, ze(e)) };
+  var l = function(a, e, t) {
+    return new Promise(function(o, n) {
+      var r = function(c) {
+          try { i(t.next(c)) } catch (g) { n(g) }
+        },
+        s = function(c) {
+          try { i(t.throw(c)) } catch (g) { n(g) }
+        },
+        i = function(c) { return c.done ? o(c.value) : Promise.resolve(c.value).then(r, s) };
+      i((t = t.apply(a, e)).next())
+    })
+  };
 
   // Android TV Network Helper
-  class AndroidTVNetwork {
-    static async fetchWithTimeout(url, options = {}, timeout = 45000) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
+  var AndroidTVNetwork = {
+    fetchWithTimeout: function(url, options, timeout) {
+      if (options === void 0) options = {};
+      if (timeout === void 0) timeout = 45000;
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() { controller.abort() }, timeout);
 
       try {
-        const headers = {
+        var host = url.match(/^https?:\/\/[^\/]+/);
+        host = host ? host[0] : '';
+
+        var headers = {
           'Accept': '*/*',
-          'User-Agent': 'Mozilla/5.0 (Android TV) Lampa/2.0',
           'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          ...options.headers
+          'Pragma': 'no-cache'
         };
 
-        const fetchOptions = {
-          ...options,
-          headers,
+        if (Lampa.Platform && Lampa.Platform.is && Lampa.Platform.is('android')) {
+          headers['Origin'] = host;
+          headers['Referer'] = host + '/';
+          headers['User-Agent'] = 'Mozilla/5.0 (Android TV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36';
+        }
+
+        if (options.headers) {
+          for (var key in options.headers) {
+            if (options.headers.hasOwnProperty(key)) {
+              headers[key] = options.headers[key];
+            }
+          }
+        }
+
+        var fetchOptions = {
+          method: options.method || 'GET',
+          headers: headers,
           signal: controller.signal,
           mode: 'cors',
           cache: 'no-cache',
           credentials: 'include'
         };
 
-        if (options.body && options.body instanceof FormData) {
-          delete fetchOptions.headers['Content-Type'];
+        if (options.body) {
+          fetchOptions.body = options.body;
+          if (!(options.body instanceof FormData)) {
+            fetchOptions.headers['Content-Type'] = 'application/json';
+          } else {
+            delete fetchOptions.headers['Content-Type'];
+          }
         }
 
-        const response = await fetch(url, fetchOptions);
+        var response = fetch(url, fetchOptions);
         clearTimeout(timeoutId);
         return response;
       } catch (error) {
         clearTimeout(timeoutId);
         if (error.name === 'AbortError') {
-          throw new Error(`Request timeout for ${url}`);
+          throw new Error('Request timeout for ' + url);
         }
         throw error;
       }
-    }
+    },
 
-    static async postFormData(url, formData, options = {}) {
+    postFormData: function(url, formData, options) {
+      if (options === void 0) options = {};
+      return this.fetchWithTimeout(url, {
+        method: 'POST',
+        headers: options.headers || {},
+        body: formData
+      });
+    },
+
+    postJSON: function(url, data, options) {
+      if (options === void 0) options = {};
       return this.fetchWithTimeout(url, {
         method: 'POST',
         headers: {
-          ...options.headers
+          'Content-Type': 'application/json'
         },
-        body: formData,
-        ...options
+        body: JSON.stringify(data)
       });
-    }
+    },
 
-    static async postJSON(url, data, options = {}) {
+    getJSON: function(url, options) {
+      if (options === void 0) options = {};
       return this.fetchWithTimeout(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers
-        },
-        body: JSON.stringify(data),
-        ...options
+        method: 'GET'
+      }).then(function(response) {
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+        }
+        var contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          return response.json();
+        }
+        return response.text();
       });
     }
-
-    static async getJSON(url, options = {}) {
-      const response = await this.fetchWithTimeout(url, {
-        method: 'GET',
-        ...options
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        return response.json();
-      }
-      return response.text();
-    }
-  }
+  };
 
   var re = {
     downloads: { ru: "Загрузки", en: "Downloads" },
@@ -152,138 +172,64 @@
     "background-worker.error-detected": { ru: "Обнаружена ошибка. Подробнее в консоли", en: "An error has been detected. See console for details" }
   };
 
-  var y = `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="4 4 16 16">
-    <path fill="currentcolor" d="M17.71,12.71a1,1,0,0,0-1.42,0L13,16V6a1,1,0,0,0-2,0V16L7.71,12.71a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.3,4.29A2,2,0,0,0,12,19h0a2,2,0,0,0,1.4-.59l4.3-4.29A1,1,0,0,0,17.71,12.71Z" />
-</svg>`;
+  var y = '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="4 4 16 16">\n    <path fill="currentcolor" d="M17.71,12.71a1,1,0,0,0-1.42,0L13,16V6a1,1,0,0,0-2,0V16L7.71,12.71a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.3,4.29A2,2,0,0,0,12,19h0a2,2,0,0,0,1.4-.59l4.3-4.29A1,1,0,0,0,17.71,12.71Z" />\n</svg>';
 
   var d = { type: "other", version: "2.6.0", author: "https://github.com/kvart714", name: "Torrent Downloader", description: "Transmission RPC client", component: "t-downloader" };
 
   var ie = d.component + ".torrents.data.v2",
-    w = class {
-      static getData() { return this.data }
-      static getMovie(e) {
+    w = {
+      data: Lampa.Storage.get(ie, { torrents: [], info: { freeSpace: 0 } }),
+      getData: function() { return this.data },
+      getMovie: function(e) {
         if (!e) return null;
-        let t = this.data.torrents.filter(o => o.id === e);
-        return t.length > 0 ? t.reduce((o, n) => o.percentDone >= n.percentDone ? o : n) : null
-      }
-      static getByHash(e) { var t; return (t = this.data.torrents.find(o => o.hash === e)) != null ? t : null }
-      static ensureMovie(e) {
-        let t = this.data.torrents.filter(o => o.externalId === e.externalId);
-        return t.length > 0 ? t.reduce((o, n) => o.percentDone >= n.percentDone ? o : n) : e
-      }
-      static setData(e) {
+        var t = this.data.torrents.filter(function(o) { return o.id === e });
+        return t.length > 0 ? t.reduce(function(o, n) { return o.percentDone >= n.percentDone ? o : n }) : null
+      },
+      getByHash: function(e) { var t; return (t = this.data.torrents.find(function(o) { return o.hash === e })) != null ? t : null },
+      ensureMovie: function(e) {
+        var t = this.data.torrents.filter(function(o) { return o.externalId === e.externalId });
+        return t.length > 0 ? t.reduce(function(o, n) { return o.percentDone >= n.percentDone ? o : n }) : e
+      },
+      setData: function(e) {
         return l(this, null, function*() {
-          this.data = e, Lampa.Storage.set(ie, this.data)
+          this.data = e;
+          Lampa.Storage.set(ie, this.data);
         })
       }
     };
-  w.data = Lampa.Storage.get(ie, { torrents: [], info: { freeSpace: 0 } });
 
-  var de = `<div class="selector download-card full-start__button d-updatable" id="download-card-{id}">
-  <div class="download-card__file-info">
-    <span class="file-name">
-      <span data-key="fileName">{fileName}</span>
-    </span>
-    <span class="speed">
-      <span data-key="speed">{speed}</span>
-    </span>
-  </div>
-  <div class="download-card__progress-bar">
-    <div class="download-card__progress-bar-progress" style="width: {percent}"></div>
-  </div>
-  <div class="download-card__stats">
-    <span class="downloaded">
-      <span data-key="downloadedSize">{downloadedSize}</span> / 
-      <span data-key="totalSize">{totalSize}</span>
-    </span>
-    <span class="percent">
-      <span data-key="percent">{percent}</span>
-    </span>
-    <span class="eta">
-      <span data-key="eta">{eta}</span>
-    </span>
-  </div>
-</div>
-`;
+  var de = '<div class="selector download-card full-start__button d-updatable" id="download-card-{id}">\n  <div class="download-card__file-info">\n    <span class="file-name">\n      <span data-key="fileName">{fileName}</span>\n    </span>\n    <span class="speed">\n      <span data-key="speed">{speed}</span>\n    </span>\n  </div>\n  <div class="download-card__progress-bar">\n    <div class="download-card__progress-bar-progress" style="width: {percent}"></div>\n  </div>\n  <div class="download-card__stats">\n    <span class="downloaded">\n      <span data-key="downloadedSize">{downloadedSize}</span> / \n      <span data-key="totalSize">{totalSize}</span>\n    </span>\n    <span class="percent">\n      <span data-key="percent">{percent}</span>\n    </span>\n    <span class="eta">\n      <span data-key="eta">{eta}</span>\n    </span>\n  </div>\n</div>\n';
 
-  var le = `.download-card {
-  all: unset;
-  display: block;
-  width: 80%;
-  height: auto;
-  margin: 0;
-  margin-top: 0.75em;
-  padding: 0.75em;
-  background-color: rgba(0, 0, 0, 0.3);
-  color: white;
-  transition: background-color 0.3s;
-  border-radius: 1em;
-}
-.download-card__file-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5em;
-}
-.download-card__file-info .file-name, .download-card__file-info .speed {
-  font-size: 1.5em;
-}
-.download-card__progress-bar {
-  height: 6px;
-  background: #ddd;
-  border-radius: 6px;
-  overflow: hidden;
-  margin-top: 0.7em;
-  margin-bottom: 0.5em;
-}
-.download-card__progress-bar-progress {
-  height: 100%;
-  background: linear-gradient(90deg, #4a90e2, #357ab8);
-  transition: width 0.5s ease;
-}
-.download-card__stats {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  font-size: 1.1em;
-}
-.download-card__stats .speed {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: inherit;
-}
-.download-card__stats .percent {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: inherit;
-}
-.download-card__stats .downloaded {
-  text-align: left;
-  font-size: inherit;
-}
-.download-card__stats .eta {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: inherit;
-}`;
+  var le = '.download-card {\n  all: unset;\n  display: block;\n  width: 80%;\n  height: auto;\n  margin: 0;\n  margin-top: 0.75em;\n  padding: 0.75em;\n  background-color: rgba(0, 0, 0, 0.3);\n  color: white;\n  transition: background-color 0.3s;\n  border-radius: 1em;\n}\n.download-card__file-info {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 0.5em;\n}\n.download-card__file-info .file-name, .download-card__file-info .speed {\n  font-size: 1.5em;\n}\n.download-card__progress-bar {\n  height: 6px;\n  background: #ddd;\n  border-radius: 6px;\n  overflow: hidden;\n  margin-top: 0.7em;\n  margin-bottom: 0.5em;\n}\n.download-card__progress-bar-progress {\n  height: 100%;\n  background: linear-gradient(90deg, #4a90e2, #357ab8);\n  transition: width 0.5s ease;\n}\n.download-card__stats {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 0.5em;\n  font-size: 1.1em;\n}\n.download-card__stats .speed {\n  position: absolute;\n  top: 0;\n  right: 0;\n  font-size: inherit;\n}\n.download-card__stats .percent {\n  position: absolute;\n  bottom: 0;\n  left: 50%;\n  transform: translateX(-50%);\n  font-size: inherit;\n}\n.download-card__stats .downloaded {\n  text-align: left;\n  font-size: inherit;\n}\n.download-card__stats .eta {\n  position: absolute;\n  bottom: 0;\n  right: 0;\n  font-size: inherit;\n}';
 
-  function h(...a) { console.log(d.name, ...a) }
+  function h() {
+    var a = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+      a[_i] = arguments[_i];
+    }
+    console.log.apply(console, [d.name].concat(a));
+  }
 
-  function ce(...a) { console.warn(d.name, ...a) }
+  function ce() {
+    var a = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+      a[_i] = arguments[_i];
+    }
+    console.warn.apply(console, [d.name].concat(a));
+  }
 
   var pe = d.component + ".movieinfo.data.v4",
-    b = class {
-      static getMovieInfo(e) {
+    b = {
+      requestedIds: new Set(),
+      diskCache: Lampa.Storage.get(pe, {}),
+      memoryCache: {},
+      getMovieInfo: function(e) {
         if (!e.id) return null;
-        let t = `${e.type}_${e.id}`;
+        var t = e.type + "_" + e.id;
         if (this.memoryCache[t]) return this.memoryCache[t];
         if (!this.requestedIds.has(t)) {
           this.requestedIds.add(t);
-          this.loadContentInfo(e.id, e.type).then(o => {
+          this.loadContentInfo(e.id, e.type).then(function(o) {
             if (o) {
               this.memoryCache[t] = o;
               this.diskCache[t] = o;
@@ -291,32 +237,30 @@
             } else {
               this.requestedIds.delete(t);
             }
-          }).catch(() => { this.requestedIds.delete(t) });
+          }.bind(this)).catch(function() { this.requestedIds.delete(t) }.bind(this));
         }
         return this.diskCache[t] || null;
-      }
-      static loadContentInfo(e, t, o = !0) {
+      },
+      loadContentInfo: function(e, t, o) {
+        if (o === void 0) o = !0;
         return l(this, null, function*() {
-          let n = Lampa.Storage.field("tmdb_lang") || Lampa.Storage.field("language") || "ru",
-            r = Lampa.Utils.addUrlComponent(Lampa.TMDB.api(`${t}/${e}?email=`), `api_key=${Lampa.TMDB.key()}&language=${n}&certification_country=ru&certification.lte=18`);
+          var n = Lampa.Storage.field("tmdb_lang") || Lampa.Storage.field("language") || "ru",
+            r = Lampa.Utils.addUrlComponent(Lampa.TMDB.api(t + "/" + e + "?email="), "api_key=" + Lampa.TMDB.key() + "&language=" + n + "&certification_country=ru&certification.lte=18");
           try {
-            let s = yield AndroidTVNetwork.fetchWithTimeout(r);
+            var s = yield AndroidTVNetwork.fetchWithTimeout(r);
             if (s.ok) {
-              let i = yield s.json();
+              var i = yield s.json();
               if ((i != null && i.title) || (i != null && i.name)) return i
             } else if (o) {
-              h(`Failed to load '${t}_${e}', status: ${s.status}. Trying fallback type.`);
-              let i = t === "movie" ? "tv" : "movie";
-              return yield this.loadContentInfo(e, i, !1)
+              h("Failed to load '" + t + "_" + e + "', status: " + s.status + ". Trying fallback type.");
+              var i2 = t === "movie" ? "tv" : "movie";
+              return yield this.loadContentInfo(e, i2, !1)
             }
-          } catch (s) { ce(`Failed to load ${t} info for id ${e}:`, s) }
+          } catch (s) { ce("Failed to load " + t + " info for id " + e + ":", s) }
           return null
         })
       }
     };
-  b.requestedIds = new Set;
-  b.diskCache = Lampa.Storage.get(pe, {});
-  b.memoryCache = {};
 
   var p = { STOPPED: 0, CHECK_PENDING: 1, CHECKING: 2, DOWNLOAD_PENDING: 3, DOWNLOADING: 4, SEED_PENDING: 5, SEEDING: 6, ISOLATED: 7, STALLED: 8, ERROR: 9, ALLOCATING: 10, MOVING: 11, UNKNOWN: 12, INITIALIZATION: 13 };
 
@@ -381,743 +325,426 @@
     }
   }
 
-  function L(a, e = 2) {
+  function L(a, e) {
+    if (e === void 0) e = 2;
     if (a === 0) return "0";
-    let t = 1024,
+    var t = 1024,
       o = e < 0 ? 0 : e,
       n = Math.floor(Math.log(a) / Math.log(t));
-    return parseFloat((a / Math.pow(t, n)).toFixed(o)) + " " + Lampa.Lang.translate(`download-card.size.${n}`)
+    return parseFloat((a / Math.pow(t, n)).toFixed(o)) + " " + Lampa.Lang.translate("download-card.size." + n)
   }
 
   function Be(a) {
-    let e = Lampa.Lang.translate("download-card.time.3");
-    return `${L(a)}/${e}`
+    var e = Lampa.Lang.translate("download-card.time.3");
+    return L(a) + "/" + e
   }
 
   function Ve(a) {
-    let e = Math.floor(a / 86400),
+    var e = Math.floor(a / 86400),
       t = Math.floor(a % 86400 / 3600),
       o = Math.floor(a % 3600 / 60),
       n = Math.floor(a % 60);
-    return [e, t, o, n].map((s, i) => s ? s + Lampa.Lang.translate(`download-card.time.${i}`) : null).filter(Boolean).slice(0, 2).join(" ")
+    return [e, t, o, n].map(function(s, i) { return s ? s + Lampa.Lang.translate("download-card.time." + i) : null }).filter(Boolean).slice(0, 2).join(" ")
   }
 
   function je(a) {
-    let e = new Date(a || "");
+    var e = new Date(a || "");
     return isNaN(e.getTime()) ? "" : e.getFullYear()
   }
 
   function v(a) {
-    let e = b.getMovieInfo(a),
+    var e = b.getMovieInfo(a),
       t = q[Lampa.Storage.get(K)] || q[1];
     return {
       id: a.id + "_" + a.externalId,
       torrentName: a.name,
       title: (e == null ? void 0 : e.title) || (e == null ? void 0 : e.name) || (a.status === p.INITIALIZATION ? "Initialization" : a.name),
-      poster: (e != null && e.poster_path) ? Lampa.TMDB.image(`t/p/${t}${e.poster_path}`) : "",
+      poster: (e != null && e.poster_path) ? Lampa.TMDB.image("t/p/" + t + e.poster_path) : "",
       year: je((e == null ? void 0 : e.release_date) || (e == null ? void 0 : e.first_air_date)),
       fileName: (e != null && e.title) || (e != null && e.name) ? a.name : "",
       percent: (100 * a.percentDone).toFixed(2) + "%",
       speed: a.speed > 0 ? Be(a.speed) : "",
       downloadedSize: L(a.percentDone * a.totalSize),
       totalSize: L(a.totalSize),
-      eta: a.status === p.DOWNLOADING ? Ve(a.eta) : a.status === p.STALLED && a.percentDone === 1 ? Lampa.Lang.translate("download-card.status.14") : Lampa.Lang.translate(`download-card.status.${a.status}`),
+      eta: a.status === p.DOWNLOADING ? Ve(a.eta) : a.status === p.STALLED && a.percentDone === 1 ? Lampa.Lang.translate("download-card.status.14") : Lampa.Lang.translate("download-card.status." + a.status),
       status: a.status === p.DOWNLOADING ? "downloading" : a.percentDone === 1 ? "completed" : "paused",
-      seeders: `${a.seeders||0} (${a.activeSeeders||0})`
+      seeders: (a.seeders || 0) + " (" + (a.activeSeeders || 0) + ")"
     }
   }
 
   var fe = d.component + ".torrents.data.views.",
-    T = class a {
-      static getViews(e) {
-        let t = Lampa.Storage.get(fe + e.externalId);
+    T = {
+      getViews: function(e) {
+        var t = Lampa.Storage.get(fe + e.externalId);
         return t && typeof t == "object" ? t : {}
-      }
-      static rememberView(e, t) {
-        let o = a.getViews(e);
-        o.last = t, o[t] = !0, Lampa.Storage.set(fe + e.externalId, o)
+      },
+      rememberView: function(e, t) {
+        var o = this.getViews(e);
+        o.last = t;
+        o[t] = !0;
+        Lampa.Storage.set(fe + e.externalId, o);
       }
     };
 
   function G(a, e, t) {
     return l(this, null, function*() {
-      let o = m.getClient(),
+      var o = m.getClient(),
         n = yield o.getFiles(e),
-        r = `${o.url}/downloads/${encodeURI(e.path)}/`;
+        r = o.url + "/downloads/" + encodeURI(e.path) + "/";
       if (n.length < 1) throw new Error("No files found in torrent");
       if (n.length === 1) {
         ge({ title: t || e.name, url: r + encodeURI(n[0].name), torrent_hash: e.hash });
       } else if (n.length > 1) {
-        let g, s = T.getViews(e),
-          c = n.sort((f, E) => f.name.localeCompare(E.name, void 0, { numeric: !0, sensitivity: "base" })).map((f, E) => ({ title: f.name.split(/[\\/]/).pop() || f.name, name: f.name, url: r + encodeURI(f.name), picked: !!s[f.name], selected: s.last === f.name, torrent_hash: e.hash }));
+        var g, s = T.getViews(e),
+          c = n.sort(function(f, E) { return f.name.localeCompare(E.name, void 0, { numeric: !0, sensitivity: "base" }) }).map(function(f, E) { return { title: f.name.split(/[\\/]/).pop() || f.name, name: f.name, url: r + encodeURI(f.name), picked: !!s[f.name], selected: s.last === f.name, torrent_hash: e.hash } });
         Lampa.Select.show({
           title: Lampa.Lang.translate("actions.select-file"),
           items: c,
-          onSelect(f) {
+          onSelect: function(f) {
             return l(this, null, function*() {
-              T.rememberView(e, f.name), ge({ playlist: c, title: t || e.name, url: f.url, torrent_hash: e.hash })
+              T.rememberView(e, f.name);
+              ge({ playlist: c, title: t || e.name, url: f.url, torrent_hash: e.hash });
             })
           },
           onBack: function() { Lampa.Controller.toggle(a) }
-        })
+        });
       }
     })
   }
 
-  function ge(a) { var e; h(`Player request ${a.url}`, a), Lampa.Player.play(a), Lampa.Player.playlist((e = a.playlist) != null ? e : []) }
+  function ge(a) { var e; h("Player request " + a.url, a); Lampa.Player.play(a); Lampa.Player.playlist((e = a.playlist) != null ? e : []) }
 
   function W(a) { a.status === p.STOPPED ? m.getClient().startTorrent(a) : m.getClient().stopTorrent(a) }
 
   function S(a, e, t, o) {
-    e = w.ensureMovie(e), Lampa.Select.show({
+    e = w.ensureMovie(e);
+    Lampa.Select.show({
       title: Lampa.Lang.translate("actions.title"),
       items: [
         { title: Lampa.Lang.translate("actions.open"), onSelect: function() { return l(this, null, function*() { G(a, e, t) }) } },
-        ...(a === "downloads-tab" && e.id ? [{ title: Lampa.Lang.translate("actions.open-card"), onSelect: function() { return l(this, null, function*() { Lampa.Activity.push({ component: "full", id: e.id, method: e.type, card: e }) }) } }] : []),
-        { title: e.status === p.STOPPED ? Lampa.Lang.translate("actions.resume") : Lampa.Lang.translate("actions.pause"), onSelect: function() { W(e), Lampa.Controller.toggle(a) } },
-        { title: Lampa.Lang.translate("actions.hide"), onSelect: function() { m.getClient().hideTorrent(e), o == null || o(e), Lampa.Controller.toggle(a) } },
-        { title: Lampa.Lang.translate("actions.delete"), subtitle: Lampa.Lang.translate("actions.delete-with-file"), onSelect: function() { m.getClient().removeTorrent(e, !0), o == null || o(e), Lampa.Controller.toggle(a) } },
-        { title: Lampa.Lang.translate("actions.delete-torrent"), subtitle: Lampa.Lang.translate("actions.delete-torrent-keep-file"), onSelect: function() { m.getClient().removeTorrent(e, !1), o == null || o(e), Lampa.Controller.toggle(a) } }
+        (a === "downloads-tab" && e.id ? [{ title: Lampa.Lang.translate("actions.open-card"), onSelect: function() { return l(this, null, function*() { Lampa.Activity.push({ component: "full", id: e.id, method: e.type, card: e }) }) } }] : []),
+        { title: e.status === p.STOPPED ? Lampa.Lang.translate("actions.resume") : Lampa.Lang.translate("actions.pause"), onSelect: function() { W(e);
+            Lampa.Controller.toggle(a) } },
+        { title: Lampa.Lang.translate("actions.hide"), onSelect: function() { m.getClient().hideTorrent(e);
+            o == null || o(e);
+            Lampa.Controller.toggle(a) } },
+        { title: Lampa.Lang.translate("actions.delete"), subtitle: Lampa.Lang.translate("actions.delete-with-file"), onSelect: function() { m.getClient().removeTorrent(e, !0);
+            o == null || o(e);
+            Lampa.Controller.toggle(a) } },
+        { title: Lampa.Lang.translate("actions.delete-torrent"), subtitle: Lampa.Lang.translate("actions.delete-torrent-keep-file"), onSelect: function() { m.getClient().removeTorrent(e, !1);
+            o == null || o(e);
+            Lampa.Controller.toggle(a) } }
       ],
       onBack: function() { Lampa.Controller.toggle(a) }
-    })
+    });
   }
 
-  function C(a, e, t, o) { var r; e = (r = w.getByHash(e.hash)) != null ? r : e; let n = Lampa.Storage.field(B); n == 1 ? e.percentDone === 1 ? G(a, e, t) : W(e) : n == 2 ? G(a, e, t) : n == 3 ? W(e) : S(a, e, t, o) }
+  function C(a, e, t, o) { var r; e = (r = w.getByHash(e.hash)) != null ? r : e; var n = Lampa.Storage.field(B); n == 1 ? e.percentDone === 1 ? G(a, e, t) : W(e) : n == 2 ? G(a, e, t) : n == 3 ? W(e) : S(a, e, t, o) }
 
   function V(a, e) {
-    let t = $(Lampa.Template.get("download-card", v(a)));
-    $(".full-start-new__right").append(t), t.on("hover:enter", function() { C("full_start", a, (e == null ? void 0 : e.title) || (e == null ? void 0 : e.original_title)) }), t.on("hover:long", function() { S("full_start", a, (e == null ? void 0 : e.title) || (e == null ? void 0 : e.original_title)) })
+    var t = $(Lampa.Template.get("download-card", v(a)));
+    $(".full-start-new__right").append(t);
+    t.on("hover:enter", function() { C("full_start", a, (e == null ? void 0 : e.title) || (e == null ? void 0 : e.original_title)) });
+    t.on("hover:long", function() { S("full_start", a, (e == null ? void 0 : e.title) || (e == null ? void 0 : e.original_title)) });
   }
 
   function we(a) {
-    let e = v(a),
-      t = document.getElementById(`download-card-${e.id}`);
+    var e = v(a),
+      t = document.getElementById("download-card-" + e.id);
     if (t) {
-      for (let o in e) { let n = t.querySelector(`[data-key="${o}"]`); n && (n.textContent = e[o]) }
-      t.querySelector(".download-card__progress-bar-progress").setAttribute("style", `width: ${e.percent};`)
+      for (var o in e) { var n = t.querySelector('[data-key="' + o + '"]');
+        n && (n.textContent = e[o]) }
+      t.querySelector(".download-card__progress-bar-progress").setAttribute("style", "width: " + e.percent + ";");
     }
   }
 
   function he() {
-    Lampa.Template.add("download-card", de), $("body").append(`<style>${le}</style>`), Lampa.Listener.follow("full", function(a) { if (a.type === "complite") { let e = w.getMovie(a.data.movie.id); e && V(e, a.data.movie) } })
+    Lampa.Template.add("download-card", de);
+    $("body").append("<style>" + le + "</style>");
+    Lampa.Listener.follow("full", function(a) { if (a.type === "complite") { var e = w.getMovie(a.data.movie.id);
+        e && V(e, a.data.movie) } });
   }
 
-  var _e = `<div class="download-circle d-updatable download-circle-{status}-{id}">
-    <div class="download-circle__circle">
-        <svg class="download-circle__circle-svg" xmlns="http://www.w3.org/2000/svg">
-            <circle
-                fill="rgba(0, 0, 0, 0.60)"
-                r="17px"
-                cx="20"
-                cy="20"
-            ></circle>
-            <circle
-                class="download-circle__full_{status}"
-                stroke-width="2px"
-                r="12px"
-                cx="20"
-                cy="20"
-            ></circle>
-            <circle
-                class="download-circle__partial_{status}"
-                fill="none"
-                stroke="#fff"
-                stroke-width="2px"
-                stroke-dasharray="100"
-                stroke-dashoffset="{progress}"
-                transition="stroke-dasharray 0.7s linear 0s"
-                r="12px"
-                cx="20"
-                cy="20"
-                pathlength="100"
-            ></circle>
-        </svg>
-    </div>
-    <div class="download-circle__down-arrow">
-        <svg
-            class="download-circle__down-arrow-svg_{status}"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M17.71,12.71a1,1,0,0,0-1.42,0L13,16V6a1,1,0,0,0-2,0V16L7.71,12.71a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.3,4.29A2,2,0,0,0,12,19h0a2,2,0,0,0,1.4-.59l4.3-4.29A1,1,0,0,0,17.71,12.71Z"
-            />
-        </svg>
-        <svg
-            class="download-circle__down-arrow-svg-animated_{status}"
-            fill="white"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M17.71,12.71a1,1,0,0,0-1.42,0L13,16V6a1,1,0,0,0-2,0V16L7.71,12.71a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.3,4.29A2,2,0,0,0,12,19h0a2,2,0,0,0,1.4-.59l4.3-4.29A1,1,0,0,0,17.71,12.71Z"
-            />
-        </svg>
-    </div>
-</div>
-`;
+  var _e = '<div class="download-circle d-updatable download-circle-{status}-{id}">\n    <div class="download-circle__circle">\n        <svg class="download-circle__circle-svg" xmlns="http://www.w3.org/2000/svg">\n            <circle\n                fill="rgba(0, 0, 0, 0.60)"\n                r="17px"\n                cx="20"\n                cy="20"\n            ></circle>\n            <circle\n                class="download-circle__full_{status}"\n                stroke-width="2px"\n                r="12px"\n                cx="20"\n                cy="20"\n            ></circle>\n            <circle\n                class="download-circle__partial_{status}"\n                fill="none"\n                stroke="#fff"\n                stroke-width="2px"\n                stroke-dasharray="100"\n                stroke-dashoffset="{progress}"\n                transition="stroke-dasharray 0.7s linear 0s"\n                r="12px"\n                cx="20"\n                cy="20"\n                pathlength="100"\n            ></circle>\n        </svg>\n    </div>\n    <div class="download-circle__down-arrow">\n        <svg\n            class="download-circle__down-arrow-svg_{status}"\n            xmlns="http://www.w3.org/2000/svg"\n        >\n            <path\n                d="M17.71,12.71a1,1,0,0,0-1.42,0L13,16V6a1,1,0,0,0-2,0V16L7.71,12.71a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.3,4.29A2,2,0,0,0,12,19h0a2,2,0,0,0,1.4-.59l4.3-4.29A1,1,0,0,0,17.71,12.71Z"\n            />\n        </svg>\n        <svg\n            class="download-circle__down-arrow-svg-animated_{status}"\n            fill="white"\n            xmlns="http://www.w3.org/2000/svg"\n        >\n            <path\n                d="M17.71,12.71a1,1,0,0,0-1.42,0L13,16V6a1,1,0,0,0-2,0V16L7.71,12.71a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.3,4.29A2,2,0,0,0,12,19h0a2,2,0,0,0,1.4-.59l4.3-4.29A1,1,0,0,0,17.71,12.71Z"\n            />\n        </svg>\n    </div>\n</div>\n';
 
-  var be = `.download-complete,
-.download-circle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(2);
-}
-.download-complete__circle,
-.download-circle__circle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  position: relative;
-}
-.download-complete__circle-svg,
-.download-circle__circle-svg {
-  transform: rotate(-90deg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.download-complete__full_in-progress,
-.download-circle__full_in-progress {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.5);
-}
-.download-complete__full_complete,
-.download-circle__full_complete {
-  fill: white;
-  stroke: none;
-}
-.download-complete__partial_complete,
-.download-circle__partial_complete {
-  display: none;
-}
-.download-complete__partial_in-progress,
-.download-circle__partial_in-progress {
-  transition: stroke-dashoffset 0.5s ease;
-}
-.download-complete__down-arrow,
-.download-circle__down-arrow {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  overflow: hidden;
-}
-.download-complete__down-arrow svg,
-.download-circle__down-arrow svg {
-  width: 24px;
-  height: 24px;
-}
-.download-complete__down-arrow-svg_in-progress,
-.download-circle__down-arrow-svg_in-progress {
-  fill: rgba(255, 255, 255, 0.5);
-}
-.download-complete__down-arrow-svg_complete,
-.download-circle__down-arrow-svg_complete {
-  fill: "white";
-}
-.download-complete__down-arrow-svg-animated_in-progress,
-.download-circle__down-arrow-svg-animated_in-progress {
-  position: absolute;
-  clip-path: inset(0 0 100% 0);
-  animation: pulseColor 2s ease-out infinite;
-}
-.download-complete__down-arrow-svg-animated_complete,
-.download-circle__down-arrow-svg-animated_complete {
-  display: none;
-}
+  var be = '.download-complete,\n.download-circle {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 40px;\n  height: 40px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%) scale(2);\n}\n.download-complete__circle,\n.download-circle__circle {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 40px;\n  height: 40px;\n  cursor: pointer;\n  position: relative;\n}\n.download-complete__circle-svg,\n.download-circle__circle-svg {\n  transform: rotate(-90deg);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.download-complete__full_in-progress,\n.download-circle__full_in-progress {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.5);\n}\n.download-complete__full_complete,\n.download-circle__full_complete {\n  fill: white;\n  stroke: none;\n}\n.download-complete__partial_complete,\n.download-circle__partial_complete {\n  display: none;\n}\n.download-complete__partial_in-progress,\n.download-circle__partial_in-progress {\n  transition: stroke-dashoffset 0.5s ease;\n}\n.download-complete__down-arrow,\n.download-circle__down-arrow {\n  position: absolute;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  overflow: hidden;\n}\n.download-complete__down-arrow svg,\n.download-circle__down-arrow svg {\n  width: 24px;\n  height: 24px;\n}\n.download-complete__down-arrow-svg_in-progress,\n.download-circle__down-arrow-svg_in-progress {\n  fill: rgba(255, 255, 255, 0.5);\n}\n.download-complete__down-arrow-svg_complete,\n.download-circle__down-arrow-svg_complete {\n  fill: "white";\n}\n.download-complete__down-arrow-svg-animated_in-progress,\n.download-circle__down-arrow-svg-animated_in-progress {\n  position: absolute;\n  clip-path: inset(0 0 100% 0);\n  animation: pulseColor 2s ease-out infinite;\n}\n.download-complete__down-arrow-svg-animated_complete,\n.download-circle__down-arrow-svg-animated_complete {\n  display: none;\n}\n\n@keyframes pulseColor {\n  0% {\n    clip-path: inset(0 0 100% 0);\n  }\n  30% {\n    clip-path: inset(0 0 0 0);\n  }\n  70% {\n    clip-path: inset(0 0 0 0);\n  }\n  100% {\n    clip-path: inset(100% 0 0 0);\n  }\n}';
 
-@keyframes pulseColor {
-  0% {
-    clip-path: inset(0 0 100% 0);
-  }
-  30% {
-    clip-path: inset(0 0 0 0);
-  }
-  70% {
-    clip-path: inset(0 0 0 0);
-  }
-  100% {
-    clip-path: inset(100% 0 0 0);
-  }
-}`;
+  function ve(a, e) { var o; var t = $(e); if (!t.find(".download-circle").length) { var n = (o = a.percentDone) != null ? o : 0, r = Lampa.Template.get("download-circle", { id: a.id, status: n === 1 ? "complete" : "in-progress", progress: 100 * (1 - n) });
+      t.find(".card__vote").after(r) } }
 
-  function ve(a, e) { var o; let t = $(e); if (!t.find(".download-circle").length) { let n = (o = a.percentDone) != null ? o : 0, r = Lampa.Template.get("download-circle", { id: a.id, status: n === 1 ? "complete" : "in-progress", progress: 100 * (1 - n) }); t.find(".card__vote").after(r) } }
+  function Je(a, e) { var t = w.getMovie(a);
+    t && ve(t, e) }
 
-  function Je(a, e) { let t = w.getMovie(a); t && ve(t, e) }
-
-  function ye(a) { var o; let e = document.querySelectorAll(`.download-circle-in-progress-${a.id}`); if (!e.length) return; let t = (o = a.percentDone) != null ? o : 0; e.forEach(function(n) { if (t === 1) { let r = n.parentElement; n.remove(), ve(a, r) } else { let r = n.querySelector(".download-circle__partial_in-progress"); r == null || r.setAttribute("stroke-dashoffset", `${100*(1-t)}`) } }) }
+  function ye(a) { var o; var e = document.querySelectorAll(".download-circle-in-progress-" + a.id); if (!e.length) return; var t = (o = a.percentDone) != null ? o : 0;
+    e.forEach(function(n) { if (t === 1) { var r = n.parentElement;
+        n.remove();
+        ve(a, r) } else { var r = n.querySelector(".download-circle__partial_in-progress");
+        r == null || r.setAttribute("stroke-dashoffset", "" + (100 * (1 - t))) } }) }
 
   function Le() {
-    Lampa.Template.add("download-circle", _e), $("body").append(`<style>${be}</style>`), Lampa.Listener.follow("line", function(a) { var e, t; if (a.type === "append")
-        for (let o of a.items)(e = o == null ? void 0 : o.data) != null && e.id && Je((t = o == null ? void 0 : o.data) == null ? void 0 : t.id, o.card) })
+    Lampa.Template.add("download-circle", _e);
+    $("body").append("<style>" + be + "</style>");
+    Lampa.Listener.follow("line", function(a) { var e, t; if (a.type === "append")
+        for (var o = 0; o < a.items.length; o++) { var item = a.items[o];
+          (e = item == null ? void 0 : item.data) != null && e.id && Je((t = item == null ? void 0 : item.data) == null ? void 0 : t.id, item.card) } });
   }
 
-  var Te = `<div class="downloads-tab__item downloads-tab__item--mini selector {status}" data-id="{id}">
-  <div class="downloads-tab__main">
-    <div class="downloads-tab__file"><span data-field="torrentName">{torrentName}</span></div>
+  var Te = '<div class="downloads-tab__item downloads-tab__item--mini selector {status}" data-id="{id}">\n  <div class="downloads-tab__main">\n    <div class="downloads-tab__file"><span data-field="torrentName">{torrentName}</span></div>\n\n    <div class="downloads-tab__footer">\n      <div class="downloads-tab__meta-top">\n        <div class="downloads-tab__meta-left">\n          <span class="downloads-tab__meta-text" data-field="percent">{percent}</span>\n          <span> • </span>\n          <span class="downloads-tab__meta-text" data-field="seeders">{seeders}</span>\n        </div>\n        <span class="downloads-tab__speed"><span data-field="speed">{speed}</span></span>\n      </div>\n\n      <div class="downloads-tab__progress-wrapper">\n        <div class="downloads-tab__progress-fill" style="width: {percent};"></div>\n      </div>\n\n      <div class="downloads-tab__meta-bottom">\n        <div class="downloads-tab__sizes">\n          <span class="downloads-tab__meta-downloaded" data-field="downloadedSize">{downloadedSize}</span>\n          <span class="downloads-tab__meta-slash"> / </span>\n          <span class="downloads-tab__meta-total" data-field="totalSize">{totalSize}</span>\n        </div>\n        <span class="downloads-tab__eta" data-field="eta">{eta}</span>\n      </div>\n    </div>\n  </div>\n</div>\n';
 
-    <div class="downloads-tab__footer">
-      <div class="downloads-tab__meta-top">
-        <div class="downloads-tab__meta-left">
-          <span class="downloads-tab__meta-text" data-field="percent">{percent}</span>
-          <span> • </span>
-          <span class="downloads-tab__meta-text" data-field="seeders">{seeders}</span>
-        </div>
-        <span class="downloads-tab__speed"><span data-field="speed">{speed}</span></span>
-      </div>
+  var Se = '<div class="downloads-tab__item selector {status}" data-id="{id}">\n  <div class="downloads-tab__poster" style="background-image: url(\'{poster}\')"></div>\n  <div class="downloads-tab__main">\n    <div class="downloads-tab__movie"><span data-field="title">{title}</span></div>\n    <div class="downloads-tab__year"><span data-field="year">{year}</span></div>\n    <div class="downloads-tab__file"><span data-field="fileName">{fileName}</span></div>\n\n    <div class="downloads-tab__footer">\n      <div class="downloads-tab__meta-top">\n        <div class="downloads-tab__meta-left">\n          <span class="downloads-tab__meta-text" data-field="percent">{percent}</span>\n          <span> • </span>\n          <span class="downloads-tab__meta-text" data-field="seeders">{seeders}</span>\n        </div>\n        <span class="downloads-tab__speed"><span data-field="speed">{speed}</span></span>\n      </div>\n\n      <div class="downloads-tab__progress-wrapper">\n        <div class="downloads-tab__progress-fill" style="width: {percent};"></div>\n      </div>\n\n      <div class="downloads-tab__meta-bottom">\n        <div class="downloads-tab__sizes">\n          <span class="downloads-tab__meta-downloaded" data-field="downloadedSize">{downloadedSize}</span>\n          <span class="downloads-tab__meta-slash"> / </span>\n          <span class="downloads-tab__meta-total" data-field="totalSize">{totalSize}</span>\n        </div>\n        <span class="downloads-tab__eta" data-field="eta">{eta}</span>\n      </div>\n    </div>\n  </div>\n</div>\n';
 
-      <div class="downloads-tab__progress-wrapper">
-        <div class="downloads-tab__progress-fill" style="width: {percent};"></div>
-      </div>
+  var Ie = '<div class="downloads-tab__list d-updatable">\n  <div class="downloads-tab__header-title-wrapper">\n    <div class="downloads-tab__header-title">{server}</div>\n    <div class="downloads-tab__header-size">{freeSpace}</div>\n  </div>\n  <div class="downloads-tab__rows"></div>\n</div>\n';
 
-      <div class="downloads-tab__meta-bottom">
-        <div class="downloads-tab__sizes">
-          <span class="downloads-tab__meta-downloaded" data-field="downloadedSize">{downloadedSize}</span>
-          <span class="downloads-tab__meta-slash"> / </span>
-          <span class="downloads-tab__meta-total" data-field="totalSize">{totalSize}</span>
-        </div>
-        <span class="downloads-tab__eta" data-field="eta">{eta}</span>
-      </div>
-    </div>
-  </div>
-</div>
-`;
+  var xe = '@charset "UTF-8";\n.downloads-tab__list {\n  --color-text-primary: #dbdbdb;\n  --color-text-muted: #b1b1b1;\n  --fs-header: 1.4em;\n  --fs-title: 1.6em;\n  --fs-file: 1em;\n  --fs-body: 1.2em;\n  --sp-after-title: 0.3em;\n  --sp-between-text-and-progress: 0.5em;\n  --accent-violet: #b67dff;\n  --accent-violet-light: #c698ff;\n  --card-bg-color: 24, 24, 24;\n  --card-bg-alpha: 0.8;\n  --card-bg-alpha-hover: 0.6;\n  --poster-scale-hover: 1.04;\n  color: var(--color-text-muted);\n  padding: 1em;\n}\n.downloads-tab__list .downloads-tab__header-title-wrapper {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 1em;\n  font-size: var(--fs-header);\n  font-weight: 700;\n  color: var(--color-text-primary);\n}\n.downloads-tab__list .downloads-tab__rows {\n  display: flex;\n  gap: 1em;\n  align-items: flex-start;\n}\n.downloads-tab__col {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n  gap: 1em;\n}\n.downloads-tab__group {\n  display: flex;\n  flex-direction: column;\n  gap: 0.6em;\n}\n.downloads-tab__group > .downloads-tab__item:first-child {\n  border-bottom-left-radius: 0;\n  border-bottom-right-radius: 0;\n}\n.downloads-tab__group > .downloads-tab__item--mini {\n  border-top-left-radius: 0;\n  border-top-right-radius: 0;\n  border-bottom-left-radius: 0;\n  border-bottom-right-radius: 0;\n}\n.downloads-tab__group > .downloads-tab__item--mini:last-child {\n  border-bottom-left-radius: 0.6em;\n  border-bottom-right-radius: 0.6em;\n}\n.downloads-tab__item {\n  display: grid;\n  grid-template-columns: 9em 1fr;\n  gap: 1em;\n  padding: 0.8em;\n  border-radius: 0.6em;\n  background: rgba(var(--card-bg-color), var(--card-bg-alpha));\n  box-shadow: 0 0.5em 1.2em rgba(0, 0, 0, 0.5);\n  transition: background 0.15s ease, box-shadow 0.15s ease;\n  outline: 1px solid rgba(255, 255, 255, 0.062745098);\n}\n.downloads-tab__item:hover, .downloads-tab__item.focus, .downloads-tab__item:focus-visible {\n  outline: 3px solid var(--accent-violet);\n  background: rgba(var(--card-bg-color), var(--card-bg-alpha-hover));\n}\n.downloads-tab__item.downloading .downloads-tab__meta-left {\n  display: inline;\n}\n.downloads-tab__item.completed .downloads-tab__meta-downloaded,\n.downloads-tab__item.completed .downloads-tab__meta-slash {\n  display: none;\n}\n.downloads-tab__item:hover .downloads-tab__poster, .downloads-tab__item.focus .downloads-tab__poster, .downloads-tab__item:focus-visible .downloads-tab__poster {\n  transform: scale(var(--poster-scale-hover));\n}\n.downloads-tab__item--mini {\n  grid-template-columns: 1fr;\n  padding-left: 10.8em;\n}\n.downloads-tab__item--mini .downloads-tab__main {\n  min-height: unset;\n  grid-template-rows: auto auto;\n}\n.downloads-tab__poster {\n  position: relative;\n  width: 9em;\n  height: 13.5em;\n  border-radius: 0.6em;\n  overflow: hidden;\n  background-color: rgb(35, 35, 35);\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  transition: transform 0.2s ease;\n}\n.downloads-tab__poster::after {\n  content: "POSTER";\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  font-size: 1em;\n  font-weight: 600;\n  letter-spacing: 0.05em;\n  color: rgba(255, 255, 255, 0.08);\n  pointer-events: none;\n  user-select: none;\n}\n.downloads-tab__main {\n  display: grid;\n  grid-template-columns: 1fr;\n  grid-template-rows: auto auto 1fr auto;\n  min-height: 13.5em;\n}\n.downloads-tab__movie {\n  font-size: var(--fs-title);\n  font-weight: 700;\n  color: var(--color-text-primary);\n  line-height: 1.2;\n  margin-bottom: var(--sp-after-title);\n  word-break: break-word;\n  overflow-wrap: break-word;\n}\n.downloads-tab__year {\n  color: var(--color-text-muted);\n  margin-bottom: 0.8em;\n  font-weight: bold;\n}\n.downloads-tab__file {\n  font-size: var(--fs-file);\n  font-weight: 500;\n  color: #727272;\n  margin-bottom: var(--sp-between-text-and-progress);\n  overflow-wrap: anywhere;\n}\n.downloads-tab__footer {\n  align-self: end;\n  display: grid;\n  row-gap: var(--sp-between-text-and-progress);\n  font-size: var(--fs-body);\n  font-weight: 500;\n  color: var(--color-text-muted);\n}\n.downloads-tab__meta-top {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 0.8em;\n}\n.downloads-tab__meta-left {\n  display: none;\n  white-space: nowrap;\n}\n.downloads-tab__speed {\n  font-weight: 600;\n  color: var(--accent-violet);\n}\n.downloads-tab__progress-wrapper {\n  height: 0.5em;\n  border-radius: 10px;\n  overflow: hidden;\n  background: #2a2a2a;\n}\n.downloads-tab__progress-fill {\n  height: 100%;\n  background: linear-gradient(90deg, var(--accent-violet), var(--accent-violet-light));\n  will-change: width;\n  transition: width 0.25s ease;\n}\n.downloads-tab__meta-bottom {\n  display: grid;\n  grid-template-columns: 1fr auto;\n  align-items: center;\n  column-gap: 0.8em;\n}\n.downloads-tab__sizes {\n  white-space: nowrap;\n}\n.downloads-tab__eta {\n  font-weight: 600;\n  color: var(--color-text-primary);\n  white-space: nowrap;\n}\n.downloads-tab__meta-total {\n  color: var(--accent-violet);\n}\n@media (orientation: portrait) {\n  .downloads-tab__list .downloads-tab__rows {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .downloads-tab__list .downloads-tab__header-title-wrapper {\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 0.3em;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  .downloads-tab__item, .downloads-tab__poster, .downloads-tab__progress-fill {\n    transition: none;\n  }\n}';
 
-  var Se = `<div class="downloads-tab__item selector {status}" data-id="{id}">
-  <div class="downloads-tab__poster" style="background-image: url('{poster}')"></div>
-  <div class="downloads-tab__main">
-    <div class="downloads-tab__movie"><span data-field="title">{title}</span></div>
-    <div class="downloads-tab__year"><span data-field="year">{year}</span></div>
-    <div class="downloads-tab__file"><span data-field="fileName">{fileName}</span></div>
-
-    <div class="downloads-tab__footer">
-      <div class="downloads-tab__meta-top">
-        <div class="downloads-tab__meta-left">
-          <span class="downloads-tab__meta-text" data-field="percent">{percent}</span>
-          <span> • </span>
-          <span class="downloads-tab__meta-text" data-field="seeders">{seeders}</span>
-        </div>
-        <span class="downloads-tab__speed"><span data-field="speed">{speed}</span></span>
-      </div>
-
-      <div class="downloads-tab__progress-wrapper">
-        <div class="downloads-tab__progress-fill" style="width: {percent};"></div>
-      </div>
-
-      <div class="downloads-tab__meta-bottom">
-        <div class="downloads-tab__sizes">
-          <span class="downloads-tab__meta-downloaded" data-field="downloadedSize">{downloadedSize}</span>
-          <span class="downloads-tab__meta-slash"> / </span>
-          <span class="downloads-tab__meta-total" data-field="totalSize">{totalSize}</span>
-        </div>
-        <span class="downloads-tab__eta" data-field="eta">{eta}</span>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-  var Ie = `<div class="downloads-tab__list d-updatable">
-  <div class="downloads-tab__header-title-wrapper">
-    <div class="downloads-tab__header-title">{server}</div>
-    <div class="downloads-tab__header-size">{freeSpace}</div>
-  </div>
-  <div class="downloads-tab__rows"></div>
-</div>
-`;
-
-  var xe = `@charset "UTF-8";
-.downloads-tab__list {
-  --color-text-primary: #dbdbdb;
-  --color-text-muted: #b1b1b1;
-  --fs-header: 1.4em;
-  --fs-title: 1.6em;
-  --fs-file: 1em;
-  --fs-body: 1.2em;
-  --sp-after-title: 0.3em;
-  --sp-between-text-and-progress: 0.5em;
-  --accent-violet: #b67dff;
-  --accent-violet-light: #c698ff;
-  --card-bg-color: 24, 24, 24;
-  --card-bg-alpha: 0.8;
-  --card-bg-alpha-hover: 0.6;
-  --poster-scale-hover: 1.04;
-  color: var(--color-text-muted);
-  padding: 1em;
-}
-.downloads-tab__list .downloads-tab__header-title-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1em;
-  font-size: var(--fs-header);
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-.downloads-tab__list .downloads-tab__rows {
-  display: flex;
-  gap: 1em;
-  align-items: flex-start;
-}
-.downloads-tab__col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-}
-.downloads-tab__group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6em;
-}
-.downloads-tab__group > .downloads-tab__item:first-child {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.downloads-tab__group > .downloads-tab__item--mini {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.downloads-tab__group > .downloads-tab__item--mini:last-child {
-  border-bottom-left-radius: 0.6em;
-  border-bottom-right-radius: 0.6em;
-}
-.downloads-tab__item {
-  display: grid;
-  grid-template-columns: 9em 1fr;
-  gap: 1em;
-  padding: 0.8em;
-  border-radius: 0.6em;
-  background: rgba(var(--card-bg-color), var(--card-bg-alpha));
-  box-shadow: 0 0.5em 1.2em rgba(0, 0, 0, 0.5);
-  transition: background 0.15s ease, box-shadow 0.15s ease;
-  outline: 1px solid rgba(255, 255, 255, 0.062745098);
-}
-.downloads-tab__item:hover, .downloads-tab__item.focus, .downloads-tab__item:focus-visible {
-  outline: 3px solid var(--accent-violet);
-  background: rgba(var(--card-bg-color), var(--card-bg-alpha-hover));
-}
-.downloads-tab__item.downloading .downloads-tab__meta-left {
-  display: inline;
-}
-.downloads-tab__item.completed .downloads-tab__meta-downloaded,
-.downloads-tab__item.completed .downloads-tab__meta-slash {
-  display: none;
-}
-.downloads-tab__item:hover .downloads-tab__poster, .downloads-tab__item.focus .downloads-tab__poster, .downloads-tab__item:focus-visible .downloads-tab__poster {
-  transform: scale(var(--poster-scale-hover));
-}
-.downloads-tab__item--mini {
-  grid-template-columns: 1fr;
-  padding-left: 10.8em;
-}
-.downloads-tab__item--mini .downloads-tab__main {
-  min-height: unset;
-  grid-template-rows: auto auto;
-}
-.downloads-tab__poster {
-  position: relative;
-  width: 9em;
-  height: 13.5em;
-  border-radius: 0.6em;
-  overflow: hidden;
-  background-color: rgb(35, 35, 35);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  transition: transform 0.2s ease;
-}
-.downloads-tab__poster::after {
-  content: "POSTER";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1em;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-  user-select: none;
-}
-.downloads-tab__main {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr auto;
-  min-height: 13.5em;
-}
-.downloads-tab__movie {
-  font-size: var(--fs-title);
-  font-weight: 700;
-  color: var(--color-text-primary);
-  line-height: 1.2;
-  margin-bottom: var(--sp-after-title);
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-.downloads-tab__year {
-  color: var(--color-text-muted);
-  margin-bottom: 0.8em;
-  font-weight: bold;
-}
-.downloads-tab__file {
-  font-size: var(--fs-file);
-  font-weight: 500;
-  color: #727272;
-  margin-bottom: var(--sp-between-text-and-progress);
-  overflow-wrap: anywhere;
-}
-.downloads-tab__footer {
-  align-self: end;
-  display: grid;
-  row-gap: var(--sp-between-text-and-progress);
-  font-size: var(--fs-body);
-  font-weight: 500;
-  color: var(--color-text-muted);
-}
-.downloads-tab__meta-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.8em;
-}
-.downloads-tab__meta-left {
-  display: none;
-  white-space: nowrap;
-}
-.downloads-tab__speed {
-  font-weight: 600;
-  color: var(--accent-violet);
-}
-.downloads-tab__progress-wrapper {
-  height: 0.5em;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #2a2a2a;
-}
-.downloads-tab__progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-violet), var(--accent-violet-light));
-  will-change: width;
-  transition: width 0.25s ease;
-}
-.downloads-tab__meta-bottom {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  column-gap: 0.8em;
-}
-.downloads-tab__sizes {
-  white-space: nowrap;
-}
-.downloads-tab__eta {
-  font-weight: 600;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-}
-.downloads-tab__meta-total {
-  color: var(--accent-violet);
-}
-@media (orientation: portrait) {
-  .downloads-tab__list .downloads-tab__rows {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .downloads-tab__list .downloads-tab__header-title-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.3em;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .downloads-tab__item, .downloads-tab__poster, .downloads-tab__progress-fill {
-    transition: none;
-  }
-}`;
-
-  var Ee = `<li class="menu__item selector">
-    <div class="menu__ico">{icon}</div>
-    <div class="menu__text">{text}</div>
-</li>
-`;
+  var Ee = '<li class="menu__item selector">\n    <div class="menu__ico">{icon}</div>\n    <div class="menu__text">{text}</div>\n</li>\n';
 
   function tt(a) {
-    let e = new Map;
-    return a.forEach((t, o) => {
-      let n = t.id > 0 ? String(t.id) : `solo_${t.externalId}`;
+    var e = new Map();
+    return a.forEach(function(t, o) {
+      var n = t.id > 0 ? String(t.id) : "solo_" + t.externalId;
       e.has(n) || e.set(n, { torrents: [], lastIndex: o });
-      let r = e.get(n);
-      r.torrents.push(t), r.lastIndex = Math.max(r.lastIndex, o)
-    }), [...e.values()].sort((t, o) => t.lastIndex - o.lastIndex).map(t => [...t.torrents].sort((o, n) => n.totalSize - o.totalSize))
+      var r = e.get(n);
+      r.torrents.push(t);
+      r.lastIndex = Math.max(r.lastIndex, o);
+    }), Array.from(e.values()).sort(function(t, o) { return t.lastIndex - o.lastIndex }).map(function(t) { return Array.from(t.torrents).sort(function(o, n) { return n.totalSize - o.totalSize }) });
   }
 
-  var j = class {
-    constructor() {
+  var j = function() {
+    function j() {
       this.html = $("<div></div>");
-      this.lastFocusedElement = null
+      this.lastFocusedElement = null;
     }
-    create() {
-      m.isConnected || _.start(), this.scroll = new Lampa.Scroll({ mask: !0, over: !0, step: 200 });
-      let e = w.getData(),
+    j.prototype.create = function() {
+      m.isConnected || _.start();
+      this.scroll = new Lampa.Scroll({ mask: !0, over: !0, step: 200 });
+      var e = w.getData(),
         t = m.isConnected ? Lampa.Lang.translate("downloads-tab.connected") + " (" + m.getClient().url + ")" : Lampa.Lang.translate("downloads-tab.disconnected"),
         o = $(Lampa.Template.get("downloads-tab", { server: t, freeSpace: Lampa.Lang.translate("downloads-tab.freespace") + L(e.info.freeSpace) }));
       this.$rows = o.find(".downloads-tab__rows");
-      let n = window.innerWidth <= window.innerHeight,
+      var n = window.innerWidth <= window.innerHeight,
         r = tt(e.torrents);
-      if (n) r.forEach(s => this.$rows.append(this.buildElement(s)));
-      else {
-        let s = [$('<div class="downloads-tab__col"></div>'), $('<div class="downloads-tab__col"></div>')];
-        this.$rows.append(s[0]).append(s[1]);
-        let i = [0, 0];
-        r.forEach(c => { let g = i[0] <= i[1] ? 0 : 1; i[g] += c.length, s[g].append(this.buildElement(c)) })
+      if (n) {
+        for (var s = 0; s < r.length; s++) {
+          this.$rows.append(this.buildElement(r[s]));
+        }
+      } else {
+        var cols = [$('<div class="downloads-tab__col"></div>'), $('<div class="downloads-tab__col"></div>')];
+        this.$rows.append(cols[0]).append(cols[1]);
+        var counts = [0, 0];
+        for (var s = 0; s < r.length; s++) {
+          var group = r[s];
+          var idx = counts[0] <= counts[1] ? 0 : 1;
+          counts[idx] += group.length;
+          cols[idx].append(this.buildElement(group));
+        }
       }
-      this.scroll.minus(), this.scroll.append(o.get(0)), this.html.append(this.scroll.render())
-    }
-    buildElement(e) {
-      let t = e.map((o, n) => {
-        let r = v(o);
-        return $(Lampa.Template.get(n === 0 ? "downloads-row" : "downloads-mini-row", r)).on("hover:focus", function(s) { this.lastFocusedElement = s.currentTarget, this.scroll.update(s.currentTarget, !0) }.bind(this)).on("hover:enter", function() { C("downloads-tab", o, void 0, function(s) { this.removeTorrentFromUI(s) }.bind(this)) }.bind(this)).on("hover:long", function() { S("downloads-tab", o, void 0, function(s) { this.removeTorrentFromUI(s) }.bind(this)) }.bind(this))
+      this.scroll.minus();
+      this.scroll.append(o.get(0));
+      this.html.append(this.scroll.render());
+    };
+    j.prototype.buildElement = function(e) {
+      var _this = this;
+      var t = e.map(function(o, n) {
+        var r = v(o);
+        return $(Lampa.Template.get(n === 0 ? "downloads-row" : "downloads-mini-row", r)).on("hover:focus", function(s) { _this.lastFocusedElement = s.currentTarget;
+          _this.scroll.update(s.currentTarget, !0) }).on("hover:enter", function() { C("downloads-tab", o, void 0, function(s) { _this.removeTorrentFromUI(s) }) }).on("hover:long", function() { S("downloads-tab", o, void 0, function(s) { _this.removeTorrentFromUI(s) }) });
       });
-      if (e.length > 1) { let o = $('<div class="downloads-tab__group"></div>'); return t.forEach(n => o.append(n)), o }
-      return t[0]
-    }
-    removeTorrentFromUI(e) {
-      let t = `${e.id}_${e.externalId}`,
-        o = this.html.find(`.downloads-tab__item[data-id="${t}"]`);
+      if (e.length > 1) { var o = $('<div class="downloads-tab__group"></div>');
+        t.forEach(function(n) { return o.append(n) });
+        return o }
+      return t[0];
+    };
+    j.prototype.removeTorrentFromUI = function(e) {
+      var t = e.id + "_" + e.externalId,
+        o = this.html.find('.downloads-tab__item[data-id="' + t + '"]');
       if (!o.length) return;
-      let n = o.closest(".downloads-tab__group"),
+      var n = o.closest(".downloads-tab__group"),
         r = n.length > 0,
         s = r && n.find(".downloads-tab__item").first().is(o),
         i = o.nextAll(".downloads-tab__item").first();
-      if (i.length || (i = o.prevAll(".downloads-tab__item").first()), !i.length) { let c = r ? n : o; i = c.nextAll(".downloads-tab__item, .downloads-tab__group").first(), i.length || (i = c.prevAll(".downloads-tab__item, .downloads-tab__group").first()) }
-      if (o.remove(), r) { let c = n.find(".downloads-tab__item"); if (c.length === 0) n.remove();
-        else if (s) { let g = c.first(),
+      if (i.length || (i = o.prevAll(".downloads-tab__item").first()), !i.length) { var c = r ? n : o;
+        i = c.nextAll(".downloads-tab__item, .downloads-tab__group").first();
+        i.length || (i = c.prevAll(".downloads-tab__item, .downloads-tab__group").first()) }
+      if (o.remove(), r) { var c2 = n.find(".downloads-tab__item"); if (c2.length === 0) n.remove();
+        else if (s) { var g = c2.first(),
             f = g.attr("data-id") || "",
             E = f.substring(f.indexOf("_") + 1),
-            ae = w.getData().torrents.find(Y => String(Y.externalId) === E);
-          if (ae) { let Y = v(ae),
+            ae = w.getData().torrents.find(function(Y) { return String(Y.externalId) === E });
+          if (ae) { var Y = v(ae),
               oe = $(Lampa.Template.get("downloads-row", Y));
-            g.attr("class", oe.attr("class") || ""), g.empty().append(oe.contents()) } } }
-      if (Lampa.Controller.collectionSet(this.scroll.render()), i != null && i.length) { let c = i.is(".downloads-tab__item") ? i.get(0) : i.find(".downloads-tab__item").first().get(0); c && (Lampa.Controller.collectionFocus(c, this.scroll.render()), this.lastFocusedElement = c) }
-    }
-    render(e = !1) { return this.html }
-    start() {
+            g.attr("class", oe.attr("class") || "");
+            g.empty().append(oe.contents()); } } }
+      if (Lampa.Controller.collectionSet(this.scroll.render()), i != null && i.length) { var c3 = i.is(".downloads-tab__item") ? i.get(0) : i.find(".downloads-tab__item").first().get(0);
+        c3 && (Lampa.Controller.collectionFocus(c3, this.scroll.render()), this.lastFocusedElement = c3) }
+    };
+    j.prototype.render = function(e) { if (e === void 0) e = !1; return this.html };
+    j.prototype.start = function() {
+      var _this = this;
       Lampa.Controller.add("downloads-tab", {
-        toggle: function() { var e; Lampa.Controller.collectionSet(this.scroll.render()), Lampa.Controller.collectionFocus((e = this.lastFocusedElement) != null ? e : !1, this.scroll.render()) }.bind(this),
+        toggle: function() { var e;
+          Lampa.Controller.collectionSet(_this.scroll.render());
+          Lampa.Controller.collectionFocus((e = _this.lastFocusedElement) != null ? e : !1, _this.scroll.render()) },
         left: function() { return Navigator.canmove("left") ? Navigator.move("left") : Lampa.Controller.toggle("menu") },
         right: function() { return Navigator.move("right") },
         up: function() { return Navigator.canmove("up") ? Navigator.move("up") : Lampa.Controller.toggle("head") },
         down: function() { return Navigator.canmove("down") && Navigator.move("down") },
         back: function() { return Lampa.Activity.backward() }
-      }), Lampa.Controller.toggle("downloads-tab")
-    }
-    build(e) {}
-    bind(e) {}
-    empty() {}
-    next() {}
-    append(e, t) {}
-    limit() {}
-    refresh() {}
-    pause() {}
-    stop() {}
-    destroy() { this.scroll.destroy(), this.html.remove() }
-  };
+      });
+      Lampa.Controller.toggle("downloads-tab");
+    };
+    j.prototype.build = function(e) {};
+    j.prototype.bind = function(e) {};
+    j.prototype.empty = function() {};
+    j.prototype.next = function() {};
+    j.prototype.append = function(e, t) {};
+    j.prototype.limit = function() {};
+    j.prototype.refresh = function() {};
+    j.prototype.pause = function() {};
+    j.prototype.stop = function() {};
+    j.prototype.destroy = function() { this.scroll.destroy();
+      this.html.remove() };
+    return j;
+  }();
 
   function Ae(a) {
-    let e = v(a),
-      t = $(document).find(`.downloads-tab__item[data-id="${e.id}"]`);
-    t.length && (t.removeClass("downloading completed paused").addClass(e.status), t.find(".downloads-tab__progress-fill").css("width", e.percent), t.find(".downloads-tab__poster").css("background-image", `url(${e.poster})`), Object.keys(e).forEach(function(o) { t.find(`[data-field="${o}"]`).each(function() { $(this).text(e[o]) }) }))
+    var e = v(a),
+      t = $(document).find('.downloads-tab__item[data-id="' + e.id + '"]');
+    t.length && (t.removeClass("downloading completed paused").addClass(e.status), t.find(".downloads-tab__progress-fill").css("width", e.percent), t.find(".downloads-tab__poster").css("background-image", "url(" + e.poster + ")"), Object.keys(e).forEach(function(o) { t.find('[data-field="' + o + '"]').each(function() { $(this).text(e[o]) }) }));
   }
 
   function De() {
-    Lampa.Template.add("menu-button", Ee), Lampa.Template.add("downloads-row", Se), Lampa.Template.add("downloads-mini-row", Te), Lampa.Template.add("downloads-tab", Ie), $("body").append(`<style>${xe}</style>`), Lampa.Component.add("downloads-tab", j);
-    let a = Lampa.Lang.translate("downloads"),
+    Lampa.Template.add("menu-button", Ee);
+    Lampa.Template.add("downloads-row", Se);
+    Lampa.Template.add("downloads-mini-row", Te);
+    Lampa.Template.add("downloads-tab", Ie);
+    $("body").append("<style>" + xe + "</style>");
+    Lampa.Component.add("downloads-tab", j);
+    var a = Lampa.Lang.translate("downloads"),
       e = $(Lampa.Template.get("menu-button", { icon: y, text: a }));
-    e.on("hover:enter", function() { Lampa.Activity.push({ url: "", title: a, component: "downloads-tab", page: 1 }) }), $(".menu .menu__list").eq(0).append(e)
+    e.on("hover:enter", function() { Lampa.Activity.push({ url: "", title: a, component: "downloads-tab", page: 1 }) });
+    $(".menu .menu__list").eq(0).append(e);
   }
 
   var at = 10,
-    u = class u {
-      static start() {
+    u = {
+      consecutiveErrors: 0,
+      wasConnected: null,
+      subscription: null,
+      start: function() {
         var o;
-        let e = Lampa.Storage.field(J),
+        var e = Lampa.Storage.field(J),
           t = (o = H[e]) != null ? o : H[0];
-        u.subscription && clearInterval(u.subscription), u.consecutiveErrors = 0, u.wasConnected = null, u.subscription = setInterval(u.tick, t * 1e3)
-      }
-      static tick() {
+        this.subscription && clearInterval(this.subscription);
+        this.consecutiveErrors = 0;
+        this.wasConnected = null;
+        this.subscription = setInterval(this.tick.bind(this), t * 1e3);
+      },
+      tick: function() {
         return l(this, null, function*() {
           try {
-            let e = yield m.getClient().getData();
+            var e = yield m.getClient().getData();
             if (e && e.torrents) {
               yield w.setData(e);
-              if ($(".d-updatable").length)
-                for (let o of e.torrents) we(o), ye(o), Ae(o);
-              let t = m.getClient().url;
-              u.consecutiveErrors = 0, m.isConnected = !0, u.wasConnected !== !0 && (h("Connected to " + t), Lampa.Noty.show(Lampa.Lang.translate("background-worker.connection-success") + ": " + t), u.wasConnected = !0)
+              if ($(".d-updatable").length) {
+                for (var o = 0; o < e.torrents.length; o++) {
+                  we(e.torrents[o]);
+                  ye(e.torrents[o]);
+                  Ae(e.torrents[o]);
+                }
+              }
+              var t = m.getClient().url;
+              this.consecutiveErrors = 0;
+              m.isConnected = !0;
+              if (this.wasConnected !== !0) {
+                h("Connected to " + t);
+                Lampa.Noty.show(Lampa.Lang.translate("background-worker.connection-success") + ": " + t);
+                this.wasConnected = !0;
+              }
             }
           } catch (e) {
-            h("Error:", e), m.isConnected = !1, u.consecutiveErrors++, u.wasConnected !== !1 && (Lampa.Noty.show(Lampa.Lang.translate("background-worker.error-detected")), u.wasConnected = !1), u.consecutiveErrors > at && (clearInterval(u.subscription), h("Stopping background worker due to too many consecutive errors"))
+            h("Error:", e);
+            m.isConnected = !1;
+            this.consecutiveErrors++;
+            if (this.wasConnected !== !1) {
+              Lampa.Noty.show(Lampa.Lang.translate("background-worker.error-detected"));
+              this.wasConnected = !1;
+            }
+            if (this.consecutiveErrors > at) {
+              clearInterval(this.subscription);
+              h("Stopping background worker due to too many consecutive errors");
+            }
           }
-        })
+        });
       }
     };
-  u.consecutiveErrors = 0, u.wasConnected = null;
   var _ = u;
 
-  var J = `${d.component}.interval`,
-    B = `${d.component}.default-action`,
-    Q = `${d.component}.allow-multiple-marks`,
-    K = `${d.component}.poster-quality`,
-    I = `${d.component}.server.url`,
-    Z = `${d.component}.server.login`,
-    X = `${d.component}.server.password`,
-    ee = `${d.component}.server.type`,
-    te = `${d.component}.jellyfin.separate-movies-tv`,
-    P = `${d.component}.jellyfin.subfolder`,
-    N = `${d.component}.jellyfin.include-year`,
-    k = `${d.component}.jellyfin.include-tmdbid`,
+  var J = d.component + ".interval",
+    B = d.component + ".default-action",
+    Q = d.component + ".allow-multiple-marks",
+    K = d.component + ".poster-quality",
+    I = d.component + ".server.url",
+    Z = d.component + ".server.login",
+    X = d.component + ".server.password",
+    ee = d.component + ".server.type",
+    te = d.component + ".jellyfin.separate-movies-tv",
+    P = d.component + ".jellyfin.subfolder",
+    N = d.component + ".jellyfin.include-year",
+    k = d.component + ".jellyfin.include-tmdbid",
     H = [2, 5, 10, 30, 60, 5 * 60, 15 * 60],
     q = ["w200", "w342", "w500", "w780", "w1280"];
 
   function Ce() {
-    Lampa.SettingsApi.addComponent({ component: d.component, name: d.name, icon: y }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: J, type: "select", placeholder: "2s", values: ["2s", "5s", "10s", "30s", "1m", "5m", "15m"], default: 0 }, field: { name: "Update interval" }, onChange: function(a) { Lampa.Settings.update(), _.start() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: B, type: "select", placeholder: "", values: ["Open actions menu", "Play if done, Resume if in progress", "Play", "Resume / Pause download"], default: 0 }, field: { name: "Default press action", description: "Long press always opens the actions menu." }, onChange: function(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: Q, type: "trigger", default: !1 }, field: { name: "Keep torrents screen open after download", description: "After selecting a torrent, the app does not return back and keeps the add screen open, allowing you to add multiple torrents in a row." }, onChange: function(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: K, type: "select", placeholder: "", values: ["Low", "Medium", "High", "Very High", "Ultra"], default: 1 }, field: { name: "Poster quality" }, onChange: function(a) { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: "transmission-title", type: "title", default: "" }, field: { name: "Server settings:" } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: ee, type: "select", placeholder: "", values: ["Transmission", "qBitTorrent"], default: "0" }, field: { name: "Torrent Client" }, onChange: function(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: I, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Url" }, onChange: function(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: Z, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Login" }, onChange: function(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: X, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Password" }, onChange: function(a) { Lampa.Settings.update(), m.reset() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: "jellyfin-title", type: "title", default: "" }, field: { name: "Jellyfin / Plex integration:" } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: te, type: "trigger", default: !1 }, field: { name: "Download movies and TV shows into separate directories" }, onChange: function() { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: P, type: "trigger", default: !1 }, field: { name: "Download into a subfolder with title" }, onChange: function() { Lampa.Storage.field(P) !== !0 && (Lampa.Storage.set(N, !1), Lampa.Storage.set(k, !1)), Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: N, type: "trigger", default: !1 }, field: { name: "Add (year) to folder name" }, onRender: function(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange: function() { Lampa.Settings.update() } }), Lampa.SettingsApi.addParam({ component: d.component, param: { name: k, type: "trigger", default: !1 }, field: { name: "Add [tmdbid-***] to folder name" }, onRender: function(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange: function() { Lampa.Settings.update() } }))
+    Lampa.SettingsApi.addComponent({ component: d.component, name: d.name, icon: y });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: J, type: "select", placeholder: "2s", values: ["2s", "5s", "10s", "30s", "1m", "5m", "15m"], default: 0 }, field: { name: "Update interval" }, onChange: function(a) { Lampa.Settings.update();
+        _.start() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: B, type: "select", placeholder: "", values: ["Open actions menu", "Play if done, Resume if in progress", "Play", "Resume / Pause download"], default: 0 }, field: { name: "Default press action", description: "Long press always opens the actions menu." }, onChange: function(a) { Lampa.Settings.update() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: Q, type: "trigger", default: !1 }, field: { name: "Keep torrents screen open after download", description: "After selecting a torrent, the app does not return back and keeps the add screen open, allowing you to add multiple torrents in a row." }, onChange: function(a) { Lampa.Settings.update() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: K, type: "select", placeholder: "", values: ["Low", "Medium", "High", "Very High", "Ultra"], default: 1 }, field: { name: "Poster quality" }, onChange: function(a) { Lampa.Settings.update() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: "transmission-title", type: "title", default: "" }, field: { name: "Server settings:" } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: ee, type: "select", placeholder: "", values: ["Transmission", "qBitTorrent"], default: "0" }, field: { name: "Torrent Client" }, onChange: function(a) { Lampa.Settings.update();
+        m.reset() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: I, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Url" }, onChange: function(a) { Lampa.Settings.update();
+        m.reset() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: Z, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Login" }, onChange: function(a) { Lampa.Settings.update();
+        m.reset() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: X, type: "input", placeholder: "", values: "", default: "" }, field: { name: "Password" }, onChange: function(a) { Lampa.Settings.update();
+        m.reset() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: "jellyfin-title", type: "title", default: "" }, field: { name: "Jellyfin / Plex integration:" } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: te, type: "trigger", default: !1 }, field: { name: "Download movies and TV shows into separate directories" }, onChange: function() { Lampa.Settings.update() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: P, type: "trigger", default: !1 }, field: { name: "Download into a subfolder with title" }, onChange: function() { if (Lampa.Storage.field(P) !== !0) { Lampa.Storage.set(N, !1);
+        Lampa.Storage.set(k, !1) }
+        Lampa.Settings.update() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: N, type: "trigger", default: !1 }, field: { name: "Add (year) to folder name" }, onRender: function(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange: function() { Lampa.Settings.update() } });
+    Lampa.SettingsApi.addParam({ component: d.component, param: { name: k, type: "trigger", default: !1 }, field: { name: "Add [tmdbid-***] to folder name" }, onRender: function(a) { Lampa.Storage.field(P) === !0 ? a.show() : a.hide() }, onChange: function() { Lampa.Settings.update() } });
   }
 
   var Pe = "lampa:";
 
   function Ne(a) { return Array.isArray(a) ? a : typeof a == "string" ? a.split(",").map(function(e) { return e.trim() }).filter(function(e) { return e }) : [] }
 
-  function O(a) { var n; let t = (n = Ne(a).find(function(r) { return r.startsWith(Pe) })) == null ? void 0 : n.split(":")[1]; if (!t) return 0; let o = parseInt(t, 10); return Number.isFinite(o) && o > 0 ? o : 0 }
+  function O(a) { var n; var t = (n = Ne(a).find(function(r) { return r.startsWith(Pe) })) == null ? void 0 : n.split(":")[1]; if (!t) return 0; var o = parseInt(t, 10); return Number.isFinite(o) && o > 0 ? o : 0 }
 
   function R(a) { return Ne(a).indexOf("tv") !== -1 ? "tv" : "movie" }
 
-  function x(a) { let e = [Pe + a.id]; return ke(a) && e.push("tv"), e }
+  function x(a) { var e = [Pe + a.id]; return ke(a) && e.push("tv"), e }
 
   function M(a) {
-    let e = (a.title || a.name).trim(),
+    var e = (a.title || a.name).trim(),
       t = a.release_year || (a.release_date ? a.release_date.slice(0, 4) : "") || (a.first_air_date ? a.first_air_date.slice(0, 4) : ""),
       o = "";
-    return Lampa.Storage.field(te) && (o += "/" + (ke(a) ? "tv" : "movie")), o += "/" + e, Lampa.Storage.field(N) && t && (o += " (" + t + ")"), Lampa.Storage.field(k) && (o += " [tmdbid-" + a.id + "]"), o
+    if (Lampa.Storage.field(te)) { o += "/" + (ke(a) ? "tv" : "movie") }
+    o += "/" + e;
+    if (Lampa.Storage.field(N) && t) { o += " (" + t + ")" }
+    if (Lampa.Storage.field(k)) { o += " [tmdbid-" + a.id + "]" }
+    return o;
   }
 
   function ke(a) { return Array.isArray(a.seasons) || a.season !== void 0 || a.episode_number !== void 0 }
 
-  var U = class {
-    constructor(e, t, o, n) {
+  var U = function() {
+    function U(e, t, o, n) {
       this.url = e;
       this.login = t || '';
       this.password = o || '';
@@ -1125,41 +752,30 @@
       this.network = AndroidTVNetwork;
       this.isAuthorized = false;
     }
-
-    fetchWithAuth(e, t = {}) {
-      return l(this, arguments, function*(e, t = {}) {
+    U.prototype.fetchWithAuth = function(e, t) {
+      if (t === void 0) t = {};
+      return l(this, arguments, function*(e, t) {
+        if (t === void 0) t = {};
         try {
           if (!this.isAuthorized) {
             yield this.authorize();
           }
-
-          let response = yield this.network.fetchWithTimeout(this.url + e, {
-            ...t,
+          var response = yield this.network.fetchWithTimeout(this.url + e, {
             credentials: 'include',
-            headers: {
-              'Accept': '*/*',
-              ...t.headers
-            }
+            headers: { 'Accept': '*/*' }
           });
-
           if (response.status === 403) {
             this.isAuthorized = false;
             yield this.authorize();
             response = yield this.network.fetchWithTimeout(this.url + e, {
-              ...t,
               credentials: 'include',
-              headers: {
-                'Accept': '*/*',
-                ...t.headers
-              }
+              headers: { 'Accept': '*/*' }
             });
           }
-
           if (!response.ok) {
             throw new Error('HTTP ' + response.status + ': ' + response.statusText);
           }
-
-          const contentType = response.headers.get('content-type');
+          var contentType = response.headers.get('content-type');
           if (contentType && contentType.includes('application/json')) {
             return yield response.json();
           }
@@ -1169,32 +785,25 @@
           throw error;
         }
       });
-    }
-
-    authorize() {
+    };
+    U.prototype.authorize = function() {
       return l(this, null, function*() {
         try {
           if (!this.login || !this.password) {
             throw new Error('Login and password required');
           }
-
-          let formData = new URLSearchParams();
+          var formData = new URLSearchParams();
           formData.append('username', this.login);
           formData.append('password', this.password);
-
-          let response = yield this.network.fetchWithTimeout(this.url + '/api/v2/auth/login', {
+          var response = yield this.network.fetchWithTimeout(this.url + '/api/v2/auth/login', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData.toString(),
             credentials: 'include'
           });
-
           if (!response.ok) {
             throw new Error('Login failed: ' + response.status);
           }
-
           this.cookie = response.headers.get('set-cookie') || undefined;
           this.isAuthorized = true;
           console.log('qBittorrent authorized successfully');
@@ -1204,84 +813,71 @@
           throw error;
         }
       });
-    }
-
-    getTorrents() {
+    };
+    U.prototype.getTorrents = function() {
       return l(this, null, function*() {
         try {
-          let e = yield this.fetchWithAuth('/api/v2/torrents/info');
-          let t = yield this.fetchWithAuth('/api/v2/app/preferences');
+          var e = yield this.fetchWithAuth('/api/v2/torrents/info');
+          var t = yield this.fetchWithAuth('/api/v2/app/preferences');
           return this.formatTorrents(e, t);
         } catch (error) {
           console.error('Get torrents error:', error);
           return [];
         }
       });
-    }
-
-    getData() {
+    };
+    U.prototype.getData = function() {
       return l(this, null, function*() {
         var n;
         try {
-          let e = yield this.fetchWithAuth('/api/v2/sync/maindata');
-          let t = (n = e.torrents) != null ? n : [];
+          var e = yield this.fetchWithAuth('/api/v2/sync/maindata');
+          var t = (n = e.torrents) != null ? n : [];
           t = Array.isArray(t) ? t : Object.keys(t).map(function(r) { return D(A({}, t[r]), { hash: r }) });
-          let o = yield this.fetchWithAuth('/api/v2/app/preferences');
+          var o = yield this.fetchWithAuth('/api/v2/app/preferences');
           return { torrents: this.formatTorrents(t, o), info: { freeSpace: e.server_state.free_space_on_disk || 0 } };
         } catch (error) {
           console.error('Get data error:', error);
           return { torrents: [], info: { freeSpace: 0 } };
         }
       });
-    }
-
-    addTorrent(e, t) {
+    };
+    U.prototype.addTorrent = function(e, t) {
       return l(this, null, function*() {
         try {
-          let url = t.MagnetUri || t.Link;
+          var url = t.MagnetUri || t.Link;
           if (!url) {
             throw new Error('No torrent URL provided');
           }
-
           try {
-            let urlObj = new URL(url);
+            var urlObj = new URL(url);
             urlObj.searchParams.delete('dn');
             url = urlObj.toString();
-          } catch (e) {}
-
-          let formData = new FormData();
+          } catch (e2) {}
+          var formData = new FormData();
           formData.append('urls', url);
           formData.append('sequentialDownload', 'true');
-
-          let tags = x(e);
+          var tags = x(e);
           if (tags && tags.length) {
             formData.append('tags', tags.join(','));
           }
-
-          let savePath = M(e);
+          var savePath = M(e);
           if (savePath) {
             try {
-              let prefs = yield this.fetchWithAuth('/api/v2/app/preferences');
+              var prefs = yield this.fetchWithAuth('/api/v2/app/preferences');
               if (prefs && prefs.save_path) {
-                let basePath = prefs.save_path.replace(/[\\/]+$/g, '');
+                var basePath = prefs.save_path.replace(/[\\/]+$/g, '');
                 formData.append('savepath', basePath + savePath);
               }
             } catch (err) {
               console.warn('Could not get save path:', err);
             }
           }
-
           console.log('Adding torrent:', url, 'with tags:', tags);
-
-          let response = yield this.network.postFormData(this.url + '/api/v2/torrents/add', formData, {
-            credentials: 'include'
-          });
-
+          var response = yield this.network.postFormData(this.url + '/api/v2/torrents/add', formData, { credentials: 'include' });
           if (!response.ok) {
-            let errorText = yield response.text();
+            var errorText = yield response.text();
             throw new Error('Add torrent failed: ' + response.status + ' - ' + errorText);
           }
-
           console.log('Torrent added successfully');
           return true;
         } catch (error) {
@@ -1289,45 +885,41 @@
           throw error;
         }
       });
-    }
-
-    startTorrent(e) {
+    };
+    U.prototype.startTorrent = function(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams();
+        var t = new URLSearchParams();
         t.append('hashes', String(e.externalId));
         yield this.fetchWithAuth('/api/v2/torrents/start', { method: 'POST', body: t });
       });
-    }
-
-    stopTorrent(e) {
+    };
+    U.prototype.stopTorrent = function(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams();
+        var t = new URLSearchParams();
         t.append('hashes', String(e.externalId));
         yield this.fetchWithAuth('/api/v2/torrents/stop', { method: 'POST', body: t });
       });
-    }
-
-    hideTorrent(e) {
+    };
+    U.prototype.hideTorrent = function(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams();
+        var t = new URLSearchParams();
         t.append('hashes', String(e.externalId));
         t.append('tags', 'hide');
         yield this.fetchWithAuth('/api/v2/torrents/addTags', { method: 'POST', body: t });
       });
-    }
-
-    removeTorrent(e, t = !1) {
+    };
+    U.prototype.removeTorrent = function(e, t) {
+      if (t === void 0) t = !1;
       return l(this, null, function*() {
-        let o = new URLSearchParams();
+        var o = new URLSearchParams();
         o.append('hashes', String(e.externalId));
         o.append('deleteFiles', t ? 'true' : 'false');
         yield this.fetchWithAuth('/api/v2/torrents/delete', { method: 'POST', body: o });
       });
-    }
-
-    getFiles(e) {
+    };
+    U.prototype.getFiles = function(e) {
       return l(this, null, function*() {
-        let t = new URLSearchParams();
+        var t = new URLSearchParams();
         t.append('hash', String(e.externalId));
         return (yield this.fetchWithAuth('/api/v2/torrents/files?' + t.toString())).map(function(n) {
           var r, s;
@@ -1340,9 +932,8 @@
           };
         });
       });
-    }
-
-    formatTorrents(e, t) {
+    };
+    U.prototype.formatTorrents = function(e, t) {
       return e.sort(function(o, n) { return n.added_on - o.added_on }).filter(function(o) { return !o.tags || !o.tags.includes('hide') }).map(function(o) {
         return {
           id: O(o.tags),
@@ -1361,28 +952,27 @@
           path: (o.save_path || '').replace(t.save_path || '', '')
         };
       });
-    }
-  };
+    };
+    return U;
+  }();
 
-  var z = class {
-    constructor(e, t, o, n) {
+  var z = function() {
+    function z(e, t, o, n) {
       this.url = e;
       this.login = t;
       this.password = o;
       this.sessionId = n;
       this.network = AndroidTVNetwork;
     }
-
-    POST(e) {
+    z.prototype.POST = function(e) {
       return l(this, null, function*() {
         try {
-          let response = yield this.network.postJSON(this.url, e, {
+          var response = yield this.network.postJSON(this.url, e, {
             headers: {
               Authorization: 'Basic ' + btoa(this.login + ':' + this.password),
               'X-Transmission-Session-Id': this.sessionId || ''
             }
           });
-
           if (response.status === 409) {
             this.sessionId = response.headers.get('X-Transmission-Session-Id');
             if (!this.sessionId) {
@@ -1390,78 +980,75 @@
             }
             return this.POST(e);
           }
-
           if (!response.ok) {
             throw new Error('Transmission RPC error: ' + response.statusText);
           }
-
           return yield response.json();
         } catch (error) {
           console.error('Transmission POST error:', error);
           throw error;
         }
       });
-    }
-
-    getSession() {
-      let e = { method: 'session-get' };
+    };
+    z.prototype.getSession = function() {
+      var e = { method: 'session-get' };
       return this.POST(e);
-    }
-
-    addTorrent(e) {
-      let t = { method: 'torrent-add', arguments: e };
+    };
+    z.prototype.addTorrent = function(e) {
+      var t = { method: 'torrent-add', arguments: e };
       return this.POST(t);
-    }
-
-    getTorrents(e) {
-      let t = { method: 'torrent-get', arguments: e };
+    };
+    z.prototype.getTorrents = function(e) {
+      var t = { method: 'torrent-get', arguments: e };
       return this.POST(t);
-    }
-
-    setTorrent(e) {
-      let t = { method: 'torrent-set', arguments: e };
+    };
+    z.prototype.setTorrent = function(e) {
+      var t = { method: 'torrent-set', arguments: e };
       return this.POST(t);
-    }
-
-    startTorrent(e) {
-      let t = { method: 'torrent-start', arguments: e };
+    };
+    z.prototype.startTorrent = function(e) {
+      var t = { method: 'torrent-start', arguments: e };
       return this.POST(t);
-    }
-
-    stopTorrent(e) {
-      let t = { method: 'torrent-stop', arguments: e };
+    };
+    z.prototype.stopTorrent = function(e) {
+      var t = { method: 'torrent-stop', arguments: e };
       return this.POST(t);
-    }
-
-    removeTorrent(e) {
-      let t = { method: 'torrent-remove', arguments: e };
+    };
+    z.prototype.removeTorrent = function(e) {
+      var t = { method: 'torrent-remove', arguments: e };
       return this.POST(t);
-    }
-  };
+    };
+    return z;
+  }();
 
-  var F = class {
-    constructor(e, t, o) {
+  var F = function() {
+    function F(e, t, o) {
       this.url = e;
       this.login = t;
       this.password = o;
       this.client = new z(e + '/transmission/rpc', t, o);
       this.network = AndroidTVNetwork;
     }
-
-    getTorrents() {
+    F.prototype.getTorrents = function() {
       return l(this, null, function*() {
         var n, r;
         try {
-          let e = yield this.client.getSession();
-          let t = ((n = e == null ? void 0 : e.arguments) == null ? void 0 : n['download-dir']) || '';
+          var e = yield this.client.getSession();
+          var t = ((n = e == null ? void 0 : e.arguments) == null ? void 0 : n['download-dir']) || '';
           return ((r = (yield this.client.getTorrents({
             fields: ['id', 'name', 'status', 'percentDone', 'sizeWhenDone', 'rateDownload', 'eta', 'labels', 'files', 'peersConnected', 'peersSendingToUs', 'trackerStats', 'hashString', 'downloadDir']
           })).arguments) == null ? void 0 : r.torrents.filter(function(s) { return !Array.isArray(s.labels) || s.labels.indexOf('hide') === -1 }).map(function(s) {
             var g;
-            let i = 0,
+            var i = 0,
               c = 0;
             if (Array.isArray(s.trackerStats)) {
-              i = Math.max.apply(Math, s.trackerStats.map(function(f) { return f.seederCount || 0 }).concat([0]));
+              var maxVal = 0;
+              for (var idx = 0; idx < s.trackerStats.length; idx++) {
+                if (s.trackerStats[idx].seederCount > maxVal) {
+                  maxVal = s.trackerStats[idx].seederCount;
+                }
+              }
+              i = maxVal;
             }
             c = s.peersSendingToUs || 0;
             return {
@@ -1486,31 +1073,27 @@
           return [];
         }
       });
-    }
-
-    addTorrent(e, t) {
+    };
+    F.prototype.addTorrent = function(e, t) {
       return l(this, null, function*() {
         var s, i;
         try {
-          let o = {
+          var o = {
             paused: !1,
             sequential_download: !0,
             filename: t.MagnetUri || t.Link,
             labels: x(e)
           };
-
-          let n = M(e);
+          var n = M(e);
           if (n) {
-            let c = yield this.client.getSession();
-            let g = (s = c == null ? void 0 : c.arguments) == null ? void 0 : s['download-dir'];
+            var c = yield this.client.getSession();
+            var g = (s = c == null ? void 0 : c.arguments) == null ? void 0 : s['download-dir'];
             if (g) {
               o['download-dir'] = g.replace(/[\\/]+$/g, '') + n;
             }
           }
-
           console.log('Adding torrent:', o);
-          let r = yield this.client.addTorrent(o);
-
+          var r = yield this.client.addTorrent(o);
           if ((i = r.arguments) != null && i['torrent-added']) {
             yield this.client.setTorrent({
               ids: [r.arguments['torrent-added'].id],
@@ -1523,41 +1106,36 @@
           throw error;
         }
       });
-    }
-
-    startTorrent(e) {
+    };
+    F.prototype.startTorrent = function(e) {
       return l(this, null, function*() {
         yield this.client.startTorrent({ ids: [e.externalId] });
       });
-    }
-
-    stopTorrent(e) {
+    };
+    F.prototype.stopTorrent = function(e) {
       return l(this, null, function*() {
         yield this.client.stopTorrent({ ids: [e.externalId] });
       });
-    }
-
-    hideTorrent(e) {
+    };
+    F.prototype.hideTorrent = function(e) {
       return l(this, null, function*() {
         var n, r;
-        let o = ((r = (n = (yield this.client.getTorrents({ ids: [e.externalId], fields: ['labels'] })).arguments) == null ? void 0 : n.torrents[0]) == null ? void 0 : r.labels) || [];
-        yield this.client.setTorrent({ ids: [e.externalId], labels: [...o, 'hide'] });
+        var o = ((r = (n = (yield this.client.getTorrents({ ids: [e.externalId], fields: ['labels'] })).arguments) == null ? void 0 : n.torrents[0]) == null ? void 0 : r.labels) || [];
+        yield this.client.setTorrent({ ids: [e.externalId], labels: o.concat(['hide']) });
       });
-    }
-
-    removeTorrent(e, t = !1) {
+    };
+    F.prototype.removeTorrent = function(e, t) {
+      if (t === void 0) t = !1;
       return l(this, null, function*() {
         yield this.client.removeTorrent({ ids: [e.externalId], 'delete-local-data': t });
       });
-    }
-
-    getFiles(e) {
+    };
+    F.prototype.getFiles = function(e) {
       return l(this, null, function*() {
         return e.files || [];
       });
-    }
-
-    getData() {
+    };
+    F.prototype.getData = function() {
       return l(this, null, function*() {
         try {
           return { torrents: yield this.getTorrents(), info: { freeSpace: 0 } };
@@ -1566,13 +1144,17 @@
           return { torrents: [], info: { freeSpace: 0 } };
         }
       });
-    }
-  };
+    };
+    return F;
+  }();
 
-  var m = class {
-    static getClient() {
+  var m = {
+    client: null,
+    selectionInFlight: !1,
+    isConnected: !1,
+    getClient: function() {
       if (!this.client) {
-        let t = (Lampa.Storage.field(I) || '').split(';').map(function(o) { return o.trim() }).filter(function(o) { return o });
+        var t = (Lampa.Storage.field(I) || '').split(';').map(function(o) { return o.trim() }).filter(function(o) { return o });
         if (!t.length) {
           console.warn('No server URL configured');
           return null;
@@ -1583,53 +1165,49 @@
         }
       }
       return this.client;
-    }
-
-    static reset() {
+    },
+    reset: function() {
       this.client = void 0;
       this.selectionInFlight = !1;
-    }
-
-    static buildClient(e) {
-      let t = Lampa.Storage.field(ee) === 1;
-      let o = Lampa.Storage.field(Z) || '';
-      let n = Lampa.Storage.field(X) || '';
+    },
+    buildClient: function(e) {
+      var t = Lampa.Storage.field(ee) === 1;
+      var o = Lampa.Storage.field(Z) || '';
+      var n = Lampa.Storage.field(X) || '';
       this.client = t ? new U(e, o, n) : new F(e, o, n);
       console.log('Client built for:', e);
-    }
-
-    static selectUrl(e) {
+    },
+    selectUrl: function(e) {
       if (this.selectionInFlight) return;
       this.selectionInFlight = !0;
-      let t = e.map(function(r) {
+      var _this = this;
+      var t = e.map(function(r) {
         return AndroidTVNetwork.fetchWithTimeout(r + '/ping', { cache: 'no-cache' }).then(function(s) { return s.ok ? r : Promise.reject() });
       });
-      let o = 0,
+      var o = 0,
         n = !1;
       t.forEach(function(r) {
         return r.then(function(s) {
           if (!n) {
             n = !0;
-            this.selectionInFlight = !1;
-            if (!this.client || this.client.url !== s) {
-              this.buildClient(s);
+            _this.selectionInFlight = !1;
+            if (!_this.client || _this.client.url !== s) {
+              _this.buildClient(s);
             }
           }
-        }.bind(this)).catch(function() {
-          ++o === t.length && !n && (n = !0, this.selectionInFlight = !1);
-        }.bind(this));
-      }.bind(this));
+        }).catch(function() {
+          ++o === t.length && !n && (n = !0, _this.selectionInFlight = !1);
+        });
+      });
     }
   };
-  m.selectionInFlight = !1;
-  m.isConnected = !1;
 
   var $e = '<div class="full-start__button selector button--download">\n    {icon}\n    <span>{text}</span>\n</div>';
 
   function nt(a) {
-    let e = $('.full-start-new__buttons');
+    var e = $('.full-start-new__buttons');
     if (e.find('.button--download').length) return;
-    let t = $(Lampa.Template.get('download-button', { icon: y, text: Lampa.Lang.translate('download') }));
+    var t = $(Lampa.Template.get('download-button', { icon: y, text: Lampa.Lang.translate('download') }));
     t.on('hover:enter', function(o) {
       Lampa.Activity.push({
         url: '',
@@ -1647,42 +1225,42 @@
   function Oe() {
     Lampa.Template.add('download-button', $e);
     Lampa.Component.add('torrents-download', Lampa.Component.get('torrents'));
-
     Lampa.Listener.follow('full', function(a) {
       if (a.type === 'complite') {
-        let e = a.data;
+        var e = a.data;
         nt(e);
       }
     });
-
     Lampa.Listener.follow('torrent', function(a) {
-      let e = Lampa.Activity.active();
+      var e = Lampa.Activity.active();
       if (a.type === 'render' && e.component === 'torrents-download') {
         $(a.item).off('hover:enter');
         $(a.item).on('hover:enter', function(t) {
           return l(this, null, function*() {
             try {
-              let client = m.getClient();
+              var client = m.getClient();
               if (!client) {
                 Lampa.Noty.show('Please configure server URL in settings');
                 return;
               }
-
               Lampa.Noty.show('Adding torrent...');
               console.log('Adding torrent for movie:', e.movie);
-
               yield client.addTorrent(e.movie, a.element);
               Lampa.Noty.show(Lampa.Lang.translate('download-button.added'));
-
               if (e.activity && e.activity.component) {
                 e.activity.component.mark(a.element, a.item, !0);
               }
-
               if (!Lampa.Storage.get(Q, !1)) {
                 Lampa.Activity.back();
                 try {
-                  let torrents = yield client.getTorrents();
-                  let r = torrents.find(function(s) { return s.id === e.movie.id });
+                  var torrents = yield client.getTorrents();
+                  var r = null;
+                  for (var idx = 0; idx < torrents.length; idx++) {
+                    if (torrents[idx].id === e.movie.id) {
+                      r = torrents[idx];
+                      break;
+                    }
+                  }
                   if (r) {
                     V(r, e.movie);
                   }
@@ -1703,8 +1281,7 @@
   function initPlugin() {
     try {
       console.log('Initializing Torrent Downloader for Android TV...');
-
-      const url = Lampa.Storage.field(I);
+      var url = Lampa.Storage.field(I);
       if (!url) {
         console.warn('Server URL not configured');
         setTimeout(function() {
@@ -1712,17 +1289,14 @@
         }, 2000);
         return;
       }
-
       window.plugin_transmission_ready = !0;
       Lampa.Manifest.plugins = d;
       Lampa.Lang.add(re);
-
       Ce();
       Oe();
       he();
       De();
       Le();
-
       setTimeout(function() {
         try {
           _.start();
@@ -1730,7 +1304,6 @@
           console.error('Failed to start background worker:', error);
         }
       }, 2000);
-
       console.log('Plugin initialized successfully');
     } catch (error) {
       console.error('Plugin initialization error:', error);
@@ -1740,7 +1313,6 @@
   if (window.plugin_transmission_ready) {
     return;
   }
-
   if (window.appready) {
     initPlugin();
   } else {
