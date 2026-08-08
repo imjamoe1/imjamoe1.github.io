@@ -1313,7 +1313,7 @@
                         left: 2em !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
-                        left: 2em !important;
+                        left: -2em !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
