@@ -1310,12 +1310,11 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
-                        left: 4em !important;
-                    }
-                    /* body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
                         left: 2em !important;
-                        width: 100% !important;
-                    } */
+                    }
+                    body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
+                        left: 2em !important;
+                    }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
                         right: -5.5em !important;
