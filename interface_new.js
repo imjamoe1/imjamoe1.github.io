@@ -1312,9 +1312,9 @@
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
                         width: 100%;
                     }
-                    body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
+                    /* body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
                         left: -1em !important;
-                    }
+                    } */
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
                         right: -5.5em !important;
