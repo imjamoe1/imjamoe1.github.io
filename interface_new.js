@@ -1310,8 +1310,8 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
-                        width: 100% !important;
-                        right: 0 !important;
+                        width: calc(100% + 2em) !important;
+                        overflow: hidden !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
                         left: 2em !important;
