@@ -1310,13 +1310,11 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
-                        width: calc(100% + 1.5em) !important;
-                        overflow: hidden !important;
+                        width: calc(100% + 2em) !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
-                        left: 0 !important;
+                        left: 2em !important;
                         width: 100% !important;
-                        object-fit: cover !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
