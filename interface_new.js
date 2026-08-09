@@ -1314,6 +1314,8 @@
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
                         left: 2em !important;
+                        width: calc(100% + 2em) !important;
+                        object-fit: cover !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
