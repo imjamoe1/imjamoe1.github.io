@@ -1309,11 +1309,11 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    /* body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
-                        width: calc(100% + 2em) !important;
-                    } */
+                    body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
+                        width: calc(100% + -2em) !important;
+                    }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
-                        width: calc(100% + 4em) !important;
+                        left: 2em !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
