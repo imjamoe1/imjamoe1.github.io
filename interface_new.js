@@ -1187,7 +1187,7 @@
                     .new-interface-info__head, .new-interface-info__ratings, .new-interface-info__details{ opacity: 0; transition: opacity 0.5s ease; min-height: 2.2em !important;}
                     .new-interface-info__head.visible, .new-interface-info__ratings.visible, .new-interface-info__details.visible{ opacity: 1; }
                     .new-interface .card.card--small {
-                        width: 11.5em;
+                        width: 18.3em;
                     }
                     .items-line__title {
                         padding-bottom: 0.15em !important;
@@ -1210,7 +1210,7 @@
                     }
                     .new-interface-info__body {
                         position: absolute;
-                        z-index: 9999999;
+                        //z-index: 9999999;
                         width: 80%;
                         padding-top: 0.2em;
                     }
@@ -1285,7 +1285,7 @@
                     }
                     .new-interface .card-more__box {
                         padding-bottom: 150%;
-                        height: 135.15px !important;
+                        //height: 135.15px !important;
                     }
                     .new-interface .full-start__background-wrapper {
                         position: absolute;
@@ -1297,14 +1297,14 @@
                         pointer-events: none;
                     }
                     .new-interface .full-start__background {
-                        //position: absolute;
-                        height: 108%;
-                        //width: 100%;
+                        position: absolute;
+                        height: calc(100% + 4em);
+                        width: 100%;
                         top: -4em;
-                        //left: 0;
-                        //opacity: 0;
-                        //object-fit: cover;
-                        //transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                        left: 0;
+                        opacity: 0;
+                        object-fit: cover;
+                        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
                     }
                     .new-interface .full-start__background.active {
                         opacity: 1;
@@ -1321,9 +1321,9 @@
                         position: relative !important;
                         right: -5.5em !important;
                     }
-                    body.menu--always:not(.hide-compact):not(.menu--open) .card.card--small {
+                    /* body.menu--always:not(.hide-compact):not(.menu--open) .card.card--small {
                         width: calc(11.5em - 1.5em) !important;
-                    }
+                    } */
                     .full-start-new__title {
                         padding-top: 0.2em;
                     }
