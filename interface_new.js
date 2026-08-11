@@ -1322,9 +1322,6 @@
                         position: relative !important;
                         right: -5.5em !important;
                     }
-                    /* body.menu--always:not(.hide-compact):not(.menu--open) .card.card--small {
-                        width: calc(11.5em - 1.5em) !important;
-                    } */
                     .full-start-new__title {
                         padding-top: 0.2em;
                     }
