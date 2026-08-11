@@ -1284,7 +1284,7 @@
                         margin: 0;
                     }
                     .new-interface .card-more__box {
-                        //padding-bottom: 150%;
+                        padding-bottom: 150%;
                         height: 135.15px !important;
                     }
                     .new-interface .full-start__background-wrapper {
@@ -1297,14 +1297,14 @@
                         pointer-events: none;
                     }
                     .new-interface .full-start__background {
-                        position: absolute;
-                        height: calc(100% + 4em);
-                        width: 100%;
+                        //position: absolute;
+                        height: 108%;
+                        //width: 100%;
                         top: -4em;
-                        left: 0;
-                        opacity: 0;
-                        object-fit: cover;
-                        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                        //left: 0;
+                        //opacity: 0;
+                        //object-fit: cover;
+                        //transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
                     }
                     .new-interface .full-start__background.active {
                         opacity: 1;
