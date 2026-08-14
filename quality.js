@@ -18,7 +18,7 @@
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
         "   position: absolute !important; " +
-        "   bottom: 1.55em !important; " +
+        "   bottom: 2em !important; " +
         "   left: -0.8em !important; " +
         "   background-color: transparent !important; " +
         "   z-index: 10; " +
