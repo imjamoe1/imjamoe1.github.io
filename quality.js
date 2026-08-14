@@ -18,7 +18,7 @@
         ".card__view {position: relative !important;}" +
         ".card__quality { " +
         "   position: absolute !important; " +
-        "   bottom: 2.55em !important; " +
+        "   bottom: 3.55em !important; " +
         "   left: -0.8em !important; " +
         "   background-color: transparent !important; " +
         "   z-index: 10; " +
@@ -30,7 +30,7 @@
         "   color: #FFFFFF !important; " + // Белый текст
         "   font-weight: bold !important; " + // Жирный шрифт
         "   font-style: normal !important; " + // Не курсив
-        "   font-size: 1.2em !important; " +
+        "   font-size: 1em !important; " +
         "   border-radius: 3px !important; " +
         "   padding: 0.2em 0.4em !important; " +
         "}" +
