@@ -24,8 +24,6 @@
         "   z-index: 10; " +
         "   width: fit-content !important; " +
         "   max-width: calc(100% - 1em) !important; " +
-        "}" +
-        ".card__quality div { " +
         "   text-transform: none !important; " +
         "   border: 1px solid #FFFFFF !important; " +
         "   background-color: rgba(0, 0, 0, 0.7) !important; " + // Черная полупрозрачная подложка
