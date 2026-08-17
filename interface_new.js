@@ -1288,7 +1288,8 @@
                     }
                     .new-interface .card-more__box {
                         //padding-bottom: 150%;
-                        height: 150px !important;
+                        position: relative;
+                        height: 8em !important;
                     }
                     .new-interface .full-start__background-wrapper {
                         position: absolute;
