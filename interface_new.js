@@ -1037,6 +1037,7 @@
                         margin: 0;
                     }
                     .new-interface .card-more__box {
+                        position: absolute;
                         padding-bottom: 95%;
                     }
                     .new-interface .full-start__background-wrapper {
@@ -1285,7 +1286,7 @@
                         margin: 0;
                     }
                     .new-interface .card-more__box {
-                        padding-bottom: 150%;
+                        //padding-bottom: 150%;
                         height: 150px !important;
                     }
                     .new-interface .full-start__background-wrapper {
