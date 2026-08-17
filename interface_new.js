@@ -1286,7 +1286,7 @@
                     }
                     .new-interface .card-more__box {
                         padding-bottom: 150%;
-                        height: 5em !important;
+                        height: 150px !important;
                     }
                     .new-interface .full-start__background-wrapper {
                         position: absolute;
