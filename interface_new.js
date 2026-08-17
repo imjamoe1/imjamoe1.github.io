@@ -1210,7 +1210,7 @@
                     }
                     .new-interface-info__body {
                         position: absolute;
-                        //z-index: 9999999;
+                        z-index: 9999999;
                         width: 80%;
                         padding-top: 0.2em;
                     }
@@ -1247,7 +1247,7 @@
                         font-size: 1.2em;
                     }
                     .new-interface-info__details {
-                        //margin-top: -0.8em;
+                        margin-top: -0.8em;
                         margin-bottom: 1.6em;
                         display: flex;
                         align-items: center;
@@ -1286,7 +1286,8 @@
                     }
                     .new-interface .card-more__box {
                         padding-bottom: 150%;
-                        //height: 135.15px !important;
+                        height: 10em !important;
+                        width: 10em !important;
                     }
                     .new-interface .full-start__background-wrapper {
                         position: absolute;
