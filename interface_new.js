@@ -1038,7 +1038,7 @@
                     }
                     .new-interface .card-more__box {
                         position: relative;
-                        bottom: 1em  !important
+                        bottom: 1em !important;
                         padding-bottom: 100%;
                     }
                     .new-interface .full-start__background-wrapper {
