@@ -17,7 +17,7 @@
     yellow: '#FFCC00',
     green: '#008080',
     violet: '#9400D3',
-    blue: '#05C3F0'
+    blue: '#2887B0'
   };
 
   // Thresholds — keep in sync with color matrix comments below
