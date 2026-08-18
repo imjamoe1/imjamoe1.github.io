@@ -22,12 +22,12 @@ async function fetchJSFiles() {
       const url = `https://${GITHUB_USER}.github.io/${fileName}`;
       
       const container = document.createElement("div");
-      container.className = "bg-white p-4 rounded shadow flex justify-between items-center";
+      container.className = "bg-black p-4 rounded shadow flex justify-between items-center";
 
       const link = document.createElement("a");
       link.href = url;
       link.textContent = fileName;
-      link.className = "text-blue-600 hover:underline break-all";
+      link.className = "text-white-600 hover:underline break-all";
 
       const button = document.createElement("button");
       button.textContent = "📋 Копировать";
