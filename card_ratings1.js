@@ -7,7 +7,7 @@
     const TMDB_API_URL = 'https://api.themoviedb.org/3/';
     const KP_RATING_URL = 'https://rating.kinopoisk.ru/';
     const KP_API_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
-    const LAMPA_RATING_URL = 'http://cub.rip/api/reactions/get/';
+    const LAMPA_RATING_URL = 'http://cub.red/api/reactions/get/';
     const CACHE_KEY = 'kp_rating_cache_v3';
     const CACHE_TIME = 1000 * 60 * 60 * 24; // 24 часа
     const CONCURRENT_LIMIT = 3;
