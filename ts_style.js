@@ -12,7 +12,7 @@
 
   // Apple HIG system colors (dark mode)
   var APPLE = {
-    red: '#F07305',
+    red: '#F03С05',
     orange: '#FF9500',
     yellow: '#FFCC00',
     green: '#008080',
