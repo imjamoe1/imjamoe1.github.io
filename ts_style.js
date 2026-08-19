@@ -12,12 +12,12 @@
 
   // Apple HIG system colors (dark mode)
   var APPLE = {
-    red: '#F03С05',
+    red: '#E067A0',
     orange: '#FF9500',
-    yellow: '#FFCC00',
-    green: '#008080',
-    violet: '#9400D3',
-    blue: '#2887B0'
+    yellow: '#E0DE55',
+    green: '#44BAC7',
+    violet: '#A845D9',
+    blue: '#5F9AE8'
   };
 
   // Thresholds — keep in sync with color matrix comments below
