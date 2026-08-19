@@ -14,7 +14,7 @@
     };
   }();
   'use strict';
-  var _0x2b0fa2 = ['cub.red', 'cubnotrip.top', 'durex.monster', 'kurwa-bober.ninja'];
+  var _0x2b0fa2 = ['cub.red', 'cub.black', 'cubnotrip.top', 'durex.monster', 'kurwa-bober.ninja'];
   var _0x1b7b67 = localStorage.getItem("selected_domain") || _0x2b0fa2[0x0];
   function _0x27a92c(_0xc22151) {
     try {
