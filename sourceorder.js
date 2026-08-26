@@ -1,15 +1,13 @@
 (function () {
     'use strict';
 
-    var PLUGIN_ID = 'lampaua_source_order';
-    var STORAGE_KEY = 'lampaua_source_order_v1';
+    var PLUGIN_ID = 'lampa_source_order';
+    var STORAGE_KEY = 'lampa_source_order_v1';
     var isWindows = navigator.userAgent.toLowerCase().indexOf('windows') !== -1;
-    var UA_FLAG = isWindows ? '[UA]' : '🇺🇦';
-    var EN_FLAG = isWindows ? '[EN]' : '🇬🇧';
-    var FALLBACK_ICON = '▶';
+    var FALLBACK_ICON = '';
 
     // ============================================================
-    // Добавляем ПЕРЕВОДЫ ЧЕРЕЗ Lampa.Lang.add
+    // Добавляем ПЕРЕВОДЫ
     // ============================================================
     Lampa.Lang.add({
         source_order_title: {
@@ -81,21 +79,6 @@
             ru: 'Сбросить',
             uk: 'Скинути',
             en: 'Reset'
-        },
-        source_order_group_viewer: {
-            ru: 'Зритель',
-            uk: 'Глядач',
-            en: 'Viewer'
-        },
-        source_order_group_premium: {
-            ru: 'Премиум',
-            uk: 'Преміум',
-            en: 'Premium'
-        },
-        source_order_group_mezenat: {
-            ru: 'Меценат',
-            uk: 'Меценат',
-            en: 'Patron'
         }
     });
 
@@ -107,85 +90,41 @@
     }
 
     // ============================================================
-    // ГРУППЫ С ЛОКАЛИЗАЦИЕЙ
-    // ============================================================
-    var GROUP_NAMES = {
-        0: t('source_order_group_viewer'),
-        1: t('source_order_group_premium'),
-        2: t('source_order_group_premium'),
-        3: t('source_order_group_premium')
-    };
-
-    function refreshGroupNames() {
-        GROUP_NAMES[0] = t('source_order_group_viewer');
-        GROUP_NAMES[1] = t('source_order_group_premium');
-        GROUP_NAMES[2] = t('source_order_group_premium');
-        GROUP_NAMES[3] = t('source_order_group_premium');
-    }
-
-    // ============================================================
     // ОСНОВНАЯ ЛОГИКА
     // ============================================================
 
     var DEFAULTS = {
-        makhno: { title: 'Makhno ~ 1080', icon: UA_FLAG, order: 1 },
-        lme_makhno: { title: 'Makhno ~ 1080', icon: UA_FLAG, order: 1 },
-		petlura: { title: 'Petlura ~ 1080', icon: UA_FLAG, order: 2 },
-		lme_petlura: { title: 'Petlura ~ 1080', icon: UA_FLAG, order: 2 },
-        uaflix: { title: 'Uaflix ~ 1080', icon: UA_FLAG, order: 3 },
-        lme_uaflix: { title: 'Uaflix ~ 1080', icon: UA_FLAG, order: 3 },
-        klonfun: { title: 'KlonFUN ~ 1080', icon: UA_FLAG, order: 4 },
-        lme_klonfun: { title: 'KlonFUN ~ 1080', icon: UA_FLAG, order: 4 },
-        uakino: { title: 'UaKino ~ 1080', icon: UA_FLAG, order: 5 },
-        lme_uakino: { title: 'UaKino ~ 1080', icon: UA_FLAG, order: 5 },
-        uafilmme: { title: 'UafilmME ~ 1080', icon: UA_FLAG, order: 6 },
-        lme_uafilmme: { title: 'UafilmME ~ 1080', icon: UA_FLAG, order: 6 },
-        uafilm: { title: 'UAFilm ~ 1080', icon: UA_FLAG, order: 7 },
-        lme_uafilm: { title: 'UAFilm ~ 1080', icon: UA_FLAG, order: 7 },
-        kinoukr: { title: 'KinoUkr ~ 1080', icon: UA_FLAG, order: 8 },
-        lme_kinoukr: { title: 'KinoUkr ~ 1080', icon: UA_FLAG, order: 8 },
-        ashdi: { title: 'Ashdi ~ 1080', icon: UA_FLAG, order: 9 },
-        lme_ashdi: { title: 'Ashdi ~ 1080', icon: UA_FLAG, order: 9 },
-        eneyida: { title: 'Eneyida ~ 1080', icon: UA_FLAG, order: 10 },
-        lme_eneyida: { title: 'Eneyida ~ 1080', icon: UA_FLAG, order: 10 },
-        mirage: { title: 'Mirage ~ 4K', icon: '👑', order: 11 },
-        lme_mirage: { title: 'Mirage ~ 4K', icon: '👑', order: 11 },
-        spectre: { title: 'Spectre ~ 4K', icon: '👑', order: 12 },
-        lme_spectre: { title: 'Spectre ~ 4K', icon: '👑', order: 12 },
-        phantom: { title: 'Phantom ~ 4K', icon: '👑', order: 13 },
-        lme_phantom: { title: 'Phantom ~ 4K', icon: '👑', order: 13 },
-        jacktor: { title: 'JackTor ~ 4K', icon: '👑', order: 14 },
-        lme_jacktor: { title: 'JackTor ~ 4K', icon: '👑', order: 14 },
-        pidtor: { title: 'PidTor ~ 4K', icon: '👑', order: 15 },
-        lme_pidtor: { title: 'PidTor ~ 4K', icon: '👑', order: 15 },
-        bamboo: { title: 'Bamboo', icon: '🌸', order: 16 },
-        lme_bamboo: { title: 'Bamboo', icon: '🌸', order: 16 },
-        animeon: { title: 'AnimeON', icon: '🌸', order: 17 },
-        lme_animeon: { title: 'AnimeON', icon: '🌸', order: 17 },
-        mikai: { title: 'Mikai', icon: '🌸', order: 18 },
-        lme_mikai: { title: 'Mikai', icon: '🌸', order: 18 },
-        unimay: { title: 'Unimay', icon: '🌸', order: 19 },
-        lme_unimay: { title: 'Unimay', icon: '🌸', order: 19 },
-        moonanime: { title: 'MoonAnime', icon: '🌸', order: 20 },
-        lme_moonanime: { title: 'MoonAnime', icon: '🌸', order: 20 },
-        nmoonanime: { title: 'New MoonAnime', icon: '🌸', order: 21 },
-        lme_nmoonanime: { title: 'New MoonAnime', icon: '🌸', order: 21 },
-        aniliberty: { title: 'AniLiberty', icon: '🌸', order: 22 },
-        lme_aniliberty: { title: 'AniLiberty', icon: '🌸', order: 22 },
-        filmix: { title: 'Filmix [ Prem ]', icon: '🍿', order: 23 },
-        lme_filmix: { title: 'Filmix [ Prem ]', icon: '🍿', order: 23 },
-        rezka: { title: 'Rezka ~ 4K', icon: '🍿', order: 24 },
-        pizatoadhd: { title: 'Rezka ~ 4K', icon: '🍿', order: 24 },
-        zetflix: { title: 'Zetflix', icon: '🍿', order: 25 },
-        lme_zetflix: { title: 'Zetflix', icon: '🍿', order: 25 },
-        starlight: { title: 'StarLight', icon: '⭐', order: 26 },
-        lme_starlight: { title: 'StarLight', icon: '⭐', order: 26 },
-        streamdata: { title: 'StreamData', icon: '⭐', order: 27 },
-        lme_streamdata: { title: 'StreamData', icon: '⭐', order: 27 },		
-		xullys: { title: 'EN Xullys ~ 4k', icon: EN_FLAG, order: 28 },
-        lmg_xullys: { title: 'EN Xullys ~ 4k', icon: EN_FLAG, order: 28 },
-		
-        sisi: { title: 'Sisi', icon: '🍓', order: 29 }
+        makhno: { title: 'Makhno - 1080' },
+        petlura: { title: 'Petlura - 1080' },
+        uaflix: { title: 'Uaflix - 1080' },
+        klonfun: { title: 'KlonFUN - 1080' },
+        uakino: { title: 'UaKino - 1080' },
+        uafilmme: { title: 'UafilmME - 1080' },
+        uafilm: { title: 'UAFilm - 1080' },
+        kinoukr: { title: 'KinoUkr - 1080' },
+        ashdi: { title: 'Ashdi - 1080' },
+        eneyida: { title: 'Eneyida - 1080' },
+        mirage: { title: 'Mirage - 4K' },
+        spectre: { title: 'Spectre - 4K' },
+        phantom: { title: 'Phantom - 4K' },
+        jacktor: { title: 'JackTor - 4K' },
+        pidtor: { title: 'PidTor - 4K' },
+        bamboo: { title: 'Bamboo', },
+        animeon: { title: 'AnimeON' },
+        mikai: { title: 'Mikai' },
+        unimay: { title: 'Unimay' },
+        moonanime: { title: 'MoonAnime' },
+        nmoonanime: { title: 'New MoonAnime' },
+        aniliberty: { title: 'AniLiberty' },
+        alloha: { title: 'Alloha - 4K' },
+        filmix: { title: 'Filmix - 4K' },
+        rezka: { title: 'Rezka - 4K' },
+        pizdatoehd: { title: 'HDRezka - 4K' },
+        zetflix: { title: 'Zetflix' },
+        starlight: { title: 'StarLight' },
+        streamdata: { title: 'StreamData' },
+        xullys: { title: 'EN Xullys - 4k' },
+        sisi: { title: 'Sisi', icon: '🍓' }
     };
 
     var ICONS = [
@@ -196,67 +135,6 @@
     var lastTitles = {};
     var filterPatched = false;
     var editorReturnController = 'settings_component';
-
-    refreshGroupNames();
-
-    var SOURCE_GROUPS = {
-		jacktor: 3,
-        lme_jacktor: 3,
-        mirage: 3,
-        lme_mirage: 3,
-        uakino: 3,
-        ashdi: 3,
-        lme_ashdi: 3,
-        kinoukr: 3,
-        lme_kinoukr: 3,
-        eneyida: 3,
-        lme_eneyida: 3,
-        uafilm: 3,
-        lme_uafilm: 3,
-        pidtor: 3,
-        lme_pidtor: 3,
-        spectre: 3,
-        lme_spectre: 3,
-        phantom: 3,
-        lme_phantom: 3,
-        zetflix: 3,
-        lme_zetflix: 3,
-        makhno: 3,
-        lme_makhno: 3,
-		lme_uakino: 3,
-		rezka: 3,
-        pizatoadhd: 3,
-		xullys: 3,
-		lmg_xullys: 3,
-		sisi: 3,
-		petlura: 0,
-        lme_petlura: 0,
-        uaflix: 0,
-        lme_uaflix: 0,
-        klonfun: 0,
-        lme_klonfun: 0,
-        lme_uafilmme: 0,
-        lme_streamdata: 0,
-        lme_starlight: 0,
-        starlight: 0,
-        streamdata: 0,
-        filmix: 0,
-        lme_filmix: 0,
-        bamboo: 0,
-        lme_bamboo: 0,
-        animeon: 0,
-        lme_animeon: 0,
-        mikai: 0,
-        lme_mikai: 0,
-        unimay: 0,
-        lme_unimay: 0,
-        moonanime: 0,
-        lme_moonanime: 0,
-        nmoonanime: 0,
-        lme_nmoonanime: 0,
-        aniliberty: 0,
-        lme_aniliberty: 0
-    };
 
     // ============================================================
     // ОСНОВНЫЕ ФУНКЦИИ
@@ -292,25 +170,6 @@
     function lockSuffix(title) {
         var match = String(title || '').match(/\s*🔒.*$/);
         return match ? match[0] : '';
-    }
-
-    function groupName(value) {
-        return GROUP_NAMES[value] || GROUP_NAMES[0];
-    }
-
-    function groupFromTitle(title) {
-        var suffix = lockSuffix(title);
-        if (!suffix) return null;
-
-        if (suffix.indexOf('Patron') >= 0) return t('source_order_group_mezenat');
-        if (suffix.indexOf('Premium') >= 0) return t('source_order_group_premium');
-        if (suffix.indexOf('Viewer') >= 0) return t('source_order_group_viewer');
-
-        return null;
-    }
-
-    function sourceGroupTitle(key, originalTitle) {
-        return groupFromTitle(originalTitle) || groupName(SOURCE_GROUPS[key] == null ? 0 : SOURCE_GROUPS[key]);
     }
 
     function defaultTitle(key, fallback) {
@@ -460,10 +319,8 @@
 
         items.forEach(function (item) {
             if (!item || !item.source) return;
-            var originalTitle = item.title;
-            item.subtitle = sourceGroupTitle(item.source, originalTitle);
             item.title = customTitle(item.source, item.title);
-            item._lampaua_source_order = position[item.source] == null ? 99999 : position[item.source];
+            item._lampa_source_order = position[item.source] == null ? 99999 : position[item.source];
         });
 
         items.sort(function (a, b) {
@@ -471,8 +328,8 @@
             var bg = b && b.ghost ? 1 : 0;
             if (ag !== bg) return ag - bg;
 
-            var ao = a && a._lampaua_source_order != null ? a._lampaua_source_order : 99999;
-            var bo = b && b._lampaua_source_order != null ? b._lampaua_source_order : 99999;
+            var ao = a && a._lampa_source_order != null ? a._lampa_source_order : 99999;
+            var bo = b && b._lampa_source_order != null ? b._lampa_source_order : 99999;
             if (ao !== bo) return ao - bo;
 
             return String(a.title || '').localeCompare(String(b.title || ''));
@@ -539,7 +396,7 @@
     }
 
     // ============================================================
-    // ФУНКЦИИ РЕДАКТОРА С ЛОКАЛИЗАЦИЕЙ
+    // ФУНКЦИИ РЕДАКТОРА
     // ============================================================
 
     function saveOrderFromDom(list) {
@@ -561,7 +418,6 @@
             .text(icon || ' ')
             .toggleClass('source-order-icon--text', icon && icon.length > 2);
         row.find('.source-order-name').text(title);
-        row.find('.source-order-key').text(sourceGroupTitle(key, config.known[key]));
     }
 
     function reopenEditorSoon() {
@@ -672,7 +528,6 @@
                     '<div class="menu-edit-list__icon source-order-icon"></div>' +
                     '<div class="source-order-text">' +
                         '<div class="menu-edit-list__title source-order-name"></div>' +
-                        '<div class="source-order-key"></div>' +
                     '</div>' +
                 '</div>' +
                 '<div class="source-order-actions">' +
@@ -797,8 +652,8 @@
             if (attempts > 40) clearInterval(retry);
         }, 500);
 
-        if (window.lampaua_source_order_observer || typeof MutationObserver === 'undefined') return;
-        window.lampaua_source_order_observer = true;
+        if (window.lampa_source_order_observer || typeof MutationObserver === 'undefined') return;
+        window.lampa_source_order_observer = true;
 
         var observer = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
@@ -814,10 +669,10 @@
     }
 
     function addStyle() {
-        if (document.getElementById('lampaua-source-order-style')) return;
+        if (document.getElementById('lampa-source-order-style')) return;
 
         var style = document.createElement('style');
-        style.id = 'lampaua-source-order-style';
+        style.id = 'lampa-source-order-style';
         style.innerHTML = [
             '.source-order-wrap{width:100%;max-width:31em;margin:0 auto;box-sizing:border-box;}',
             '.source-order-list{padding-right:0;margin-right:0;}',
@@ -833,7 +688,6 @@
             '.source-order-icon{font-size:clamp(.72em,1.15em,1.15em);}',
             '.source-order-text{min-width:0;flex:1;}',
             '.source-order-name{font-size:1.18em;font-weight:300;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
-            '.source-order-key{font-size:.68em;line-height:1.15;opacity:.42;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
             '.source-order-actions{display:flex;align-items:center;gap:.05em;margin-left:.45em;flex-shrink:0;}',
             '.source-order-action{background:transparent;font-size:1.02em;}',
             '.source-order-action svg{width:1em!important;height:1em!important;}',
@@ -857,7 +711,7 @@
         patchFilter();
         observeUi();
 
-        window.LampaUaSourceOrder = {
+        window.LampaSourceOrder = {
             open: openEditor,
             config: storage,
             reset: function () {
