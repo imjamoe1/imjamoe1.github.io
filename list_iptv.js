@@ -1,8 +1,8 @@
 (function () {
     'use strict';
 
-    if (window.vimu_iptv_plugin_v5) return;
-    window.vimu_iptv_plugin_v5 = true;
+    if (window.vimu_iptv_plugin) return;
+    window.vimu_iptv_plugin = true;
 
     var TAG = '[VimuIPTV]';
 
