@@ -2096,7 +2096,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
         Lampa.Activity.push({
           url: params.element.url,
           title: 'Lampac - ' + params.element.title,
-          component: 'lampacakterblack',
+          component: 'LampaFilm',
           movie: params.element,
           page: 1,
           search: params.element.title,
@@ -2114,13 +2114,13 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
     if (window.lampa_settings && window.lampa_settings.read_only) return;
 
     window.lampac_plugin_akterblack = true;
-    Lampa.Component.add('lampacakterblack', component);
+    Lampa.Component.add('LampaFilm', component);
     var manifest = {
       type: 'video',
       version: LAMPAC_VERSION,
       name: 'LampaFilm',
       description: 'Плагин для просмотра онлайн сериалов и фильмов',
-      component: 'lampacakterblack',
+      component: 'LampaFilm',
       onContextMenu: function onContextMenu(object) {
         return {
           name: Lampa.Lang.translate('lampac_watch'),
@@ -2136,7 +2136,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
         Lampa.Activity.push({
           url: '',
           title: Lampa.Lang.translate('title_online'),
-          component: 'lampacakterblack',
+          component: 'LampaFilm',
           search: all[id] ? all[id] : object.title,
           search_one: object.title,
           search_two: object.original_title,
@@ -2762,7 +2762,7 @@ window.rch_nws[hostkey].Registry = function RchRegistry(client, startConnection)
         Lampa.Activity.push({
           url: '',
           title: Lampa.Lang.translate('title_online'),
-          component: 'lampacakterblack',
+          component: 'LampaFilm',
           search: all[id] ? all[id] : e.movie.title,
           search_one: e.movie.title,
           search_two: e.movie.original_title,
