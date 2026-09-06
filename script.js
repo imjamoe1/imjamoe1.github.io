@@ -32,7 +32,7 @@ async function fetchJSFiles() {
 
       const button = document.createElement("button");
       button.textContent = "📋 Copy";
-      button.className = "bg-gray-200 hover:bg-gray-300 text-black font-bold text-sm px-3 py-1 rounded";
+      button.className = "bg-gray-300 hover:bg-gray-500 text-black font-bold text-sm px-3 py-1 rounded";
       button.onclick = () => {
         navigator.clipboard.writeText(url);
         button.textContent = "✅ Copied!";
