@@ -22,7 +22,7 @@ async function fetchJSFiles() {
       const url = `https://${GITHUB_USER}.github.io/${fileName}`;
       
       const container = document.createElement("div");
-      container.className = "bg-green-100 p-4 rounded shadow flex justify-between items-center";
+      container.className = "bg-amber-200 p-4 rounded shadow flex justify-between items-center";
 
       const link = document.createElement("a");
       link.href = url;
@@ -31,7 +31,7 @@ async function fetchJSFiles() {
 
       const button = document.createElement("button");
       button.textContent = "📋 Copy";
-      button.className = "bg-amber-200 hover:bg-gray-300 text-black font-bold text-sm px-3 py-1 rounded";
+      button.className = "bg-gray-200 hover:bg-gray-300 text-black font-bold text-sm px-3 py-1 rounded";
       button.onclick = () => {
         navigator.clipboard.writeText(url);
         button.textContent = "✅ Copied!";
