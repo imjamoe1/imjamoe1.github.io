@@ -22,8 +22,9 @@ async function fetchJSFiles() {
       const url = `https://${GITHUB_USER}.github.io/${fileName}`;
       
       const container = document.createElement("div");
-      container.className = "bg-amber-200 p-4 rounded shadow flex justify-between items-center";
-
+      container.className = "p-4 rounded shadow flex justify-between items-center";
+      container.style.backgroundColor = "#FFD700";
+      
       const link = document.createElement("a");
       link.href = url;
       link.textContent = fileName;
