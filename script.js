@@ -30,12 +30,12 @@ async function fetchJSFiles() {
       link.className = "text-blue-600 hover:underline break-all";
 
       const button = document.createElement("button");
-      button.textContent = "📋 Копировать";
+      button.textContent = "📋 Copy";
       button.className = "bg-gray-200 hover:bg-gray-300 text-black text-sm px-3 py-1 rounded";
       button.onclick = () => {
         navigator.clipboard.writeText(url);
-        button.textContent = "✅ Скопировано!";
-        setTimeout(() => button.textContent = "📋 Копировать", 2000);
+        button.textContent = "✅ Copied!";
+        setTimeout(() => button.textContent = "📋 Copy", 2000);
       };
 
       container.append(link, button);
