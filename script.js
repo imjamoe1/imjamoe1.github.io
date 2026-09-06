@@ -28,7 +28,7 @@ async function fetchJSFiles() {
       const link = document.createElement("a");
       link.href = url;
       link.textContent = fileName;
-      link.className = "text-blue-600 hover:underline break-all font-bold";
+      link.className = "text-blue-800 hover:underline break-all font-bold";
 
       const button = document.createElement("button");
       button.textContent = "📋 Copy";
