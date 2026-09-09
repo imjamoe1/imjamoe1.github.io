@@ -240,7 +240,7 @@
             }
             var start = function (file) {
                 var url = ourTsPlayUrl(res.hash, file.path, file.id);
-                var id = AndroidJS.downloadStart(JSON.stringify({
+                var id = downloadStart(JSON.stringify({
                     url: url,
                     providerId: providerId,
                     title: title + (videos.length > 1 ? ' — ' + file.path.split('/').pop() : ''),
