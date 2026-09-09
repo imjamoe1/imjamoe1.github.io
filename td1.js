@@ -23,9 +23,9 @@
 		// TorrServer человек настраивает в Lampa как обычно, и мы туда
 		// не лезем.
 		var DEFAULTS = {
-			torrserver_url: 'http://oleg6.skaz.tv:44000',
-			torrserver_login: 'lampa',
-			torrserver_password: 'zJ2NQ1569F',
+			torrserver_url: 'http://free.torrservera.net:7788',
+			torrserver_login: 'ts',
+			torrserver_password: 'ts',
 			// Наш встроенный TS требует Basic-Auth, поэтому флаг
 			// «Вход по паролю» тоже держим включённым — иначе Lampa
 			// не собирает Authorization заголовок и получает 401.
