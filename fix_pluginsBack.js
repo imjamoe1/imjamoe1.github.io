@@ -2,7 +2,7 @@
 // fix_pluginsBack.js - Минимальное исправление для Tizen
 // ============================================
 (function() {
-    console.log('[Fix] Загрузка...');
+    'use strict';
 
     // 1. Исправляем ошибку window..txt
     if (window.lampa_settings) {
