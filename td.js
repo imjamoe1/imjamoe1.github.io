@@ -523,8 +523,8 @@
             var card = (activity.movie || activity.card) || {};
             
             var $newBtn = $(
-                '<div class="full-start__button selector lampa-download-btn">' +
-                '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                '<div class="full-start__button selector lampa-download-btn" style="display:inline-flex;align-items:center;gap:6px;">' +
+                '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
                 '<path d="M12 3v13M6 13l6 6 6-6M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
                 '</svg>' +
                 '<span>Скачать</span>' +
@@ -665,7 +665,22 @@
             }
             
             cards = items.map(function(item) {
-                var poster = item.poster || './img/img_load.svg';
+                // Исправление: правильный путь к постеру
+                var poster = item.poster || '';
+                // Если постер начинается с / - добавляем домен TMDB
+                if (poster && poster.charAt(0) === '/') {
+                    poster = 'https://image.tmdb.org/t/p/w500' + poster;
+                }
+                // Если постера нет - используем заглушку
+                if (!poster) {
+                    poster = 'data:image/svg+xml,' + encodeURIComponent(
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 200 300">' +
+                        '<rect width="200" height="300" fill="#2a2a2a"/>' +
+                        '<text x="100" y="150" font-family="Arial" font-size="20" fill="#666" text-anchor="middle">Нет постера</text>' +
+                        '</svg>'
+                    );
+                }
+                
                 var progress = item.status === 'completed' ? 100 : (item.percent || 0);
                 var statusText = item.status === 'completed' ? humanBytes(item.sizeBytes) :
                                 item.status === 'failed' ? 'Ошибка' :
@@ -679,7 +694,7 @@
                 var $card = $(
                     '<div class="card selector" style="width:14em">' +
                     '<div class="card__view" style="position:relative;padding-bottom:150%">' +
-                    '<img class="card__img" src="' + poster + '" style="object-fit:cover">' +
+                    '<img class="card__img" src="' + poster + '" style="object-fit:cover;width:100%;height:100%;position:absolute;top:0;left:0;" onerror="this.src=\'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 200 300"><rect width="200" height="300" fill="#2a2a2a"/><text x="100" y="150" font-family="Arial" font-size="20" fill="#666" text-anchor="middle">Нет постера</text></svg>') + '\'">' +
                     '<div style="position:absolute;top:.4em;right:.4em;background:rgba(0,0,0,.75);color:#fff;font-size:.9em;padding:.2em .5em;border-radius:.3em;z-index:1">' + statusText + '</div>' +
                     '<div style="position:absolute;bottom:0;left:0;right:0;height:5px;background:rgba(0,0,0,.5);overflow:hidden;z-index:1">' +
                     '<div style="height:100%;width:' + progress + '%;background:' + statusColor + ';transition:width .3s"></div>' +
@@ -692,17 +707,7 @@
                 );
                 
                 $card.on('hover:enter', function() {
-                    if (item.status === 'completed' && item.localPath) {
-                        if (Lampa.Player) {
-                            Lampa.Player.play({
-                                url: 'file://' + item.localPath,
-                                title: item.title || '',
-                                quality: {}
-                            });
-                        }
-                    } else {
-                        showItemMenu(item);
-                    }
+                    showItemMenu(item);
                 });
                 
                 $card.on('hover:long', function() {
@@ -717,20 +722,99 @@
         function showItemMenu(item) {
             var menuItems = [];
             
+            // 1. Смотреть (если завершено)
+            if (item.status === 'completed' && item.localPath) {
+                menuItems.push({ 
+                    title: '▶ Смотреть', 
+                    action: 'play',
+                    icon: '▶'
+                });
+            }
+            
+            // 2. Смотреть во встроенном плеере (если завершено)
+            if (item.status === 'completed' && item.localPath) {
+                menuItems.push({ 
+                    title: '▶ Смотреть (внутренний)', 
+                    action: 'play_inner',
+                    icon: '▶'
+                });
+            }
+            
+            // 3. Смотреть скачанное (если есть частично скачанный файл)
+            var partPath = '';
+            try {
+                if (typeof AndroidJS.downloadPartPath === 'function') {
+                    partPath = AndroidJS.downloadPartPath(item.id) || '';
+                }
+            } catch(e) {}
+            
+            if (partPath && item.status !== 'completed') {
+                var percent = item.percent || 0;
+                menuItems.push({ 
+                    title: '▶ Смотреть скачанное (' + percent + '%)', 
+                    action: 'play_part',
+                    partPath: partPath,
+                    icon: '▶'
+                });
+            }
+            
+            // 4. Приостановить
             if (item.status === 'downloading' || item.status === 'queued') {
-                menuItems.push({ title: 'Приостановить', action: 'pause' });
+                menuItems.push({ 
+                    title: '⏸ Приостановить', 
+                    action: 'pause',
+                    icon: '⏸'
+                });
             }
             
+            // 5. Продолжить
             if (item.status === 'paused') {
-                menuItems.push({ title: 'Продолжить', action: 'resume' });
+                menuItems.push({ 
+                    title: '▶ Продолжить', 
+                    action: 'resume',
+                    icon: '▶'
+                });
             }
             
+            // 6. Повторить (если ошибка)
             if (item.status === 'failed') {
-                menuItems.push({ title: 'Повторить', action: 'resume' });
+                menuItems.push({ 
+                    title: '🔄 Повторить', 
+                    action: 'resume',
+                    icon: '🔄'
+                });
             }
             
-            menuItems.push({ title: 'Удалить', action: 'delete' });
-            menuItems.push({ title: 'Закрыть', action: 'close' });
+            // 7. Ссылка для другого устройства
+            var shareUrl = '';
+            try {
+                if (typeof AndroidJS.localShareFileUrl === 'function') {
+                    shareUrl = AndroidJS.localShareFileUrl(item.id) || '';
+                }
+            } catch(e) {}
+            
+            if (shareUrl) {
+                menuItems.push({ 
+                    title: '🔗 Ссылка для другого устройства', 
+                    action: 'share_link',
+                    url: shareUrl,
+                    icon: '🔗'
+                });
+            }
+            
+            // 8. Удалить
+            menuItems.push({ 
+                title: '🗑 Удалить', 
+                action: 'delete',
+                icon: '🗑'
+            });
+            
+            // 9. Закрыть
+            menuItems.push({ 
+                title: '✕ Закрыть', 
+                action: 'close',
+                icon: '✕'
+            });
             
             if (Lampa.Select) {
                 Lampa.Select.show({
@@ -750,6 +834,54 @@
                                 }
                             } catch(e) {}
                             setTimeout(render, 300);
+                        } else if (opt.action === 'play') {
+                            if (Lampa.Player) {
+                                Lampa.Player.play({
+                                    url: 'file://' + item.localPath,
+                                    title: item.title || '',
+                                    quality: {}
+                                });
+                            }
+                        } else if (opt.action === 'play_inner') {
+                            if (Lampa.Player) {
+                                Lampa.Player.play({
+                                    url: 'file://' + item.localPath,
+                                    title: item.title || '',
+                                    quality: {},
+                                    launch_player: 'inner'
+                                });
+                            }
+                        } else if (opt.action === 'play_part') {
+                            if (Lampa.Player && opt.partPath) {
+                                Lampa.Player.play({
+                                    url: 'file://' + opt.partPath,
+                                    title: item.title || '',
+                                    quality: {}
+                                });
+                            }
+                        } else if (opt.action === 'share_link') {
+                            var copied = false;
+                            try {
+                                if (typeof AndroidJS.copyToClipboard === 'function') {
+                                    copied = !!AndroidJS.copyToClipboard(opt.url);
+                                }
+                            } catch(e) {}
+                            
+                            if (Lampa.Select) {
+                                Lampa.Select.show({
+                                    title: 'Откройте на другом устройстве',
+                                    items: [
+                                        { title: opt.url },
+                                        { title: copied ? '✅ Скопировано в буфер обмена' : '✕ Закрыть' }
+                                    ],
+                                    onSelect: function() {
+                                        if (Lampa.Controller) Lampa.Controller.toggle('content');
+                                    },
+                                    onBack: function() {
+                                        if (Lampa.Controller) Lampa.Controller.toggle('content');
+                                    }
+                                });
+                            }
                         }
                     },
                     onBack: function() {
