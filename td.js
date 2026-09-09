@@ -2,6 +2,192 @@
     if (typeof AndroidJS === 'undefined' ||
         typeof AndroidJS.downloadStart !== 'function') return;
 
+    // === 1. Эмуляция AndroidJS для ПК/браузера ===
+    if (!IS_ANDROID && (typeof AndroidJS === 'undefined' || typeof AndroidJS.downloadStart !== 'function')) {
+        console.log('[Lampa] AndroidJS не найден, создаём эмуляцию для браузера');
+        
+        window.AndroidJS = {
+            _downloads: [],
+            _idCounter: 0,
+            
+            downloadStart: function(payloadJson) {
+                try {
+                    var data = typeof payloadJson === 'string' ? JSON.parse(payloadJson) : payloadJson;
+                    var id = ++this._idCounter;
+                    var entry = {
+                        id: id,
+                        url: data.url,
+                        title: data.title || 'download',
+                        poster: data.poster || '',
+                        status: 'downloading',
+                        percent: 0,
+                        sizeBytes: 0,
+                        localPath: '',
+                        headers: data.headers || {},
+                        _xhr: null,
+                    };
+                    this._downloads.push(entry);
+                    this._browserDownload(entry);
+                    return id;
+                } catch(e) {
+                    console.error('[Download] start error:', e);
+                    return null;
+                }
+            },
+            
+            _browserDownload: function(entry) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', entry.url, true);
+                
+                if (entry.headers) {
+                    for (var key in entry.headers) {
+                        xhr.setRequestHeader(key, entry.headers[key]);
+                    }
+                }
+                
+                xhr.responseType = 'blob';
+                xhr.onprogress = function(e) {
+                    if (e.total > 0) {
+                        entry.percent = Math.round((e.loaded / e.total) * 100);
+                        entry.sizeBytes = e.total;
+                        entry.status = 'downloading';
+                        AndroidJS._notifyUpdate();
+                    }
+                };
+                
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var url = URL.createObjectURL(xhr.response);
+                        entry.localPath = url;
+                        entry.status = 'completed';
+                        entry.percent = 100;
+                        entry.sizeBytes = xhr.response.size;
+                        
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = entry.title + '.mp4';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        
+                        AndroidJS._notifyUpdate();
+                    } else {
+                        entry.status = 'failed';
+                        AndroidJS._notifyUpdate();
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    entry.status = 'failed';
+                    AndroidJS._notifyUpdate();
+                };
+                
+                xhr.ontimeout = function() {
+                    entry.status = 'failed';
+                    AndroidJS._notifyUpdate();
+                };
+                
+                xhr.timeout = 30000;
+                entry._xhr = xhr;
+                xhr.send();
+            },
+            
+            downloadList: function() {
+                try {
+                    return JSON.stringify(this._downloads);
+                } catch(e) {
+                    return '[]';
+                }
+            },
+            
+            downloadCancel: function(id) {
+                var entry = this._downloads.find(function(e) { return e.id === id; });
+                if (entry && entry._xhr) {
+                    entry._xhr.abort();
+                    entry.status = 'paused';
+                    AndroidJS._notifyUpdate();
+                }
+            },
+            
+            downloadDelete: function(id) {
+                var idx = this._downloads.findIndex(function(e) { return e.id === id; });
+                if (idx !== -1) {
+                    var entry = this._downloads[idx];
+                    if (entry._xhr) entry._xhr.abort();
+                    if (entry.localPath && entry.localPath.startsWith('blob:')) {
+                        URL.revokeObjectURL(entry.localPath);
+                    }
+                    this._downloads.splice(idx, 1);
+                    AndroidJS._notifyUpdate();
+                }
+            },
+            
+            downloadResume: function(id) {
+                var entry = this._downloads.find(function(e) { return e.id === id; });
+                if (entry && (entry.status === 'paused' || entry.status === 'failed')) {
+                    var url = entry.url;
+                    var title = entry.title;
+                    var poster = entry.poster;
+                    var headers = entry.headers;
+                    this.downloadDelete(id);
+                    return this.downloadStart(JSON.stringify({
+                        url: url, title: title, poster: poster, headers: headers
+                    }));
+                }
+                return null;
+            },
+            
+            downloadPartPath: function(id) {
+                var entry = this._downloads.find(function(e) { return e.id === id; });
+                return entry && entry.localPath ? entry.localPath : '';
+            },
+            
+            localShareFileUrl: function(id) {
+                var entry = this._downloads.find(function(e) { return e.id === id; });
+                return entry && entry.localPath ? entry.localPath : '';
+            },
+            
+            _notifyUpdate: function() {
+                try {
+                    if (window.Lampa && Lampa.Listener) {
+                        Lampa.Listener.send('downloads_updated', {});
+                    }
+                } catch(e) {}
+            },
+            
+            copyToClipboard: function(text) {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text);
+                        return true;
+                    }
+                    var textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    var result = document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    return result;
+                } catch(e) {
+                    return false;
+                }
+            },
+            
+            isOnline: function() {
+                return navigator.onLine !== false;
+            },
+            
+            networkWatchStart: function() {},
+            networkWatchStop: function() {},
+            
+            // Публичный хелпер для скачивания
+            __lampaDownloadStart: function(payloadJson) {
+                var id = this.downloadStart(payloadJson);
+                return id;
+            }
+        };
+    }
+
     // === 2. Встроенные дефолты ===
     var DEFAULTS = {
         torrserver_url: 'http://free.torrservera.net:7788',
