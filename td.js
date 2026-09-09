@@ -1,11 +1,9 @@
-(function () {
-    'use strict';
-    
+(function () {    
     if (typeof AndroidJS === 'undefined' ||
         typeof AndroidJS.downloadStart !== 'function') return;
 
     // === 1. Эмуляция AndroidJS для ПК/браузера ===
-    if (!IS_ANDROID && (typeof AndroidJS === 'undefined' || typeof AndroidJS.downloadStart !== 'function')) {
+    /*if (!IS_ANDROID && (typeof AndroidJS === 'undefined' || typeof AndroidJS.downloadStart !== 'function')) {
         console.log('[Lampa] AndroidJS не найден, создаём эмуляцию для браузера');
         
         window.AndroidJS = {
@@ -188,7 +186,7 @@
                 return id;
             }
         };
-    }
+    }*/
 
     // === 2. Встроенные дефолты ===
     var DEFAULTS = {
