@@ -1,194 +1,5 @@
 (function () {
     'use strict';
-    
-    if (typeof AndroidJS === 'undefined' ||
-        typeof AndroidJS.downloadStart !== 'function') return;
-
-    // === 1. Эмуляция AndroidJS для ПК/браузера ===
-    if (!IS_ANDROID && (typeof AndroidJS === 'undefined' || typeof AndroidJS.downloadStart !== 'function')) {
-        console.log('[Lampa] AndroidJS не найден, создаём эмуляцию для браузера');
-        
-        window.AndroidJS = {
-            _downloads: [],
-            _idCounter: 0,
-            
-            downloadStart: function(payloadJson) {
-                try {
-                    var data = typeof payloadJson === 'string' ? JSON.parse(payloadJson) : payloadJson;
-                    var id = ++this._idCounter;
-                    var entry = {
-                        id: id,
-                        url: data.url,
-                        title: data.title || 'download',
-                        poster: data.poster || '',
-                        status: 'downloading',
-                        percent: 0,
-                        sizeBytes: 0,
-                        localPath: '',
-                        headers: data.headers || {},
-                        _xhr: null,
-                    };
-                    this._downloads.push(entry);
-                    this._browserDownload(entry);
-                    return id;
-                } catch(e) {
-                    console.error('[Download] start error:', e);
-                    return null;
-                }
-            },
-            
-            _browserDownload: function(entry) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', entry.url, true);
-                
-                if (entry.headers) {
-                    for (var key in entry.headers) {
-                        xhr.setRequestHeader(key, entry.headers[key]);
-                    }
-                }
-                
-                xhr.responseType = 'blob';
-                xhr.onprogress = function(e) {
-                    if (e.total > 0) {
-                        entry.percent = Math.round((e.loaded / e.total) * 100);
-                        entry.sizeBytes = e.total;
-                        entry.status = 'downloading';
-                        AndroidJS._notifyUpdate();
-                    }
-                };
-                
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        var url = URL.createObjectURL(xhr.response);
-                        entry.localPath = url;
-                        entry.status = 'completed';
-                        entry.percent = 100;
-                        entry.sizeBytes = xhr.response.size;
-                        
-                        var a = document.createElement('a');
-                        a.href = url;
-                        a.download = entry.title + '.mp4';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        
-                        AndroidJS._notifyUpdate();
-                    } else {
-                        entry.status = 'failed';
-                        AndroidJS._notifyUpdate();
-                    }
-                };
-                
-                xhr.onerror = function() {
-                    entry.status = 'failed';
-                    AndroidJS._notifyUpdate();
-                };
-                
-                xhr.ontimeout = function() {
-                    entry.status = 'failed';
-                    AndroidJS._notifyUpdate();
-                };
-                
-                xhr.timeout = 30000;
-                entry._xhr = xhr;
-                xhr.send();
-            },
-            
-            downloadList: function() {
-                try {
-                    return JSON.stringify(this._downloads);
-                } catch(e) {
-                    return '[]';
-                }
-            },
-            
-            downloadCancel: function(id) {
-                var entry = this._downloads.find(function(e) { return e.id === id; });
-                if (entry && entry._xhr) {
-                    entry._xhr.abort();
-                    entry.status = 'paused';
-                    AndroidJS._notifyUpdate();
-                }
-            },
-            
-            downloadDelete: function(id) {
-                var idx = this._downloads.findIndex(function(e) { return e.id === id; });
-                if (idx !== -1) {
-                    var entry = this._downloads[idx];
-                    if (entry._xhr) entry._xhr.abort();
-                    if (entry.localPath && entry.localPath.startsWith('blob:')) {
-                        URL.revokeObjectURL(entry.localPath);
-                    }
-                    this._downloads.splice(idx, 1);
-                    AndroidJS._notifyUpdate();
-                }
-            },
-            
-            downloadResume: function(id) {
-                var entry = this._downloads.find(function(e) { return e.id === id; });
-                if (entry && (entry.status === 'paused' || entry.status === 'failed')) {
-                    var url = entry.url;
-                    var title = entry.title;
-                    var poster = entry.poster;
-                    var headers = entry.headers;
-                    this.downloadDelete(id);
-                    return this.downloadStart(JSON.stringify({
-                        url: url, title: title, poster: poster, headers: headers
-                    }));
-                }
-                return null;
-            },
-            
-            downloadPartPath: function(id) {
-                var entry = this._downloads.find(function(e) { return e.id === id; });
-                return entry && entry.localPath ? entry.localPath : '';
-            },
-            
-            localShareFileUrl: function(id) {
-                var entry = this._downloads.find(function(e) { return e.id === id; });
-                return entry && entry.localPath ? entry.localPath : '';
-            },
-            
-            _notifyUpdate: function() {
-                try {
-                    if (window.Lampa && Lampa.Listener) {
-                        Lampa.Listener.send('downloads_updated', {});
-                    }
-                } catch(e) {}
-            },
-            
-            copyToClipboard: function(text) {
-                try {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(text);
-                        return true;
-                    }
-                    var textarea = document.createElement('textarea');
-                    textarea.value = text;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    var result = document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    return result;
-                } catch(e) {
-                    return false;
-                }
-            },
-            
-            isOnline: function() {
-                return navigator.onLine !== false;
-            },
-            
-            networkWatchStart: function() {},
-            networkWatchStop: function() {},
-            
-            // Публичный хелпер для скачивания
-            __lampaDownloadStart: function(payloadJson) {
-                var id = this.downloadStart(payloadJson);
-                return id;
-            }
-        };
-    }
 
     // === 2. Встроенные дефолты ===
     var DEFAULTS = {
@@ -205,7 +16,7 @@
 
     function listAll() {
         try {
-            var raw = AndroidJS.downloadList();
+            var raw = downloadList();
             return raw ? JSON.parse(raw) : [];
         } catch (e) { return []; }
     }
@@ -528,8 +339,8 @@
                 });
             } catch (_) {}
         }
-        applyPhoneScroll();
-        $(window).on('resize.lampaDownloads', applyPhoneScroll);
+        applyScroll();
+        $(window).on('resize.lampaDownloads', applyScroll);
 
         function scrollToFocused(el) {
             try {
@@ -633,8 +444,8 @@
         function partPathOf(entry) {
             if (entry.status === 'completed') return '';
             try {
-                if (typeof AndroidJS.downloadPartPath === 'function') {
-                    return AndroidJS.downloadPartPath(entry.id) || '';
+                if (typeof downloadPartPath === 'function') {
+                    return downloadPartPath(entry.id) || '';
                 }
             } catch (e) {}
             return '';
@@ -687,8 +498,8 @@
             }
             var shareUrl = '';
             try {
-                if (typeof AndroidJS.localShareFileUrl === 'function') {
-                    shareUrl = AndroidJS.localShareFileUrl(entry.id) || '';
+                if (typeof localShareFileUrl === 'function') {
+                    shareUrl = localShareFileUrl(entry.id) || '';
                 }
             } catch (e) {}
             if (shareUrl) {
@@ -705,15 +516,15 @@
                 items: items,
                 onSelect: function (a) {
                     if (a.action === 'delete') {
-                        AndroidJS.downloadDelete(entry.id);
+                        downloadDelete(entry.id);
                         render();
                     } else if (a.action === 'pause') {
-                        AndroidJS.downloadCancel(entry.id);
+                        downloadCancel(entry.id);
                         setTimeout(render, 300);
                     } else if (a.action === 'resume') {
                         try {
-                            if (typeof AndroidJS.downloadResume === 'function') {
-                                AndroidJS.downloadResume(entry.id);
+                            if (typeof downloadResume === 'function') {
+                                downloadResume(entry.id);
                             } else {
                                 Lampa.Noty.show('Обновите приложение для докачки');
                             }
@@ -728,8 +539,8 @@
                     } else if (a.action === 'share_link') {
                         var copied = false;
                         try {
-                            if (typeof AndroidJS.copyToClipboard === 'function') {
-                                copied = !!AndroidJS.copyToClipboard(a.url);
+                            if (typeof copyToClipboard === 'function') {
+                                copied = !!copyToClipboard(a.url);
                             }
                         } catch (e) {}
                         Lampa.Select.show({
@@ -742,7 +553,7 @@
                             onBack: function () { Lampa.Controller.toggle('content'); },
                         });
                     } else if (a.action === 'pause_then_part') {
-                        try { AndroidJS.downloadCancel(entry.id); } catch (e) {}
+                        try { downloadCancel(entry.id); } catch (e) {}
                         Lampa.Noty.show('Загрузка приостановлена — продолжите её после просмотра');
                         setTimeout(function () { playPart(entry, a.partPath); }, 600);
                     }
@@ -844,8 +655,8 @@
                 });
             } catch (_) {}
         }
-        applyPhoneScroll();
-        $(window).on('resize.lampaShare', applyPhoneScroll);
+        applyScroll();
+        $(window).on('resize.lampaShare', applyScroll);
 
         function renderEmpty(msg) {
             $body.empty();
@@ -934,8 +745,8 @@
 
         this.create = function () { return $html; };
         this.start = function () {
-            applyPhoneScroll();
-            try { AndroidJS.localShareDiscoverStart(); } catch (_) {}
+            applyScroll();
+            try { localShareDiscoverStart(); } catch (_) {}
             renderEmpty('Ищем устройства…');
             Lampa.Controller.add('content', {
                 toggle: function () {
@@ -966,7 +777,7 @@
         this.stop = function () {};
         this.render = function () { return $html; };
         this.destroy = function () {
-            try { AndroidJS.localShareDiscoverStop(); } catch (_) {}
+            try { localShareDiscoverStop(); } catch (_) {}
             try { $(window).off('resize.lampaShare'); } catch (_) {}
             try { scroll.destroy(); } catch (_) {}
             window.__lampaShareUpdate = null;
@@ -979,7 +790,7 @@
 
     setInterval(function () { ensureMenuItem(); }, 2000);
     window.__lampaDownloadStart = function (payloadJson) {
-        var id = AndroidJS.downloadStart(payloadJson);
+        var id = downloadStart(payloadJson);
         setTimeout(function () { ensureMenuItem(); }, 300);
         return id;
     };
