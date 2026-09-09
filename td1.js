@@ -302,20 +302,50 @@
 
     // === Внедрение кнопки в карточку ===
     function injectDownloadButton(activity) {
-        if (!hasSources()) return;
+        console.log('[Download] injectDownloadButton called');
+        
+        if (!hasSources()) {
+            console.log('[Download] hasSources false');
+            return;
+        }
         
         var $render = activity.activity && activity.activity.render && activity.activity.render();
-        if (!$render) return;
+        console.log('[Download] $render:', $render ? 'found' : 'not found');
         
+        if (!$render) {
+            console.log('[Download] $render empty');
+            return;
+        }
+        
+        // Пробуем найти контейнер кнопок разными способами
         var $buttons = $render.find(
             '.full-start-new__buttons, .full-start__buttons, ' +
-            '.full-start__button-container, .buttons--container'
+            '.full-start__button-container, .buttons--container, ' +
+            '.full-start__buttons-container, .full-start-new__buttons-container, ' +
+            '.full-start__button-block, [class*="buttons"], [class*="button-container"]'
         ).first();
         
-        if (!$buttons.length) return;
-        if ($buttons.find('.lampa-download-btn').length) return;
+        console.log('[Download] buttons found:', $buttons.length);
+        
+        if (!$buttons.length) {
+            // Если не нашли - пробуем найти любой контейнер с кнопками
+            $buttons = $render.find('.full-start__button').parent();
+            console.log('[Download] fallback buttons found:', $buttons.length);
+        }
+        
+        if (!$buttons.length) {
+            console.log('[Download] no buttons container found');
+            return;
+        }
+        
+        if ($buttons.find('.lampa-download-btn').length) {
+            console.log('[Download] button already exists');
+            return;
+        }
 
         var card = (activity.movie || activity.card) || {};
+        console.log('[Download] card:', card.title || card.name || 'no title');
+        
         var providerId = (card.first_air_date || card.number_of_seasons ? 'tv:' : 'movie:') +
             (card.id || card.card_id || '');
         
@@ -325,16 +355,61 @@
             '</svg><span>Скачать</span></div>');
         
         $btn.on('hover:enter', function () { 
+            console.log('[Download] button clicked');
             openTorrentPicker(card, providerId); 
         });
         
         $buttons.append($btn);
+        console.log('[Download] button injected successfully');
     }
 
-    // === Слушатель событий ===
+    // === Способ 1: Слушатель события full ===
     Lampa.Listener.follow('full', function (e) {
-        if (e && (e.type === 'complite' || e.type === 'build')) {
+        console.log('[Download] full event:', e && e.type);
+        if (e && (e.type === 'complite' || e.type === 'build' || e.type === 'complete')) {
             injectDownloadButton(e.object || e);
+        }
+    });
+
+    // === Способ 2: Слушатель активности ===
+    Lampa.Listener.follow('activity', function (e) {
+        console.log('[Download] activity event:', e && e.type);
+        if (e && e.type === 'start') {
+            var act = e.object || e;
+            if (act && act.component === 'full') {
+                setTimeout(function() {
+                    injectDownloadButton(act);
+                }, 500);
+            }
+        }
+    });
+
+    // === Способ 3: Принудительная проверка каждые 3 секунды ===
+    var injectInterval = setInterval(function() {
+        try {
+            var act = Lampa.Activity && Lampa.Activity.active && Lampa.Activity.active();
+            if (act && act.component === 'full') {
+                injectDownloadButton(act);
+            }
+        } catch(e) {
+            // игнорируем ошибки
+        }
+    }, 3000);
+
+    // === Способ 4: После загрузки приложения ===
+    Lampa.Listener.follow('app', function (e) {
+        if (e.type === 'ready') {
+            console.log('[Download] app ready');
+            setTimeout(function() {
+                try {
+                    var act = Lampa.Activity && Lampa.Activity.active && Lampa.Activity.active();
+                    if (act && act.component === 'full') {
+                        injectDownloadButton(act);
+                    }
+                } catch(e) {
+                    console.log('[Download] forced injection failed', e);
+                }
+            }, 2000);
         }
     });
 
@@ -713,4 +788,5 @@
         return id;
     };
 
+    console.log('[Download] Plugin loaded successfully');
 })();
