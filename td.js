@@ -1,6 +1,4 @@
 (function () {
-    'use strict';
-
     // === 2. Встроенные дефолты ===
     var DEFAULTS = {
         torrserver_url: 'http://free.torrservera.net:7788',
