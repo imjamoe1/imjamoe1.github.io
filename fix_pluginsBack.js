@@ -1,13 +1,10 @@
 // ============================================
-// fix_pluginsBack.js - Исправление ошибки localStorage для Tizen
-// Приоритет: выполняется ДО modification.js
-// Установка: добавить в список плагинов первым
+// fix_pluginsBack.js v2 - Исправление для Tizen
 // ============================================
-
 (function() {
-    console.log('[Fix] Загрузка исправления pluginsBack...');
+    console.log('[Fix] Загрузка исправления pluginsBack для Tizen...');
 
-    // 1. Исправляем ошибку в window.lampa_settings
+    // 1. Исправляем ошибку window..txt
     if (window.lampa_settings) {
         if (window.lampa_settings.disable_features === undefined || 
             window.lampa_settings.disable_features === null) {
@@ -19,28 +16,38 @@
         };
     }
 
-    // 2. Перехватываем localStorage.setItem
+    // 2. Сохраняем оригинальный метод
     var originalSetItem = Storage.prototype.setItem;
-    
+    var originalGetItem = Storage.prototype.getItem;
+    var originalRemoveItem = Storage.prototype.removeItem;
+
+    // 3. Перехватываем setItem (без defineProperty)
     Storage.prototype.setItem = function(key, value) {
-        // Перехватываем запись в pluginsBack
+        // Перехватываем только pluginsBack
         if (key === 'pluginsBack') {
-            console.log('[Fix] Перехвачена запись в pluginsBack, размер:', 
-                       new Blob([value]).size, 'байт');
+            var size = 0;
+            try {
+                size = new Blob([value]).size;
+            } catch(e) {
+                size = String(value).length;
+            }
             
-            // Проверяем размер
-            var size = new Blob([value]).size;
+            console.log('[Fix] Запись в pluginsBack, размер:', size, 'байт');
             
-            // Если данные > 4 МБ - не сохраняем
-            if (size > 4000000) {
-                console.warn('[Fix] pluginsBack слишком большой (' + size + ' байт), пропускаем запись');
+            // Пропускаем пустые значения
+            if (value === '[]' || value === '' || value === 'null' || value === 'undefined') {
+                console.log('[Fix] pluginsBack пустой, пропускаем');
+                return;
+            }
+            
+            // Не сохраняем большие данные
+            if (size > 4000000) { // 4 МБ
+                console.warn('[Fix] pluginsBack слишком большой (' + size + ' байт), очищаем');
+                try {
+                    originalRemoveItem.call(this, 'pluginsBack');
+                } catch(e) {}
                 
-                // Если есть старые данные, очищаем их
-                if (this.getItem('pluginsBack')) {
-                    this.removeItem('pluginsBack');
-                }
-                
-                // Показываем уведомление (опционально)
+                // Показываем уведомление
                 try {
                     if (typeof Lampa !== 'undefined' && Lampa.Bell) {
                         Lampa.Bell.push({
@@ -49,26 +56,23 @@
                         });
                     }
                 } catch(e) {}
-                
-                return; // Не сохраняем
-            }
-            
-            // Если размер нормальный, но данные - это строка "[object Array]" или пусто
-            if (value === '[]' || value === '' || value === 'null' || value === 'undefined') {
-                console.log('[Fix] pluginsBack пустой, пропускаем запись');
                 return;
             }
             
-            // Пытаемся сжать данные - оставляем только 100 последних записей
+            // Сжимаем данные - оставляем только последние 50 записей
             try {
                 var parsed = JSON.parse(value);
-                if (Array.isArray(parsed) && parsed.length > 100) {
-                    console.log('[Fix] Сжатие pluginsBack: было ' + parsed.length + ' записей, оставляем 100');
-                    parsed = parsed.slice(-100);
+                if (Array.isArray(parsed) && parsed.length > 50) {
+                    console.log('[Fix] Сжатие pluginsBack: было ' + parsed.length + ' записей, оставляем 50');
+                    parsed = parsed.slice(-50);
                     value = JSON.stringify(parsed);
                 }
             } catch(e) {
-                // Если не парсится - возможно это уже строка, ничего не делаем
+                // Если не парсится - пробуем как строку
+                if (typeof value === 'string' && value.length > 10000) {
+                    console.log('[Fix] Обрезаем длинную строку pluginsBack');
+                    value = value.substring(0, 10000);
+                }
             }
         }
         
@@ -76,26 +80,21 @@
         try {
             return originalSetItem.call(this, key, value);
         } catch(e) {
-            // Если ошибка квоты - очищаем проблемные ключи
             if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
                 console.warn('[Fix] Ошибка квоты для ключа:', key);
                 
-                // Очищаем самый большой ключ
-                var maxKey = '';
-                var maxSize = 0;
-                for (var i = 0; i < this.length; i++) {
-                    var k = this.key(i);
-                    var v = this.getItem(k);
-                    var s = new Blob([v]).size;
-                    if (s > maxSize && k !== 'pluginsBack') {
-                        maxSize = s;
-                        maxKey = k;
-                    }
-                }
-                
-                if (maxKey) {
-                    console.log('[Fix] Удаляем большой ключ:', maxKey, 'размер:', maxSize);
-                    this.removeItem(maxKey);
+                // Очищаем большие ключи
+                var keysToRemove = ['pluginsBack', 'plugins', 'account_cache', 'torrent_cache'];
+                for (var i = 0; i < keysToRemove.length; i++) {
+                    try {
+                        if (this.getItem(keysToRemove[i])) {
+                            var size = this.getItem(keysToRemove[i]).length;
+                            if (size > 100000) {
+                                console.log('[Fix] Удаляем большой ключ:', keysToRemove[i], size);
+                                originalRemoveItem.call(this, keysToRemove[i]);
+                            }
+                        }
+                    } catch(e2) {}
                 }
                 
                 // Повторяем попытку
@@ -108,46 +107,37 @@
         }
     };
 
-    // 3. Очищаем pluginsBack при старте (если он слишком большой)
+    // 4. Очищаем pluginsBack при старте
     try {
         var backData = localStorage.getItem('pluginsBack');
         if (backData) {
-            var size = new Blob([backData]).size;
-            if (size > 4000000) {
+            var size = backData.length;
+            if (size > 3000000) {
                 console.log('[Fix] Очистка большого pluginsBack (' + size + ' байт)');
                 localStorage.removeItem('pluginsBack');
             }
         }
     } catch(e) {}
 
-    // 4. Защита от двойной записи - делаем поле только для чтения
-    Object.defineProperty(localStorage, 'pluginsBack', {
-        get: function() {
-            return localStorage.getItem('pluginsBack');
-        },
-        set: function(value) {
-            // Перехватываем прямую запись через свойство
-            console.log('[Fix] Перехвачена прямая запись в pluginsBack');
-            var size = new Blob([value]).size;
-            if (size < 4000000) {
-                localStorage.setItem('pluginsBack', value);
-            } else {
-                console.warn('[Fix] Блокировка прямой записи в pluginsBack (слишком большой)');
-            }
-        },
-        configurable: true
-    });
-
-    // 5. Патчим Lampa.Storage.set для безопасности
+    // 5. Патчим Lampa.Storage
     if (typeof Lampa !== 'undefined' && Lampa.Storage) {
         var originalStorageSet = Lampa.Storage.set;
+        var originalStorageGet = Lampa.Storage.get;
         
         Lampa.Storage.set = function(name, value) {
             if (name === 'pluginsBack') {
                 console.log('[Fix] Перехват Lampa.Storage.set для pluginsBack');
-                var size = new Blob([JSON.stringify(value)]).size;
+                var size = 0;
+                try {
+                    size = JSON.stringify(value).length;
+                } catch(e) {
+                    size = String(value).length;
+                }
                 if (size > 4000000) {
                     console.warn('[Fix] Блокировка Lampa.Storage.set для pluginsBack');
+                    try {
+                        localStorage.removeItem('pluginsBack');
+                    } catch(e) {}
                     return;
                 }
             }
@@ -155,32 +145,33 @@
         };
     }
 
-    // 6. Добавляем кнопку очистки в консоль (для отладки)
+    // 6. Функция очистки
     window.fixClearPluginsBack = function() {
-        localStorage.removeItem('pluginsBack');
-        console.log('[Fix] pluginsBack очищен');
         try {
+            localStorage.removeItem('pluginsBack');
+            console.log('[Fix] pluginsBack очищен');
             if (typeof Lampa !== 'undefined' && Lampa.Bell) {
                 Lampa.Bell.push({
                     text: '✅ pluginsBack очищен',
                     icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="#4caf50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>'
                 });
             }
-        } catch(e) {}
+        } catch(e) {
+            console.error('[Fix] Ошибка очистки:', e);
+        }
     };
 
-    console.log('[Fix] Исправление pluginsBack успешно загружено!');
-    console.log('[Fix] Для очистки введите: fixClearPluginsBack()');
-    
-    // 7. Автоочистка при первом запуске
+    // 7. Автоочистка
     setTimeout(function() {
         try {
             var backData = localStorage.getItem('pluginsBack');
-            if (backData && new Blob([backData]).size > 3000000) {
+            if (backData && backData.length > 2000000) {
                 console.log('[Fix] Автоочистка pluginsBack при запуске');
                 localStorage.removeItem('pluginsBack');
             }
         } catch(e) {}
     }, 1000);
 
+    console.log('[Fix] Исправление pluginsBack загружено!');
+    console.log('[Fix] Для очистки: fixClearPluginsBack()');
 })();
