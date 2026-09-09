@@ -1,4 +1,6 @@
 (function () {
+    'use strict';
+    
     if (typeof AndroidJS === 'undefined' ||
         typeof AndroidJS.downloadStart !== 'function') return;
 
