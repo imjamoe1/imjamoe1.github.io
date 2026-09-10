@@ -6,6 +6,7 @@
     var MAX_ITEMS = 100;
     var rememberedSources = {};
     var lastDirectSource = null;
+    var browserTasks = {};
 
     if (!window.Lampa || !window.$) {
         console.warn('[' + PLUGIN + '] Lampa or jQuery is unavailable');
@@ -51,7 +52,7 @@
                 var nativeItem = nativeItems.filter(function (candidate) {
                     return String(candidate.id) === String(item.nativeId);
                 })[0];
-                return nativeItem ? Object.assign({}, item, nativeItem, { nativeId: item.nativeId }) : item;
+                return nativeItem ? Object.assign({}, item, nativeItem, { id: item.id, nativeId: item.nativeId }) : item;
             });
         } catch (_) {
             return items;
@@ -67,6 +68,7 @@
             id: nowId(),
             title: source.title || 'Видео',
             url: source.url,
+            fileName: source.fileName || '',
             poster: source.poster || '',
             status: status || 'started',
             nativeId: nativeId || '',
@@ -79,7 +81,19 @@
     }
 
     function deleteItem(id) {
+        var task = browserTasks[id];
+        if (task && task.controller) task.controller.abort();
+        if (task && task.objectUrl) URL.revokeObjectURL(task.objectUrl);
+        delete browserTasks[id];
         setItems(getItems().filter(function (item) { return item.id !== id; }));
+    }
+
+    function updateItem(id, changes) {
+        var items = safeJson(localStorage.getItem(STORAGE_KEY) || '[]', []);
+        items = items.map(function (item) {
+            return item.id === id ? Object.assign({}, item, changes) : item;
+        });
+        setItems(items);
     }
 
     function notify(text) {
@@ -95,15 +109,64 @@
             typeof tizen.DownloadRequest === 'function';
     }
 
-    function browserDownload(source) {
+    function saveBrowserFile(item, blob) {
         var link = document.createElement('a');
-        link.href = source.url;
-        link.download = safeFileName(source.fileName || source.title);
+        var objectUrl = URL.createObjectURL(blob);
+        browserTasks[item.id] = browserTasks[item.id] || {};
+        browserTasks[item.id].objectUrl = objectUrl;
+        updateItem(item.id, { status: 'completed', percent: 100, localUrl: objectUrl, sizeBytes: blob.size });
+        link.href = objectUrl;
+        link.download = safeFileName(item.fileName || item.title);
         link.rel = 'noopener';
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
         setTimeout(function () { link.remove(); }, 0);
+    }
+
+    function browserDownload(source) {
+        var item = addItem(source, 'downloading');
+        var controller = window.AbortController ? new AbortController() : null;
+        browserTasks[item.id] = { controller: controller, source: source };
+        var options = { headers: source.headers || {} };
+        if (controller) options.signal = controller.signal;
+
+        fetch(source.url, options).then(function (response) {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            var total = Number(response.headers.get('content-length')) || 0;
+            if (!response.body || !response.body.getReader) return response.blob().then(function (blob) {
+                updateItem(item.id, { percent: 100, sizeBytes: blob.size });
+                return blob;
+            });
+            var reader = response.body.getReader();
+            var chunks = [];
+            var received = 0;
+            function read() {
+                return reader.read().then(function (part) {
+                    if (part.done) return new Blob(chunks, { type: response.headers.get('content-type') || 'video/*' });
+                    chunks.push(part.value);
+                    received += part.value.byteLength;
+                    updateItem(item.id, {
+                        percent: total ? Math.min(99, Math.round(received * 100 / total)) : 0,
+                        sizeBytes: received
+                    });
+                    return read();
+                });
+            }
+            return read();
+        }).then(function (blob) {
+            saveBrowserFile(item, blob);
+            notify('Загрузка завершена');
+        }).catch(function (error) {
+            if (error && error.name === 'AbortError') {
+                updateItem(item.id, { status: 'paused' });
+                return;
+            }
+            console.warn('[' + PLUGIN + '] browser download failed', error);
+            updateItem(item.id, { status: 'failed', error: String(error.message || error) });
+            notify('Ошибка загрузки: ' + (error.message || error));
+        });
+        return item.id;
     }
 
     function openInBrowser(source) {
@@ -140,20 +203,19 @@
                 }));
                 if (!id) throw new Error('Android downloadStart returned no id');
                 addItem(source, 'downloading', id);
-                notify('Загрузка началась');
+                notify('Загрузка запущена. Смотри в «Загрузки».');
                 return;
             }
 
             if (tizenAvailable()) {
                 startTizenDownload(source);
                 addItem(source, 'downloading');
-                notify('Загрузка началась');
+                notify('Загрузка запущена. Смотри в «Загрузки».');
                 return;
             }
 
             browserDownload(source);
-            addItem(source, 'sent-to-browser');
-            notify('Ссылка передана в загрузчик устройства');
+            notify('Загрузка запущена. Смотри в «Загрузки».');
         } catch (error) {
             console.warn('[' + PLUGIN + '] download failed', error);
             openInBrowser(source);
@@ -462,37 +524,104 @@
 
     function DownloadsComponent() {
         var self = this;
-        var body = $('<div class="content__body" style="padding:1.5em"></div>');
+        var body = $('<div class="content__body" style="padding:1.5em"><div class="universal-download-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(13em,1fr));gap:1.5em 1em"></div></div>');
         var html = $('<div class="scroll"><div class="scroll__body"></div></div>');
         html.find('.scroll__body').append(body);
+        var timer = null;
+
+        function statusText(entry) {
+            if (entry.status === 'completed') return bytes(entry.sizeBytes) || 'Готово';
+            if (entry.status === 'failed') return 'Ошибка';
+            if (entry.status === 'paused') return 'Пауза';
+            return (entry.percent || 0) + '%';
+        }
+
+        function play(entry, inner) {
+            var url = entry.localPath ? 'file://' + entry.localPath : (entry.localUrl || entry.url);
+            try {
+                Lampa.Player.play({ url: url, title: entry.title || '', quality: {}, launch_player: inner ? 'inner' : undefined });
+            } catch (_) {
+                openInBrowser(entry);
+            }
+        }
+
+        function nativeId(entry) { return entry.nativeId || entry.id; }
+
+        function pause(entry) {
+            var bridge = androidBridge();
+            try {
+                if (bridge && typeof bridge.downloadCancel === 'function' && entry.nativeId) bridge.downloadCancel(nativeId(entry));
+                else if (browserTasks[entry.id] && browserTasks[entry.id].controller) browserTasks[entry.id].controller.abort();
+                else updateItem(entry.id, { status: 'paused' });
+            } catch (_) {}
+        }
+
+        function resume(entry) {
+            var bridge = androidBridge();
+            try {
+                if (bridge && typeof bridge.downloadResume === 'function' && entry.nativeId) {
+                    bridge.downloadResume(nativeId(entry));
+                    return;
+                }
+            } catch (_) {}
+            deleteItem(entry.id);
+            browserDownload(entry);
+        }
+
+        function remove(entry) {
+            var bridge = androidBridge();
+            try {
+                if (bridge && typeof bridge.downloadDelete === 'function' && entry.nativeId) bridge.downloadDelete(nativeId(entry));
+            } catch (_) {}
+            deleteItem(entry.id);
+        }
+
+        function actions(entry) {
+            var choices = [];
+            if (entry.status === 'completed' || entry.status === 'downloading' || entry.status === 'queued' || entry.status === 'paused') {
+                choices.push({ title: 'Смотреть', action: 'play' });
+                choices.push({ title: 'Смотреть во встроенном плеере', action: 'inner' });
+            }
+            if (entry.status === 'downloading' || entry.status === 'queued') choices.push({ title: 'Приостановить', action: 'pause' });
+            if (entry.status === 'paused') choices.push({ title: 'Продолжить', action: 'resume' });
+            if (entry.status === 'failed') choices.push({ title: 'Повторить', action: 'resume' });
+            choices.push({ title: 'Открыть ссылку', action: 'open' });
+            choices.push({ title: 'Удалить', action: 'delete' });
+            Lampa.Select.show({
+                title: entry.title,
+                items: choices,
+                onSelect: function (choice) {
+                    if (choice.action === 'play') play(entry, false);
+                    if (choice.action === 'inner') play(entry, true);
+                    if (choice.action === 'pause') pause(entry);
+                    if (choice.action === 'resume') resume(entry);
+                    if (choice.action === 'open') openInBrowser(entry);
+                    if (choice.action === 'delete') remove(entry);
+                    setTimeout(render, 150);
+                },
+                onBack: function () { Lampa.Controller.toggle('content'); }
+            });
+        }
 
         function render() {
             var items = getItems();
-            body.empty();
+            var list = body.find('.universal-download-list').empty();
             if (!items.length) {
-                body.append('<div style="opacity:.7">Список загрузок пуст.</div>');
+                list.append('<div style="opacity:.7">Список загрузок пуст.</div>');
                 return;
             }
             items.forEach(function (entry) {
-                var row = $('<div class="selector" style="display:flex;align-items:center;gap:1em;padding:.75em 0;border-bottom:1px solid rgba(255,255,255,.12)">' +
-                    (entry.poster ? '<img src="' + escapeHtml(entry.poster) + '" style="width:3em;height:4.5em;object-fit:cover">' : '') +
-                    '<div style="min-width:0;flex:1"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(entry.title) + '</div>' +
-                    '<div style="opacity:.65;font-size:.85em">' + escapeHtml(entry.status) + '</div></div></div>');
-                row.on('hover:enter click', function () {
-                    Lampa.Select.show({
-                        title: entry.title,
-                        items: [
-                            { title: 'Открыть ссылку', action: 'open' },
-                            { title: 'Удалить из списка', action: 'delete' }
-                        ],
-                        onSelect: function (choice) {
-                            if (choice.action === 'open') openInBrowser(entry);
-                            if (choice.action === 'delete') { deleteItem(entry.id); render(); }
-                        },
-                        onBack: function () { Lampa.Controller.toggle('content'); }
-                    });
-                });
-                body.append(row);
+                var progress = entry.status === 'completed' ? 100 : Math.max(0, Math.min(100, Number(entry.percent) || 0));
+                var color = entry.status === 'failed' ? '#e05050' : entry.status === 'completed' ? '#48a868' : '#e50914';
+                var poster = entry.poster || './img/img_load.svg';
+                var card = $('<div class="card selector universal-download-card" style="width:14em">' +
+                    '<div class="card__view" style="position:relative;padding-bottom:150%">' +
+                    '<img class="card__img" src="' + escapeHtml(poster) + '" style="object-fit:cover">' +
+                    '<div style="position:absolute;top:.4em;right:.4em;background:rgba(0,0,0,.75);padding:.2em .5em;z-index:2">' + escapeHtml(statusText(entry)) + '</div>' +
+                    '<div style="position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(0,0,0,.5);z-index:2"><div style="height:100%;width:' + progress + '%;background:' + color + '"></div></div>' +
+                    '</div><div class="card__title" style="margin-top:.4em;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(entry.title || 'Без названия') + '</div></div>');
+                card.on('hover:enter click', function () { actions(entry); });
+                list.append(card);
             });
         }
 
@@ -504,11 +633,14 @@
                 back: function () { Lampa.Activity.backward(); }
             });
             Lampa.Controller.toggle('content');
+            timer = setInterval(function () {
+                if (getItems().some(function (item) { return item.status === 'downloading' || item.status === 'queued'; })) render();
+            }, 1000);
         };
         this.pause = function () {};
         this.stop = function () {};
         this.render = function () { return html; };
-        this.destroy = function () { self = null; html.remove(); };
+        this.destroy = function () { if (timer) clearInterval(timer); self = null; html.remove(); };
     }
 
     try { Lampa.Component.add(PLUGIN, DownloadsComponent); } catch (error) {
