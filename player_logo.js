@@ -6,11 +6,11 @@
         return;
     }
 
-    // Стили: скрываем название, стилизуем контейнер под логотип
+    // Стили: скрываем title, стилизуем контейнер под логотип
     var customStyles = `
         <style>
         /* Скрываем текстовое название фильма */
-        .player-info__name {
+        .player-info__title {
             display: none !important;
         }
         /* Контейнер для логотипа на месте названия */
@@ -18,8 +18,10 @@
             display: flex !important;
             justify-content: flex-start !important;
             align-items: center !important;
-            padding: 0 10px !important;
+            padding: 8px 10px !important;
             margin: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
         .player-info__logo img {
             max-height: 60px;
@@ -75,17 +77,12 @@
         try {
             if (isLoading) return;
 
-            // Ищем элемент с названием фильма в плеере
-            var $playerInfoName = $(".player-info__name");
-            if (!$playerInfoName.length) return;
+            // Ищем элемент с названием фильма в плеере — теперь это .player-info__title
+            var $playerInfoTitle = $(".player-info__title");
+            if (!$playerInfoTitle.length) return;
 
             // Берём текст названия
-            var title = $playerInfoName.text().trim();
-            if (!title) {
-                // Если текст пустой — возможно, элемент обновляется, попробуем другой источник
-                var $playerTitle = $(".player-footer-card__title");
-                if ($playerTitle.length) title = $playerTitle.text().trim();
-            }
+            var title = $playerInfoTitle.text().trim();
             if (!title) return;
 
             var cleanTitle = title
@@ -142,11 +139,11 @@
                         if (logo && logo.file_path) {
                             var logoPath = "https://image.tmdb.org/t/p/w300" + logo.file_path.replace(".svg", ".png");
 
-                            // Вставляем логотип прямо внутрь контейнера названия (вместо текста)
+                            // Заменяем .player-info__title на логотип
                             if (!$(".player-info__logo").length) {
                                 var $logo = $('<div class="player-info__logo"><img src="' + logoPath + '" alt="Logo" /></div>');
-                                $playerInfoName.after($logo);
-                                $playerInfoName.hide();
+                                $playerInfoTitle.after($logo);
+                                $playerInfoTitle.hide();
                             }
                         }
                     }
@@ -190,8 +187,8 @@
                 mutation.addedNodes.forEach(function(node) {
                     if (node.nodeType === 1) {
                         if (node.classList && (
-                            node.classList.contains('player-info__name') ||
-                            $(node).find('.player-info__name').length
+                            node.classList.contains('player-info__title') ||
+                            $(node).find('.player-info__title').length
                         )) {
                             shouldUpdate = true;
                         }
@@ -214,7 +211,7 @@
     try {
         setTimeout(function checkDOM() {
             displayPlayerInfoLogo();
-            if (!$(".player-info__name").length) {
+            if (!$(".player-info__title").length) {
                 setTimeout(checkDOM, 2000);
             }
         }, 1500);
@@ -224,7 +221,7 @@
 
     // Периодическая проверка
     setInterval(function() {
-        if ($(".player-info__name").length && !$(".player-info__logo").length && !isLoading) {
+        if ($(".player-info__title").length && !$(".player-info__logo").length && !isLoading) {
             displayPlayerInfoLogo();
         }
     }, 10000);
