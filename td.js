@@ -42,20 +42,34 @@
     }
 
     function getItems() {
-        return safeJson(localStorage.getItem(STORAGE_KEY) || '[]', []);
+        var items = safeJson(localStorage.getItem(STORAGE_KEY) || '[]', []);
+        var bridge = androidBridge();
+        if (!bridge || typeof bridge.downloadList !== 'function') return items;
+        try {
+            var nativeItems = safeJson(bridge.downloadList() || '[]', []);
+            return items.map(function (item) {
+                var nativeItem = nativeItems.filter(function (candidate) {
+                    return String(candidate.id) === String(item.nativeId);
+                })[0];
+                return nativeItem ? Object.assign({}, item, nativeItem, { nativeId: item.nativeId }) : item;
+            });
+        } catch (_) {
+            return items;
+        }
     }
 
     function setItems(items) {
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0, MAX_ITEMS))); } catch (_) {}
     }
 
-    function addItem(source, status) {
+    function addItem(source, status, nativeId) {
         var item = {
             id: nowId(),
             title: source.title || 'Видео',
             url: source.url,
             poster: source.poster || '',
             status: status || 'started',
+            nativeId: nativeId || '',
             createdAt: Date.now()
         };
         var items = getItems();
@@ -125,7 +139,7 @@
                     headers: source.headers || {}
                 }));
                 if (!id) throw new Error('Android downloadStart returned no id');
-                addItem(source, 'downloading');
+                addItem(source, 'downloading', id);
                 notify('Загрузка началась');
                 return;
             }
@@ -231,12 +245,171 @@
         }
     }
 
+    function storageValue(key) {
+        try { return Lampa.Storage && Lampa.Storage.get ? Lampa.Storage.get(key, '') : ''; } catch (_) { return ''; }
+    }
+
+    function httpUrl(value) {
+        value = String(value || '').trim();
+        if (!value) return '';
+        return /^https?:\/\//i.test(value) ? value.replace(/\/+$/, '') : 'http://' + value.replace(/\/+$/, '');
+    }
+
+    function torrentConfig() {
+        var custom = window.LampaUniversalDownloadConfig || {};
+        return {
+            torrServerUrl: httpUrl(custom.torrServerUrl || custom.torrserver_url || storageValue('torrserver_url')),
+            torrServerLogin: String(custom.torrServerLogin || custom.torrserver_login || storageValue('torrserver_login') || ''),
+            torrServerPassword: String(custom.torrServerPassword || custom.torrserver_password || storageValue('torrserver_password') || ''),
+            jackettUrl: httpUrl(custom.jackettUrl || custom.jackett_url || storageValue('jackett_url')),
+            jackettApiKey: String(custom.jackettApiKey || custom.jackett_key || storageValue('jackett_key') || '')
+        };
+    }
+
+    function torrentAuth(config) {
+        if (!config.torrServerLogin && !config.torrServerPassword) return {};
+        return { Authorization: 'Basic ' + btoa(config.torrServerLogin + ':' + config.torrServerPassword) };
+    }
+
+    function torrentSearch(card, config) {
+        var title = card.title || card.name || '';
+        var originalTitle = card.original_title || card.original_name || title;
+        var year = String(card.release_date || card.first_air_date || '').slice(0, 4);
+        var serial = card.number_of_seasons || card.first_air_date ? '1' : '0';
+        var category = serial === '1' ? '5000' : '2000';
+        var query = (originalTitle + ' ' + title).trim();
+        var url = config.jackettUrl + '/api/v2.0/indexers/all/results?apikey=' +
+            encodeURIComponent(config.jackettApiKey) + '&Query=' + encodeURIComponent(query) +
+            '&title=' + encodeURIComponent(title) + '&title_original=' + encodeURIComponent(originalTitle) +
+            (year ? '&year=' + encodeURIComponent(year) : '') + '&is_serial=' + serial + '&Category[]=' + category;
+
+        return fetch(url, { mode: 'cors', headers: { Accept: 'application/json' } })
+            .then(function (response) {
+                if (!response.ok) throw new Error('Jackett HTTP ' + response.status);
+                return response.json();
+            })
+            .then(function (payload) {
+                return ((payload && payload.Results) || []).map(function (item) {
+                    return {
+                        title: item.Title || item.title || 'Без названия',
+                        magnet: item.MagnetUri || item.Link || item.magnetLink || '',
+                        size: item.Size || item.size || 0,
+                        seeders: item.Seeders || item.seeders || 0
+                    };
+                }).filter(function (item) { return item.magnet; })
+                    .sort(function (a, b) { return b.seeders - a.seeders; });
+            });
+    }
+
+    function torrentCall(config, payload) {
+        var headers = {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        };
+        var auth = torrentAuth(config);
+        if (auth.Authorization) headers.Authorization = auth.Authorization;
+        return fetch(config.torrServerUrl + '/torrents', {
+            method: 'POST', headers: headers, body: JSON.stringify(payload)
+        }).then(function (response) {
+            if (!response.ok) throw new Error('TorrServer HTTP ' + response.status);
+            return response.json();
+        });
+    }
+
+    function torrentFiles(config, hash) {
+        var attempt = 0;
+        function read() {
+            attempt++;
+            return torrentCall(config, { action: 'get', hash: hash }).then(function (payload) {
+                var files = payload && (payload.file_stats || payload.files || (payload.torrent && payload.torrent.file_stats)) || [];
+                if (files.length || attempt >= 30) {
+                    return files.map(function (file, index) {
+                        return { path: file.path || file.name || ('file_' + index), id: file.id != null ? file.id : index, size: file.length || file.size || 0 };
+                    });
+                }
+                return new Promise(function (resolve) { setTimeout(resolve, 500); }).then(read);
+            });
+        }
+        return read();
+    }
+
+    function bytes(value) {
+        if (!value) return '';
+        var units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        var unit = 0;
+        while (value >= 1024 && unit < units.length - 1) { value /= 1024; unit++; }
+        return value.toFixed(value < 10 && unit ? 1 : 0) + ' ' + units[unit];
+    }
+
+    function torrentStreamUrl(config, hash, file) {
+        var fileName = encodeURIComponent(String(file.path).split('/').pop().split('\\').pop());
+        return config.torrServerUrl + '/stream/' + fileName + '?link=' + encodeURIComponent(hash) + '&index=' + encodeURIComponent(file.id) + '&play';
+    }
+
+    function torrentPicker(card) {
+        var config = torrentConfig();
+        if (!config.jackettUrl || !config.torrServerUrl) {
+            notify('Укажите адреса Jackett и TorrServer в настройках Lampa');
+            return;
+        }
+        Lampa.Loading.start(function () {});
+        torrentSearch(card, config).then(function (items) {
+            Lampa.Loading.stop();
+            if (!items.length) { notify('Раздачи не найдены'); return; }
+            Lampa.Select.show({
+                title: 'Выберите раздачу',
+                items: items.slice(0, 40).map(function (item) {
+                    return { title: item.title, subtitle: bytes(item.size) + '  S: ' + item.seeders, _torrent: item };
+                }),
+                onSelect: function (item) { selectTorrentFile(card, config, item._torrent); },
+                onBack: function () { Lampa.Controller.toggle('content'); }
+            });
+        }).catch(function (error) {
+            Lampa.Loading.stop();
+            console.warn('[' + PLUGIN + '] torrent search failed', error);
+            notify('Ошибка Jackett: ' + (error.message || error));
+        });
+    }
+
+    function selectTorrentFile(card, config, torrent) {
+        Lampa.Loading.start(function () {});
+        torrentCall(config, { action: 'add', link: torrent.magnet, title: torrent.title, save_to_db: false })
+            .then(function (payload) {
+                var hash = payload.hash || (payload.torrent && payload.torrent.hash);
+                if (!hash) throw new Error('TorrServer не вернул hash');
+                return torrentFiles(config, hash).then(function (files) { return { hash: hash, files: files }; });
+            }).then(function (result) {
+                Lampa.Loading.stop();
+                var videos = result.files.filter(function (file) { return /\.(mkv|mp4|avi|webm|m4v|ts|mov|flv)$/i.test(file.path); });
+                if (!videos.length) { notify('В раздаче нет видеофайлов'); return; }
+                function start(file) {
+                    startDownload({
+                        url: torrentStreamUrl(config, result.hash, file),
+                        title: (card.title || card.name || torrent.title) + (videos.length > 1 ? ' - ' + String(file.path).split('/').pop() : ''),
+                        poster: card.img || card.poster_path || '',
+                        headers: torrentAuth(config)
+                    });
+                }
+                if (videos.length === 1) { start(videos[0]); return; }
+                Lampa.Select.show({
+                    title: 'Выберите файл',
+                    items: videos.map(function (file) { return { title: String(file.path).split('/').pop(), subtitle: bytes(file.size), _file: file }; }),
+                    onSelect: function (item) { start(item._file); },
+                    onBack: function () { Lampa.Controller.toggle('content'); }
+                });
+            }).catch(function (error) {
+                Lampa.Loading.stop();
+                console.warn('[' + PLUGIN + '] TorrServer failed', error);
+                notify('Ошибка TorrServer: ' + (error.message || error));
+            });
+    }
+
     function sourcePicker(card) {
         Lampa.Loading.start(function () {});
         resolveSources(card).then(function (sources) {
             Lampa.Loading.stop();
             if (!sources.length) {
-                notify('Для этого фильма нет доступной ссылки для загрузки');
+                torrentPicker(card);
                 return;
             }
             if (sources.length === 1) {
