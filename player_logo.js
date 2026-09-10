@@ -1,56 +1,50 @@
 !function() {
     "use strict";
 
-    // Проверяем наличие jQuery
     if (typeof $ === "undefined") {
         console.error("[PlayerInfoLogo] Ошибка: jQuery не найден");
         return;
     }
 
-    // Добавляем CSS стили
+    // Стили: скрываем название, стилизуем контейнер под логотип
     var customStyles = `
         <style>
+        /* Скрываем текстовое название фильма */
+        .player-info__name {
+            display: none !important;
+        }
+        /* Контейнер для логотипа на месте названия */
         .player-info__logo {
             display: flex !important;
-            justify-content: center !important;
+            justify-content: flex-start !important;
             align-items: center !important;
-            width: 100% !important;
-            margin-bottom: 8px !important;
-            padding: 0 !important;
-            text-align: center !important;
+            padding: 0 10px !important;
+            margin: 0 !important;
         }
         .player-info__logo img {
-            max-height: 120px;
-            max-width: 400px;
+            max-height: 60px;
+            max-width: 300px;
+            object-fit: contain;
         }
         </style>
     `;
 
-    // Добавляем стили в head
     $('head').append(customStyles);
 
-    // Переменные для контроля состояния
     var currentTitle = "";
     var isLoading = false;
     var logoTimeout = null;
-    var uniqueLogoId = 0;
 
-    // Функция очистки старых логотипов
-    function clearAllLogos() {
+    function clearLogo() {
         $(".player-info__logo").remove();
-        console.log("[PlayerInfoLogo] Все логотипы удалены");
+        currentTitle = "";
+        isLoading = false;
+        if (logoTimeout) {
+            clearTimeout(logoTimeout);
+            logoTimeout = null;
+        }
     }
 
-    // Функция создания логотипа
-    function createImageLogo(logoPath) {
-        var logoId = ++uniqueLogoId;
-        var logoHtml = '<div class="player-info__logo" data-logo-id="' + logoId + '">' +
-            '<img src="' + logoPath + '" alt="Logo" />' +
-            '</div>';
-        return logoHtml;
-    }
-
-    // Поиск точного совпадения
     function findBestMatch(results, originalTitle) {
         if (!results || results.length === 0) return null;
 
@@ -77,20 +71,21 @@
         return null;
     }
 
-    // Основная функция отображения логотипа
     function displayPlayerInfoLogo() {
         try {
             if (isLoading) return;
 
+            // Ищем элемент с названием фильма в плеере
             var $playerInfoName = $(".player-info__name");
             if (!$playerInfoName.length) return;
 
-            var $playerTitle = $(".player-footer-card__title");
-            if (!$playerTitle.length) {
-                $playerTitle = $(".card__title, .player-title, .media-title, .title, [class*=title]");
+            // Берём текст названия
+            var title = $playerInfoName.text().trim();
+            if (!title) {
+                // Если текст пустой — возможно, элемент обновляется, попробуем другой источник
+                var $playerTitle = $(".player-footer-card__title");
+                if ($playerTitle.length) title = $playerTitle.text().trim();
             }
-
-            var title = $playerTitle.length ? $playerTitle.text().trim() : "";
             if (!title) return;
 
             var cleanTitle = title
@@ -107,7 +102,7 @@
 
             if (logoTimeout) clearTimeout(logoTimeout);
 
-            clearAllLogos();
+            clearLogo();
             isLoading = true;
             currentTitle = cleanTitle;
 
@@ -147,8 +142,11 @@
                         if (logo && logo.file_path) {
                             var logoPath = "https://image.tmdb.org/t/p/w300" + logo.file_path.replace(".svg", ".png");
 
+                            // Вставляем логотип прямо внутрь контейнера названия (вместо текста)
                             if (!$(".player-info__logo").length) {
-                                $playerInfoName.before(createImageLogo(logoPath));
+                                var $logo = $('<div class="player-info__logo"><img src="' + logoPath + '" alt="Logo" /></div>');
+                                $playerInfoName.after($logo);
+                                $playerInfoName.hide();
                             }
                         }
                     }
@@ -168,26 +166,7 @@
         }
     }
 
-    // Полная очистка
-    function clearLogo() {
-        clearAllLogos();
-        currentTitle = "";
-        isLoading = false;
-        if (logoTimeout) {
-            clearTimeout(logoTimeout);
-            logoTimeout = null;
-        }
-    }
-
-    // Принудительное обновление
-    function forceUpdateLogo() {
-        clearLogo();
-        setTimeout(function() {
-            displayPlayerInfoLogo();
-        }, 1000);
-    }
-
-    // Подписка на события Lampa
+    // События Lampa
     try {
         if (Lampa && Lampa.Listener) {
             Lampa.Listener.follow('player', function(e) {
@@ -198,33 +177,12 @@
                     clearLogo();
                 }
             });
-
-            Lampa.Listener.follow('card', function(e) {
-                if (e.type === 'start' || e.type === 'loading') {
-                    clearLogo();
-                    setTimeout(displayPlayerInfoLogo, 2000);
-                }
-            });
-
-            Lampa.Listener.follow('activity', function(e) {
-                if (e.type === 'start') {
-                    forceUpdateLogo();
-                } else if (e.type === 'destroy') {
-                    clearLogo();
-                }
-            });
-
-            Lampa.Listener.follow('torrent', function(e) {
-                if (e.type === 'start') {
-                    forceUpdateLogo();
-                }
-            });
         }
     } catch (e) {
         console.error("[PlayerInfoLogo] Ошибка событий:", e.message);
     }
 
-    // DOM Observer
+    // Наблюдатель за DOM
     var observer = new MutationObserver(function(mutations) {
         var shouldUpdate = false;
         mutations.forEach(function(mutation) {
@@ -233,8 +191,7 @@
                     if (node.nodeType === 1) {
                         if (node.classList && (
                             node.classList.contains('player-info__name') ||
-                            node.classList.contains('player-footer-card__title') ||
-                            $(node).find('.player-info__name, .player-footer-card__title').length
+                            $(node).find('.player-info__name').length
                         )) {
                             shouldUpdate = true;
                         }
@@ -243,7 +200,7 @@
             }
         });
         if (shouldUpdate) {
-            setTimeout(forceUpdateLogo, 500);
+            setTimeout(displayPlayerInfoLogo, 500);
         }
     });
 
