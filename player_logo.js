@@ -18,13 +18,14 @@
             display: flex !important;
             justify-content: flex-start !important;
             align-items: center !important;
-            padding: 8px 10px !important;
+            line-height: 0 !important;
+            padding: 0 10px !important;
             margin: 0 !important;
             width: 100% !important;
             box-sizing: border-box !important;
         }
         .player-info__logo img {
-            max-height: 60px;
+            max-height: 70px;
             max-width: 300px;
             object-fit: contain;
         }
