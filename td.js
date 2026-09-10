@@ -4,6 +4,8 @@
     var PLUGIN = 'lampa_universal_download';
     var STORAGE_KEY = PLUGIN + '_items';
     var MAX_ITEMS = 100;
+    var rememberedSources = {};
+    var lastDirectSource = null;
 
     if (!window.Lampa || !window.$) {
         console.warn('[' + PLUGIN + '] Lampa or jQuery is unavailable');
@@ -159,15 +161,60 @@
         };
     }
 
+    function cardKey(card) {
+        return String(card.id || card.card_id || card.tmdb_id || card.imdb_id || '');
+    }
+
+    function collectSources(value, card, result, depth) {
+        if (depth > 3 || !value) return;
+        if (typeof value === 'string') {
+            var direct = normalizeSource(value, card);
+            if (direct) result.push(direct);
+            return;
+        }
+        if (Array.isArray(value)) {
+            value.forEach(function (item) { collectSources(item, card, result, depth + 1); });
+            return;
+        }
+        if (typeof value !== 'object') return;
+
+        var direct = normalizeSource({
+            url: value.url || value.link || value.file || value.src || value.stream_url || value.video_url,
+            title: value.title || value.name || value.label,
+            fileName: value.fileName || value.filename,
+            poster: value.poster,
+            headers: value.headers
+        }, card);
+        if (direct) result.push(direct);
+
+        ['sources', 'downloads', 'download_urls', 'playlist', 'streams', 'qualities', 'files', 'items', 'data']
+            .forEach(function (field) { collectSources(value[field], card, result, depth + 1); });
+    }
+
     function cardSources(card) {
-        var raw = card.downloads || card.download_urls || card.downloadUrl || card.download_url || [];
-        if (!Array.isArray(raw)) raw = [raw];
-        return raw.map(function (source) { return normalizeSource(source, card); }).filter(Boolean);
+        var result = [];
+        collectSources({
+            sources: [
+                card.downloads, card.download_urls, card.downloadUrl, card.download_url,
+                card.sources, card.source, card.playlist, card.streams, card.stream,
+                card.video_url, card.stream_url, card.file, card.link, card.url
+            ]
+        }, card, result, 0);
+        var seen = {};
+        return result.filter(function (source) {
+            if (seen[source.url]) return false;
+            seen[source.url] = true;
+            return true;
+        });
     }
 
     function resolveSources(card) {
         var sources = cardSources(card);
         if (sources.length) return Promise.resolve(sources);
+
+        var key = cardKey(card);
+        if (key && rememberedSources[key]) return Promise.resolve([rememberedSources[key]]);
+        if (lastDirectSource) return Promise.resolve([lastDirectSource]);
 
         // Подключите свой легальный каталог прямых URL до загрузки этого файла:
         // window.LampaDownloadResolver = function (card) {
@@ -219,7 +266,9 @@
 
         var card = activity.movie || activity.card || {};
         var button = $('<div class="full-start__button selector universal-download" role="button" tabindex="0">' +
-            '<span class="full-start__icon">&#8659;</span><span>Скачать</span></div>');
+            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+            '<path d="M12 3v13M6 13l6 6 6-6M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg><span>Скачать</span></div>');
         function open() { sourcePicker(card); }
         button.on('hover:enter click', open);
         buttons.append(button);
@@ -229,7 +278,9 @@
         var menu = $('.menu .menu__list').first();
         if (!menu.length || menu.find('.universal-download-menu').length) return;
         var item = $('<li class="menu__item selector universal-download-menu">' +
-            '<div class="menu__ico">&#8659;</div><div class="menu__text">Загрузки</div></li>');
+            '<div class="menu__ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+            '<path d="M12 3v13M6 13l6 6 6-6M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg></div><div class="menu__text">Загрузки</div></li>');
         item.on('hover:enter click', function () {
             Lampa.Activity.push({ url: '', title: 'Загрузки', component: PLUGIN, page: 1 });
         });
@@ -297,6 +348,24 @@
     Lampa.Listener.follow('app', function (event) {
         if (event && event.type === 'ready') setTimeout(ensureMenu, 300);
     });
+
+    // Большинство Lampa-плагинов передают прямой URL только в момент запуска
+    // плеера. Запоминаем его, чтобы после выбора источника он стал доступен
+    // кнопке «Скачать» без привязки к конкретному провайдеру.
+    if (Lampa.Player && typeof Lampa.Player.play === 'function' && !Lampa.Player.play.__universalDownload) {
+        var originalPlay = Lampa.Player.play;
+        var wrappedPlay = function (data) {
+            var source = normalizeSource(data || {}, data || {});
+            if (source) {
+                lastDirectSource = source;
+                var key = cardKey(data || {});
+                if (key) rememberedSources[key] = source;
+            }
+            return originalPlay.apply(this, arguments);
+        };
+        wrappedPlay.__universalDownload = true;
+        Lampa.Player.play = wrappedPlay;
+    }
 
     window.LampaUniversalDownloads = {
         start: startDownload,
