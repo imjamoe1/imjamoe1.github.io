@@ -25,7 +25,7 @@
             box-sizing: border-box !important;
         }
         .player-info__logo img {
-            max-height: 70px;
+            max-height: 60px;
             max-width: 300px;
             object-fit: contain;
         }
