@@ -7,7 +7,7 @@ Date.now||(Date.now=function(){return(new Date.getTime())}),function(){"use stri
 		return window.location.protocol == 'https:' ? 'https://' : 'http://';
 	}
 	var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-	var version_modss = '3.3', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '', IP = '', logged = false;
+	var version_modss = '3.4.5', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = false, leftVipD = '', user_id = '', uid = '', IP = '', logged = false;
 	console.log('App', 'protocol:', Protocol());
 	console.log('Modss', 'plugin', 'loaded');
 	
@@ -759,6 +759,10 @@ rating_kp_imdb: function (card) {
     check: function(name, call) {
       var name = name || Lampa.Arrays.getKeys(Modss.jack)[0];
       var json = Modss.jack[name];
+      if (!json) {
+        if (call) call(false);
+        return;
+    }
       var item = $('.settings-param__status.one');
       var item2 = $('.settings-param__status.act');
       var url = (json && json.url || Lampa.Storage.get('jackett_url'));
@@ -11540,12 +11544,3 @@ rating_kp_imdb: function (card) {
 	if (!window.plugin_modss) startPlugin();
 
 })();
-
-
-
-
-
-
-
-
-
