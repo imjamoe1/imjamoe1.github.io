@@ -7065,22 +7065,21 @@ function loadingMarkSync() {
           var sameLine = Math.abs((box.top + box.height / 2) - (here.top + here.height / 2)) <= Math.max(6, here.height * .58);
           if (sameLine && box.left < here.left - 2) leftmost = false;
         });
-        if (leftmost) return wideToHeroNear(last) || false;
-        return false;
+        if (leftmost) return wideToHeroNear(last) || true;
+        return true;
       }
       if (grouped) return true;
-      if (dir === 'left') return wideToHeroNear(last) || false;
-      return false;
+      if (dir === 'left') return wideToHeroNear(last) || true;
+      return true;
     }
 
     if (listFocused()) {
       var cards = wideListNodes();
       if (cards.indexOf(last) !== -1) {
-        var step = wideRowSide(dir);
-        if (step) return focusNode(step);
-        if (dir === 'left') return wideToMenu();
-        return true;
-      }
+        if (wideRow()) {
+          var step = wideRowSide(dir);
+          if (step) return focusNode(step);
+        }
       var seats = wideNoteNodes();
       if (seats.length && seats.indexOf(last) !== -1) {
         var noteStep = wideRowSide(dir);
