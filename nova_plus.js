@@ -4337,10 +4337,8 @@
     return body.length === 0;
   }
 
-  var loading_started = 0;
-  var loading_timer = null;
-  var loading_mark_slot = null;
-  var loading_mark_signature = '';
+var loading_mark_slot = null;
+var loading_mark_signature = '';
 
 function loadingMarkStyles() {
   if (typeof document === 'undefined' || document.getElementById('nova-plus-loading-mark-css')) return;
@@ -4359,8 +4357,8 @@ function loadingMarkRestore() {
   if (!slot || !slot.length) return;
 
   var base = slot.children('.nova-loading-mark__base').first();
-  var glow = slot.children('.nova-loading-mark__glow');
-  glow.remove();
+  var shine = slot.children('.nova-loading-mark__shine');
+  shine.remove();
 
   if (base.length) {
     if (base.is('img')) {
@@ -4381,22 +4379,22 @@ function loadingMarkSync() {
   if (loading_mark_slot && loading_mark_slot[0] !== slot[0]) loadingMarkRestore();
   loading_mark_slot = slot;
 
-  var picture = slot.children('img').not('.nova-loading-mark__glow').first();
+  var picture = slot.children('img').not('.nova-loading-mark__shine').first();
   if (picture.length) {
     picture.addClass('nova-loading-mark__base');
     var picture_class = String(picture.attr('class') || '')
       .replace(/\bnova-loading-mark__base\b/g, '')
       .replace(/^\s+|\s+$/g, '');
     var picture_signature = 'img:' + (picture.attr('src') || '') + '|' + picture_class;
-    var picture_glow = slot.children('img.nova-loading-mark__glow').first();
+    var picture_shine = slot.children('img.nova-loading-mark__shine').first();
 
-    if (!picture_glow.length || loading_mark_signature !== picture_signature) {
-      picture_glow.remove();
-      picture_glow = picture.clone(false)
+    if (!picture_shine.length || loading_mark_signature !== picture_signature) {
+      picture_shine.remove();
+      picture_shine = picture.clone(false)
         .removeClass('nova-loading-mark__base')
-        .addClass('nova-loading-mark__glow')
+        .addClass('nova-loading-mark__shine')
         .attr('aria-hidden', 'true');
-      slot.append(picture_glow);
+      slot.append(picture_shine);
       loading_mark_signature = picture_signature;
     }
     slot.addClass('nova-hero__title--loading');
@@ -4408,139 +4406,141 @@ function loadingMarkSync() {
   if (!value) return;
 
   var text_signature = 'text:' + value;
-  var text_glow = slot.children('span.nova-loading-mark__glow').first();
+  var text_shine = slot.children('span.nova-loading-mark__shine').first();
   if (!base.length) {
     slot.empty();
     base = $('<span class="nova-loading-mark__base"></span>').text(value);
     slot.append(base);
   }
-  if (!text_glow.length || loading_mark_signature !== text_signature) {
-    text_glow.remove();
-    text_glow = base.clone(false)
+  if (!text_shine.length || loading_mark_signature !== text_signature) {
+    text_shine.remove();
+    text_shine = base.clone(false)
       .removeClass('nova-loading-mark__base')
-      .addClass('nova-loading-mark__glow')
+      .addClass('nova-loading-mark__shine')
       .attr('aria-hidden', 'true');
-    slot.append(text_glow);
+    slot.append(text_shine);
     loading_mark_signature = text_signature;
   }
   slot.addClass('nova-hero__title--loading');
 }
 
-function loadingHeroPanel() {
-  if (!heroEnabled() || !movie) return false;
+  var loading_started = 0;
+  var loading_timer = null;
 
-  if (ui.hero && !ui.hero.parent().length) {
+  function loadingHeroPanel() {
+    if (!heroEnabled() || !movie) return false;
+
+    if (ui.hero && !ui.hero.parent().length) {
+      ui.hero = null;
+      ui.hero_kind = '';
+    }
+
+    nav = false;
+    serial = !!(movie.name || movie.number_of_seasons);
+    buildHero();
+
+    if (!ui.hero || !ui.hero.parent().length) return false;
+
+    if (!ui.load) {
+      loading_started = Date.now();
+      ui.load = $('<div class="nova-loading">' +
+        '<div class="nova-loading__title"></div>' +
+        '<div class="nova-loading__text"></div>' +
+        '</div>');
+      ui.load.find('.nova-loading__title').text(text('nova_loading_title', 'nova_plus_loading_title'));
+    }
+
+    ui.load.addClass('nova-loading--hero').css({
+      padding: '0',
+      background: 'none',
+      margin: '0',
+      minWidth: '0'
+    });
+    ui.load.find('.nova-loading__title').css({
+      fontSize: '1.15em',
+      marginBottom: '.2em'
+    });
+    ui.load.find('.nova-loading__text').css('margin-bottom', '0');
+
+    loadingMarkStyles();
+    ui.hero.addClass('nova-hero--loading');
+    ui.hero.find('.nova-hero__actions').prepend(ui.load);
+    ui.hero.find('.nova-hero__hint').empty();
+    ui.hero.find('.nova-hero__season').hide();
+    ui.hero.find('.nova-hero__progress').empty().hide();
+    loadingMarkSync();
+    return true;
+  }
+
+  function loadingPanel() {
+    uiFrame();
+    note_sig = '';
+
+    if (ui.hero && ui.hero.parent().length && !ui.hero.hasClass('nova-hero--loading')) {
+      loadingStop();
+      listHold().empty().append(skeleton(4));
+      refreshCollection();
+      var keep = (lockActive() && seek(ui_lock)) || seek(ui_focus);
+      if (keep) focusNode(keep, true);
+      return;
+    }
+
+    ui.rows.empty();
+
+    if (loadingHeroPanel()) {
+      listHold().empty().append(skeleton(3));
+      refreshCollection();
+      loadingText();
+
+      clearInterval(loading_timer);
+      loading_timer = setInterval(loadingText, 1000);
+      return;
+    }
+
+    ui.hero_box.empty();
     ui.hero = null;
     ui.hero_kind = '';
-  }
 
-  nav = false;
-  serial = !!(movie.name || movie.number_of_seasons);
-  buildHero();
+    if (!ui.load) {
+      loading_started = Date.now();
+      ui.load = $('<div class="nova-loading">' +
+        '<div class="nova-loading__title"></div>' +
+        '<div class="nova-loading__text"></div>' +
+        '<div class="nova-loading__bar"><div></div></div>' +
+        '</div>');
+      ui.load.find('.nova-loading__title').text(text('nova_loading_title', 'nova_plus_loading_title'));
+    }
 
-  if (!ui.hero || !ui.hero.parent().length) return false;
-
-  if (!ui.load) {
-    loading_started = Date.now();
-    ui.load = $('<div class="nova-loading">' +
-      '<div class="nova-loading__title"></div>' +
-      '<div class="nova-loading__text"></div>' +
-      '</div>');
-    ui.load.find('.nova-loading__title').text(text('nova_loading_title', 'nova_plus_loading_title'));
-  }
-
-  ui.load.addClass('nova-loading--hero').css({
-    padding: '0',
-    background: 'none',
-    margin: '0',
-    minWidth: '0'
-  });
-  ui.load.find('.nova-loading__title').css({
-    fontSize: '1.15em',
-    marginBottom: '.2em'
-  });
-  ui.load.find('.nova-loading__text').css('margin-bottom', '0');
-
-  loadingMarkStyles();
-  ui.hero.addClass('nova-hero--loading');
-  ui.hero.find('.nova-hero__actions').prepend(ui.load);
-  ui.hero.find('.nova-hero__hint').empty();
-  ui.hero.find('.nova-hero__season').hide();
-  ui.hero.find('.nova-hero__progress').empty().hide();
-  loadingMarkSync();
-  return true;
-}
-
-function loadingPanel() {
-  uiFrame();
-  note_sig = '';
-
-  if (ui.hero && ui.hero.parent().length && !ui.hero.hasClass('nova-hero--loading')) {
-    loadingStop();
-    listHold().empty().append(skeleton(4));
-    refreshCollection();
-    var keep = (lockActive() && seek(ui_lock)) || seek(ui_focus);
-    if (keep) focusNode(keep, true);
-    return;
-  }
-
-  ui.rows.empty();
-
-  if (loadingHeroPanel()) {
-    listHold().empty().append(skeleton(3));
-    refreshCollection();
+    listHold().empty().append(ui.load).append(skeleton(modeWide() ? 10 : 3));
     loadingText();
 
     clearInterval(loading_timer);
     loading_timer = setInterval(loadingText, 1000);
-    return;
   }
 
-  ui.hero_box.empty();
-  ui.hero = null;
-  ui.hero_kind = '';
-
-  if (!ui.load) {
-    loading_started = Date.now();
-    ui.load = $('<div class="nova-loading">' +
-      '<div class="nova-loading__title"></div>' +
-      '<div class="nova-loading__text"></div>' +
-      '<div class="nova-loading__bar"><div></div></div>' +
-      '</div>');
-    ui.load.find('.nova-loading__title').text(text('nova_loading_title', 'nova_plus_loading_title'));
+  function loadingText() {
+    if (!ui.load || !ui.load.parent().length) return loadingStop();
+    var seconds = Math.max(0, Math.round((Date.now() - loading_started) / 1000));
+    var line = text('nova_loading_start', 'nova_plus_loading_start') +
+      ' \u00b7 ' + seconds + text('nova_sec', 'nova_plus_sec');
+    ui.load.find('.nova-loading__text').text(line);
+    loadingMarkSync();
+    ui.load.find('.nova-loading__bar>div').css('width', Math.min(90, seconds * 7) + '%');
   }
 
-  listHold().empty().append(ui.load).append(skeleton(modeWide() ? 10 : 3));
-  loadingText();
+  function loadingStop() {
+    clearInterval(loading_timer);
+    loading_timer = null;
 
-  clearInterval(loading_timer);
-  loading_timer = setInterval(loadingText, 1000);
-}
+    if (ui.load && ui.load.parent().length) ui.load.remove();
+    ui.load = null;
+    loadingMarkRestore();
 
-function loadingText() {
-  if (!ui.load || !ui.load.parent().length) return loadingStop();
-  var seconds = Math.max(0, Math.round((Date.now() - loading_started) / 1000));
-  var line = text('nova_loading_start', 'nova_plus_loading_start') +
-    ' \u00b7 ' + seconds + text('nova_sec', 'nova_plus_sec');
-  ui.load.find('.nova-loading__text').text(line);
-  loadingMarkSync();
-  ui.load.find('.nova-loading__bar>div').css('width', Math.min(90, seconds * 7) + '%');
-}
-
-function loadingStop() {
-  clearInterval(loading_timer);
-  loading_timer = null;
-  loading_started = 0;
-
-  if (ui.load && ui.load.parent().length) ui.load.remove();
-  ui.load = null;
-  loadingMarkRestore();
-
-  if (ui.hero && ui.hero.hasClass('nova-hero--loading')) {
-    ui.hero.removeClass('nova-hero--loading');
-    ui.hero.find('.nova-hero__progress').empty().hide();
+    if (ui.hero && ui.hero.hasClass('nova-hero--loading')) {
+      ui.hero.removeClass('nova-hero--loading');
+      ui.hero.find('.nova-hero__progress').empty().hide();
+    }
   }
-}
 
   function noteStamp(native) {
     return [
@@ -7205,12 +7205,12 @@ function loadingStop() {
 
   var LOADING_MARK_CSS = [
     '.nova-plus-root .nova-hero__title--loading{position:relative!important;display:block!important;overflow:visible!important;-webkit-line-clamp:none!important;-webkit-box-orient:horizontal!important}',
-    '.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__base,.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__glow{display:block}',
-    '.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__base{opacity:.25}',
-    '.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__glow{position:absolute!  important;top:0;left:0;right:0;bottom:0;opacity:.55;pointer-events:none;background:linear-gradient(90deg,transparent 0,rgba(255,255,255,.85) 50%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 40%,#000 60%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 40%,#000 60%,transparent 100%);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:60% 100%;mask-size:60% 100%;-webkit-animation:novaLoadingPulse 2s ease-in-out infinite;animation:novaLoadingPulse 2s ease-in-out infinite}',
-    '@-webkit-keyframes novaLoadingPulse{0%,100%{-webkit-mask-position:-30% 0;opacity:.3}50%{-webkit-mask-position:130% 0;opacity:.75}}',
-    '@keyframes novaLoadingPulse{0%,100%{mask-position:-30% 0;opacity:.3}50%{mask-position:130% 0;opacity:.75}}',
-    '@media screen and (prefers-reduced-motion:reduce){.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__glow{display:none!important;-webkit-animation:none!important;animation:none!important}.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__base{opacity:.75}}'
+    '.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__base,.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__shine{display:block}',
+    '.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__base{opacity:.24}',
+    '.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__shine{position:absolute!important;top:0;left:0;right:auto;bottom:auto;opacity:1;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 42%,#000 58%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 42%,#000 58%,transparent 100%);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:42% 100%;mask-size:42% 100%;-webkit-animation:novaPlusMarkSweep 1.8s linear infinite;animation:novaPlusMarkSweep 1.8s linear infinite}',
+    '@-webkit-keyframes novaPlusMarkSweep{0%{-webkit-mask-position:-60% 0}100%{-webkit-mask-position:160% 0}}',
+    '@keyframes novaPlusMarkSweep{0%{-webkit-mask-position:-60% 0;mask-position:-60% 0}100%{-webkit-mask-position:160% 0;mask-position:160% 0}}',
+    '@media screen and (prefers-reduced-motion:reduce){.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__shine{display:none!important;-webkit-animation:none!important;animation:none!important}.nova-plus-root .nova-hero__title--loading>.nova-loading-mark__base{opacity:.72}}'
   ].join('');
 
   var LOGO_CSS = ".nova-plus-root .nova-hero__title--logo>img.nova-logo--edge{-webkit-filter:drop-shadow(0 0 .02em rgba(255,255,255,.9)) drop-shadow(0 0 .06em rgba(255,255,255,.45)) drop-shadow(0 .04em .12em rgba(0,0,0,.5));filter:drop-shadow(0 0 .02em rgba(255,255,255,.9)) drop-shadow(0 0 .06em rgba(255,255,255,.45)) drop-shadow(0 .04em .12em rgba(0,0,0,.5))}";
