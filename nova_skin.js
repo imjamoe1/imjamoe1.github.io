@@ -21,6 +21,24 @@
 
   var aside = false;
 
+  function stepAside() {
+    if (aside) return;
+    aside = true;
+    inplaceStop();
+    try {
+      if (ui.root) ui.root.remove();
+      if (root) {
+        root.removeClass('nova-skin-scope nova-skin-chips');
+        root.find('.nova-hidden').removeClass('nova-hidden');
+      }
+    } catch (e) {}
+    switchDone();
+    lockRelease();
+    ui = {};
+    root = null;
+    host = null;
+  }
+
   var filters = [];
   var scrolls = [];
 
@@ -42,19 +60,17 @@
     try { Lampa.Storage.set(key, value); } catch (e) {}
   }
 
-  function enabled() { return get(ENABLED_KEY, true) !== false; }
-  function novaMode() { return get(MODE_KEY, 'wide') === 'skin' ? 'skin' : 'wide'; }
-  function modeWide() { return novaMode() === 'wide'; }
-  function lockedOn(line) { return modeWide() ? line + ' · ' + label('nova_skin_locked_on') : line; }
-  function lockedOff(line) { return modeWide() ? line + ' · ' + label('nova_skin_locked_off') : line; }
-  function heroEnabled() { return modeWide() ? true : get('nova_skin_hero', true) !== false; }
-  function artEnabled() { return modeWide() ? true : get('nova_skin_hero_art', true) !== false; }
+  function enabled() {
+    return get(ENABLED_KEY, true) !== false;
+  }
+  function heroEnabled() { return get('nova_skin_hero', true) !== false; }
+  function artEnabled() { return get('nova_skin_hero_art', true) !== false; }
   function viewMode() { return get('nova_skin_view', 'list'); }
   function preferredQuality() { return get('nova_skin_quality', 'auto'); }
 
-  function focusRing() { return get('nova_skin_focus_style', 'ring') !== 'fill'; }
+  function focusRing() { return get('nova_focus_style', 'ring') !== 'fill'; }
 
-  function fullScreen() { return modeWide() ? true : get('nova_skin_fullscreen', true) === true; }
+  function fullScreen() { return get('nova_skin_fullscreen', true) === true; }
 
   function applyFullScreen() {
     try {
@@ -77,8 +93,8 @@
   function applyFocusStyle() {
     try {
       var body = $('body');
-      if (focusRing()) body.addClass('nova-skin-focus-ring');
-      else body.removeClass('nova-skin-focus-ring');
+      if (focusRing()) body.addClass('nova-focus-ring');
+      else body.removeClass('nova-focus-ring');
     } catch (e) {}
   }
 
