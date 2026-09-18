@@ -21,6 +21,40 @@
 
   var aside = false;
 
+  var SIBLING_COMPONENTS = ['lampacskaz', 'onlyskaz', 'skazonline'];
+  var SIBLING_MARKUP = '.nova__rows,.nova__list,.nova-hero,.nova-card,.z01,.z01__rows,.z01__list,.z01-hero,.z01-card';
+
+  function siblingInstalled() {
+    return !!(window.nova_online_plugin || window.onlyskaz_plugin);
+  }
+
+  function siblingComponent(current) {
+    var name = '';
+    try {
+      name = String((current && current.component) || '');
+    } catch (e) {
+      name = '';
+    }
+    if (!name) return false;
+    if (SIBLING_COMPONENTS.indexOf(name) !== -1) return true;
+    if (name === 'nova_online') return true;
+    return /skaz/i.test(name);
+  }
+
+  function siblingModern(current) {
+    if (!siblingComponent(current)) return false;
+
+    var name = '';
+    try {
+      name = String((current && current.component) || '');
+    } catch (e) {
+      name = '';
+    }
+
+    if (name === 'nova_online') return get('nova_ui_mode', 'modern') !== 'classic';
+    return get('z01_ui_mode', 'modern') !== 'classic';
+  }
+
   function stepAside() {
     if (aside) return;
     aside = true;
