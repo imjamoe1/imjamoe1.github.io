@@ -7069,8 +7069,8 @@ function loadingMarkSync() {
         return true;
       }
       if (grouped) return true;
-      if (dir === 'left') return wideToHeroNear(last) || true;
-      return true;
+      if (dir === 'left') return wideToHeroNear(last) || false;
+      return false;
     }
 
     if (listFocused()) {
