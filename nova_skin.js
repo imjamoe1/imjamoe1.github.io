@@ -19,6 +19,8 @@
   var LOGO_WARM = {};
   var LOGO_BLIND = {};
 
+  var aside = false;
+
   var filters = [];
   var scrolls = [];
 
