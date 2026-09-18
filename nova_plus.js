@@ -87,7 +87,7 @@
     nova_plus_mode_wide: { ru: 'Широкий', uk: 'Широкий', en: 'Wide' },
     nova_plus_mode_skin: { ru: 'Классический', uk: 'Класичний', en: 'Classic' },
     nova_plus_locked_on: { ru: 'в широком виде всегда включено', uk: 'у широкому вигляді завжди увімкнено', en: 'always on in the wide layout' },
-    nova_plus_locked_off: { ru: 'в широком виде не используется', uk: 'у широкому вигляді не використовується', en: 'not used in the wide layout' },
+    //nova_plus_locked_off: { ru: 'в широком виде не используется', uk: 'у широкому вигляді не використовується', en: 'not used in the wide layout' },
     nova_plus_watch: { ru: 'Смотреть', uk: 'Дивитися', en: 'Watch' },
     nova_plus_continue: { ru: 'Продолжить', uk: 'Продовжити', en: 'Continue' },
     nova_plus_from_start: { ru: 'Смотреть с начала', uk: 'Дивитися з початку', en: 'Watch from start' },
@@ -4813,7 +4813,7 @@ function loadingMarkSync() {
     });
 
     var compact = !serial && !nav && list.length > 1;
-    var grid = !nav && list.length > 0 && (modeWide() || viewMode() === 'grid');
+    var grid = !nav && list.length > 0 && viewMode() === 'grid';
     if (grid) ui.list.addClass('nova__list--grid');
     else ui.list.removeClass('nova__list--grid');
     wideStrip(list);
@@ -5759,6 +5759,10 @@ function loadingMarkSync() {
     }
 
     card.addClass('nova-card--wide');
+
+    if (viewMode() === 'list') {
+      card.removeClass('nova-card--wide').addClass('nova-card--wide-list');
+    }
 
     var thumb = card.find('.nova-card__thumb');
     var body = card.find('.nova-card__body');
