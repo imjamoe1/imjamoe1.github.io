@@ -7080,6 +7080,7 @@ function loadingMarkSync() {
           var step = wideRowSide(dir);
           if (step) return focusNode(step);
         }
+      }  
       var seats = wideNoteNodes();
       if (seats.length && seats.indexOf(last) !== -1) {
         var noteStep = wideRowSide(dir);
