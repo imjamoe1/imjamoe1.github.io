@@ -7065,8 +7065,8 @@ function loadingMarkSync() {
           var sameLine = Math.abs((box.top + box.height / 2) - (here.top + here.height / 2)) <= Math.max(6, here.height * .58);
           if (sameLine && box.left < here.left - 2) leftmost = false;
         });
-        if (leftmost) return wideToHeroNear(last) || true;
-        return true;
+        if (leftmost) return wideToHeroNear(last) || false;
+        return false;
       }
       if (grouped) return true;
       if (dir === 'left') return wideToHeroNear(last) || false;
