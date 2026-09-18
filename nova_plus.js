@@ -4813,7 +4813,7 @@ function loadingMarkSync() {
     });
 
     var compact = !serial && !nav && list.length > 1;
-    var grid = !nav && list.length > 0 && viewMode() === 'grid';
+    var grid = !nav && list.length > 0 && (modeWide() || viewMode() === 'grid');
     if (grid) ui.list.addClass('nova__list--grid');
     else ui.list.removeClass('nova__list--grid');
     wideStrip(list);
