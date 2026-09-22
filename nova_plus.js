@@ -7079,24 +7079,70 @@ function loadingMarkSync() {
 
     if (listFocused()) {
       var cards = wideListNodes();
+
       if (cards.indexOf(last) !== -1) {
+
         if (wideRow()) {
           var step = wideRowSide(dir);
           if (step) return focusNode(step);
         }
-      }  
+
+        var from = last.getBoundingClientRect();
+        var midY = from.top + from.height / 2;
+        var midX = from.left + from.width / 2;
+        var tolY = Math.max(8, from.height * 0.55);
+        var best = null;
+        var bestDist = Infinity;
+
+        cards.forEach(function (node) {
+          if (node === last) return;
+
+          var box = node.getBoundingClientRect();
+          if (!box.width && !box.height) return;
+
+          var nodeY = box.top + box.height / 2;
+          var nodeX = box.left + box.width / 2;
+
+          if (Math.abs(nodeY - midY) > tolY) return;
+
+          var distance;
+
+          if (dir === 'right') {
+            if (nodeX <= midX) return;
+            distance = nodeX - midX;
+          } else {
+            if (nodeX >= midX) return;
+            distance = midX - nodeX;
+          }
+
+          if (distance < bestDist) {
+            best = node;
+            bestDist = distance;
+          }
+        });
+
+        if (best) return focusNode(best);
+
+        if (dir === 'left') return wideToMenu();
+
+        return true;
+      }
+
       var seats = wideNoteNodes();
+
       if (seats.length && seats.indexOf(last) !== -1) {
         var noteStep = wideRowSide(dir);
         if (noteStep) return focusNode(noteStep);
         if (dir === 'left') return wideToMenu();
         return true;
       }
-      try { if (window.Navigator && window.Navigator.canmove(dir)) return false; } catch (e) {}
+
+      try {
+        if (window.Navigator && window.Navigator.canmove(dir)) return false;
+      } catch (e) {}
+
       return true;
     }
-
-    return true;
   }
 
   function wideSeen(node) {
