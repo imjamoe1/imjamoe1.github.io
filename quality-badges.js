@@ -403,6 +403,10 @@
             position: relative;
             bottom: 1.5em !important;
         }
+
+        .full-start-new__head {
+            margin-top: 1.25em !important;
+        }
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
