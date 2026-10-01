@@ -360,7 +360,7 @@
         const styles = `<style>
         /* Бейджи качества */
         .quality-badges {
-            position: relative;
+            position: absolute;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
@@ -400,7 +400,7 @@
         /* Отступ для контейнера с деталями */
         .full-start-new__details,
         .full-start__details {
-            position: relative;
+            position: absolute;
             bottom: 1.5em;
         }
 
