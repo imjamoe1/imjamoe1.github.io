@@ -2954,7 +2954,7 @@ Lampa.Listener.follow('full', function(e) {
                 var render = e.object.activity.render();
                 var details = $('.full-start-new__details', render);
                 var reactions = $('.full-start-new__reactions', render);
-                var badges = $('.quality-badges', render);
+                var badges = $('.quality-badge', render);
                 var buttons = $('.full-start-new__buttons', render);
                 var networks = $('.items-line__body', render).parent();
                 var movie = e.data.movie;
