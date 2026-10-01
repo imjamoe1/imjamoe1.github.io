@@ -360,7 +360,7 @@
         const styles = `<style>
         /* Бейджи качества */
         .quality-badges {
-            //position: absolute;
+            position: absolute;
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
