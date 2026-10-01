@@ -365,7 +365,7 @@
             align-items: center;
             gap: 0.4em;
             opacity: 0;
-            transform: translateY(-5px);
+            transform: translateY(-10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
         
