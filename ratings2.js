@@ -2968,7 +2968,7 @@ Lampa.Listener.follow('full', function(e) {
                 if (isSeries) {
                     details.css({
                         'position': 'relative',
-                        'bottom': '1.5em'
+                        'bottom': '1.2em'
                     });
                 
                     reactions.css({
@@ -2978,7 +2978,7 @@ Lampa.Listener.follow('full', function(e) {
 
                     badges.css({
                         'position': 'relative',
-                        'top': '1em'
+                        'bottom': '1em'
                     });
 
                     buttons.css({
