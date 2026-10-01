@@ -403,7 +403,7 @@
             bottom: 1.5em;
         }
 
-        .full-start-new__details span:last-child {
+        .full-start-new__details div {
             display: inline-block;
             margin-bottom: 1.5em;
         }
