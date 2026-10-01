@@ -405,7 +405,7 @@
         }
 
         .full-start-new__head {
-            margin-top: 1.25em !important;
+            margin-top: 3em !important;
         }
         </style>`;
         
