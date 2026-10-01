@@ -2978,7 +2978,7 @@ Lampa.Listener.follow('full', function(e) {
 
                     badges.css({
                         //'position': 'relative',
-                        'margin-bottom': '1em'
+                        'padding-top': '1em'
                     });
 
                     buttons.css({
