@@ -363,10 +363,9 @@
             position: absolute;
             display: inline-flex;
             align-items: center;
-            padding-bottom: 0.2em;
             gap: 0.4em;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(-5px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
         
