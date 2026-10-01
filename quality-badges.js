@@ -364,7 +364,6 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4em;
-            margin: 0.5em 0;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -399,12 +398,12 @@
         }
         
         /* Отступ для контейнера с деталями */
-        .full-start-new__details {
+        /* .full-start-new__details {
             position: relative;
             bottom: 1.5em;
         }
 
-        /* .full-start-new__details span {
+        .full-start-new__details span {
             position: relative;
             bottom: 1.5em;
         } */
