@@ -2977,7 +2977,7 @@ Lampa.Listener.follow('full', function(e) {
 
                     buttons.css({
                         'position': 'relative',
-                        'bottom': '2.5em'
+                        'bottom': '1em'
                     });
 
                     networks.css({
