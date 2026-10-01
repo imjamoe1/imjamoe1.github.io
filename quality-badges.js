@@ -406,7 +406,7 @@
 
         .full-start-new__head {
             position: relative;
-            top: 1.75em;
+            top: 2em;
         }
         </style>`;
         
