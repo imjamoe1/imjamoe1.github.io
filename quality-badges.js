@@ -276,9 +276,9 @@
         // Если контейнера нет, создадим его в подходящем месте
         if (!badgesContainer.length) {
             // Сначала пробуем найти контейнер с мета-информацией
-            let targetContainer = render.find('.full-start__details');
+            let targetContainer = render.find('.full-start__buttons');
             if (!targetContainer.length) {
-                targetContainer = render.find('.full-start-new__details');
+                targetContainer = render.find('.full-start-new__buttons');
             }
             if (!targetContainer.length) {
                 targetContainer = render.find('.full-start__body');
@@ -288,7 +288,7 @@
             }
         
             if (targetContainer.length) {
-                targetContainer.after('<div class="quality-badges"></div>');
+                targetContainer.before('<div class="quality-badges"></div>');
                 badgesContainer = render.find('.quality-badges');
             }
         }
@@ -441,9 +441,9 @@
                 
                 if (!badgesContainer.length) {
                     // Ищем подходящее место для размещения бейджей
-                    let targetContainer = render.find('.full-start__details');
+                    let targetContainer = render.find('.full-start__buttons');
                     if (!targetContainer.length) {
-                        targetContainer = render.find('.full-start-new__details');
+                        targetContainer = render.find('.full-start-new__buttons');
                     }
                     if (!targetContainer.length) {
                         targetContainer = render.find('.full-start__body');
@@ -453,7 +453,7 @@
                     }
                     
                     if (targetContainer.length) {
-                        targetContainer.after('<div class="quality-badges"></div>');
+                        targetContainer.before('<div class="quality-badges"></div>');
                         badgesContainer = render.find('.quality-badges');
                     }
                 }
