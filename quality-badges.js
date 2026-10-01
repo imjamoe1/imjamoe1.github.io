@@ -365,7 +365,7 @@
             align-items: center;
             gap: 0.4em;
             margin: 0.5em 0;
-            margin-top: 1em;
+            margin-top: 0.1em;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
