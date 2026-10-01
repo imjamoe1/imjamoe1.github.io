@@ -2977,7 +2977,7 @@ Lampa.Listener.follow('full', function(e) {
                     });
 
                     badges.css({
-                        'transform': 'translate(-5em, -1em)'
+                        'transform': 'translate(0, -2em)'
                     });
 
                     buttons.css({
