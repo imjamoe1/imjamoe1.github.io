@@ -405,7 +405,8 @@
         }
 
         .full-start-new__head {
-            margin-top: 3em !important;
+            position: relative;
+            top: 1.25em !important;
         }
         </style>`;
         
