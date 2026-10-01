@@ -400,12 +400,12 @@
         /* Отступ для контейнера с деталями */
         .full-start-new__details {
             position: relative;
-            margin-bottom: 1.5em;
+            bottom: 1.5em;
         }
 
         .full-start-new__head {
             position: relative;
-            top: -1em;
+            top: 2em;
         }
         </style>`;
         
