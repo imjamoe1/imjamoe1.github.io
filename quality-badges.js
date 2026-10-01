@@ -363,7 +363,7 @@
             position: absolute;
             display: inline-flex;
             align-items: center;
-            bottom: 0.1em;
+            padding-bottom: 0.2em;
             gap: 0.4em;
             opacity: 0;
             transform: translateY(10px);
