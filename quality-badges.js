@@ -398,15 +398,14 @@
         }
         
         /* Отступ для контейнера с деталями */
-        /* .full-start-new__details,
-        .full-start__details {
+        .full-start-new__details {
             position: relative;
-            bottom: 1.5em;
-        } */
+            margin-bottom: 1.5em;
+        }
 
         .full-start-new__head {
             position: relative;
-            top: 2em;
+            top: -1em;
         }
         </style>`;
         
