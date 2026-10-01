@@ -2967,7 +2967,7 @@ Lampa.Listener.follow('full', function(e) {
                 if (isSeries) {
                     details.css({
                         'position': 'relative',
-                        'bottom': '2em'
+                        'bottom': '1.8em'
                     });
                 
                     reactions.css({
