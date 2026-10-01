@@ -458,7 +458,7 @@
                     }
                     
                     if (targetContainer.length) {
-                        targetContainer.after('<div class="quality-badges"></div>');
+                        targetContainer.before('<div class="quality-badges"></div>');
                         badgesContainer = render.find('.quality-badges');
                     }
                 }
