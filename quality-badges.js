@@ -405,7 +405,7 @@
 
         .full-start-new__details span {
             display: inline-block;
-            margin-bottom: -1.5em;
+            margin-bottom: 1.5em;
         }
 
         .full-start-new__head {
