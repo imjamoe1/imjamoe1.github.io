@@ -404,10 +404,10 @@
             margin-bottom: 20px;
         }
 
-        /* .full-start-new__details span {
-            position: relative;
-            bottom: 1.5em;
-        } */
+        .full-start-new__details span {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
 
         .full-start-new__head {
             position: relative;
