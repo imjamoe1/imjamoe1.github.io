@@ -415,7 +415,7 @@
         </style>`;
         
         if (!$('style[data-id="quality-badges"]').length) {
-            $(styles).appendTo('head');
+            $(styles).appendTo('details');
         }
     }
 
