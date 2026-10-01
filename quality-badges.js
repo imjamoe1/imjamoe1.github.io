@@ -401,7 +401,7 @@
         .full-start-new__details,
         .full-start__details {
             position: relative;
-            bottom: 1.5em !important;
+            bottom: 1.5em;
         }
 
         .full-start-new__head {
