@@ -276,9 +276,9 @@
         // Если контейнера нет, создадим его в подходящем месте
         if (!badgesContainer.length) {
             // Сначала пробуем найти контейнер с мета-информацией
-            let targetContainer = render.find('.full-start-new__head');
+            let targetContainer = render.find('.full-start-new__title');
             if (!targetContainer.length) {
-                targetContainer = render.find('.full-start-new__title');
+                targetContainer = render.find('.full-start__title');
             }
             if (!targetContainer.length) {
                 targetContainer = render.find('.full-start__body');
@@ -440,21 +440,15 @@
                 
                 if (!badgesContainer.length) {
                     // Ищем подходящее место для размещения бейджей
-                    let targetContainer = render.find('.full-start-new__head');
+                    let targetContainer = render.find('.full-start-new__title');
                     if (!targetContainer.length) {
-                        targetContainer = render.find('.full-start-new__title');
+                        targetContainer = render.find('.full-start__title');
                     }
                     if (!targetContainer.length) {
                         targetContainer = render.find('.full-start__body');
                     }
                     if (!targetContainer.length) {
                         targetContainer = render.find('.full-start-new__body');
-                    }
-                    if (!targetContainer.length) {
-                        targetContainer = render.find('.full-start__head');
-                    }
-                    if (!targetContainer.length) {
-                        targetContainer = render.find('.full-start-new__head');
                     }
                     
                     if (targetContainer.length) {
