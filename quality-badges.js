@@ -402,11 +402,6 @@
         /* .full-start-new__details {
             position: relative;
             bottom: 1.5em;
-        }
-
-        .full-start-new__details span {
-            position: relative;
-            bottom: 1.5em;
         } */
 
         .full-start-new__head {
