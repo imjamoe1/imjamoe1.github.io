@@ -404,8 +404,8 @@
         }
 
         .full-start-new__details div {
-            display: inline-block;
-            margin-bottom: 1.5em;
+            position: relative;
+            bottom: 1.5em;
         }
 
         .full-start-new__head {
