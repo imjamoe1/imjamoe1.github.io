@@ -797,7 +797,7 @@ rating_kp_imdb: function (card) {
       }
     },
     jack: {
-      jacred_xyz: { url: 'jacred.xyz', key: '', lang: 'df_lg', interv: 'all' },
+      jac_red: { url: 'jac.red', key: '', lang: 'df_lg', interv: 'all' },
       spawn_pp_ua: { url: 'spawn.pp.ua:59117', key: 2, lang: 'df', interv: 'all' },
       trs_my_to: { url: 'trs.my.to:9117', key: '', lang: 'df_lg', interv: 'all' },
     },
