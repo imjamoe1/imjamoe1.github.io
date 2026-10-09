@@ -43,6 +43,20 @@
     debounce_ms: 60
   };
 
+  // текст в бейдже -> css-класс цвета
+  var RES = {
+    '4K':  'res-4k',
+    'HDR': 'res-hdr',
+    '2K':  'res-2k',
+    'FHD': 'res-fhd',
+    'HD':  'res-hd',
+    'SD':  'res-sd',
+    'LD':  'res-sd'
+  };
+
+     // все классы качества (чтобы чистить перед навешиванием нового)
+  var RES_CLASSES = ['res-4k', 'res-hdr', 'res-2k', 'res-fhd', 'res-hd', 'res-sd'];
+
   var styles = {
     // Base badge look (emerald theme)
     '.torrent-item__bitrate > span.ts-bitrate, .torrent-item__seeds > span.ts-seeds, .torrent-item__grabs > span.ts-grabs, .torrent-item__size.ts-size': {
@@ -187,12 +201,47 @@
       'box-shadow': '0 0 0 0.25em rgba(67, 206, 162, 0.4)'
     },
     '.torrent-item.focus::after': {
-      //border: '0.3em solid #1aff00',
+      border: '0.3em solid #1aff00',
       'box-shadow': '0 0 0.6em rgba(92, 212, 176, 0.18)',
       'border-radius': '0.7em'
     },
     '.scroll__body': {
       margin: '5px'
+    },
+   // ===== Качество (разрешение) =====
+    '.torrent-item__ffprobe > div.m-resolution': {
+      'font-weight': '900',
+      'border-radius': '0.5em',
+      'padding': '0.4em 0.4em'
+    },
+    '.torrent-item__ffprobe > div.m-resolution.res-4k': {
+      color: '#000000',
+      'background-color': '#ffd700',
+      'box-shadow': 'inset 0 0 0 0.1em rgba(215,215,0,0.95)'
+    },
+    '.torrent-item__ffprobe > div.m-resolution.res-hdr': {
+      color: '#000000',
+      'background-color': '#e0dede',
+      'box-shadow': 'inset 0 0 0 0.1em rgba(224,222,222,0.95)'
+    },
+    '.torrent-item__ffprobe > div.m-resolution.res-2k': {
+      color: '#43cea2',
+      'box-shadow': 'inset 0 0 0 0.1em rgba(67,206,162,0.92)'
+    },
+    '.torrent-item__ffprobe > div.m-resolution.res-fhd': {
+      color: '#000000',
+      'background-color': '#09eb85',
+      'box-shadow': 'inset 0 0 0 0.1em rgba(9, 235, 133,0.90)'
+    },
+    '.torrent-item__ffprobe > div.m-resolution.res-hd': {
+      color: '#000000',
+      'background-color': '#0055ff',
+      'box-shadow': 'inset 0 0 0 0.1em rgba(0,85,255,0.82)'
+    },
+    '.torrent-item__ffprobe > div.m-resolution.res-sd': {
+      color: '#000000',
+      'background-color': '#ff0000',
+      'box-shadow': 'inset 0 0 0 0.1em rgba(255,0,0,0.82)'
     }
   };
 
@@ -321,6 +370,13 @@
         else if (gb >= TH.size.mid_from_gb) szTier = 'mid-size';
         tsApplyTier(el, ['mid-size', 'high-size', 'top-size'], szTier);
       });
+
+      document.querySelectorAll('.torrent-item__ffprobe > div.m-resolution').forEach(function (el) {
+        var resolution = (el.textContent || '').trim().toUpperCase();
+        var cls = RES[resolution] || '';
+        tsApplyTier(el, RES_CLASSES, cls);
+      });
+
     } catch (e) {
       console.error(config.name, 'torrent update error:', e);
     }
@@ -344,6 +400,7 @@
                 (mutation.target.classList.contains('torrent-item__bitrate') ||
                   mutation.target.classList.contains('torrent-item__seeds') ||
                   mutation.target.classList.contains('torrent-item__grabs') ||
+                  mutation.target.classList.contains('m-resolution') ||
                   mutation.target.classList.contains('torrent-item__size'))))) {
             needsUpdate = true;
             break;
