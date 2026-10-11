@@ -95,6 +95,12 @@
     '.torrent-item__title': {
       'font-weight': 'bold'
     },
+
+    '.m-general > div': {
+      'font-size': '1.08em',
+      'font-weight': '400',
+      'padding': '0 0.3em'
+    },
     
     '.m-video': {
       background: '#3b82f6',
