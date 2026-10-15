@@ -1,7 +1,6 @@
 (function () {
   'use strict';
 
-  // EXIT
   function exitStart() {
     let exiting = false;
 
@@ -28,8 +27,9 @@
     };
   }
 
-  // INIT
   function start() {
+    if (window.ui_style) return;
+    window.ui_style = true;
     exitStart();
   }
 
