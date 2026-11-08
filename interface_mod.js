@@ -851,7 +851,7 @@
                     'color': colors[group].text,
                     'border-radius': '0.3em',
                     'font-weight': 'bold',
-                    'font-size': '1em',
+                    'font-size': '0.9em',
                     'border': '0px'
                 });
             }
