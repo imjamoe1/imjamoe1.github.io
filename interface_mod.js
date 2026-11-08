@@ -850,7 +850,8 @@
                     'background-color': colors[group].bg,
                     'color': colors[group].text,
                     'border-radius': '0.3em',
-                    'font-size': '1.3em',
+                    'font-weight': 'bold',
+                    'font-size': '1.1em',
                     'border': '0px'
                 });
             }
