@@ -175,21 +175,11 @@ function jackettSearch(card) {
 
     var titleRu = card.title || card.name || '';
     var titleEn = card.original_title || card.original_name || titleRu;
-    var year = ((card.release_date || card.first_air_date || '').slice(0, 4)) || '';
-    var isSerial = (card.number_of_seasons || card.first_air_date) ? 1 : 0;
-    var genres = (card.genres || []).map(function (g) { return g.name || g; }).join(',');
-    var query = (titleEn + ' ' + titleRu).trim();
-    var category = isSerial ? '5000' : '2000';
+    var query = (titleEn || titleRu).trim();
     var key = lampaOpt('jackett_key') || '';
     var url = base + '/api/v2.0/indexers/all/results?apikey=' +
         encodeURIComponent(key) +
-        '&Query=' + encodeURIComponent(query) +
-        '&title=' + encodeURIComponent(titleRu) +
-        '&title_original=' + encodeURIComponent(titleEn) +
-        (year ? '&year=' + encodeURIComponent(year) : '') +
-        '&is_serial=' + isSerial +
-        (genres ? '&genres=' + encodeURIComponent(genres) : '') +
-        '&Category[]=' + category;
+        '&Query=' + encodeURIComponent(query);
 
     return fetch(url, {
         mode: 'cors',
