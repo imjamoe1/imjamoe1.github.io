@@ -56,9 +56,7 @@ function lampaOpt(key) {
 
 /** Адрес TorrServer — из настроек Lampa. */
 function torrServerUrl() {
-    var use = lampaOpt('torrserver_use_link') || 'one';
-    var key = (use === 'two') ? 'torrserver_url_two' : 'torrserver_url';
-    var url = httpUrl(lampaOpt(key) || lampaOpt('torrserver_url'));
+    var url = httpUrl(lampaOpt('torrserver_url'));
     if (!url) return '';
     return url.replace(/\/+$/, '');
 }
@@ -83,7 +81,7 @@ function tsAuthHeader() {
 
 /** Заголовки для POST-запросов к TorrServer. */
 function tsHeaders() {
-    var h = { 'Content-Type': 'application/json' };
+    var h = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
     var auth = tsAuthHeader();
     if (auth.Authorization) h.Authorization = auth.Authorization;
     return h;
