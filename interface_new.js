@@ -1314,12 +1314,17 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
-                        width: calc(100% + 2em) !important;
+                        width: 100% !important;
+                        left: 0 !important;
+                        right: 0 !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
-                        left: 2em !important;
-                        width: calc(100% + 4em) !important;
+                        left: 0 !important;
+                        width: 100% !important;
                         object-fit: cover !important;
+                    }
+                    .new-interface .full-start__background-wrapper {
+                        overflow: hidden;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
