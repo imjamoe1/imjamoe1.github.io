@@ -1313,18 +1313,6 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
-                    body.menu--always:not(.hide-compact):not(.menu--open) .new-interface .full-start__background-wrapper {
-                        left: 6em !important;
-                        width: calc(100% - 6em) !important;
-                    }
-                    body.menu--always.hide-compact:not(.menu--open) .new-interface .full-start__background-wrapper {
-                        left: 0 !important;
-                        width: 100% !important;
-                    }
-                    body.menu--always.menu--open .new-interface .full-start__background-wrapper {
-                        left: 0 !important;
-                        width: 100% !important;
-                    }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
                         right: -5.5em !important;
