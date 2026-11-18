@@ -1314,17 +1314,16 @@
                         opacity: 1;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
-                        width: 100% !important;
-                        left: 0 !important;
-                        right: 0 !important;
+                        left: 6em !important;
+                        width: calc(100% - 6em) !important;
                     }
-                    body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background {
+                    body.menu--always:not(.hide-compact):not(.menu--open) .full-start__background-wrapper {
                         left: 0 !important;
                         width: 100% !important;
-                        object-fit: cover !important;
                     }
-                    .new-interface .full-start__background-wrapper {
-                        overflow: hidden;
+                    body.menu--always.menu--open .new-interface .full-start__background-wrapper {
+                        left: 0 !important;
+                        width: 100% !important;
                     }
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
