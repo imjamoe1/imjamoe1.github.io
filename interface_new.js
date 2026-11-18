@@ -1313,6 +1313,16 @@
                     .new-interface .full-start__background.active {
                         opacity: 1;
                     }
+                    body.menu--always.hide-compact:not(.menu--open) .new-interface .full-start__background-wrapper {
+                        left: 2em !important;
+                        width: calc(100% - 2em) !important;
+                        right: auto !important;
+                    } 
+                    body.menu--always:not(.hide-compact):not(.menu--open) .new-interface .full-start__background-wrapper {
+                        left: 4em !important;
+                        width: calc(100% - 4em) !important;
+                        right: auto !important;
+                    } 
                     body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
                         right: -5.5em !important;
