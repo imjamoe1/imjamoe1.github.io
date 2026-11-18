@@ -1321,10 +1321,10 @@
                         width: calc(100% + 4em) !important;
                         object-fit: cover !important;
                     }
-                    body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
+                    /* body.menu--always:not(.hide-compact):not(.menu--open) .items-line__more {
                         position: relative !important;
                         right: -5.5em !important;
-                    }
+                    } */
                     .full-start-new__title {
                         padding-top: 0.2em;
                     }
